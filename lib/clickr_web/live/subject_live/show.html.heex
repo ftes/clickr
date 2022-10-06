@@ -1,5 +1,5 @@
 <.header>
-  Subject <%= @subject.id %>
+  Subject <%= @subject.name %>
   <:subtitle>This is a subject record from your database.</:subtitle>
   <:actions>
     <.link patch={~p"/subjects/#{@subject}/show/edit"} phx-click={JS.push_focus()}>
