@@ -45,7 +45,7 @@ defmodule Clickr.MixProject do
       {:tailwind, "~> 0.1.8", runtime: Mix.env() == :dev},
       {:phoenix_live_dashboard, "~> 0.7"},
       {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},
-      {:swoosh, "~> 1.3"},
+      {:swoosh, "~> 1.8"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
