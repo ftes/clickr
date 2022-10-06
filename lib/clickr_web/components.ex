@@ -292,7 +292,9 @@ defmodule ClickrWeb.Components do
         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
         {@rest}
       >
-        <option :for={{value, label} <- @options} value={value}><%= label %></option>
+        <option :for={{value, label} <- @options} value={value} selected={value == @value}>
+          <%= label %>
+        </option>
       </select>
       <.error :for={msg <- @errors} message={msg} />
     </div>
