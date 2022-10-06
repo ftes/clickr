@@ -1,0 +1,37 @@
+<.header>
+  Listing Devices
+  <:actions>
+    <.link patch={~p"/devices/new"}>
+      <.button>New Device</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="devices" rows={@devices} row_click={&JS.navigate(~p"/devices/#{&1}")}>
+  <:col :let={device} label="Name"><%= device.name %></:col>
+  <:action :let={device}>
+    <div class="sr-only">
+      <.link navigate={~p"/devices/#{device}"}>Show</.link>
+    </div>
+    <.link patch={~p"/devices/#{device}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={device}>
+    <.link phx-click={JS.push("delete", value: %{id: device.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal id="device-modal" show on_cancel={JS.navigate(~p"/devices")}>
+    <.live_component
+      module={ClickrWeb.DeviceLive.FormComponent}
+      current_user={@current_user}
+      id={@device.id || :new}
+      title={@page_title}
+      action={@live_action}
+      device={@device}
+      navigate={~p"/devices"}
+    />
+  </.modal>
+<% end %>

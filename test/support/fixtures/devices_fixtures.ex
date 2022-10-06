@@ -18,4 +18,36 @@ defmodule Clickr.DevicesFixtures do
 
     gateway
   end
+
+  @doc """
+  Generate a device.
+  """
+  def device_fixture(attrs \\ %{}) do
+    {:ok, device} =
+      attrs
+      |> Enum.into(%{
+        name: "some name"
+      })
+      |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
+      |> Map.put_new_lazy(:gateway_id, fn -> gateway_fixture().id end)
+      |> Clickr.Devices.create_device()
+
+    device
+  end
+
+  @doc """
+  Generate a button.
+  """
+  def button_fixture(attrs \\ %{}) do
+    {:ok, button} =
+      attrs
+      |> Enum.into(%{
+        name: "some name"
+      })
+      |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
+      |> Map.put_new_lazy(:device_id, fn -> device_fixture().id end)
+      |> Clickr.Devices.create_button()
+
+    button
+  end
 end

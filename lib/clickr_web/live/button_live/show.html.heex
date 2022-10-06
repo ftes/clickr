@@ -1,0 +1,31 @@
+<.header>
+  Button <%= @button.id %>
+  <:subtitle>This is a button record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/buttons/#{@button}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit button</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @button.name %></:item>
+  <:item title="Gateway"><%= @button.device.gateway.name %></:item>
+  <:item title="Device"><%= @button.device.name %></:item>
+</.list>
+
+<.back navigate={~p"/buttons"}>Back to buttons</.back>
+
+<%= if @live_action in [:edit] do %>
+  <.modal id="button-modal" show on_cancel={JS.patch(~p"/buttons/#{@button}")}>
+    <.live_component
+      module={ClickrWeb.ButtonLive.FormComponent}
+      current_user={@current_user}
+      id={@button.id}
+      title={@page_title}
+      action={@live_action}
+      button={@button}
+      navigate={~p"/buttons/#{@button}"}
+    />
+  </.modal>
+<% end %>

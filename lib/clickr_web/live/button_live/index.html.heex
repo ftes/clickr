@@ -1,0 +1,37 @@
+<.header>
+  Listing Buttons
+  <:actions>
+    <.link patch={~p"/buttons/new"}>
+      <.button>New Button</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="buttons" rows={@buttons} row_click={&JS.navigate(~p"/buttons/#{&1}")}>
+  <:col :let={button} label="Name"><%= button.name %></:col>
+  <:action :let={button}>
+    <div class="sr-only">
+      <.link navigate={~p"/buttons/#{button}"}>Show</.link>
+    </div>
+    <.link patch={~p"/buttons/#{button}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={button}>
+    <.link phx-click={JS.push("delete", value: %{id: button.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal id="button-modal" show on_cancel={JS.navigate(~p"/buttons")}>
+    <.live_component
+      module={ClickrWeb.ButtonLive.FormComponent}
+      current_user={@current_user}
+      id={@button.id || :new}
+      title={@page_title}
+      action={@live_action}
+      button={@button}
+      navigate={~p"/buttons"}
+    />
+  </.modal>
+<% end %>

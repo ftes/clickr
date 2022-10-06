@@ -20,9 +20,9 @@ defmodule ClickrWeb.RoomLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :name}} type="text" label="name" />
-        <.input field={{f, :width}} type="number" label="width" />
-        <.input field={{f, :height}} type="number" label="height" />
+        <.input field={{f, :name}} type="text" label="Name" />
+        <.input field={{f, :width}} type="number" label="Width" />
+        <.input field={{f, :height}} type="number" label="Height" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Room</.button>
         </:actions>

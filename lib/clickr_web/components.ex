@@ -248,6 +248,7 @@ defmodule ClickrWeb.Components do
 
   attr :value, :any
   attr :field, :any, doc: "a %Phoenix.HTML.Form{}/field name tuple, for example: {f, :email}"
+  attr :options, :list
   attr :errors, :list
   attr :rest, :global, include: ~w(autocomplete checked disabled form max maxlength min minlength
                                    multiple pattern placeholder readonly required size step)
@@ -278,6 +279,23 @@ defmodule ClickrWeb.Components do
       />
       <%= @label %>
     </label>
+    """
+  end
+
+  def input(%{type: "select", options: _} = assigns) do
+    ~H"""
+    <div phx-feedback-for={@name}>
+      <.label for={@id}><%= @label %></.label>
+      <select
+        id={@id}
+        name={@name}
+        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
+        {@rest}
+      >
+        <option :for={{value, label} <- @options} value={value}><%= label %></option>
+      </select>
+      <.error :for={msg <- @errors} message={msg} />
+    </div>
     """
   end
 
