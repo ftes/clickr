@@ -8,7 +8,7 @@ import Config
 config :clickr, Clickr.Repo,
   username: "postgres",
   password: "postgres",
-  hostname: "localhost",
+  hostname: "postgres",
   database: "clickr_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
