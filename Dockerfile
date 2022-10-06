@@ -12,9 +12,11 @@
 #   - https://pkgs.org/ - resource for finding needed packages
 #   - Ex: hexpm/elixir:1.13.4-erlang-24.0.6-debian-bullseye-20210902-slim
 #
-ARG ELIXIR_VERSION=1.13.4
-ARG OTP_VERSION=24.2.2
-ARG ALPINE_VERSION=3.16.0
+
+# Also change versions in .gitlab-ci.yml
+ARG ELIXIR_VERSION=1.14.0
+ARG OTP_VERSION=25.1.1
+ARG ALPINE_VERSION=3.16.2
 
 ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-alpine-${ALPINE_VERSION}"
 ARG RUNNER_IMAGE="alpine:${ALPINE_VERSION}"
