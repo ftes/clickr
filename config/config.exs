@@ -11,6 +11,10 @@ config :clickr,
   ecto_repos: [Clickr.Repo],
   generators: [binary_id: true]
 
+config :clickr, Clickr.Repo,
+  migration_primary_key: [type: :binary_id],
+  migration_foreign_key: [type: :binary_id]
+
 # Configures the endpoint
 config :clickr, ClickrWeb.Endpoint,
   url: [host: "localhost"],
