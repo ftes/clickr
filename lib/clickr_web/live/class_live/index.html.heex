@@ -1,0 +1,37 @@
+<.header>
+  Listing Classes
+  <:actions>
+    <.link patch={~p"/classes/new"}>
+      <.button>New Class</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="classes" rows={@classes} row_click={&JS.navigate(~p"/classes/#{&1}")}>
+  <:col :let={class} label="Name"><%= class.name %></:col>
+  <:action :let={class}>
+    <div class="sr-only">
+      <.link navigate={~p"/classes/#{class}"}>Show</.link>
+    </div>
+    <.link patch={~p"/classes/#{class}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={class}>
+    <.link phx-click={JS.push("delete", value: %{id: class.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal id="class-modal" show on_cancel={JS.navigate(~p"/classes")}>
+    <.live_component
+      module={ClickrWeb.ClassLive.FormComponent}
+      current_user={@current_user}
+      id={@class.id || :new}
+      title={@page_title}
+      action={@live_action}
+      class={@class}
+      navigate={~p"/classes"}
+    />
+  </.modal>
+<% end %>

@@ -74,6 +74,12 @@ defmodule ClickrWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
       live "/dashboard", DashboardLive.Index, :index
+
+      live "/classes", ClassLive.Index, :index
+      live "/classes/new", ClassLive.Index, :new
+      live "/classes/:id/edit", ClassLive.Index, :edit
+      live "/classes/:id", ClassLive.Show, :show
+      live "/classes/:id/show/edit", ClassLive.Show, :edit
     end
   end
 
