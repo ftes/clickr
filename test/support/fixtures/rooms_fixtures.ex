@@ -20,4 +20,20 @@ defmodule Clickr.RoomsFixtures do
 
     room
   end
+
+  @doc """
+  Generate a button_plan.
+  """
+  def button_plan_fixture(attrs \\ %{}) do
+    {:ok, button_plan} =
+      attrs
+      |> Enum.into(%{
+        name: "some name"
+      })
+      |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
+      |> Map.put_new_lazy(:room_id, fn -> room_fixture().id end)
+      |> Clickr.Rooms.create_button_plan()
+
+    button_plan
+  end
 end

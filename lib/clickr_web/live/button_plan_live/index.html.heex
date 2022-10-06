@@ -1,0 +1,37 @@
+<.header>
+  Listing Button plans
+  <:actions>
+    <.link patch={~p"/button_plans/new"}>
+      <.button>New Button plan</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="button_plans" rows={@button_plans} row_click={&JS.navigate(~p"/button_plans/#{&1}")}>
+  <:col :let={button_plan} label="Name"><%= button_plan.name %></:col>
+  <:action :let={button_plan}>
+    <div class="sr-only">
+      <.link navigate={~p"/button_plans/#{button_plan}"}>Show</.link>
+    </div>
+    <.link patch={~p"/button_plans/#{button_plan}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={button_plan}>
+    <.link phx-click={JS.push("delete", value: %{id: button_plan.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal id="button_plan-modal" show on_cancel={JS.navigate(~p"/button_plans")}>
+    <.live_component
+      module={ClickrWeb.ButtonPlanLive.FormComponent}
+      current_user={@current_user}
+      id={@button_plan.id || :new}
+      title={@page_title}
+      action={@live_action}
+      button_plan={@button_plan}
+      navigate={~p"/button_plans"}
+    />
+  </.modal>
+<% end %>

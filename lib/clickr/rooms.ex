@@ -19,12 +19,9 @@ defmodule Clickr.Rooms do
   """
   def list_rooms(opts \\ []) do
     Room
-    |> list_rooms_where_user_id(opts[:user_id])
+    |> where_user_id(opts[:user_id])
     |> Repo.all()
   end
-
-  defp list_rooms_where_user_id(query, nil), do: query
-  defp list_rooms_where_user_id(query, id), do: where(query, [r], r.user_id == ^id)
 
   @doc """
   Gets a single room.
@@ -106,4 +103,106 @@ defmodule Clickr.Rooms do
   def change_room(%Room{} = room, attrs \\ %{}) do
     Room.changeset(room, attrs)
   end
+
+  alias Clickr.Rooms.ButtonPlan
+
+  @doc """
+  Returns the list of button_plans.
+
+  ## Examples
+
+      iex> list_button_plans()
+      [%ButtonPlan{}, ...]
+
+  """
+  def list_button_plans(opts \\ []) do
+    ButtonPlan
+    |> where_user_id(opts[:user_id])
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets a single button_plan.
+
+  Raises `Ecto.NoResultsError` if the Button plan does not exist.
+
+  ## Examples
+
+      iex> get_button_plan!(123)
+      %ButtonPlan{}
+
+      iex> get_button_plan!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_button_plan!(id), do: Repo.get!(ButtonPlan, id)
+
+  @doc """
+  Creates a button_plan.
+
+  ## Examples
+
+      iex> create_button_plan(%{field: value})
+      {:ok, %ButtonPlan{}}
+
+      iex> create_button_plan(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_button_plan(attrs \\ %{}) do
+    %ButtonPlan{}
+    |> ButtonPlan.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a button_plan.
+
+  ## Examples
+
+      iex> update_button_plan(button_plan, %{field: new_value})
+      {:ok, %ButtonPlan{}}
+
+      iex> update_button_plan(button_plan, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_button_plan(%ButtonPlan{} = button_plan, attrs) do
+    button_plan
+    |> Repo.preload(:seats)
+    |> ButtonPlan.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a button_plan.
+
+  ## Examples
+
+      iex> delete_button_plan(button_plan)
+      {:ok, %ButtonPlan{}}
+
+      iex> delete_button_plan(button_plan)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_button_plan(%ButtonPlan{} = button_plan) do
+    Repo.delete(button_plan)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking button_plan changes.
+
+  ## Examples
+
+      iex> change_button_plan(button_plan)
+      %Ecto.Changeset{data: %ButtonPlan{}}
+
+  """
+  def change_button_plan(%ButtonPlan{} = button_plan, attrs \\ %{}) do
+    ButtonPlan.changeset(button_plan, attrs)
+  end
+
+  defp where_user_id(query, nil), do: query
+  defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
 end

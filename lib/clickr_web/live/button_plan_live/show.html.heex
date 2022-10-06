@@ -1,0 +1,30 @@
+<.header>
+  Button plan <%= @button_plan.id %>
+  <:subtitle>This is a button_plan record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/button_plans/#{@button_plan}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit button_plan</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @button_plan.name %></:item>
+  <:item title="Room"><%= @button_plan.room.name %></:item>
+</.list>
+
+<.back navigate={~p"/button_plans"}>Back to button_plans</.back>
+
+<%= if @live_action in [:edit] do %>
+  <.modal id="button_plan-modal" show on_cancel={JS.patch(~p"/button_plans/#{@button_plan}")}>
+    <.live_component
+      module={ClickrWeb.ButtonPlanLive.FormComponent}
+      current_user={@current_user}
+      id={@button_plan.id}
+      title={@page_title}
+      action={@live_action}
+      button_plan={@button_plan}
+      navigate={~p"/button_plans/#{@button_plan}"}
+    />
+  </.modal>
+<% end %>
