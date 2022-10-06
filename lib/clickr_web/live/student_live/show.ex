@@ -1,7 +1,7 @@
-defmodule ClickrWeb.ButtonPlanLive.Show do
+defmodule ClickrWeb.StudentLive.Show do
   use ClickrWeb, :live_view
 
-  alias Clickr.Rooms
+  alias Clickr.Students
 
   @impl true
   def mount(_params, _session, socket) do
@@ -15,9 +15,9 @@ defmodule ClickrWeb.ButtonPlanLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:button_plan, Rooms.get_button_plan!(id) |> Clickr.Repo.preload(:room, seats: [button: [:gateway, :device]]))}
+     |> assign(:student, Students.get_student!(id) |> Clickr.Repo.preload(:class))}
   end
 
-  defp page_title(:show), do: "Show Button plan"
-  defp page_title(:edit), do: "Edit Button plan"
+  defp page_title(:show), do: "Show Student"
+  defp page_title(:edit), do: "Edit Student"
 end

@@ -1,0 +1,37 @@
+<.header>
+  Listing Subjects
+  <:actions>
+    <.link patch={~p"/subjects/new"}>
+      <.button>New Subject</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="subjects" rows={@subjects} row_click={&JS.navigate(~p"/subjects/#{&1}")}>
+  <:col :let={subject} label="Name"><%= subject.name %></:col>
+  <:action :let={subject}>
+    <div class="sr-only">
+      <.link navigate={~p"/subjects/#{subject}"}>Show</.link>
+    </div>
+    <.link patch={~p"/subjects/#{subject}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={subject}>
+    <.link phx-click={JS.push("delete", value: %{id: subject.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal id="subject-modal" show on_cancel={JS.navigate(~p"/subjects")}>
+    <.live_component
+      module={ClickrWeb.SubjectLive.FormComponent}
+      current_user={@current_user}
+      id={@subject.id || :new}
+      title={@page_title}
+      action={@live_action}
+      subject={@subject}
+      navigate={~p"/subjects"}
+    />
+  </.modal>
+<% end %>

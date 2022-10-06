@@ -110,6 +110,24 @@ defmodule ClickrWeb.Router do
       live "/button_plans/:id/edit", ButtonPlanLive.Index, :edit
       live "/button_plans/:id", ButtonPlanLive.Show, :show
       live "/button_plans/:id/show/edit", ButtonPlanLive.Show, :edit
+
+      live "/students", StudentLive.Index, :index
+      live "/students/new", StudentLive.Index, :new
+      live "/students/:id/edit", StudentLive.Index, :edit
+      live "/students/:id", StudentLive.Show, :show
+      live "/students/:id/show/edit", StudentLive.Show, :edit
+
+      live "/subjects", SubjectLive.Index, :index
+      live "/subjects/new", SubjectLive.Index, :new
+      live "/subjects/:id/edit", SubjectLive.Index, :edit
+      live "/subjects/:id", SubjectLive.Show, :show
+      live "/subjects/:id/show/edit", SubjectLive.Show, :edit
+
+      live "/seating_plans", SeatingPlanLive.Index, :index
+      live "/seating_plans/new", SeatingPlanLive.Index, :new
+      live "/seating_plans/:id/edit", SeatingPlanLive.Index, :edit
+      live "/seating_plans/:id", SeatingPlanLive.Show, :show
+      live "/seating_plans/:id/show/edit", SeatingPlanLive.Show, :edit
     end
   end
 

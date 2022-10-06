@@ -7,7 +7,7 @@ defmodule Clickr.Rooms.Room do
     field :height, :integer
     belongs_to :user, Clickr.Accounts.User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
