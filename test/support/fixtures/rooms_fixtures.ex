@@ -12,8 +12,8 @@ defmodule Clickr.RoomsFixtures do
       attrs
       |> Enum.into(%{
         name: "some name",
-        user_id: Clickr.AccountsFixtures.user_fixture().id
       })
+      |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
       |> Clickr.Rooms.create_room()
 
     room

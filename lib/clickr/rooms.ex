@@ -17,9 +17,14 @@ defmodule Clickr.Rooms do
       [%Room{}, ...]
 
   """
-  def list_rooms do
-    Repo.all(Room)
+  def list_rooms(opts \\ []) do
+    Room
+    |> list_rooms_where_user_id(opts[:user_id])
+    |> Repo.all()
   end
+
+  defp list_rooms_where_user_id(query, nil), do: query
+  defp list_rooms_where_user_id(query, id), do: where(query, [r], r.user_id == ^id)
 
   @doc """
   Gets a single room.

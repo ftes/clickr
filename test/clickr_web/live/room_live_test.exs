@@ -8,8 +8,8 @@ defmodule ClickrWeb.RoomLiveTest do
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 
-  defp create_room(_) do
-    room = room_fixture()
+  defp create_room(%{user: user}) do
+    room = room_fixture(user_id: user.id)
     %{room: room}
   end
 

@@ -17,9 +17,14 @@ defmodule Clickr.Classes do
       [%Class{}, ...]
 
   """
-  def list_classes do
-    Repo.all(Class)
+  def list_classes(opts \\ []) do
+    Class
+    |> list_classes_where_user_id(opts[:user_id])
+    |> Repo.all()
   end
+
+  defp list_classes_where_user_id(query, nil), do: query
+  defp list_classes_where_user_id(query, id), do: where(query, [c], c.user_id == ^id)
 
   @doc """
   Gets a single class.

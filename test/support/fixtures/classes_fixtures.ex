@@ -12,8 +12,8 @@ defmodule Clickr.ClassesFixtures do
       attrs
       |> Enum.into(%{
         name: "some name",
-        user_id: Clickr.AccountsFixtures.user_fixture().id
       })
+      |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
       |> Clickr.Classes.create_class()
 
     class

@@ -8,8 +8,8 @@ defmodule ClickrWeb.ClassLiveTest do
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 
-  defp create_class(_) do
-    class = class_fixture()
+  defp create_class(%{user: user}) do
+    class = class_fixture(user_id: user.id)
     %{class: class}
   end
 

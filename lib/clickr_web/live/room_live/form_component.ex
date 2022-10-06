@@ -54,6 +54,8 @@ defmodule ClickrWeb.RoomLive.FormComponent do
   end
 
   defp save_room(socket, :edit, room_params) do
+    # TODO Check permission
+
     case Rooms.update_room(socket.assigns.room, set_user_id(socket, room_params)) do
       {:ok, _room} ->
         {:noreply,

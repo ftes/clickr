@@ -54,6 +54,8 @@ defmodule ClickrWeb.ClassLive.FormComponent do
   end
 
   defp save_class(socket, :edit, class_params) do
+    # TODO Check permission
+
     case Classes.update_class(socket.assigns.class, set_user_id(socket, class_params)) do
       {:ok, _class} ->
         {:noreply,

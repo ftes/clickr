@@ -6,7 +6,7 @@ defmodule ClickrWeb.RoomLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :rooms, list_rooms())}
+    {:ok, assign(socket, :rooms, list_rooms(socket))}
   end
 
   @impl true
@@ -37,10 +37,10 @@ defmodule ClickrWeb.RoomLive.Index do
     room = Rooms.get_room!(id)
     {:ok, _} = Rooms.delete_room(room)
 
-    {:noreply, assign(socket, :rooms, list_rooms())}
+    {:noreply, assign(socket, :rooms, list_rooms(socket))}
   end
 
-  defp list_rooms do
-    Rooms.list_rooms()
+  defp list_rooms(socket) do
+    Rooms.list_rooms(user_id: socket.assigns.current_user.id)
   end
 end
