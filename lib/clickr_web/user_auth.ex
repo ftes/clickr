@@ -22,7 +22,7 @@ defmodule ClickrWeb.UserAuth do
 
   It also sets a `:live_socket_id` key in the session,
   so LiveView sessions are identified and automatically
-  disconnected on log out. The line can be safely removed
+  disconnected on Sign out. The line can be safely removed
   if you are not using LiveView.
   """
   def log_in_user(conn, user, params \\ %{}) do

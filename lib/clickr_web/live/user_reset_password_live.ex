@@ -39,7 +39,7 @@ defmodule ClickrWeb.UserResetPasswordLive do
     <p>
       <.link href={~p"/users/register"}>Register</.link>
       |
-      <.link href={~p"/users/log_in"}>Log in</.link>
+      <.link href={~p"/users/log_in"}>Sign in</.link>
     </p>
     """
   end
@@ -59,7 +59,7 @@ defmodule ClickrWeb.UserResetPasswordLive do
     {:ok, socket, temporary_assigns: [changeset: nil]}
   end
 
-  # Do not log in the user after reset password to avoid a
+  # Do not Sign in the user after reset password to avoid a
   # leaked token giving the user access to the account.
   def handle_event("reset_password", %{"user" => user_params}, socket) do
     case Accounts.reset_user_password(socket.assigns.user, user_params) do

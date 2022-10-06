@@ -4,11 +4,11 @@ defmodule ClickrWeb.UserLoginLiveTest do
   import Phoenix.LiveViewTest
   import Clickr.AccountsFixtures
 
-  describe "Log in page" do
+  describe "Sign in page" do
     test "renders log in page", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/log_in")
 
-      assert html =~ "Log in"
+      assert html =~ "Sign in"
       assert html =~ "Register"
       assert html =~ "Forgot your password?"
     end

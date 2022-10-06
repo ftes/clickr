@@ -66,7 +66,7 @@ defmodule ClickrWeb.UserConfirmationLiveTest do
         |> render_submit()
         |> follow_redirect(conn, "/")
 
-      assert {:ok, conn} = result
+      assert {:ok, _conn} = result
       # refute Phoenix.Flash.get(conn.assigns.flash, :error)
     end
 

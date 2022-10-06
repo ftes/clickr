@@ -1,50 +1,166 @@
 <!DOCTYPE html>
-<html lang="en">
+<%
+  user_main_menu = [
+    #{"Live Dashboard", ~p"/live_dashboard", [], &Heroicons.code_bracket/1}
+  ] |> Enum.filter(&Function.identity/1)
+
+  anon_main_menu = [
+    {"Register", ~p"/users/register", [], &Heroicons.home/1},
+    {"Sign in", ~p"/users/log_in", [], &Heroicons.home/1},
+  ]
+
+  user_dropdown_menu = [
+    {"Settings", ~p"/users/settings", [], &Heroicons.cog/1},
+    {"Sign out", ~p"/users/log_out", [method: :delete], &Heroicons.x_mark/1},
+  ]
+
+  main_menu = if @current_user, do: user_main_menu, else: anon_main_menu
+%>
+<html lang="en" class="h-full bg-gray-50">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" · Phoenix Framework">
+    <.live_title suffix=" - Clickr">
       <%= assigns[:page_title] || "Clickr" %>
     </.live_title>
-    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
-    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
-    </script>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"}/>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   </head>
-  <body class="bg-white antialiased">
-    <ul>
-      <%= if @current_user do %>
-        <li>
-          <%= @current_user.email %>
-        </li>
-        <li>
-          <.link href={~p"/users/settings"}>Settings</.link>
-        </li>
-        <li>
-          <.link href={~p"/users/log_out"} method="delete">Log out</.link>
-        </li>
-      <% else %>
-        <li>
-          <.link href={~p"/users/register"}>Register</.link>
-        </li>
-        <li>
-          <.link href={~p"/users/log_in"}>Log in</.link>
-        </li>
-      <% end %>
-    </ul>
-    <.flash kind={:info} title="Success!" flash={@flash} />
-    <.flash kind={:error} title="Error!" flash={@flash} />
-    <.flash
-      id="disconnected"
-      kind={:error}
-      title="We can't find the internet"
-      close={false}
-      autoshow={false}
-      phx-disconnected={show("#disconnected")}
-      phx-connected={hide("#disconnected")}
-    >
-      Attempting to reconnect <Heroicons.arrow_path class="ml-1 w-3 h-3 inline animate-spin" />
-    </.flash>
-    <%= @inner_content %>
+
+  <body class="h-ful antialiased" x-data="{sidebarOpen: false}">
+    <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
+    <div x-bind:class="sidebarOpen ? 'block' : 'hidden'" class="relative z-40 md:hidden" role="dialog" aria-modal="true">
+      <div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
+
+      <div class="fixed inset-0 z-40 flex">
+        <div class="relative flex w-full max-w-xs flex-1 flex-col bg-white pt-5 pb-4">
+          <div @click="sidebarOpen = false" class="absolute top-0 right-0 -mr-12 pt-2">
+            <button type="button" class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+              <span class="sr-only">Close sidebar</span>
+              <Heroicons.x_circle class="h-6 w-6 text-white" />
+            </button>
+          </div>
+
+          <div class="flex flex-shrink-0 items-center px-4">
+            <img class="h-12 w-auto" src={~p"/images/logo.png"} alt="Clickr">
+          </div>
+          <div class="mt-5 h-0 flex-1 overflow-y-auto">
+            <nav class="space-y-1 px-2">
+              <%= for {label, path, opts, icon} <- main_menu do %>
+                <% current? = String.starts_with?(path, Phoenix.Controller.current_path(@conn)) %>
+                <% class = "group flex items-center px-2 py-2 text-base font-medium rounded-md #{if current?, do: "bg-gray-100 text-gray-900", else: "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}" %>
+                <.link href={path} class={class} {opts}>
+                  <% class = "mr-4 flex-shrink-0 h-6 w-6 #{if current?, do: "text-gray-500", else: "text-gray-400 group-hover:text-gray-500"}" %>
+                  <%= Phoenix.LiveView.HTMLEngine.component(icon, [class: class], {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}) %>
+                  <%= label %>
+                </.link>
+              <% end %>
+            </nav>
+          </div>
+        </div>
+
+        <div class="w-14 flex-shrink-0" aria-hidden="true">
+          <!-- Dummy element to force sidebar to shrink to fit close icon -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Static sidebar for desktop -->
+    <div class="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
+      <!-- Sidebar component, swap this element with another sidebar if you like -->
+      <div class="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-white pt-5">
+        <div class="flex flex-shrink-0 items-center px-4">
+          <img class="h-12 w-auto" src={~p"/images/logo.png"} alt="Clickr">
+        </div>
+        <div class="mt-5 flex flex-grow flex-col">
+          <nav class="flex-1 space-y-1 px-2 pb-4">
+            <%= for {label, path, opts, icon} <- main_menu do %>
+              <% current? = String.starts_with?(Phoenix.Controller.current_path(@conn), path) %>
+              <% class = "group rounded-md py-2 px-2 flex items-center text-sm font-medium #{if current?, do: "bg-gray-100 text-gray-900", else: "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}" %>
+              <.link href={path} class={class} {opts}>
+                <% class = "group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6 #{if current?, do: "text-gray-500", else: "text-gray-400"}" %>
+                <%= Phoenix.LiveView.HTMLEngine.component(icon, [class: class], {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}) %>
+                <%= label %>
+              </.link>
+            <% end %>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-1 flex-col md:pl-64">
+      <div class="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow">
+        <button @click="sidebarOpen = true" type="button" class="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 md:hidden">
+          <span class="sr-only">Open sidebar</span>
+          <Heroicons.bars_3 class="h-6 w-6" />
+        </button>
+
+        <%= if @current_user do %>
+          <div class="flex flex-1 justify-between px-4">
+            <div class="flex flex-1">
+              <form class="flex w-full md:ml-0" action="#" method="GET">
+                <label for="search-field" class="sr-only">Search</label>
+                <div class="relative w-full text-gray-400 focus-within:text-gray-600">
+                  <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center">
+                    <Heroicons.magnifying_glass mini class="h-5 w-5" />
+                  </div>
+                  <input id="search-field" class="block h-full w-full border-transparent py-2 pl-8 pr-3 text-gray-900 placeholder-gray-500 focus:border-transparent focus:placeholder-gray-400 focus:outline-none focus:ring-0 sm:text-sm" placeholder="Search" type="search" name="search">
+                </div>
+              </form>
+            </div>
+            <div class="ml-4 flex items-center md:ml-6">
+              <button type="button" class="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+                <span class="sr-only">View notifications</span>
+                <Heroicons.bell class="h-6 w-6" />
+              </button>
+
+              <!-- Profile dropdown -->
+              <div class="relative ml-3" x-data="{open: false}" @click.outside="open = false">
+                <div>
+                  <button @click="open = !open" type="button" class="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2" id="user-menu-button" x-bind:aria-expanded="open" aria-haspopup="true">
+                    <span class="sr-only">Open user menu</span>
+                    <img class="h-8 w-8 rounded-full" src={"https://www.gravatar.com/avatar/#{:crypto.hash(:md5, @current_user.email |> String.downcase() |> String.trim()) |> Base.encode16(case: :lower)}"} alt={@current_user.email}>
+                  </button>
+                </div>
+
+                <div x-bind:class="open ? 'block' : 'hidden'" class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                  <%= for {label, path, opts, icon} <- user_dropdown_menu do %>
+                    <% class = "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 flex" %>
+                    <.link href={path} class={class} {opts}>
+                      <%= Phoenix.LiveView.HTMLEngine.component(icon, [class: "mr-2 flex-shrink-0 h-5 w-5 text-gray-400"], {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}) %>
+                      <%= label %>
+                    </.link>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <main class="flex-1">
+        <div class="py-6">
+          <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
+            <.flash kind={:info} title="Success!" flash={@flash} />
+            <.flash kind={:error} title="Error!" flash={@flash} />
+            <.flash
+              id="disconnected"
+              kind={:error}
+              title="We can't find the internet"
+              close={false}
+              autoshow={false}
+              phx-disconnected={show("#disconnected")}
+              phx-connected={hide("#disconnected")}
+            >
+              Attempting to reconnect <Heroicons.arrow_path class="ml-1 w-3 h-3 inline animate-spin" />
+            </.flash>
+            <%= @inner_content %>
+          </div>
+        </div>
+      </main>
+    </div>
   </body>
 </html>

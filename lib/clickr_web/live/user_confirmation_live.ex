@@ -17,7 +17,7 @@ defmodule ClickrWeb.UserConfirmationLive do
     <p>
       <.link href={~p"/users/register"}>Register</.link>
       |
-      <.link href={~p"/users/log_in"}>Log in</.link>
+      <.link href={~p"/users/log_in"}>Sign in</.link>
     </p>
     """
   end
