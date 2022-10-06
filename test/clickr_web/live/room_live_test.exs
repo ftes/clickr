@@ -4,9 +4,9 @@ defmodule ClickrWeb.RoomLiveTest do
   import Phoenix.LiveViewTest
   import Clickr.RoomsFixtures
 
-  @create_attrs %{name: "some name"}
-  @update_attrs %{name: "some updated name"}
-  @invalid_attrs %{name: nil}
+  @create_attrs %{name: "some name", width: 8, height: 4}
+  @update_attrs %{name: "some updated name", width: 9, height: 5}
+  @invalid_attrs %{name: nil, width: nil, height: nil}
 
   defp create_room(%{user: user}) do
     room = room_fixture(user_id: user.id)

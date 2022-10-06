@@ -21,6 +21,8 @@ defmodule ClickrWeb.RoomLive.FormComponent do
         phx-submit="save"
       >
         <.input field={{f, :name}} type="text" label="name" />
+        <.input field={{f, :width}} type="number" label="width" />
+        <.input field={{f, :height}} type="number" label="height" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Room</.button>
         </:actions>

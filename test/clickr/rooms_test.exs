@@ -22,7 +22,7 @@ defmodule Clickr.RoomsTest do
 
     test "create_room/1 with valid data creates a room" do
       user = user_fixture()
-      valid_attrs = %{name: "some name", user_id: user.id}
+      valid_attrs = %{name: "some name", width: 8, height: 4, user_id: user.id}
 
       assert {:ok, %Room{} = room} = Rooms.create_room(valid_attrs)
       assert room.name == "some name"
