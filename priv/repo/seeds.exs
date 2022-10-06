@@ -9,3 +9,7 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+if Mix.env() != :test do
+  Clickr.Accounts.register_user(%{email: "f@ftes.de", password: "passwordpassword"})
+end
