@@ -20,7 +20,7 @@ defmodule ClickrWeb.ClassLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :name}} type="text" label="name" />
+        <.input field={{f, :name}} type="text" label="Name" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Class</.button>
         </:actions>
