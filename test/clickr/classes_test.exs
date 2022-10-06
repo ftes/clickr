@@ -93,13 +93,18 @@ defmodule Clickr.ClassesTest do
       seating_plan = seating_plan_fixture()
       update_attrs = %{name: "some updated name"}
 
-      assert {:ok, %SeatingPlan{} = seating_plan} = Classes.update_seating_plan(seating_plan, update_attrs)
+      assert {:ok, %SeatingPlan{} = seating_plan} =
+               Classes.update_seating_plan(seating_plan, update_attrs)
+
       assert seating_plan.name == "some updated name"
     end
 
     test "update_seating_plan/2 with invalid data returns error changeset" do
       seating_plan = seating_plan_fixture()
-      assert {:error, %Ecto.Changeset{}} = Classes.update_seating_plan(seating_plan, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Classes.update_seating_plan(seating_plan, @invalid_attrs)
+
       assert seating_plan == Classes.get_seating_plan!(seating_plan.id)
     end
 
@@ -137,7 +142,9 @@ defmodule Clickr.ClassesTest do
       student = student_fixture()
       valid_attrs = %{x: 42, y: 42, seating_plan_id: seating_plan.id, student_id: student.id}
 
-      assert {:ok, %SeatingPlanSeat{} = seating_plan_seat} = Classes.create_seating_plan_seat(valid_attrs)
+      assert {:ok, %SeatingPlanSeat{} = seating_plan_seat} =
+               Classes.create_seating_plan_seat(valid_attrs)
+
       assert seating_plan_seat.x == 42
       assert seating_plan_seat.y == 42
     end
@@ -150,21 +157,29 @@ defmodule Clickr.ClassesTest do
       seating_plan_seat = seating_plan_seat_fixture()
       update_attrs = %{x: 43, y: 43}
 
-      assert {:ok, %SeatingPlanSeat{} = seating_plan_seat} = Classes.update_seating_plan_seat(seating_plan_seat, update_attrs)
+      assert {:ok, %SeatingPlanSeat{} = seating_plan_seat} =
+               Classes.update_seating_plan_seat(seating_plan_seat, update_attrs)
+
       assert seating_plan_seat.x == 43
       assert seating_plan_seat.y == 43
     end
 
     test "update_seating_plan_seat/2 with invalid data returns error changeset" do
       seating_plan_seat = seating_plan_seat_fixture()
-      assert {:error, %Ecto.Changeset{}} = Classes.update_seating_plan_seat(seating_plan_seat, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Classes.update_seating_plan_seat(seating_plan_seat, @invalid_attrs)
+
       assert seating_plan_seat == Classes.get_seating_plan_seat!(seating_plan_seat.id)
     end
 
     test "delete_seating_plan_seat/1 deletes the seating_plan_seat" do
       seating_plan_seat = seating_plan_seat_fixture()
       assert {:ok, %SeatingPlanSeat{}} = Classes.delete_seating_plan_seat(seating_plan_seat)
-      assert_raise Ecto.NoResultsError, fn -> Classes.get_seating_plan_seat!(seating_plan_seat.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Classes.get_seating_plan_seat!(seating_plan_seat.id)
+      end
     end
 
     test "change_seating_plan_seat/1 returns a seating_plan_seat changeset" do

@@ -21,7 +21,12 @@ defmodule ClickrWeb.StudentLive.FormComponent do
         phx-submit="save"
       >
         <.input field={{f, :name}} type="text" label="Name" />
-        <.input field={{f, :class_id}} type="select" label="Class" options={Enum.map(@classes, &{&1.id, &1.name})} />
+        <.input
+          field={{f, :class_id}}
+          type="select"
+          label="Class"
+          options={Enum.map(@classes, &{&1.id, &1.name})}
+        />
         <:actions>
           <.button phx-disable-with="Saving...">Save Student</.button>
         </:actions>

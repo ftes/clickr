@@ -73,7 +73,10 @@ defmodule ClickrWeb.ButtonPlanLiveTest do
     test "deletes button_plan in listing", %{conn: conn, button_plan: button_plan} do
       {:ok, index_live, _html} = live(conn, ~p"/button_plans")
 
-      assert index_live |> element("#button_plans-#{button_plan.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#button_plans-#{button_plan.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#button_plan-#{button_plan.id}")
     end
   end

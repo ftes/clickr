@@ -6,8 +6,12 @@ defmodule Clickr.Repo.Migrations.CreateSeatingPlanSeats do
       add :id, :binary_id, primary_key: true
       add :x, :integer, null: false
       add :y, :integer, null: false
-      add :seating_plan_id, references(:seating_plans, on_delete: :delete_all, type: :binary_id), null: false
-      add :student_id, references(:students, on_delete: :delete_all, type: :binary_id), null: false
+
+      add :seating_plan_id, references(:seating_plans, on_delete: :delete_all, type: :binary_id),
+        null: false
+
+      add :student_id, references(:students, on_delete: :delete_all, type: :binary_id),
+        null: false
 
       timestamps(type: :utc_datetime)
     end

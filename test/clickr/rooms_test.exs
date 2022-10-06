@@ -92,7 +92,9 @@ defmodule Clickr.RoomsTest do
       button_plan = button_plan_fixture()
       update_attrs = %{name: "some updated name"}
 
-      assert {:ok, %ButtonPlan{} = button_plan} = Rooms.update_button_plan(button_plan, update_attrs)
+      assert {:ok, %ButtonPlan{} = button_plan} =
+               Rooms.update_button_plan(button_plan, update_attrs)
+
       assert button_plan.name == "some updated name"
     end
 
@@ -135,9 +137,18 @@ defmodule Clickr.RoomsTest do
       user = user_fixture()
       button_plan = button_plan_fixture()
       button = button_fixture()
-      valid_attrs = %{x: 42, y: 42, user_id: user.id, button_plan_id: button_plan.id, button_id: button.id}
 
-      assert {:ok, %ButtonPlanSeat{} = button_plan_seat} = Rooms.create_button_plan_seat(valid_attrs)
+      valid_attrs = %{
+        x: 42,
+        y: 42,
+        user_id: user.id,
+        button_plan_id: button_plan.id,
+        button_id: button.id
+      }
+
+      assert {:ok, %ButtonPlanSeat{} = button_plan_seat} =
+               Rooms.create_button_plan_seat(valid_attrs)
+
       assert button_plan_seat.x == 42
       assert button_plan_seat.y == 42
     end
@@ -150,14 +161,19 @@ defmodule Clickr.RoomsTest do
       button_plan_seat = button_plan_seat_fixture()
       update_attrs = %{x: 43, y: 43}
 
-      assert {:ok, %ButtonPlanSeat{} = button_plan_seat} = Rooms.update_button_plan_seat(button_plan_seat, update_attrs)
+      assert {:ok, %ButtonPlanSeat{} = button_plan_seat} =
+               Rooms.update_button_plan_seat(button_plan_seat, update_attrs)
+
       assert button_plan_seat.x == 43
       assert button_plan_seat.y == 43
     end
 
     test "update_button_plan_seat/2 with invalid data returns error changeset" do
       button_plan_seat = button_plan_seat_fixture()
-      assert {:error, %Ecto.Changeset{}} = Rooms.update_button_plan_seat(button_plan_seat, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Rooms.update_button_plan_seat(button_plan_seat, @invalid_attrs)
+
       assert button_plan_seat == Rooms.get_button_plan_seat!(button_plan_seat.id)
     end
 

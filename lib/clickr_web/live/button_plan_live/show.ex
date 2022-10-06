@@ -15,7 +15,11 @@ defmodule ClickrWeb.ButtonPlanLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:button_plan, Rooms.get_button_plan!(id) |> Clickr.Repo.preload(:room, seats: [button: [:gateway, :device]]))}
+     |> assign(
+       :button_plan,
+       Rooms.get_button_plan!(id)
+       |> Clickr.Repo.preload(:room, seats: [button: [:gateway, :device]])
+     )}
   end
 
   defp page_title(:show), do: "Show Button plan"

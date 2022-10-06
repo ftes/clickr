@@ -41,7 +41,9 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
 
       {:ok, _, html} =
         index_live
-        |> form("#seating_plan-form", seating_plan: Map.merge(@create_attrs, %{class_id: class.id, room_id: room.id}))
+        |> form("#seating_plan-form",
+          seating_plan: Map.merge(@create_attrs, %{class_id: class.id, room_id: room.id})
+        )
         |> render_submit()
         |> follow_redirect(conn, ~p"/seating_plans")
 
@@ -52,7 +54,9 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
     test "updates seating_plan in listing", %{conn: conn, seating_plan: seating_plan} do
       {:ok, index_live, _html} = live(conn, ~p"/seating_plans")
 
-      assert index_live |> element("#seating_plans-#{seating_plan.id} a", "Edit") |> render_click() =~
+      assert index_live
+             |> element("#seating_plans-#{seating_plan.id} a", "Edit")
+             |> render_click() =~
                "Edit Seating plan"
 
       assert_patch(index_live, ~p"/seating_plans/#{seating_plan}/edit")
@@ -74,7 +78,10 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
     test "deletes seating_plan in listing", %{conn: conn, seating_plan: seating_plan} do
       {:ok, index_live, _html} = live(conn, ~p"/seating_plans")
 
-      assert index_live |> element("#seating_plans-#{seating_plan.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#seating_plans-#{seating_plan.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#seating_plan-#{seating_plan.id}")
     end
   end

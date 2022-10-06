@@ -6,7 +6,9 @@ defmodule Clickr.Repo.Migrations.CreateDevices do
       add :id, :binary_id, primary_key: true
       add :name, :string, null: false
       add :user_id, references(:users, on_delete: :delete_all, type: :binary_id), null: false
-      add :gateway_id, references(:gateways, on_delete: :delete_all, type: :binary_id), null: false
+
+      add :gateway_id, references(:gateways, on_delete: :delete_all, type: :binary_id),
+        null: false
 
       timestamps(type: :utc_datetime)
     end

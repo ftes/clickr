@@ -21,7 +21,12 @@ defmodule ClickrWeb.ButtonLive.FormComponent do
         phx-submit="save"
       >
         <.input field={{f, :name}} type="text" label="Name" />
-        <.input field={{f, :device_id}} type="select" label="Device" options={Enum.map(@devices, &{&1.id, &1.name})} />
+        <.input
+          field={{f, :device_id}}
+          type="select"
+          label="Device"
+          options={Enum.map(@devices, &{&1.id, &1.name})}
+        />
         <:actions>
           <.button phx-disable-with="Saving...">Save Button</.button>
         </:actions>

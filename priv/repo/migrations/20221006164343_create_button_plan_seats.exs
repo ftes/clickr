@@ -7,7 +7,9 @@ defmodule Clickr.Repo.Migrations.CreateButtonPlanSeats do
       add :x, :integer
       add :y, :integer
       add :button_id, references(:buttons, on_delete: :delete_all, type: :binary_id), null: false
-      add :button_plan_id, references(:button_plans, on_delete: :delete_all, type: :binary_id), null: false
+
+      add :button_plan_id, references(:button_plans, on_delete: :delete_all, type: :binary_id),
+        null: false
 
       timestamps(type: :utc_datetime)
     end

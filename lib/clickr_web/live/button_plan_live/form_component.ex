@@ -21,7 +21,12 @@ defmodule ClickrWeb.ButtonPlanLive.FormComponent do
         phx-submit="save"
       >
         <.input field={{f, :name}} type="text" label="Name" />
-        <.input field={{f, :room_id}} type="select" label="Room" options={Enum.map(@rooms, &{&1.id, &1.name})} />
+        <.input
+          field={{f, :room_id}}
+          type="select"
+          label="Room"
+          options={Enum.map(@rooms, &{&1.id, &1.name})}
+        />
         <:actions>
           <.button phx-disable-with="Saving...">Save Button plan</.button>
         </:actions>
@@ -58,7 +63,10 @@ defmodule ClickrWeb.ButtonPlanLive.FormComponent do
   defp save_button_plan(socket, :edit, button_plan_params) do
     # TODO Check permission
 
-    case Rooms.update_button_plan(socket.assigns.button_plan, set_user_id(socket, button_plan_params)) do
+    case Rooms.update_button_plan(
+           socket.assigns.button_plan,
+           set_user_id(socket, button_plan_params)
+         ) do
       {:ok, _button_plan} ->
         {:noreply,
          socket

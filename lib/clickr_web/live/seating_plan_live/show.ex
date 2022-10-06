@@ -15,7 +15,10 @@ defmodule ClickrWeb.SeatingPlanLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:seating_plan, Classes.get_seating_plan!(id) |> Clickr.Repo.preload([:class, :room, seats: [:student]]))}
+     |> assign(
+       :seating_plan,
+       Classes.get_seating_plan!(id) |> Clickr.Repo.preload([:class, :room, seats: [:student]])
+     )}
   end
 
   defp page_title(:show), do: "Show Seating plan"

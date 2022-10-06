@@ -16,7 +16,10 @@
     <.link patch={~p"/button_plans/#{button_plan}/edit"}>Edit</.link>
   </:action>
   <:action :let={button_plan}>
-    <.link phx-click={JS.push("delete", value: %{id: button_plan.id})} data-confirm="Are you sure?">
+    <.link
+      phx-click={JS.push("delete", value: %{id: button_plan.id})}
+      data-confirm="Are you sure?"
+    >
       Delete
     </.link>
   </:action>

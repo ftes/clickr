@@ -21,8 +21,18 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
         phx-submit="save"
       >
         <.input field={{f, :name}} type="text" label="Name" />
-        <.input field={{f, :class_id}} type="select" label="Class" options={Enum.map(@classes, &{&1.id, &1.name})} />
-        <.input field={{f, :room_id}} type="select" label="Room" options={Enum.map(@rooms, &{&1.id, &1.name})} />
+        <.input
+          field={{f, :class_id}}
+          type="select"
+          label="Class"
+          options={Enum.map(@classes, &{&1.id, &1.name})}
+        />
+        <.input
+          field={{f, :room_id}}
+          type="select"
+          label="Room"
+          options={Enum.map(@rooms, &{&1.id, &1.name})}
+        />
         <:actions>
           <.button phx-disable-with="Saving...">Save Seating plan</.button>
         </:actions>
@@ -60,7 +70,10 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
   defp save_seating_plan(socket, :edit, seating_plan_params) do
     # TODO Check permission
 
-    case Classes.update_seating_plan(socket.assigns.seating_plan, set_user_id(socket, seating_plan_params)) do
+    case Classes.update_seating_plan(
+           socket.assigns.seating_plan,
+           set_user_id(socket, seating_plan_params)
+         ) do
       {:ok, _seating_plan} ->
         {:noreply,
          socket
