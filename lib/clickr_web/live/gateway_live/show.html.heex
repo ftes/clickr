@@ -1,0 +1,29 @@
+<.header>
+  Gateway <%= @gateway.id %>
+  <:subtitle>This is a gateway record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/gateways/#{@gateway}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit gateway</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @gateway.name %></:item>
+</.list>
+
+<.back navigate={~p"/gateways"}>Back to gateways</.back>
+
+<%= if @live_action in [:edit] do %>
+  <.modal id="gateway-modal" show on_cancel={JS.patch(~p"/gateways/#{@gateway}")}>
+    <.live_component
+      module={ClickrWeb.GatewayLive.FormComponent}
+      current_user={@current_user}
+      id={@gateway.id}
+      title={@page_title}
+      action={@live_action}
+      gateway={@gateway}
+      navigate={~p"/gateways/#{@gateway}"}
+    />
+  </.modal>
+<% end %>

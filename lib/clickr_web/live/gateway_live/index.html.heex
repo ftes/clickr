@@ -1,0 +1,37 @@
+<.header>
+  Listing Gateways
+  <:actions>
+    <.link patch={~p"/gateways/new"}>
+      <.button>New Gateway</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="gateways" rows={@gateways} row_click={&JS.navigate(~p"/gateways/#{&1}")}>
+  <:col :let={gateway} label="Name"><%= gateway.name %></:col>
+  <:action :let={gateway}>
+    <div class="sr-only">
+      <.link navigate={~p"/gateways/#{gateway}"}>Show</.link>
+    </div>
+    <.link patch={~p"/gateways/#{gateway}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={gateway}>
+    <.link phx-click={JS.push("delete", value: %{id: gateway.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal id="gateway-modal" show on_cancel={JS.navigate(~p"/gateways")}>
+    <.live_component
+      module={ClickrWeb.GatewayLive.FormComponent}
+      current_user={@current_user}
+      id={@gateway.id || :new}
+      title={@page_title}
+      action={@live_action}
+      gateway={@gateway}
+      navigate={~p"/gateways"}
+    />
+  </.modal>
+<% end %>
