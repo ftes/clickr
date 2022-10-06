@@ -113,4 +113,63 @@ defmodule Clickr.RoomsTest do
       assert %Ecto.Changeset{} = Rooms.change_button_plan(button_plan)
     end
   end
+
+  describe "button_plan_seats" do
+    alias Clickr.Rooms.ButtonPlanSeat
+
+    import Clickr.{AccountsFixtures, DevicesFixtures, RoomsFixtures}
+
+    @invalid_attrs %{x: nil, y: nil}
+
+    test "list_button_plan_seats/0 returns all button_plan_seats" do
+      button_plan_seat = button_plan_seat_fixture()
+      assert Rooms.list_button_plan_seats() == [button_plan_seat]
+    end
+
+    test "get_button_plan_seat!/1 returns the button_plan_seat with given id" do
+      button_plan_seat = button_plan_seat_fixture()
+      assert Rooms.get_button_plan_seat!(button_plan_seat.id) == button_plan_seat
+    end
+
+    test "create_button_plan_seat/1 with valid data creates a button_plan_seat" do
+      user = user_fixture()
+      button_plan = button_plan_fixture()
+      button = button_fixture()
+      valid_attrs = %{x: 42, y: 42, user_id: user.id, button_plan_id: button_plan.id, button_id: button.id}
+
+      assert {:ok, %ButtonPlanSeat{} = button_plan_seat} = Rooms.create_button_plan_seat(valid_attrs)
+      assert button_plan_seat.x == 42
+      assert button_plan_seat.y == 42
+    end
+
+    test "create_button_plan_seat/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Rooms.create_button_plan_seat(@invalid_attrs)
+    end
+
+    test "update_button_plan_seat/2 with valid data updates the button_plan_seat" do
+      button_plan_seat = button_plan_seat_fixture()
+      update_attrs = %{x: 43, y: 43}
+
+      assert {:ok, %ButtonPlanSeat{} = button_plan_seat} = Rooms.update_button_plan_seat(button_plan_seat, update_attrs)
+      assert button_plan_seat.x == 43
+      assert button_plan_seat.y == 43
+    end
+
+    test "update_button_plan_seat/2 with invalid data returns error changeset" do
+      button_plan_seat = button_plan_seat_fixture()
+      assert {:error, %Ecto.Changeset{}} = Rooms.update_button_plan_seat(button_plan_seat, @invalid_attrs)
+      assert button_plan_seat == Rooms.get_button_plan_seat!(button_plan_seat.id)
+    end
+
+    test "delete_button_plan_seat/1 deletes the button_plan_seat" do
+      button_plan_seat = button_plan_seat_fixture()
+      assert {:ok, %ButtonPlanSeat{}} = Rooms.delete_button_plan_seat(button_plan_seat)
+      assert_raise Ecto.NoResultsError, fn -> Rooms.get_button_plan_seat!(button_plan_seat.id) end
+    end
+
+    test "change_button_plan_seat/1 returns a button_plan_seat changeset" do
+      button_plan_seat = button_plan_seat_fixture()
+      assert %Ecto.Changeset{} = Rooms.change_button_plan_seat(button_plan_seat)
+    end
+  end
 end
