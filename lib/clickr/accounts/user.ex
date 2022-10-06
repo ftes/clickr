@@ -1,5 +1,6 @@
 defmodule Clickr.Accounts.User do
   use Clickr.Schema
+
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
