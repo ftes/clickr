@@ -80,6 +80,12 @@ defmodule ClickrWeb.Router do
       live "/classes/:id/edit", ClassLive.Index, :edit
       live "/classes/:id", ClassLive.Show, :show
       live "/classes/:id/show/edit", ClassLive.Show, :edit
+
+      live "/rooms", RoomLive.Index, :index
+      live "/rooms/new", RoomLive.Index, :new
+      live "/rooms/:id/edit", RoomLive.Index, :edit
+      live "/rooms/:id", RoomLive.Show, :show
+      live "/rooms/:id/show/edit", RoomLive.Show, :edit
     end
   end
 
