@@ -12,6 +12,21 @@
   <:item title="Name"><%= @class.name %></:item>
 </.list>
 
+<.table id="students" compact rows={@class.students} row_click={&JS.navigate(~p"/students/#{&1}")}>
+  <:col :let={student} label="Student"><%= student.name %></:col>
+  <:action :let={student}>
+    <div class="sr-only">
+      <.link navigate={~p"/students/#{student}"}>Show</.link>
+    </div>
+    <.link patch={~p"/students/#{student}/show/edit"}>Edit</.link>
+  </:action>
+  <:action :let={student}>
+    <.link phx-click={JS.push("delete", value: %{id: student.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
 <.back navigate={~p"/classes"}>Back to classes</.back>
 
 <%= if @live_action in [:edit] do %>

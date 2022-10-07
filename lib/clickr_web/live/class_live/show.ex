@@ -15,7 +15,7 @@ defmodule ClickrWeb.ClassLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:class, Classes.get_class!(id))}
+     |> assign(:class, Classes.get_class!(id) |> Clickr.Repo.preload(:students))}
   end
 
   defp page_title(:show), do: "Show Class"

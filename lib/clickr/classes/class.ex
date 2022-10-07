@@ -4,6 +4,7 @@ defmodule Clickr.Classes.Class do
   schema "classes" do
     field :name, :string
     belongs_to :user, Clickr.Accounts.User
+    has_many :students, Clickr.Students.Student
 
     timestamps(type: :utc_datetime)
   end

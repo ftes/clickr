@@ -432,6 +432,7 @@ defmodule ClickrWeb.Components do
   attr :id, :string, required: true
   attr :row_click, JS, default: nil
   attr :rows, :list, required: true
+  attr :compact, :boolean, default: false
 
   slot :col, required: true do
     attr :label, :string
@@ -449,7 +450,7 @@ defmodule ClickrWeb.Components do
             <th class="relative p-0 pb-4"><span class="sr-only">Actions</span></th>
           </tr>
         </thead>
-        <tbody class="relative divide-y divide-zinc-200 border-t border-zinc-300 text-sm leading-6 text-zinc-700">
+        <tbody class={"relative #{if !@compact, do: "divide-y divide-zinc-200"} border-t border-zinc-300 text-sm leading-6 text-zinc-700"}>
           <tr
             :for={row <- @rows}
             id={"#{@id}-#{Phoenix.Param.to_param(row)}"}
@@ -460,7 +461,7 @@ defmodule ClickrWeb.Components do
               phx-click={@row_click && @row_click.(row)}
               class={["relative p-0", @row_click && "hover:cursor-pointer"]}
             >
-              <div class="block py-4 pr-6">
+              <div class={"block #{if !@compact, do: "py-4"} pr-6"}>
                 <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-200 sm:rounded-l-xl" />
                 <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
                   <%= render_slot(col, row) %>
@@ -468,7 +469,7 @@ defmodule ClickrWeb.Components do
               </div>
             </td>
             <td :if={@action != []} class="relative p-0 w-14">
-              <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
+              <div class={"relative whitespace-nowrap #{if !@compact, do: "py-4"} text-right text-sm font-medium"}>
                 <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-zinc-200 sm:rounded-r-xl" />
                 <span
                   :for={action <- @action}
