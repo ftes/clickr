@@ -19,7 +19,7 @@ defmodule Clickr.MixProject do
   def application do
     [
       mod: {Clickr.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :crypto]
     ]
   end
 
@@ -51,7 +51,8 @@ defmodule Clickr.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false}
+      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
+      {:uuid, "~> 1.1"}
     ]
   end
 

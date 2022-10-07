@@ -11,7 +11,8 @@ defmodule Clickr.DevicesFixtures do
     {:ok, gateway} =
       attrs
       |> Enum.into(%{
-        name: "some name"
+        name: "some name",
+        api_token: "some token"
       })
       |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
       |> Clickr.Devices.create_gateway()

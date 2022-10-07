@@ -22,10 +22,11 @@ defmodule Clickr.DevicesTest do
 
     test "create_gateway/1 with valid data creates a gateway" do
       user = user_fixture()
-      valid_attrs = %{name: "some name", user_id: user.id}
+      valid_attrs = %{name: "some name", api_token: "some token", user_id: user.id}
 
       assert {:ok, %Gateway{} = gateway} = Devices.create_gateway(valid_attrs)
       assert gateway.name == "some name"
+      assert gateway.api_token == "some token"
     end
 
     test "create_gateway/1 with invalid data returns error changeset" do

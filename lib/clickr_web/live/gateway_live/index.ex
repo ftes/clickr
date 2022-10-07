@@ -23,7 +23,7 @@ defmodule ClickrWeb.GatewayLive.Index do
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Gateway")
-    |> assign(:gateway, %Gateway{})
+    |> assign(:gateway, %Gateway{api_token: UUID.uuid4(:hex)})
   end
 
   defp apply_action(socket, :index, _params) do

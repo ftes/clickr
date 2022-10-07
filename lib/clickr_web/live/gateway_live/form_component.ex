@@ -21,6 +21,7 @@ defmodule ClickrWeb.GatewayLive.FormComponent do
         phx-submit="save"
       >
         <.input field={{f, :name}} type="text" label="Name" />
+        <.input field={{f, :api_token}} type="text" label="API Token" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Gateway</.button>
         </:actions>

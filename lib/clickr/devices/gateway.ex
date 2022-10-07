@@ -3,6 +3,7 @@ defmodule Clickr.Devices.Gateway do
 
   schema "gateways" do
     field :name, :string
+    field :api_token, :string
     belongs_to :user, Clickr.Accounts.User
 
     timestamps(type: :utc_datetime)
@@ -11,8 +12,9 @@ defmodule Clickr.Devices.Gateway do
   @doc false
   def changeset(gateway, attrs) do
     gateway
-    |> cast(attrs, [:name, :user_id])
-    |> validate_required([:name, :user_id])
+    |> cast(attrs, [:name, :api_token, :user_id])
+    |> validate_required([:name, :api_token, :user_id])
     |> foreign_key_constraint(:user_id)
+    |> unique_constraint(:api_token)
   end
 end

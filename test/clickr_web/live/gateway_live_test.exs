@@ -4,9 +4,9 @@ defmodule ClickrWeb.GatewayLiveTest do
   import Phoenix.LiveViewTest
   import Clickr.DevicesFixtures
 
-  @create_attrs %{name: "some name"}
-  @update_attrs %{name: "some updated name"}
-  @invalid_attrs %{name: nil}
+  @create_attrs %{name: "some name", api_token: "some token"}
+  @update_attrs %{name: "some updated name", api_token: "some updated token"}
+  @invalid_attrs %{name: nil, api_token: nil}
 
   defp create_gateway(%{user: user}) do
     gateway = gateway_fixture(user_id: user.id)
@@ -40,7 +40,7 @@ defmodule ClickrWeb.GatewayLiveTest do
       {:ok, _, html} =
         index_live
         |> form("#gateway-form", gateway: @create_attrs)
-        |> render_submit()
+        |> render_submit
         |> follow_redirect(conn, ~p"/gateways")
 
       assert html =~ "Gateway created successfully"
