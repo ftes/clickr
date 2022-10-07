@@ -15,6 +15,8 @@ defmodule ClickrWeb.RoomLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    # TODO Check permission
+
     socket
     |> assign(:page_title, "Edit Room")
     |> assign(:room, Rooms.get_room!(id))
@@ -34,6 +36,8 @@ defmodule ClickrWeb.RoomLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
+    # TODO Check permission
+
     room = Rooms.get_room!(id)
     {:ok, _} = Rooms.delete_room(room)
 

@@ -2,7 +2,7 @@ defmodule ClickrWeb.ClassLiveTest do
   use ClickrWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Clickr.ClassesFixtures
+  import Clickr.{ClassesFixtures, StudentsFixtures}
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
@@ -78,19 +78,25 @@ defmodule ClickrWeb.ClassLiveTest do
   end
 
   describe "Show" do
-    setup [:create_class]
+    defp create_student(%{user: user, class: class}) do
+      student = student_fixture(user_id: user.id, class_id: class.id)
+      %{student: student}
+    end
 
-    test "displays class", %{conn: conn, class: class} do
+    setup [:create_class, :create_student]
+
+    test "displays class with students", %{conn: conn, class: class, student: student} do
       {:ok, _show_live, html} = live(conn, ~p"/classes/#{class}")
 
       assert html =~ "Show Class"
       assert html =~ class.name
+      assert html =~ student.name
     end
 
     test "updates class within modal", %{conn: conn, class: class} do
       {:ok, show_live, _html} = live(conn, ~p"/classes/#{class}")
 
-      assert show_live |> element("a", "Edit") |> render_click() =~
+      assert show_live |> element("a#edit-class", "Edit") |> render_click() =~
                "Edit Class"
 
       assert_patch(show_live, ~p"/classes/#{class}/show/edit")
@@ -107,6 +113,26 @@ defmodule ClickrWeb.ClassLiveTest do
 
       assert html =~ "Class updated successfully"
       assert html =~ "some updated name"
+    end
+
+    test "deletes student", %{conn: conn, class: class, student: student} do
+      {:ok, show_live, _html} = live(conn, ~p"/classes/#{class}")
+      assert has_element?(show_live, "#students-#{student.id}")
+
+      assert show_live |> element("#students-#{student.id} a", "Delete") |> render_click()
+      refute has_element?(show_live, "#students-#{student.id}")
+    end
+
+    test "adds students", %{conn: conn, class: class} do
+      {:ok, show_live, _html} = live(conn, ~p"/classes/#{class}")
+
+      html =
+        show_live
+        |> form("#students-form", students: %{names: "Anna\nBernd"})
+        |> render_submit()
+
+      assert html =~ "Anna"
+      assert html =~ "Bernd"
     end
   end
 end

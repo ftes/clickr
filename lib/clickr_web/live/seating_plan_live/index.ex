@@ -15,6 +15,8 @@ defmodule ClickrWeb.SeatingPlanLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    # TODO Check permission
+
     socket
     |> assign(:page_title, "Edit Seating plan")
     |> assign(:seating_plan, Classes.get_seating_plan!(id))
@@ -35,6 +37,8 @@ defmodule ClickrWeb.SeatingPlanLive.Index do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     seating_plan = Classes.get_seating_plan!(id)
+    # TODO Check permission
+
     {:ok, _} = Classes.delete_seating_plan(seating_plan)
 
     {:noreply, assign(socket, :seating_plans, list_seating_plans(socket))}

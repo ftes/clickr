@@ -15,6 +15,8 @@ defmodule ClickrWeb.StudentLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    # TODO Check permission
+
     socket
     |> assign(:page_title, "Edit Student")
     |> assign(:student, Students.get_student!(id))
@@ -34,6 +36,8 @@ defmodule ClickrWeb.StudentLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
+    # TODO Check permission
+
     student = Students.get_student!(id)
     {:ok, _} = Students.delete_student(student)
 

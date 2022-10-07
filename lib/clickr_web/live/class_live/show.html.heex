@@ -2,7 +2,7 @@
   Class <%= @class.name %>
   <:subtitle>This is a class record from your database.</:subtitle>
   <:actions>
-    <.link patch={~p"/classes/#{@class}/show/edit"} phx-click={JS.push_focus()}>
+    <.link patch={~p"/classes/#{@class}/show/edit"} phx-click={JS.push_focus()} id="edit-class">
       <.button>Edit class</.button>
     </.link>
   </:actions>
@@ -21,11 +21,30 @@
     <.link patch={~p"/students/#{student}/show/edit"}>Edit</.link>
   </:action>
   <:action :let={student}>
-    <.link phx-click={JS.push("delete", value: %{id: student.id})} data-confirm="Are you sure?">
+    <.link
+      phx-click={JS.push("student_delete", value: %{id: student.id})}
+      data-confirm="Are you sure?"
+    >
       Delete
     </.link>
   </:action>
 </.table>
+
+<.simple_form
+  :let={f}
+  for={:students}
+  id="students-form"
+  phx-change="students_validate"
+  phx-submit="students_create"
+>
+  <.input field={{f, :names}} type="textarea" label="Names (one per line)" />
+  <div class="text-sm text-zinc-500">
+    <%= @students_create_count %> students
+  </div>
+  <:actions>
+    <.button phx-disable-with="Adding...">Add Students</.button>
+  </:actions>
+</.simple_form>
 
 <.back navigate={~p"/classes"}>Back to classes</.back>
 

@@ -34,6 +34,8 @@ defmodule ClickrWeb.ClassLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
+    # TODO Check permission
+
     class = Classes.get_class!(id)
     {:ok, _} = Classes.delete_class(class)
 

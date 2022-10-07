@@ -11,7 +11,7 @@ defmodule Clickr.StudentsFixtures do
     {:ok, student} =
       attrs
       |> Enum.into(%{
-        name: "some name"
+        name: "some student name"
       })
       |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
       |> Map.put_new_lazy(:class_id, fn -> Clickr.ClassesFixtures.class_fixture().id end)

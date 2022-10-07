@@ -15,6 +15,8 @@ defmodule ClickrWeb.DeviceLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    # TODO Check permission
+
     socket
     |> assign(:page_title, "Edit Device")
     |> assign(:device, Devices.get_device!(id))
@@ -34,6 +36,8 @@ defmodule ClickrWeb.DeviceLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
+    # TODO Check permission
+
     device = Devices.get_device!(id)
     {:ok, _} = Devices.delete_device(device)
 
