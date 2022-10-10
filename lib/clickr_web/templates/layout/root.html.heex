@@ -53,7 +53,7 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
 
       <div class="fixed inset-0 z-40 flex">
         <div class="relative flex w-full max-w-xs flex-1 flex-col bg-white pt-5 pb-4">
-          <div @click="sidebarOpen = false" class="absolute top-0 right-0 -mr-12 pt-2">
+          <div x-on:click="sidebarOpen = false" class="absolute top-0 right-0 -mr-12 pt-2">
             <button
               type="button"
               class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
@@ -123,7 +123,7 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
     <div class="flex flex-1 flex-col md:pl-64">
       <div class="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow">
         <button
-          @click="sidebarOpen = true"
+          x-on:click="sidebarOpen = true"
           type="button"
           class="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 md:hidden"
         >
@@ -159,10 +159,10 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
                 <Heroicons.bell class="h-6 w-6" />
               </button>
               <!-- Profile dropdown -->
-              <div class="relative ml-3" x-data="{open: false}" @click.outside="open = false">
+              <div class="relative ml-3" x-data="{open: false}" x-onclick.outside="open = false">
                 <div>
                   <button
-                    @click="open = !open"
+                    x-on:click="open = !open"
                     type="button"
                     class="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                     id="user-menu-button"

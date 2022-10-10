@@ -22,8 +22,8 @@
     id="seating-plan-grid"
     x-data="{dragging: false}"
     phx-hook="PushEvent"
-    @start-dragging="dragging = true"
-    @stop-dragging="dragging = false"
+    x-on:start-dragging="dragging = true"
+    x-on:stop-dragging="dragging = false"
   >
     <div
       :for={seat <- @seating_plan.seats}
@@ -32,12 +32,12 @@
       class="cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-4 py-3 shadow-sm hover:border-gray-400"
       draggable="true"
       data={[x: seat.x, y: seat.y, id: seat.student.id]}
-      @dragstart.self="
+      x-on:dragstart.self="
         dragging = true
         event.dataTransfer.effectAllowed = 'move'
         event.dataTransfer.setData('text/plain', event.target.id)
       "
-      @dragend.self="dragging = false"
+      x-on:dragend.self="dragging = false"
     >
       <p class="flex-1 text-sm font-medium text-gray-900">
         <%= seat.student.name %>
@@ -56,15 +56,15 @@
       style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
       class="bg-zinc-200 rounded-lg px-4 py-3"
       data={[x: seat.x, y: seat.y]}
-      @drop.self="
+      x-on:drop.self="
         dragging = false
 
         const from = document.getElementById(event.dataTransfer.getData('text/plain')).dataset
         const to = event.target.dataset
         $root.__pushEvent('assign_seat', { x: Number.parseInt(to.x), y: Number.parseInt(to.y), student_id: from.id })
       "
-      @dragover.self="dragging = $el"
-      @dragleave.self="dragging = true"
+      x-on:dragover.self="dragging = $el"
+      x-on:dragleave.self="dragging = true"
       x-bind:class="{
         'bg-green-200': dragging,
         'bg-green-400': dragging == $el,
@@ -82,12 +82,12 @@
       x-data="{}"
       draggable="true"
       data={[id: student.id]}
-      @dragstart.self="
+      x-on:dragstart.self="
         document.getElementById('seating-plan-grid').dispatchEvent(new CustomEvent('start-dragging'))
         event.dataTransfer.effectAllowed = 'move'
         event.dataTransfer.setData('text/plain', event.target.id)
       "
-      @dragend.self="
+      x-on:dragend.self="
         document.getElementById('seating-plan-grid').dispatchEvent(new CustomEvent('stop-dragging'))
       "
     >
