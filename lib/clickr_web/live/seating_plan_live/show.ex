@@ -18,6 +18,12 @@ defmodule ClickrWeb.SeatingPlanLive.Show do
      |> load_seating_plan(id)}
   end
 
+  @impl true
+  def handle_event("assign_seat", %{"x" => x, "y" => y, "student_id" => student_id}, socket) do
+    IO.inspect({x, y, student_id})
+    {:noreply, socket}
+  end
+
   defp page_title(:show), do: "Show Seating plan"
   defp page_title(:edit), do: "Edit Seating plan"
 

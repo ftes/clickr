@@ -17,20 +17,51 @@
 <h2 class="mt-6 text-[0.8125rem] leading-6 text-zinc-500">Students</h2>
 
 <div class="flex divide-x divide-solid gap-4">
-  <div class="flex-grow grid gap-4">
+  <div
+    class="flex-grow grid gap-4"
+    id="seating-plan-grid"
+    x-data="{dragging: false}"
+    phx-hook="PushEvent"
+    @start-dragging="dragging = true"
+    @stop-dragging="dragging = false"
+  >
     <div
       :for={seat <- @seating_plan.seats}
+      id={"student-#{seat.student.id}"}
       style={"grid-row: #{seat.x}; grid-column: #{seat.y};"}
-      class="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-4 py-3 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
+      class="cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-4 py-3 shadow-sm hover:border-gray-400"
+      draggable="true"
+      data={[x: seat.x, y: seat.y, id: seat.student.id]}
+      @dragstart.self="
+        dragging = true
+        event.dataTransfer.effectAllowed = 'move'
+        event.dataTransfer.setData('text/plain', event.target.id)
+      "
+      @dragend.self="dragging = false"
     >
       <p class="text-sm font-medium text-gray-900">
         <%= seat.student.name %>
       </p>
     </div>
+
     <div
       :for={seat <- @empty_seats}
       style={"grid-row: #{seat.x}; grid-column: #{seat.y};"}
       class="bg-zinc-200 rounded-lg"
+      data={[x: seat.x, y: seat.y]}
+      @drop.self="
+        dragging = false
+
+        const from = document.getElementById(event.dataTransfer.getData('text/plain')).dataset
+        const to = event.target.dataset
+        $root.__pushEvent('assign_seat', { x: Number.parseInt(to.x), y: Number.parseInt(to.y), student_id: from.id })
+      "
+      @dragover.self="dragging = $el"
+      @dragleave.self="dragging = true"
+      x-bind:class="{
+        'bg-green-200': dragging,
+        'bg-green-400': dragging == $el,
+      }"
     >
     </div>
   </div>
@@ -38,7 +69,19 @@
   <div :if={length(@unseated_students) > 0} class="pl-4 flex-grow-0 flex flex-col gap-1">
     <div
       :for={student <- @unseated_students}
-      class="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-2 py-1 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
+      id={"student-#{student.id}"}
+      class="cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-2 py-1 shadow-sm hover:border-gray-400"
+      x-data="{}"
+      draggable="true"
+      data={[id: student.id]}
+      @dragstart.self="
+        document.getElementById('seating-plan-grid').dispatchEvent(new CustomEvent('start-dragging'))
+        event.dataTransfer.effectAllowed = 'move'
+        event.dataTransfer.setData('text/plain', event.target.id)
+      "
+      @dragend.self="
+        document.getElementById('seating-plan-grid').dispatchEvent(new CustomEvent('stop-dragging'))
+      "
     >
       <p class="text-xs text-gray-900">
         <%= student.name %>
