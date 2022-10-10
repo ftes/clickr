@@ -170,4 +170,46 @@ defmodule Clickr.DevicesTest do
       assert %Ecto.Changeset{} = Devices.change_button(button)
     end
   end
+
+  describe "button_clicks" do
+    import Clickr.{AccountsFixtures, DevicesFixtures}
+
+    test "broadcast_button_click/1 creates device and button" do
+      %{id: uid} = user_fixture()
+      %{id: gid} = gateway_fixture()
+      did = "856b554e-c592-49b2-a328-08573883107a"
+      bid = "de5a61a6-489b-11ed-a744-9b189177012f"
+
+      assert {:ok, _} =
+               Devices.broadcast_button_click(%{
+                 gateway_id: gid,
+                 device_id: did,
+                 button_id: bid,
+                 user_id: uid
+               })
+
+      assert [%{id: ^did}] = Devices.list_devices()
+      assert [%{id: ^bid}] = Devices.list_buttons()
+    end
+
+    test "broadcast_button_click/1 references existing device and button and updates there names" do
+      %{id: uid} = user_fixture()
+      %{id: gid} = gateway_fixture()
+      %{id: did} = device_fixture(gateway_id: gid, name: "old device")
+      %{id: bid} = button_fixture(device_id: did, name: "old button")
+
+      assert {:ok, _} =
+               Devices.broadcast_button_click(%{
+                 gateway_id: gid,
+                 device_id: did,
+                 device_name: "new device",
+                 button_id: bid,
+                 button_name: "new button",
+                 user_id: uid
+               })
+
+      assert [%{id: ^did, name: "new device"}] = Devices.list_devices()
+      assert [%{id: ^bid, name: "new button"}] = Devices.list_buttons()
+    end
+  end
 end

@@ -39,6 +39,8 @@ defmodule Clickr.Devices do
   """
   def get_gateway!(id), do: Repo.get!(Gateway, id)
 
+  def get_gateway_by_api_token(api_token), do: Repo.get_by(Gateway, api_token: api_token)
+
   @doc """
   Creates a gateway.
 
@@ -298,6 +300,43 @@ defmodule Clickr.Devices do
   """
   def change_button(%Button{} = button, attrs \\ %{}) do
     Button.changeset(button, attrs)
+  end
+
+  def button_click_topic(%{user_id: uid}), do: "devices.button_click/user:#{uid}"
+
+  def broadcast_button_click(
+        %{button_id: bid, device_id: did, gateway_id: gid, user_id: uid} = attrs
+      ) do
+    device = %Device{
+      id: did,
+      gateway_id: gid,
+      user_id: uid,
+      name: attrs[:device_name] || "Unknown"
+    }
+
+    button = %Button{
+      id: bid,
+      device_id: did,
+      user_id: uid,
+      name: attrs[:button_name] || "Unknown"
+    }
+
+    tx_result =
+      Ecto.Multi.new()
+      |> Ecto.Multi.insert(:device, device,
+        conflict_target: [:id],
+        on_conflict: {:replace, [:name]}
+      )
+      |> Ecto.Multi.insert(:button, button,
+        conflict_target: [:id],
+        on_conflict: {:replace, [:name]}
+      )
+      |> Repo.transaction()
+
+    with {:ok, _} = res <- tx_result do
+      Clickr.PubSub.broadcast(button_click_topic(attrs), attrs)
+      res
+    end
   end
 
   defp where_user_id(query, nil), do: query
