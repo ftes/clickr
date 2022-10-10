@@ -4,7 +4,7 @@ defmodule Clickr.Classes.Class do
   schema "classes" do
     field :name, :string
     belongs_to :user, Clickr.Accounts.User
-    has_many :students, Clickr.Students.Student
+    has_many :students, Clickr.Students.Student, preload_order: [asc: :name]
 
     timestamps(type: :utc_datetime)
   end

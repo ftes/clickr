@@ -14,6 +14,39 @@
   <:item title="Room"><%= @seating_plan.room.name %></:item>
 </.list>
 
+<h2 class="mt-6 text-[0.8125rem] leading-6 text-zinc-500">Students</h2>
+
+<div class="flex divide-x divide-solid gap-4">
+  <div class="flex-grow grid gap-4">
+    <div
+      :for={seat <- @seating_plan.seats}
+      style={"grid-row: #{seat.x}; grid-column: #{seat.y};"}
+      class="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-4 py-3 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
+    >
+      <p class="text-sm font-medium text-gray-900">
+        <%= seat.student.name %>
+      </p>
+    </div>
+    <div
+      :for={seat <- @empty_seats}
+      style={"grid-row: #{seat.x}; grid-column: #{seat.y};"}
+      class="bg-zinc-200 rounded-lg"
+    >
+    </div>
+  </div>
+
+  <div :if={length(@unseated_students) > 0} class="pl-4 flex-grow-0 flex flex-col gap-1">
+    <div
+      :for={student <- @unseated_students}
+      class="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-2 py-1 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
+    >
+      <p class="text-xs text-gray-900">
+        <%= student.name %>
+      </p>
+    </div>
+  </div>
+</div>
+
 <.back navigate={~p"/seating_plans"}>Back to seating_plans</.back>
 
 <%= if @live_action in [:edit] do %>

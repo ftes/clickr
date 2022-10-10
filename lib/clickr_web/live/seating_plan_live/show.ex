@@ -15,12 +15,26 @@ defmodule ClickrWeb.SeatingPlanLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(
-       :seating_plan,
-       Classes.get_seating_plan!(id) |> Clickr.Repo.preload([:class, :room, seats: [:student]])
-     )}
+     |> load_seating_plan(id)}
   end
 
   defp page_title(:show), do: "Show Seating plan"
   defp page_title(:edit), do: "Edit Seating plan"
+
+  defp load_seating_plan(socket, id) do
+    sp =
+      Classes.get_seating_plan!(id)
+      |> Clickr.Repo.preload([:room, class: :students, seats: :student])
+
+    seated_ids = for s <- sp.seats, into: MapSet.new(), do: s.student.id
+    seated_xy = for s <- sp.seats, into: MapSet.new(), do: {s.x, s.y}
+    unseated = Enum.filter(sp.class.students, &(not MapSet.member?(seated_ids, &1.id)))
+    %{width: w, height: h} = sp.room
+    empty = for x <- 1..w, y <- 1..h, not MapSet.member?(seated_xy, {x, y}), do: %{x: x, y: y}
+
+    socket
+    |> assign(:seating_plan, sp)
+    |> assign(:unseated_students, unseated)
+    |> assign(:empty_seats, empty)
+  end
 end
