@@ -19,9 +19,17 @@ defmodule ClickrWeb.SeatingPlanLive.Show do
   end
 
   @impl true
-  def handle_event("assign_seat", %{"x" => x, "y" => y, "student_id" => student_id}, socket) do
-    IO.inspect({x, y, student_id})
-    {:noreply, socket}
+  def handle_event("assign_seat", %{"x" => x, "y" => y, "student_id" => sid}, socket) do
+    {:ok, _} =
+      Classes.assign_seating_plan_seat(socket.assigns.seating_plan, %{x: x, y: y, student_id: sid})
+
+    {:noreply, load_seating_plan(socket, socket.assigns.seating_plan.id)}
+  end
+
+  def handle_event("delete_seat", %{"id" => id}, socket) do
+    seat = Enum.find(socket.assigns.seating_plan.seats, &(&1.id == id))
+    {:ok, _} = Classes.delete_seating_plan_seat(seat)
+    {:noreply, load_seating_plan(socket, socket.assigns.seating_plan.id)}
   end
 
   defp page_title(:show), do: "Show Seating plan"

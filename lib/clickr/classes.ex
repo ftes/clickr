@@ -213,8 +213,10 @@ defmodule Clickr.Classes do
       [%SeatingPlanSeat{}, ...]
 
   """
-  def list_seating_plan_seats do
-    Repo.all(SeatingPlanSeat)
+  def list_seating_plan_seats(opts \\ []) do
+    SeatingPlanSeat
+    |> where_seating_plan_id(opts[:seating_plan_id])
+    |> Repo.all()
   end
 
   @doc """
@@ -298,6 +300,22 @@ defmodule Clickr.Classes do
     SeatingPlanSeat.changeset(seating_plan_seat, attrs)
   end
 
+  def assign_seating_plan_seat(%SeatingPlan{id: spid}, %{x: x, y: y, student_id: sid}) do
+    cond do
+      Repo.get_by(SeatingPlanSeat, seating_plan_id: spid, x: x, y: y) ->
+        {:error, :seat_occupied}
+
+      old_seat = Repo.get_by(SeatingPlanSeat, seating_plan_id: spid, student_id: sid) ->
+        update_seating_plan_seat(old_seat, %{x: x, y: y})
+
+      true ->
+        create_seating_plan_seat(%{seating_plan_id: spid, student_id: sid, x: x, y: y})
+    end
+  end
+
   defp where_user_id(query, nil), do: query
   defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
+
+  defp where_seating_plan_id(query, nil), do: query
+  defp where_seating_plan_id(query, id), do: where(query, [x], x.seating_plan_id == ^id)
 end

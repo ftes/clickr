@@ -9,7 +9,7 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage seating_plan records in your database.</:subtitle>
+        <:subtitle>Use this form to manage Seating Plan records in your database.</:subtitle>
       </.header>
 
       <.simple_form

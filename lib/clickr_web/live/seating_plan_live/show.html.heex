@@ -1,9 +1,9 @@
 <.header>
   Seating plan <%= @seating_plan.name %>
-  <:subtitle>This is a seating_plan record from your database.</:subtitle>
+  <:subtitle>This is a Seating Plan record from your database.</:subtitle>
   <:actions>
     <.link patch={~p"/seating_plans/#{@seating_plan}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit seating_plan</.button>
+      <.button>Edit Seating Plan</.button>
     </.link>
   </:actions>
 </.header>
@@ -16,9 +16,9 @@
 
 <h2 class="mt-6 text-[0.8125rem] leading-6 text-zinc-500">Students</h2>
 
-<div class="flex divide-x divide-solid gap-4">
+<div class="flex flex-col divide-y divide-solid gap-4">
   <div
-    class="flex-grow grid gap-4"
+    class="flex-grow grid gap-4 auto-rows-fr auto-cols-fr"
     id="seating-plan-grid"
     x-data="{dragging: false}"
     phx-hook="PushEvent"
@@ -27,8 +27,8 @@
   >
     <div
       :for={seat <- @seating_plan.seats}
-      id={"student-#{seat.student.id}"}
-      style={"grid-row: #{seat.x}; grid-column: #{seat.y};"}
+      id={"seated-student-#{seat.student.id}"}
+      style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
       class="cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-4 py-3 shadow-sm hover:border-gray-400"
       draggable="true"
       data={[x: seat.x, y: seat.y, id: seat.student.id]}
@@ -39,15 +39,22 @@
       "
       @dragend.self="dragging = false"
     >
-      <p class="text-sm font-medium text-gray-900">
+      <p class="flex-1 text-sm font-medium text-gray-900">
         <%= seat.student.name %>
       </p>
+      <button
+        class="flex-shrink-0"
+        title="Remove"
+        phx-click={JS.push("delete_seat", value: %{id: seat.id})}
+      >
+        <Heroicons.x_mark class="w-4 h-4 -mr-2" />
+      </button>
     </div>
 
     <div
       :for={seat <- @empty_seats}
-      style={"grid-row: #{seat.x}; grid-column: #{seat.y};"}
-      class="bg-zinc-200 rounded-lg"
+      style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
+      class="bg-zinc-200 rounded-lg px-4 py-3"
       data={[x: seat.x, y: seat.y]}
       @drop.self="
         dragging = false
@@ -63,13 +70,14 @@
         'bg-green-400': dragging == $el,
       }"
     >
+      <span class="invisible">Empty</span>
     </div>
   </div>
 
-  <div :if={length(@unseated_students) > 0} class="pl-4 flex-grow-0 flex flex-col gap-1">
+  <div :if={length(@unseated_students) > 0} class="pt-4 flex-grow-0 flex flex-wrap gap-1">
     <div
       :for={student <- @unseated_students}
-      id={"student-#{student.id}"}
+      id={"unseated-student-#{student.id}"}
       class="cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-2 py-1 shadow-sm hover:border-gray-400"
       x-data="{}"
       draggable="true"
@@ -90,7 +98,7 @@
   </div>
 </div>
 
-<.back navigate={~p"/seating_plans"}>Back to seating_plans</.back>
+<.back navigate={~p"/seating_plans"}>Back to Seating Plans</.back>
 
 <%= if @live_action in [:edit] do %>
   <.modal id="seating_plan-modal" show on_cancel={JS.patch(~p"/seating_plans/#{@seating_plan}")}>

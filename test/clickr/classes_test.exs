@@ -186,5 +186,38 @@ defmodule Clickr.ClassesTest do
       seating_plan_seat = seating_plan_seat_fixture()
       assert %Ecto.Changeset{} = Classes.change_seating_plan_seat(seating_plan_seat)
     end
+
+    test "assign_seating_plan_seat/2 seats previously unseated student" do
+      %{id: spid} = seating_plan = seating_plan_fixture()
+      %{id: sid} = student_fixture()
+
+      assert {:ok, _} =
+               Classes.assign_seating_plan_seat(seating_plan, %{x: 1, y: 1, student_id: sid})
+
+      assert [%{x: 1, y: 1, student_id: ^sid}] =
+               Classes.list_seating_plan_seats(seating_plan_id: spid)
+    end
+
+    test "assign_seating_plan_seat/2 seats changes student seat" do
+      %{id: spid} = seating_plan = seating_plan_fixture()
+      %{id: sid} = student_fixture()
+
+      seating_plan_seat_fixture(seating_plan_id: spid, student_id: sid, x: 1, y: 1)
+
+      assert {:ok, _} =
+               Classes.assign_seating_plan_seat(seating_plan, %{x: 2, y: 2, student_id: sid})
+
+      assert [%{x: 2, y: 2, student_id: ^sid}] =
+               Classes.list_seating_plan_seats(seating_plan_id: spid)
+    end
+
+    test "assign_seating_plan_seat/2 seats returns error for occupied seat" do
+      %{id: spid} = seating_plan = seating_plan_fixture()
+      seating_plan_seat_fixture(seating_plan_id: spid, x: 1, y: 1)
+      %{id: sid} = student_fixture()
+
+      assert {:error, :seat_occupied} =
+               Classes.assign_seating_plan_seat(seating_plan, %{x: 1, y: 1, student_id: sid})
+    end
   end
 end
