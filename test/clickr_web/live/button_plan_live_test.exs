@@ -2,7 +2,7 @@ defmodule ClickrWeb.ButtonPlanLiveTest do
   use ClickrWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Clickr.RoomsFixtures
+  import Clickr.{DevicesFixtures, RoomsFixtures}
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
@@ -111,6 +111,14 @@ defmodule ClickrWeb.ButtonPlanLiveTest do
 
       assert html =~ "Button plan updated successfully"
       assert html =~ "some updated name"
+    end
+
+    test "registers keyboard button_click", %{conn: conn, user: user, button_plan: button_plan} do
+      gateway_fixture(user_id: user.id, api_token: "keyboard")
+      {:ok, show_live, _html} = live(conn, ~p"/button_plans/#{button_plan}")
+
+      show_live |> element("#keyboard-device") |> render_keyup(%{"key" => "x"})
+      assert [%{name: "Keyboard/x"}] = Clickr.Devices.list_buttons()
     end
   end
 end

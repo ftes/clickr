@@ -39,7 +39,7 @@ defmodule Clickr.Devices do
   """
   def get_gateway!(id), do: Repo.get!(Gateway, id)
 
-  def get_gateway_by_api_token(api_token), do: Repo.get_by(Gateway, api_token: api_token)
+  def get_gateway_by(opts), do: Repo.get_by(Gateway, opts)
 
   @doc """
   Creates a gateway.

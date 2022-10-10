@@ -1,3 +1,10 @@
+<.live_component
+  :if={@current_user}
+  id="keyboard-device"
+  module={ClickrWeb.KeyboardDevice}
+  current_user={@current_user}
+/>
+
 <.header>
   Button plan <%= @button_plan.name %>
   <:subtitle>This is a Button Plan record from your database.</:subtitle>
