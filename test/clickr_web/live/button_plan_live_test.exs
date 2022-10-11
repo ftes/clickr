@@ -137,6 +137,7 @@ defmodule ClickrWeb.ButtonPlanLiveTest do
         device_id: button.device_id,
         button_id: bid
       })
+
       assert show_live |> has_element?("#button-#{bid}.x-active")
     end
 
