@@ -125,6 +125,21 @@ defmodule ClickrWeb.ButtonPlanLiveTest do
       refute show_live |> has_element?("#button-#{bid}")
     end
 
+    test "highlights active button in button-plan", %{conn: conn, user: user, button_plan: bp} do
+      %{id: bid} = button = button_fixture() |> Clickr.Repo.preload(:device)
+      button_plan_seat_fixture(button_plan_id: bp.id, button_id: bid, x: 1, y: 1)
+      {:ok, show_live, _html} = live(conn, ~p"/button_plans/#{bp}")
+      refute show_live |> has_element?("#button-#{bid}.x-active")
+
+      Clickr.Devices.broadcast_button_click(%{
+        user_id: user.id,
+        gateway_id: button.device.gateway_id,
+        device_id: button.device_id,
+        button_id: bid
+      })
+      assert show_live |> has_element?("#button-#{bid}.x-active")
+    end
+
     test "updates button_plan within modal", %{conn: conn, button_plan: button_plan} do
       {:ok, show_live, _html} = live(conn, ~p"/button_plans/#{button_plan}")
 

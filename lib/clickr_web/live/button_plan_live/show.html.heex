@@ -34,7 +34,7 @@
     :for={seat <- @button_plan.seats}
     id={"button-#{seat.button_id}"}
     style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-    class="cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-4 py-3 shadow-sm hover:border-gray-400"
+    class={"cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 px-4 py-3 shadow-sm hover:border-gray-400 #{if MapSet.member?(@active, seat.button_id), do: "x-active bg-green-400", else: "bg-white"}"}
     draggable="true"
     data={[x: seat.x, y: seat.y, id: seat.button_id]}
     x-on:dragstart.self="
@@ -63,7 +63,7 @@
       JS.push("await_click", value: %{x: seat.x, y: seat.y}) |> JS.focus(to: "#keyboard-device")
     }
     style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-    class={"bg-zinc-200 rounded-lg px-4 py-3 #{if @awaiting_click == {seat.x, seat.y}, do: "bg-green-400", else: ""}"}
+    class={"rounded-lg px-4 py-3 #{if @awaiting_click == {seat.x, seat.y}, do: "bg-green-400", else: "bg-zinc-200"}"}
     id={"empty-seat-#{seat.x}-#{seat.y}"}
     data={[x: seat.x, y: seat.y]}
     x-on:drop.self="

@@ -1,14 +1,13 @@
 defmodule ClickrWeb.ButtonPlanLive.Show do
   use ClickrWeb, :live_view
-
   alias Clickr.Rooms
+
+  @active_for_200ms 200
 
   @impl true
   def mount(_params, _session, socket) do
-    Clickr.PubSub.subscribe(
-      Clickr.Devices.button_click_topic(%{user_id: socket.assigns.current_user.id})
-    )
-
+    topic = Clickr.Devices.button_click_topic(%{user_id: socket.assigns.current_user.id})
+    Clickr.PubSub.subscribe(topic)
     {:ok, socket}
   end
 
@@ -20,6 +19,7 @@ defmodule ClickrWeb.ButtonPlanLive.Show do
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(awaiting_click: false)
+     |> assign(active: MapSet.new())
      |> load_button_plan(id)}
   end
 
@@ -55,7 +55,14 @@ defmodule ClickrWeb.ButtonPlanLive.Show do
      |> load_button_plan(socket.assigns.button_plan.id)}
   end
 
-  def handle_info({:button_clicked, _}, socket), do: {:noreply, socket}
+  def handle_info({:button_clicked, %{button_id: bid}}, socket) do
+    Process.send_after(self(), {:delete_active, bid}, @active_for_200ms)
+    {:noreply, assign(socket, :active, MapSet.put(socket.assigns.active, bid))}
+  end
+
+  def handle_info({:delete_active, bid}, socket) do
+    {:noreply, assign(socket, :active, MapSet.delete(socket.assigns.active, bid))}
+  end
 
   defp page_title(:show), do: "Show Button plan"
   defp page_title(:edit), do: "Edit Button plan"
