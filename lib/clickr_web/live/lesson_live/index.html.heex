@@ -1,0 +1,38 @@
+<.header>
+  Listing Lessons
+  <:actions>
+    <.link patch={~p"/lessons/new"}>
+      <.button>New Lesson</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="lessons" rows={@lessons} row_click={&JS.navigate(~p"/lessons/#{&1}")}>
+  <:col :let={lesson} label="Name"><%= lesson.name %></:col>
+  <:col :let={lesson} label="State"><%= lesson.state %></:col>
+  <:action :let={lesson}>
+    <div class="sr-only">
+      <.link navigate={~p"/lessons/#{lesson}"}>Show</.link>
+    </div>
+    <.link patch={~p"/lessons/#{lesson}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={lesson}>
+    <.link phx-click={JS.push("delete", value: %{id: lesson.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal id="lesson-modal" show on_cancel={JS.navigate(~p"/lessons")}>
+    <.live_component
+      module={ClickrWeb.LessonLive.FormComponent}
+      current_user={@current_user}
+      id={@lesson.id || :new}
+      title={@page_title}
+      action={@live_action}
+      lesson={@lesson}
+      navigate={~p"/lessons"}
+    />
+  </.modal>
+<% end %>

@@ -52,7 +52,8 @@ defmodule Clickr.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
-      {:uuid, "~> 1.1"}
+      {:uuid, "~> 1.1"},
+      {:timex, "~> 3.7"}
     ]
   end
 

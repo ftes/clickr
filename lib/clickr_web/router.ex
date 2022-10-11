@@ -128,6 +128,12 @@ defmodule ClickrWeb.Router do
       live "/seating_plans/:id/edit", SeatingPlanLive.Index, :edit
       live "/seating_plans/:id", SeatingPlanLive.Show, :show
       live "/seating_plans/:id/show/edit", SeatingPlanLive.Show, :edit
+
+      live "/lessons", LessonLive.Index, :index
+      live "/lessons/new", LessonLive.Index, :new
+      live "/lessons/:id/edit", LessonLive.Index, :edit
+      live "/lessons/:id", LessonLive.Show, :show
+      live "/lessons/:id/show/edit", LessonLive.Show, :edit
     end
   end
 

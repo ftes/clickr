@@ -1,0 +1,35 @@
+<.header>
+  Lesson <%= @lesson.name %>
+  <:subtitle>This is a lesson record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/lessons/#{@lesson}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit lesson</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @lesson.name %></:item>
+  <:item title="State"><%= @lesson.state %></:item>
+  <:item title="Class"><%= @lesson.class.name %></:item>
+  <:item title="Subject"><%= @lesson.subject.name %></:item>
+  <:item title="Room"><%= @lesson.room.name %></:item>
+  <:item title="Button Plan"><%= @lesson.button_plan.name %></:item>
+  <:item title="Seating Plan"><%= @lesson.seating_plan.name %></:item>
+</.list>
+
+<.back navigate={~p"/lessons"}>Back to lessons</.back>
+
+<%= if @live_action in [:edit] do %>
+  <.modal id="lesson-modal" show on_cancel={JS.patch(~p"/lessons/#{@lesson}")}>
+    <.live_component
+      module={ClickrWeb.LessonLive.FormComponent}
+      current_user={@current_user}
+      id={@lesson.id}
+      title={@page_title}
+      action={@live_action}
+      lesson={@lesson}
+      navigate={~p"/lessons/#{@lesson}"}
+    />
+  </.modal>
+<% end %>
