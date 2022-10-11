@@ -187,5 +187,34 @@ defmodule Clickr.RoomsTest do
       button_plan_seat = button_plan_seat_fixture()
       assert %Ecto.Changeset{} = Rooms.change_button_plan_seat(button_plan_seat)
     end
+
+    test "assign_button_plan_seat/2 seats previously unseated button" do
+      %{id: bpid} = button_plan = button_plan_fixture()
+      %{id: bid} = button_fixture()
+
+      assert {:ok, _} = Rooms.assign_button_plan_seat(button_plan, %{x: 1, y: 1, button_id: bid})
+
+      assert [%{x: 1, y: 1, button_id: ^bid}] = Rooms.list_button_plan_seats(button_plan_id: bpid)
+    end
+
+    test "assign_button_plan_seat/2 seats changes student seat" do
+      %{id: bpid} = button_plan = button_plan_fixture()
+      %{id: bid} = button_fixture()
+
+      button_plan_seat_fixture(button_plan_id: bpid, button_id: bid, x: 1, y: 1)
+
+      assert {:ok, _} = Rooms.assign_button_plan_seat(button_plan, %{x: 2, y: 2, button_id: bid})
+
+      assert [%{x: 2, y: 2, button_id: ^bid}] = Rooms.list_button_plan_seats(button_plan_id: bpid)
+    end
+
+    test "assign_button_plan_seat/2 seats returns error for occupied seat" do
+      %{id: bpid} = button_plan = button_plan_fixture()
+      button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
+      %{id: bid} = button_fixture()
+
+      assert {:error, :seat_occupied} =
+               Rooms.assign_button_plan_seat(button_plan, %{x: 1, y: 1, button_id: bid})
+    end
   end
 end

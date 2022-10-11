@@ -334,7 +334,7 @@ defmodule Clickr.Devices do
       |> Repo.transaction()
 
     with {:ok, _} = res <- tx_result do
-      Clickr.PubSub.broadcast(button_click_topic(attrs), attrs)
+      Clickr.PubSub.broadcast(button_click_topic(attrs), {:button_clicked, attrs})
       res
     end
   end

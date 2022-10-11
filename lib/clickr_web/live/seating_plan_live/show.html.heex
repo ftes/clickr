@@ -66,7 +66,7 @@
       x-on:dragover.self="dragging = $el"
       x-on:dragleave.self="dragging = true"
       x-bind:class="{
-        'bg-green-200': dragging,
+        'bg-green-200': dragging && dragging != $el,
         'bg-green-400': dragging == $el,
       }"
     >

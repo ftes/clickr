@@ -91,6 +91,40 @@ defmodule ClickrWeb.ButtonPlanLiveTest do
       assert html =~ button_plan.name
     end
 
+    test "assigns seat to previously unseated button", %{conn: conn, user: user, button_plan: bp} do
+      %{id: bid} = button = button_fixture() |> Clickr.Repo.preload(:device)
+      {:ok, show_live, _html} = live(conn, ~p"/button_plans/#{bp}")
+      show_live |> element("#empty-seat-1-1") |> render_click()
+
+      Clickr.Devices.broadcast_button_click(%{
+        user_id: user.id,
+        gateway_id: button.device.gateway_id,
+        device_id: button.device_id,
+        button_id: bid
+      })
+
+      assert show_live |> has_element?("#button-#{bid}")
+    end
+
+    test "changes button seat", %{conn: conn, button_plan: bp} do
+      %{id: bid} = button_fixture()
+      button_plan_seat_fixture(button_plan_id: bp.id, button_id: bid, x: 1, y: 1)
+      {:ok, show_live, _html} = live(conn, ~p"/button_plans/#{bp}")
+      assert show_live |> has_element?("#button-#{bid}[data-x=1, data-y=1]")
+
+      show_live |> render_hook(:assign_seat, %{x: 2, y: 2, button_id: bid})
+      assert show_live |> has_element?("#button-#{bid}[data-x=2, data-y=2]")
+    end
+
+    test "removes button from seat", %{conn: conn, button_plan: bp} do
+      %{id: bid} = button_fixture()
+      button_plan_seat_fixture(button_plan_id: bp.id, button_id: bid, x: 1, y: 1)
+      {:ok, show_live, _html} = live(conn, ~p"/button_plans/#{bp}")
+
+      show_live |> element("#button-#{bid} button") |> render_click()
+      refute show_live |> has_element?("#button-#{bid}")
+    end
+
     test "updates button_plan within modal", %{conn: conn, button_plan: button_plan} do
       {:ok, show_live, _html} = live(conn, ~p"/button_plans/#{button_plan}")
 

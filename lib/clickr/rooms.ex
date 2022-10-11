@@ -203,9 +203,6 @@ defmodule Clickr.Rooms do
     ButtonPlan.changeset(button_plan, attrs)
   end
 
-  defp where_user_id(query, nil), do: query
-  defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
-
   alias Clickr.Rooms.ButtonPlanSeat
 
   @doc """
@@ -217,8 +214,10 @@ defmodule Clickr.Rooms do
       [%ButtonPlanSeat{}, ...]
 
   """
-  def list_button_plan_seats do
-    Repo.all(ButtonPlanSeat)
+  def list_button_plan_seats(opts \\ []) do
+    ButtonPlanSeat
+    |> where_button_plan_id(opts[:button_plan_id])
+    |> Repo.all()
   end
 
   @doc """
@@ -301,4 +300,23 @@ defmodule Clickr.Rooms do
   def change_button_plan_seat(%ButtonPlanSeat{} = button_plan_seat, attrs \\ %{}) do
     ButtonPlanSeat.changeset(button_plan_seat, attrs)
   end
+
+  def assign_button_plan_seat(%ButtonPlan{id: bpid}, %{x: x, y: y, button_id: bid}) do
+    cond do
+      Repo.get_by(ButtonPlanSeat, button_plan_id: bpid, x: x, y: y) ->
+        {:error, :seat_occupied}
+
+      old_seat = Repo.get_by(ButtonPlanSeat, button_plan_id: bpid, button_id: bid) ->
+        update_button_plan_seat(old_seat, %{x: x, y: y})
+
+      true ->
+        create_button_plan_seat(%{button_plan_id: bpid, button_id: bid, x: x, y: y})
+    end
+  end
+
+  defp where_user_id(query, nil), do: query
+  defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
+
+  defp where_button_plan_id(query, nil), do: query
+  defp where_button_plan_id(query, id), do: where(query, [x], x.button_plan_id == ^id)
 end
