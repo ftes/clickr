@@ -167,24 +167,33 @@ defmodule ClickrWeb.LessonLiveTest do
     end
   end
 
-  describe "question" do
-    defp create_lesson_question(%{user: user}) do
-      %{lesson: lesson_fixture(user_id: user.id, state: :question)}
+  describe "active" do
+    defp create_lesson_active(%{user: user}) do
+      %{lesson: lesson_fixture(user_id: user.id, state: :active)}
     end
 
-    setup [:create_lesson_question]
-
-    test "adds lesson_student when clicking + button", %{conn: conn, lesson: lesson} do
-      %{id: sid} = student_fixture(class_id: lesson.class_id)
+    defp seat_student(%{lesson: lesson}) do
+      student = student_fixture(class_id: lesson.class_id)
       spid = lesson.seating_plan_id
-      seating_plan_seat_fixture(%{seating_plan_id: spid, student_id: sid, x: 1, y: 1})
+      seating_plan_seat_fixture(%{seating_plan_id: spid, student_id: student.id, x: 1, y: 1})
+      %{student: student}
+    end
 
-      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/question")
-      refute render(live) =~ "x-attending"
+    setup [:create_lesson_active, :seat_student]
 
-      assert live
-             |> element("#student-#{sid} button", "Add")
-             |> render_click() =~ "x-attending"
+    test "adds and removes student with +/x buttons", %{conn: conn, lesson: lesson} do
+      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/active")
+
+      assert live |> element("button", "Add student") |> render_click() =~ "x-attending"
+      refute live |> element("button", "Remove student") |> render_click() =~ "x-attending"
+    end
+
+    test "adds and subtracts points with +/- buttons", %{conn: conn, lesson: l, student: s} do
+      lesson_student_fixture(lesson_id: l.id, student_id: s.id, extra_points: 42)
+      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
+
+      live |> element("button", "Add point") |> render_click() =~ "43"
+      live |> element("button", "Subtract point") |> render_click() =~ "42"
     end
   end
 end
