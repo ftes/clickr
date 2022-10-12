@@ -1,5 +1,5 @@
 defmodule Clickr.AccountsTest do
-  use Clickr.DataCase
+  use Clickr.DataCase, async: true
 
   alias Clickr.Accounts
 

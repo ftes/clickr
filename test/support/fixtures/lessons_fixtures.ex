@@ -9,9 +9,10 @@ defmodule Clickr.LessonsFixtures do
   Generate a lesson.
   """
   def lesson_fixture(attrs \\ %{}) do
-    {:ok, lesson} =
+    attrs =
       attrs
       |> Enum.into(%{
+        state: :started,
         name: "some name"
       })
       |> put_new(:user_id, fn _ -> user_fixture().id end)
@@ -23,9 +24,8 @@ defmodule Clickr.LessonsFixtures do
         :seating_plan_id,
         &seating_plan_fixture(Map.take(&1, [:user_id, :class_id, :room_id])).id
       )
-      |> Clickr.Lessons.create_lesson()
 
-    lesson
+    Clickr.Repo.insert!(struct!(Clickr.Lessons.Lesson, attrs))
   end
 
   def put_new(map, key, function), do: Map.put_new_lazy(map, key, fn -> function.(map) end)

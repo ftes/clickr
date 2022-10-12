@@ -2,7 +2,7 @@ defmodule ClickrWeb.LessonLiveTest do
   use ClickrWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Clickr.LessonsFixtures
+  import Clickr.{ClassesFixtures, LessonsFixtures, StudentsFixtures}
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
@@ -122,7 +122,6 @@ defmodule ClickrWeb.LessonLiveTest do
   describe "State detail pages" do
     setup [:create_lesson]
 
-    @tag :inspect
     test "action buttons transition lesson through entire lifecycle", %{
       conn: conn,
       lesson: lesson
@@ -145,6 +144,47 @@ defmodule ClickrWeb.LessonLiveTest do
       |> click_and_follow.("End Question", ~p"/lessons/#{lesson}/active")
       |> click_and_follow.("End Lesson", ~p"/lessons/#{lesson}/ended")
       |> click_and_follow.("Grade", ~p"/lessons/#{lesson}/graded")
+    end
+  end
+
+  describe "roll_call" do
+    defp create_lesson_roll_call(%{user: user}) do
+      %{lesson: lesson_fixture(user_id: user.id, state: :roll_call)}
+    end
+
+    setup [:create_lesson_roll_call]
+
+    test "highlights student that answered", %{conn: conn, lesson: lesson} do
+      %{id: sid} = student_fixture(class_id: lesson.class_id)
+      spid = lesson.seating_plan_id
+      seating_plan_seat_fixture(%{seating_plan_id: spid, student_id: sid, x: 1, y: 1})
+
+      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/roll_call")
+      refute render(live) =~ "x-answered"
+
+      Clickr.Lessons.ActiveQuestion.answer(lesson, sid)
+      assert render(live) =~ "x-answered"
+    end
+  end
+
+  describe "question" do
+    defp create_lesson_question(%{user: user}) do
+      %{lesson: lesson_fixture(user_id: user.id, state: :question)}
+    end
+
+    setup [:create_lesson_question]
+
+    test "adds lesson_student when clicking + button", %{conn: conn, lesson: lesson} do
+      %{id: sid} = student_fixture(class_id: lesson.class_id)
+      spid = lesson.seating_plan_id
+      seating_plan_seat_fixture(%{seating_plan_id: spid, student_id: sid, x: 1, y: 1})
+
+      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/question")
+      refute render(live) =~ "x-attending"
+
+      assert live
+             |> element("#student-#{sid} button", "Add")
+             |> render_click() =~ "x-attending"
     end
   end
 end

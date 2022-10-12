@@ -10,6 +10,7 @@ defmodule Clickr.Lessons.Lesson do
     belongs_to :subject, Clickr.Subjects.Subject
     belongs_to :button_plan, Clickr.Rooms.ButtonPlan
     belongs_to :seating_plan, Clickr.Classes.SeatingPlan
+    has_many :lesson_students, Clickr.Lessons.LessonStudent
 
     timestamps(type: :utc_datetime)
   end
@@ -60,5 +61,11 @@ defmodule Clickr.Lessons.Lesson do
     lesson
     |> cast(attrs, [:state])
     |> validate_required([:state])
+  end
+
+  def changeset_roll_call(lesson, attrs) do
+    lesson
+    |> cast(attrs, [:state])
+    |> cast_assoc(:lesson_students)
   end
 end

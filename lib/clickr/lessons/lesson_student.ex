@@ -13,7 +13,7 @@ defmodule Clickr.Lessons.LessonStudent do
   def changeset(lesson_student, attrs) do
     lesson_student
     |> cast(attrs, [:extra_points, :lesson_id, :student_id])
-    |> validate_required([:extra_points, :lesson_id, :student_id])
+    |> validate_required([:extra_points, :student_id])
     |> foreign_key_constraint(:lesson_id)
     |> foreign_key_constraint(:student_id)
   end

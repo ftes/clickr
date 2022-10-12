@@ -92,6 +92,27 @@ defmodule Clickr.LessonsTest do
       {:ok, _lesson} = Lessons.transition_lesson(lesson, :graded)
     end
 
+    test "transition_lesson roll_call -> active saves lesson_students" do
+      lesson = lesson_fixture(state: :roll_call)
+      %{id: sid} = Clickr.StudentsFixtures.student_fixture(class_id: lesson.class_id)
+
+      Lessons.ActiveQuestion.answer(lesson, sid)
+      {:ok, _} = Lessons.transition_lesson(lesson, :active)
+      assert [%{student_id: ^sid}] = Lessons.list_lesson_students(lesson_id: lesson.id)
+    end
+
+    test "transition_lesson question -> active saves questin_answers" do
+      lesson = lesson_fixture(state: :question)
+      %{id: sid} = Clickr.StudentsFixtures.student_fixture(class_id: lesson.class_id)
+      lesson_student_fixture(lesson_id: lesson.id, student_id: sid)
+
+      Lessons.ActiveQuestion.answer(lesson, sid)
+      {:ok, _} = Lessons.transition_lesson(lesson, :active)
+
+      assert [%{answers: [%{student_id: ^sid}]}] =
+               Lessons.list_questions(lesson_id: lesson.id) |> Clickr.Repo.preload(:answers)
+    end
+
     test "delete_lesson/1 deletes the lesson" do
       lesson = lesson_fixture()
       assert {:ok, %Lesson{}} = Lessons.delete_lesson(lesson)

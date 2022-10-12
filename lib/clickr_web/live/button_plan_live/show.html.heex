@@ -1,5 +1,4 @@
 <.live_component
-  :if={@current_user}
   id="keyboard-device"
   module={ClickrWeb.KeyboardDevice}
   current_user={@current_user}
@@ -52,6 +51,7 @@
       title="Remove"
       phx-click={JS.push("delete_seat", value: %{id: seat.id})}
     >
+      <span class="sr-only">Remove</span>
       <Heroicons.x_mark class="w-4 h-4 -mr-2" />
     </button>
   </div>

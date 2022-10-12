@@ -1,5 +1,5 @@
 defmodule Clickr.SubjectsTest do
-  use Clickr.DataCase
+  use Clickr.DataCase, async: true
 
   alias Clickr.Subjects
 

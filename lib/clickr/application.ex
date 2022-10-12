@@ -15,9 +15,11 @@ defmodule Clickr.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Clickr.PubSub},
       # Start the Endpoint (http/https)
-      ClickrWeb.Endpoint
+      ClickrWeb.Endpoint,
       # Start a worker by calling: Clickr.Worker.start_link(arg)
       # {Clickr.Worker, arg}
+      Clickr.Lessons.ActiveQuestionRegistry,
+      Clickr.Lessons.ActiveQuestionSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

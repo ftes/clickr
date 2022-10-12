@@ -6,7 +6,9 @@ defmodule Clickr.Lessons do
   import Ecto.Query, warn: false
   alias Clickr.Repo
 
-  alias Clickr.Lessons.Lesson
+  alias Clickr.Lessons.{ActiveQuestion, Lesson, Question}
+
+  def get_button_mapping(%Lesson{} = lesson), do: Clickr.Lessons.ButtonMapping.get(lesson)
 
   @doc """
   Returns the list of lessons.
@@ -75,17 +77,50 @@ defmodule Clickr.Lessons do
     |> Repo.update()
   end
 
-  def transition_lesson(%Lesson{state: :started} = lesson, :roll_call = new_state),
-    do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+  def transition_lesson(%Lesson{state: :started} = lesson, :roll_call = new_state) do
+    Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+  end
 
-  def transition_lesson(%Lesson{state: :roll_call} = lesson, :active = new_state),
-    do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+  def transition_lesson(%Lesson{state: :roll_call} = lesson, :active = new_state) do
+    student_ids = ActiveQuestion.get(lesson)
+    ActiveQuestion.stop(lesson)
+    lesson_students = Enum.map(student_ids, &%{student_id: &1, extra_points: 0})
+    lesson = Repo.preload(lesson, :lesson_students)
 
-  def transition_lesson(%Lesson{state: :active} = lesson, :question = new_state),
-    do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+    changeset =
+      Lesson.changeset_roll_call(lesson, %{state: new_state, lesson_students: lesson_students})
 
-  def transition_lesson(%Lesson{state: :question} = lesson, :active = new_state),
-    do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+    Repo.update(changeset)
+  end
+
+  def transition_lesson(%Lesson{state: :active} = lesson, :question = new_state) do
+    Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+  end
+
+  def transition_lesson(%Lesson{state: :question} = lesson, :active = new_state) do
+    student_ids = ActiveQuestion.get(lesson)
+
+    lesson_student_ids =
+      Enum.map(Repo.preload(lesson, :lesson_students).lesson_students, & &1.student_id)
+
+    ActiveQuestion.stop(lesson)
+    answers = for id <- student_ids, id in lesson_student_ids, do: %{student_id: id}
+
+    question = %{
+      lesson_id: lesson.id,
+      name: "Question",
+      points: 1,
+      answers: answers
+    }
+
+    with {:ok, %{lesson: lesson}} <-
+           Ecto.Multi.new()
+           |> Ecto.Multi.update(:lesson, Lesson.changeset_state(lesson, %{state: new_state}))
+           |> Ecto.Multi.insert(:question, Question.changeset(%Question{}, question))
+           |> Clickr.Repo.transaction() do
+      {:ok, lesson}
+    end
+  end
 
   def transition_lesson(%Lesson{state: :active} = lesson, :ended = new_state),
     do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
@@ -125,6 +160,9 @@ defmodule Clickr.Lessons do
   defp where_user_id(query, nil), do: query
   defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
 
+  defp where_lesson_id(query, nil), do: query
+  defp where_lesson_id(query, id), do: where(query, [x], x.lesson_id == ^id)
+
   alias Clickr.Lessons.Question
 
   @doc """
@@ -136,8 +174,10 @@ defmodule Clickr.Lessons do
       [%Question{}, ...]
 
   """
-  def list_questions do
-    Repo.all(Question)
+  def list_questions(opts \\ []) do
+    Question
+    |> where_lesson_id(opts[:lesson_id])
+    |> Repo.all()
   end
 
   @doc """
@@ -220,6 +260,11 @@ defmodule Clickr.Lessons do
   def change_question(%Question{} = question, attrs \\ %{}) do
     Question.changeset(question, attrs)
   end
+
+  def active_question_topic(%{lesson_id: lid}), do: "lessons.active_question/lesson:#{lid}"
+
+  def broadcast_active_question_answer(%{lesson_id: _, student_id: _} = attrs),
+    do: Clickr.PubSub.broadcast(active_question_topic(attrs), {:active_question_answered, attrs})
 
   alias Clickr.Lessons.QuestionAnswer
 
@@ -328,8 +373,10 @@ defmodule Clickr.Lessons do
       [%LessonStudent{}, ...]
 
   """
-  def list_lesson_students do
-    Repo.all(LessonStudent)
+  def list_lesson_students(opts \\ []) do
+    LessonStudent
+    |> where_lesson_id(opts[:lesson_id])
+    |> Repo.all()
   end
 
   @doc """

@@ -42,7 +42,7 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
     </script>
   </head>
 
-  <body class="h-ful antialiased" x-data="{sidebarOpen: false}">
+  <body class="h-full antialiased" x-data="{sidebarOpen: false}">
     <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
     <div
       x-cloak

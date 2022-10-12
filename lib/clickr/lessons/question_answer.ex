@@ -12,7 +12,7 @@ defmodule Clickr.Lessons.QuestionAnswer do
   def changeset(question_answer, attrs) do
     question_answer
     |> cast(attrs, [:question_id, :student_id])
-    |> validate_required([:question_id, :student_id])
+    |> validate_required([:student_id])
     |> foreign_key_constraint(:question_id)
     |> foreign_key_constraint(:student_id)
   end

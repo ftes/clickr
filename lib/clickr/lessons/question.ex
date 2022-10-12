@@ -5,6 +5,7 @@ defmodule Clickr.Lessons.Question do
     field :name, :string
     field :points, :integer
     belongs_to :lesson, Clickr.Lessons.Lesson
+    has_many :answers, Clickr.Lessons.QuestionAnswer
 
     timestamps(type: :utc_datetime)
   end
@@ -15,5 +16,6 @@ defmodule Clickr.Lessons.Question do
     |> cast(attrs, [:name, :points, :lesson_id])
     |> validate_required([:name, :points, :lesson_id])
     |> foreign_key_constraint(:lesson_id)
+    |> cast_assoc(:answers)
   end
 end
