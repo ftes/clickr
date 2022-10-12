@@ -27,26 +27,41 @@ defmodule Clickr.LessonsTest do
     end
 
     test "create_lesson/1 with valid data creates a lesson" do
-      %{id: uid} = user_fixture()
-      %{id: sid} = subject_fixture()
-      %{id: cid} = class_fixture()
-      %{id: rid} = room_fixture()
-      %{id: bpid} = button_plan_fixture(room_id: rid)
-      %{id: spid} = seating_plan_fixture(room_id: rid, class_id: cid)
+      bp = button_plan_fixture()
+      sp = seating_plan_fixture(room_id: bp.room_id)
 
       valid_attrs = %{
         name: "some name",
-        user_id: uid,
-        subject_id: sid,
-        class_id: cid,
-        room_id: rid,
-        button_plan_id: bpid,
-        seating_plan_id: spid
+        user_id: user_fixture().id,
+        subject_id: subject_fixture().id,
+        class_id: sp.class_id,
+        room_id: bp.room_id,
+        button_plan_id: bp.id,
+        seating_plan_id: sp.id
       }
 
       assert {:ok, %Lesson{} = lesson} = Lessons.create_lesson(valid_attrs)
       assert lesson.name == "some name"
       assert lesson.state == :started
+    end
+
+    test "create_lesson/1 with non-matching classes returns error changeset" do
+      c = class_fixture()
+      bp = button_plan_fixture()
+      sp = seating_plan_fixture(class_id: class_fixture().id, room_id: bp.room_id)
+
+      invalid_attrs = %{
+        name: "some name",
+        user_id: user_fixture().id,
+        subject_id: subject_fixture().id,
+        class_id: c.id,
+        room_id: bp.room_id,
+        button_plan_id: bp.id,
+        seating_plan_id: sp.id
+      }
+
+      assert {:error, %Ecto.Changeset{errors: [seating_plan_id: {"does not match class", _}]}} =
+               Lessons.create_lesson(invalid_attrs)
     end
 
     test "create_lesson/1 with invalid data returns error changeset" do

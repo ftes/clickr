@@ -42,5 +42,17 @@ defmodule Clickr.Lessons.Lesson do
     |> foreign_key_constraint(:subject_id)
     |> foreign_key_constraint(:button_plan_id)
     |> foreign_key_constraint(:seating_plan_id)
+    |> check_constraint(:button_plan_id,
+      name: :button_plan_matches_room,
+      message: "does not match room"
+    )
+    |> check_constraint(:seating_plan_id,
+      name: :seating_plan_matches_room,
+      message: "does not match room"
+    )
+    |> check_constraint(:seating_plan_id,
+      name: :seating_plan_matches_class,
+      message: "does not match class"
+    )
   end
 end
