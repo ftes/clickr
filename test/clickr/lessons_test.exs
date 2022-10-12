@@ -82,6 +82,16 @@ defmodule Clickr.LessonsTest do
       assert lesson == Lessons.get_lesson!(lesson.id)
     end
 
+    test "transition_lesson/2 with valid data moves lesson through entire lifecycle" do
+      lesson = lesson_fixture()
+      {:ok, lesson} = Lessons.transition_lesson(lesson, :roll_call)
+      {:ok, lesson} = Lessons.transition_lesson(lesson, :active)
+      {:ok, lesson} = Lessons.transition_lesson(lesson, :question)
+      {:ok, lesson} = Lessons.transition_lesson(lesson, :active)
+      {:ok, lesson} = Lessons.transition_lesson(lesson, :ended)
+      {:ok, _lesson} = Lessons.transition_lesson(lesson, :graded)
+    end
+
     test "delete_lesson/1 deletes the lesson" do
       lesson = lesson_fixture()
       assert {:ok, %Lesson{}} = Lessons.delete_lesson(lesson)

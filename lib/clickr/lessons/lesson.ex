@@ -55,4 +55,10 @@ defmodule Clickr.Lessons.Lesson do
       message: "does not match class"
     )
   end
+
+  def changeset_state(lesson, attrs) do
+    lesson
+    |> cast(attrs, [:state])
+    |> validate_required([:state])
+  end
 end

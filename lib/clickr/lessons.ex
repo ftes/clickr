@@ -75,6 +75,24 @@ defmodule Clickr.Lessons do
     |> Repo.update()
   end
 
+  def transition_lesson(%Lesson{state: :started} = lesson, :roll_call = new_state),
+    do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+
+  def transition_lesson(%Lesson{state: :roll_call} = lesson, :active = new_state),
+    do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+
+  def transition_lesson(%Lesson{state: :active} = lesson, :question = new_state),
+    do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+
+  def transition_lesson(%Lesson{state: :question} = lesson, :active = new_state),
+    do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+
+  def transition_lesson(%Lesson{state: :active} = lesson, :ended = new_state),
+    do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+
+  def transition_lesson(%Lesson{state: :ended} = lesson, :graded = new_state),
+    do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+
   @doc """
   Deletes a lesson.
 
