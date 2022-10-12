@@ -14,7 +14,11 @@ alias Clickr.{Accounts, Classes, Devices, Rooms, Students, Subjects}
 
 if Mix.env() != :test do
   {:ok, %{id: uid}} = Accounts.register_user(%{email: "f@ftes.de", password: "passwordpassword"})
-  {:ok, %{id: gid}} = Devices.create_gateway(%{user_id: uid, name: "Raspberry Pi v3 #42"})
+
+  {:ok, %{id: gid}} =
+    Devices.create_gateway(%{user_id: uid, name: "Raspberry Pi v3 #42", api_token: "xyz"})
+
+  {:ok, _} = Devices.create_gateway(%{user_id: uid, name: "Keyboard", api_token: "keyboard"})
 
   devices =
     for i <- 1..16 do

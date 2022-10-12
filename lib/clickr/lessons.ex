@@ -106,4 +106,292 @@ defmodule Clickr.Lessons do
 
   defp where_user_id(query, nil), do: query
   defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
+
+  alias Clickr.Lessons.Question
+
+  @doc """
+  Returns the list of questions.
+
+  ## Examples
+
+      iex> list_questions()
+      [%Question{}, ...]
+
+  """
+  def list_questions do
+    Repo.all(Question)
+  end
+
+  @doc """
+  Gets a single question.
+
+  Raises `Ecto.NoResultsError` if the Question does not exist.
+
+  ## Examples
+
+      iex> get_question!(123)
+      %Question{}
+
+      iex> get_question!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_question!(id), do: Repo.get!(Question, id)
+
+  @doc """
+  Creates a question.
+
+  ## Examples
+
+      iex> create_question(%{field: value})
+      {:ok, %Question{}}
+
+      iex> create_question(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_question(attrs \\ %{}) do
+    %Question{}
+    |> Question.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a question.
+
+  ## Examples
+
+      iex> update_question(question, %{field: new_value})
+      {:ok, %Question{}}
+
+      iex> update_question(question, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_question(%Question{} = question, attrs) do
+    question
+    |> Question.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a question.
+
+  ## Examples
+
+      iex> delete_question(question)
+      {:ok, %Question{}}
+
+      iex> delete_question(question)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_question(%Question{} = question) do
+    Repo.delete(question)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking question changes.
+
+  ## Examples
+
+      iex> change_question(question)
+      %Ecto.Changeset{data: %Question{}}
+
+  """
+  def change_question(%Question{} = question, attrs \\ %{}) do
+    Question.changeset(question, attrs)
+  end
+
+  alias Clickr.Lessons.QuestionAnswer
+
+  @doc """
+  Returns the list of question_answers.
+
+  ## Examples
+
+      iex> list_question_answers()
+      [%QuestionAnswer{}, ...]
+
+  """
+  def list_question_answers do
+    Repo.all(QuestionAnswer)
+  end
+
+  @doc """
+  Gets a single question_answer.
+
+  Raises `Ecto.NoResultsError` if the Question answer does not exist.
+
+  ## Examples
+
+      iex> get_question_answer!(123)
+      %QuestionAnswer{}
+
+      iex> get_question_answer!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_question_answer!(id), do: Repo.get!(QuestionAnswer, id)
+
+  @doc """
+  Creates a question_answer.
+
+  ## Examples
+
+      iex> create_question_answer(%{field: value})
+      {:ok, %QuestionAnswer{}}
+
+      iex> create_question_answer(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_question_answer(attrs \\ %{}) do
+    %QuestionAnswer{}
+    |> QuestionAnswer.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a question_answer.
+
+  ## Examples
+
+      iex> update_question_answer(question_answer, %{field: new_value})
+      {:ok, %QuestionAnswer{}}
+
+      iex> update_question_answer(question_answer, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_question_answer(%QuestionAnswer{} = question_answer, attrs) do
+    question_answer
+    |> QuestionAnswer.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a question_answer.
+
+  ## Examples
+
+      iex> delete_question_answer(question_answer)
+      {:ok, %QuestionAnswer{}}
+
+      iex> delete_question_answer(question_answer)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_question_answer(%QuestionAnswer{} = question_answer) do
+    Repo.delete(question_answer)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking question_answer changes.
+
+  ## Examples
+
+      iex> change_question_answer(question_answer)
+      %Ecto.Changeset{data: %QuestionAnswer{}}
+
+  """
+  def change_question_answer(%QuestionAnswer{} = question_answer, attrs \\ %{}) do
+    QuestionAnswer.changeset(question_answer, attrs)
+  end
+
+  alias Clickr.Lessons.LessonStudent
+
+  @doc """
+  Returns the list of lesson_students.
+
+  ## Examples
+
+      iex> list_lesson_students()
+      [%LessonStudent{}, ...]
+
+  """
+  def list_lesson_students do
+    Repo.all(LessonStudent)
+  end
+
+  @doc """
+  Gets a single lesson_student.
+
+  Raises `Ecto.NoResultsError` if the Lesson student does not exist.
+
+  ## Examples
+
+      iex> get_lesson_student!(123)
+      %LessonStudent{}
+
+      iex> get_lesson_student!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_lesson_student!(id), do: Repo.get!(LessonStudent, id)
+
+  @doc """
+  Creates a lesson_student.
+
+  ## Examples
+
+      iex> create_lesson_student(%{field: value})
+      {:ok, %LessonStudent{}}
+
+      iex> create_lesson_student(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_lesson_student(attrs \\ %{}) do
+    %LessonStudent{}
+    |> LessonStudent.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a lesson_student.
+
+  ## Examples
+
+      iex> update_lesson_student(lesson_student, %{field: new_value})
+      {:ok, %LessonStudent{}}
+
+      iex> update_lesson_student(lesson_student, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_lesson_student(%LessonStudent{} = lesson_student, attrs) do
+    lesson_student
+    |> LessonStudent.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a lesson_student.
+
+  ## Examples
+
+      iex> delete_lesson_student(lesson_student)
+      {:ok, %LessonStudent{}}
+
+      iex> delete_lesson_student(lesson_student)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_lesson_student(%LessonStudent{} = lesson_student) do
+    Repo.delete(lesson_student)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking lesson_student changes.
+
+  ## Examples
+
+      iex> change_lesson_student(lesson_student)
+      %Ecto.Changeset{data: %LessonStudent{}}
+
+  """
+  def change_lesson_student(%LessonStudent{} = lesson_student, attrs \\ %{}) do
+    LessonStudent.changeset(lesson_student, attrs)
+  end
 end

@@ -29,4 +29,50 @@ defmodule Clickr.LessonsFixtures do
   end
 
   def put_new(map, key, function), do: Map.put_new_lazy(map, key, fn -> function.(map) end)
+
+  @doc """
+  Generate a question.
+  """
+  def question_fixture(attrs \\ %{}) do
+    {:ok, question} =
+      attrs
+      |> Enum.into(%{
+        name: "some name",
+        points: 1
+      })
+      |> Map.put_new(:lesson_id, lesson_fixture().id)
+      |> Clickr.Lessons.create_question()
+
+    question
+  end
+
+  @doc """
+  Generate a question_answer.
+  """
+  def question_answer_fixture(attrs \\ %{}) do
+    {:ok, question_answer} =
+      attrs
+      |> Enum.into(%{})
+      |> Map.put_new(:question_id, question_fixture().id)
+      |> Map.put_new(:student_id, Clickr.StudentsFixtures.student_fixture().id)
+      |> Clickr.Lessons.create_question_answer()
+
+    question_answer
+  end
+
+  @doc """
+  Generate a lesson_student.
+  """
+  def lesson_student_fixture(attrs \\ %{}) do
+    {:ok, lesson_student} =
+      attrs
+      |> Enum.into(%{
+        extra_points: 42
+      })
+      |> Map.put_new(:lesson_id, lesson_fixture().id)
+      |> Map.put_new(:student_id, Clickr.StudentsFixtures.student_fixture().id)
+      |> Clickr.Lessons.create_lesson_student()
+
+    lesson_student
+  end
 end
