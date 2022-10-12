@@ -134,6 +134,13 @@ defmodule ClickrWeb.Router do
       live "/lessons/:id/edit", LessonLive.Index, :edit
       live "/lessons/:id", LessonLive.Show, :show
       live "/lessons/:id/show/edit", LessonLive.Show, :edit
+      live "/lessons/:id/router", LessonLive.Router, :show
+      live "/lessons/:id/started", LessonLive.RollCall, :started
+      live "/lessons/:id/roll_call", LessonLive.RollCall, :roll_call
+      live "/lessons/:id/active", LessonLive.Question, :active
+      live "/lessons/:id/question", LessonLive.Question, :question
+      live "/lessons/:id/ended", LessonLive.Ended, :ended
+      live "/lessons/:id/graded", LessonLive.Ended, :graded
     end
   end
 

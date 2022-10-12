@@ -118,4 +118,33 @@ defmodule ClickrWeb.LessonLiveTest do
       assert html =~ "some updated name"
     end
   end
+
+  describe "State detail pages" do
+    setup [:create_lesson]
+
+    @tag :inspect
+    test "action buttons transition lesson through entire lifecycle", %{
+      conn: conn,
+      lesson: lesson
+    } do
+      {:ok, live, _} =
+        live(conn, ~p"/lessons/#{lesson}/router")
+        |> follow_redirect(conn, ~p"/lessons/#{lesson}/started")
+
+      click_and_follow = fn live, btn, to ->
+        assert {:ok, live, _} =
+                 live |> element("button", btn) |> render_click() |> follow_redirect(conn, to)
+
+        live
+      end
+
+      live
+      |> click_and_follow.("Roll Call", ~p"/lessons/#{lesson}/roll_call")
+      |> click_and_follow.("Note Attendance", ~p"/lessons/#{lesson}/active")
+      |> click_and_follow.("Ask Question", ~p"/lessons/#{lesson}/question")
+      |> click_and_follow.("End Question", ~p"/lessons/#{lesson}/active")
+      |> click_and_follow.("End Lesson", ~p"/lessons/#{lesson}/ended")
+      |> click_and_follow.("Grade", ~p"/lessons/#{lesson}/graded")
+    end
+  end
 end

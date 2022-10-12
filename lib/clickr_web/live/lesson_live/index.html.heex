@@ -7,13 +7,16 @@
   </:actions>
 </.header>
 
-<.table id="lessons" rows={@lessons} row_click={&JS.navigate(~p"/lessons/#{&1}")}>
+<.table id="lessons" rows={@lessons} row_click={&JS.navigate(~p"/lessons/#{&1}/router")}>
   <:col :let={lesson} label="Name"><%= lesson.name %></:col>
   <:col :let={lesson} label="State"><%= lesson.state %></:col>
   <:action :let={lesson}>
     <div class="sr-only">
-      <.link navigate={~p"/lessons/#{lesson}"}>Show</.link>
+      <.link navigate={~p"/lessons/#{lesson}/router"}>Run</.link>
     </div>
+    <.link navigate={~p"/lessons/#{lesson}"}>Show</.link>
+  </:action>
+  <:action :let={lesson}>
     <.link patch={~p"/lessons/#{lesson}/edit"}>Edit</.link>
   </:action>
   <:action :let={lesson}>
