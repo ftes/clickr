@@ -30,17 +30,17 @@ defmodule ClickrWeb.LessonLive.Question do
         :for={seat <- @lesson.seating_plan.seats}
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-        class={"relative group flex-row items-center justify-center rounded-lg border border-gray-300 px-1 py-3 shadow-sm #{if seat.student_id in @answers, do: "x-answered bg-green-400", else: "bg-white"}"}
+        class={"relative group flex-row items-center justify-center rounded-lg border border-gray-300 px-1 py-3 shadow-sm #{if MapSet.member?(@answers, seat.student_id), do: "x-answered bg-green-400", else: "bg-white"}"}
       >
-        <p class={"flex justify-center text-sm font-medium #{if seat.student_id in @student_ids, do: "x-attending text-gray-900", else: "text-gray-400"}"}>
+        <p class={"flex justify-center text-sm font-medium #{if MapSet.member?(@student_ids, seat.student_id), do: "x-attending text-gray-900", else: "text-gray-400"}"}>
           <%= seat.student.name %>
         </p>
-        <div class={"flex justify-center x-points #{unless seat.student_id in @student_ids, do: "invisible"}"}>
+        <div class={"flex justify-center x-points #{unless MapSet.member?(@student_ids, seat.student_id), do: "invisible"}"}>
           <%= @points[seat.student_id] || 0 %>
         </div>
 
         <div
-          :if={@lesson.state != :question and seat.student.id in @student_ids}
+          :if={@lesson.state != :question and MapSet.member?(@student_ids, seat.student.id)}
           class="absolute inset-0 hidden group-hover:flex items-stretch justify-between bg-white/80 rounded-lg"
         >
           <button
@@ -69,7 +69,7 @@ defmodule ClickrWeb.LessonLive.Question do
           </button>
         </div>
         <button
-          :if={@lesson.state != :question and seat.student.id not in @student_ids}
+          :if={@lesson.state != :question and not MapSet.member?(@student_ids, seat.student.id)}
           title="Add student"
           phx-click={JS.push("add_student", value: %{student_id: seat.student.id})}
           class="absolute inset-0 hidden group-hover:flex bg-green-400/80 items-center justify-center rounded-lg"
@@ -167,15 +167,15 @@ defmodule ClickrWeb.LessonLive.Question do
 
     socket
     |> assign(:lesson, lesson)
-    |> assign(:student_ids, for(%{student_id: sid} <- lesson.lesson_students, do: sid))
+    |> assign(:student_ids, MapSet.new(lesson.lesson_students, & &1.student_id))
     # TODO Add question points
     |> assign(:points, Map.new(lesson.lesson_students, &{&1.student_id, &1.extra_points}))
   end
 
   defp load_answers(%{assigns: %{lesson: %{state: :question} = lesson}} = socket) do
     student_ids = Clickr.Lessons.ActiveQuestion.get(lesson)
-    assign(socket, :answers, student_ids)
+    assign(socket, :answers, MapSet.new(student_ids))
   end
 
-  defp load_answers(socket), do: assign(socket, :answers, [])
+  defp load_answers(socket), do: assign(socket, :answers, MapSet.new())
 end

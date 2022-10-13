@@ -30,7 +30,7 @@ defmodule ClickrWeb.LessonLive.RollCall do
         :for={seat <- @lesson.seating_plan.seats}
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-        class={"relative group flex-row items-center justify-center rounded-lg border border-gray-300 px-1 py-3 shadow-sm #{if seat.student_id in @answers, do: "x-answered bg-green-400", else: "bg-white"}"}
+        class={"relative group flex-row items-center justify-center rounded-lg border border-gray-300 px-1 py-3 shadow-sm #{if MapSet.member?(@answers, seat.student_id), do: "x-answered bg-green-400", else: "bg-white"}"}
       >
         <p class="flex justify-center text-sm font-medium text-gray-900">
           <%= seat.student.name %>
@@ -96,8 +96,8 @@ defmodule ClickrWeb.LessonLive.RollCall do
 
   defp load_answers(%{assigns: %{lesson: %{state: :roll_call} = lesson}} = socket) do
     student_ids = Clickr.Lessons.ActiveQuestion.get(lesson)
-    assign(socket, :answers, student_ids)
+    assign(socket, :answers, MapSet.new(student_ids))
   end
 
-  defp load_answers(socket), do: assign(socket, :answers, [])
+  defp load_answers(socket), do: assign(socket, :answers, MapSet.new())
 end
