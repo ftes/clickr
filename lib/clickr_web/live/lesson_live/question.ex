@@ -100,19 +100,18 @@ defmodule ClickrWeb.LessonLive.Question do
     {:noreply,
      socket
      |> assign(:page_title, "Lesson")
-     |> assign_lesson_and_related(Lessons.get_lesson!(id))
+     |> assign_lesson_and_related(id)
      |> load_answers()
      |> ClickrWeb.LessonLive.Router.maybe_navigate()}
   end
 
   @impl true
   def handle_event("transition", %{"state" => state}, socket) do
-    {:ok, lesson} =
-      Lessons.transition_lesson(socket.assigns.lesson, String.to_existing_atom(state))
+    {:ok, _} = Lessons.transition_lesson(socket.assigns.lesson, String.to_existing_atom(state))
 
     {:noreply,
      socket
-     |> assign_lesson_and_related(lesson)
+     |> assign_lesson_and_related()
      |> ClickrWeb.LessonLive.Router.maybe_navigate()}
   end
 
@@ -124,25 +123,25 @@ defmodule ClickrWeb.LessonLive.Question do
         extra_points: 0
       })
 
-    {:noreply, assign_lesson_and_related(socket, socket.assigns.lesson)}
+    {:noreply, assign_lesson_and_related(socket)}
   end
 
   def handle_event("remove_student", %{"student_id" => student_id}, socket) do
     ls = Enum.find(socket.assigns.lesson.lesson_students, &(&1.student_id == student_id))
     {:ok, _} = Lessons.delete_lesson_student(ls)
-    {:noreply, assign_lesson_and_related(socket, socket.assigns.lesson)}
+    {:noreply, assign_lesson_and_related(socket)}
   end
 
   def handle_event("add_point", %{"student_id" => student_id}, socket) do
     lesson = socket.assigns.lesson
     {:ok, _} = Lessons.add_extra_points(%{lesson_id: lesson.id, student_id: student_id}, 1)
-    {:noreply, assign_lesson_and_related(socket, socket.assigns.lesson)}
+    {:noreply, assign_lesson_and_related(socket)}
   end
 
   def handle_event("subtract_point", %{"student_id" => student_id}, socket) do
     lesson = socket.assigns.lesson
     {:ok, _} = Lessons.add_extra_points(%{lesson_id: lesson.id, student_id: student_id}, -1)
-    {:noreply, assign_lesson_and_related(socket, socket.assigns.lesson)}
+    {:noreply, assign_lesson_and_related(socket)}
   end
 
   @impl true
@@ -150,20 +149,10 @@ defmodule ClickrWeb.LessonLive.Question do
     {:noreply, load_answers(socket)}
   end
 
-  defp assign_lesson_and_related(socket, lesson) do
+  defp assign_lesson_and_related(socket, id \\ nil) do
     lesson =
-      Clickr.Repo.preload(
-        lesson,
-        [
-          :subject,
-          :class,
-          :room,
-          :button_plan,
-          :lesson_students,
-          seating_plan: [seats: :student]
-        ],
-        force: true
-      )
+      Lessons.get_lesson!(id || socket.assigns.lesson.id)
+      |> Clickr.Repo.preload([:lesson_students, seating_plan: [seats: :student]])
 
     socket
     |> assign(:lesson, lesson)

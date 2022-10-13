@@ -135,6 +135,7 @@ defmodule ClickrWeb.LessonLiveTest do
   describe "State detail pages" do
     setup [:create_lesson]
 
+    @tag :inspect
     test "action buttons transition lesson through entire lifecycle", %{
       conn: conn,
       lesson: lesson
@@ -156,7 +157,9 @@ defmodule ClickrWeb.LessonLiveTest do
       |> click_and_follow.("Ask Question", ~p"/lessons/#{lesson}/question")
       |> click_and_follow.("End Question", ~p"/lessons/#{lesson}/active")
       |> click_and_follow.("End Lesson", ~p"/lessons/#{lesson}/ended")
-      |> click_and_follow.("Grade", ~p"/lessons/#{lesson}/graded")
+      |> form("#lesson-form", lesson: %{grade: %{min: 10, max: 20}})
+      |> render_submit()
+      |> follow_redirect(conn, ~p"/lessons/#{lesson}/graded")
     end
   end
 
@@ -221,6 +224,44 @@ defmodule ClickrWeb.LessonLiveTest do
 
       Clickr.Lessons.ActiveQuestion.answer(lesson, student.id)
       assert render(live) =~ "x-answered"
+    end
+  end
+
+  describe "ended" do
+    defp create_lesson_ended(%{user: user}) do
+      %{lesson: lesson_fixture(user_id: user.id, state: :ended)}
+    end
+
+    setup [:create_lesson_ended, :seat_student_with_button, :attend_student]
+
+    test "shows extra points + question points", %{conn: conn, lesson: lesson, student: student} do
+      question = question_fixture(lesson_id: lesson.id, points: 5)
+      question_answer_fixture(question_id: question.id, student_id: student.id)
+
+      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/ended")
+      assert render(live) =~ "47"
+    end
+
+    test "transitions to graded using input", %{conn: conn, lesson: lesson} do
+      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/ended")
+
+      live
+      |> form("#lesson-form", %{lesson: %{grade: %{min: 0.0, max: 100.0}}})
+      |> render_submit()
+      |> follow_redirect(conn, ~p"/lessons/#{lesson}/graded")
+    end
+  end
+
+  describe "graded" do
+    defp create_lesson_graded(%{user: user}) do
+      %{lesson: lesson_fixture(user_id: user.id, state: :graded, grade: %{min: 0.0, max: 100.0})}
+    end
+
+    setup [:create_lesson_graded, :seat_student_with_button, :attend_student]
+
+    test "shows lesson grade as percentage", %{conn: conn, lesson: lesson} do
+      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/graded")
+      assert render(live) =~ "42.0 %"
     end
   end
 end

@@ -90,7 +90,7 @@ defmodule Clickr.Lessons do
   end
 
   def transition_lesson(%Lesson{state: :started} = lesson, :roll_call = new_state) do
-    with {:ok, lesson} = res <- Repo.update(Lesson.changeset_state(lesson, %{state: new_state})) do
+    with {:ok, lesson} = res <- Repo.update(Lesson.changeset(lesson, %{state: new_state})) do
       ActiveQuestion.start(lesson)
       res
     end
@@ -101,15 +101,12 @@ defmodule Clickr.Lessons do
     ActiveQuestion.stop(lesson)
     lesson_students = Enum.map(student_ids, &%{student_id: &1, extra_points: 0})
     lesson = Repo.preload(lesson, :lesson_students)
-
-    changeset =
-      Lesson.changeset_roll_call(lesson, %{state: new_state, lesson_students: lesson_students})
-
+    changeset = Lesson.changeset(lesson, %{state: new_state, lesson_students: lesson_students})
     Repo.update(changeset)
   end
 
   def transition_lesson(%Lesson{state: :active} = lesson, :question = new_state) do
-    with {:ok, lesson} = res <- Repo.update(Lesson.changeset_state(lesson, %{state: new_state})) do
+    with {:ok, lesson} = res <- Repo.update(Lesson.changeset(lesson, %{state: new_state})) do
       ActiveQuestion.start(lesson)
       res
     end
@@ -133,7 +130,7 @@ defmodule Clickr.Lessons do
 
     with {:ok, %{lesson: lesson}} <-
            Ecto.Multi.new()
-           |> Ecto.Multi.update(:lesson, Lesson.changeset_state(lesson, %{state: new_state}))
+           |> Ecto.Multi.update(:lesson, Lesson.changeset(lesson, %{state: new_state}))
            |> Ecto.Multi.insert(:question, Question.changeset(%Question{}, question))
            |> Clickr.Repo.transaction() do
       {:ok, lesson}
@@ -141,10 +138,19 @@ defmodule Clickr.Lessons do
   end
 
   def transition_lesson(%Lesson{state: :active} = lesson, :ended = new_state),
-    do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+    do: Repo.update(Lesson.changeset(lesson, %{state: new_state}))
 
-  def transition_lesson(%Lesson{state: :ended} = lesson, :graded = new_state),
-    do: Repo.update(Lesson.changeset_state(lesson, %{state: new_state}))
+  def transition_lesson(%Lesson{state: old_state} = lesson, :graded, attrs \\ %{})
+      when old_state in [:ended, :graded] do
+    [first_key | _] = Map.keys(attrs)
+
+    attrs =
+      if is_atom(first_key),
+        do: Map.put(attrs, :state, :graded),
+        else: Map.put(attrs, "state", "graded")
+
+    Repo.update(Lesson.changeset(lesson, attrs))
+  end
 
   @doc """
   Deletes a lesson.

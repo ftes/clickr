@@ -15,5 +15,6 @@ defmodule Clickr.Lessons.QuestionAnswer do
     |> validate_required([:student_id])
     |> foreign_key_constraint(:question_id)
     |> foreign_key_constraint(:student_id)
+    |> unique_constraint([:question_id, :student_id])
   end
 end

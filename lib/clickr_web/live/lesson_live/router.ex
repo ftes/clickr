@@ -34,7 +34,7 @@ defmodule ClickrWeb.LessonLive.Router do
   def transitions(%{state: :active}), do: [{"Ask Question", :question}, {"End Lesson", :ended}]
   def transitions(%{state: :question}), do: [{"End Question", :active}]
   def transitions(%{state: :ended}), do: [{"Grade", :graded}]
-  def transitions(%{state: :graded}), do: []
+  def transitions(%{state: :graded}), do: [{"Grade", :graded}]
 
   defp path(lesson), do: "/lessons/#{lesson.id}/#{lesson.state}"
 end

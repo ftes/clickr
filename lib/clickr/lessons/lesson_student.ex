@@ -16,5 +16,6 @@ defmodule Clickr.Lessons.LessonStudent do
     |> validate_required([:extra_points, :student_id])
     |> foreign_key_constraint(:lesson_id)
     |> foreign_key_constraint(:student_id)
+    |> unique_constraint([:lesson_id, :student_id])
   end
 end

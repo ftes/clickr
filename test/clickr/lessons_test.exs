@@ -70,7 +70,7 @@ defmodule Clickr.LessonsTest do
 
     test "update_lesson/2 with valid data updates the lesson" do
       lesson = lesson_fixture()
-      update_attrs = %{name: "some updated name", state: :roll_call}
+      update_attrs = %{name: "some updated name"}
 
       assert {:ok, %Lesson{} = lesson} = Lessons.update_lesson(lesson, update_attrs)
       assert lesson.name == "some updated name"
@@ -89,7 +89,8 @@ defmodule Clickr.LessonsTest do
       {:ok, lesson} = Lessons.transition_lesson(lesson, :question)
       {:ok, lesson} = Lessons.transition_lesson(lesson, :active)
       {:ok, lesson} = Lessons.transition_lesson(lesson, :ended)
-      {:ok, _lesson} = Lessons.transition_lesson(lesson, :graded)
+      {:ok, lesson} = Lessons.transition_lesson(lesson, :graded, %{grade: %{min: 1.0, max: 2.0}})
+      {:ok, _lesson} = Lessons.transition_lesson(lesson, :graded, %{grade: %{min: 3.0, max: 4.0}})
     end
 
     test "transition_lesson roll_call -> active saves lesson_students" do
@@ -117,6 +118,13 @@ defmodule Clickr.LessonsTest do
 
       assert [%{answers: [%{student_id: ^sid}]}] =
                Lessons.list_questions(lesson_id: lesson.id) |> Clickr.Repo.preload(:answers)
+    end
+
+    test "transition_lesson ended -> graded stores grade" do
+      lesson = lesson_fixture(state: :ended)
+
+      assert {:ok, %{grade: %{min: 10.0, max: 20.0}}} =
+               Lessons.transition_lesson(lesson, :graded, %{grade: %{min: 10.0, max: 20.0}})
     end
 
     test "delete_lesson/1 deletes the lesson" do

@@ -1,5 +1,6 @@
 # Todo
 
+- [ ] Permissions
 - [ ] Soft delete stale devices
   - only list non-deleted devices and buttons
   - mark deleted buttons in button plan

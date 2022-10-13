@@ -4,6 +4,7 @@ defmodule Clickr.Lessons.Lesson do
   schema "lessons" do
     field :name, :string
     field :state, Ecto.Enum, values: [:started, :roll_call, :active, :question, :ended, :graded]
+    embeds_one :grade, Clickr.Lessons.Lesson.Grade, on_replace: :update
     belongs_to :user, Clickr.Accounts.User
     belongs_to :class, Clickr.Classes.Class
     belongs_to :room, Clickr.Rooms.Room
@@ -16,7 +17,40 @@ defmodule Clickr.Lessons.Lesson do
     timestamps(type: :utc_datetime)
   end
 
+  defmodule Grade do
+    use Ecto.Schema
+
+    @primary_key false
+    embedded_schema do
+      field :min, :float
+      field :max, :float
+    end
+
+    def changeset(grade, attrs) do
+      grade
+      |> cast(attrs, [:min, :max])
+      |> validate_required([:min, :max])
+    end
+  end
+
   @doc false
+  def changeset(%{state: :roll_call} = lesson, %{state: :active} = attrs) do
+    lesson
+    |> cast(attrs, [:state])
+    |> validate_required([:state])
+    |> cast_assoc(:lesson_students)
+  end
+
+  def changeset(lesson, %{"state" => "graded"} = attrs), do: changeset_graded(lesson, attrs)
+  def changeset(lesson, %{state: :graded} = attrs), do: changeset_graded(lesson, attrs)
+  def changeset(lesson, %{state: "graded"} = attrs), do: changeset_graded(lesson, attrs)
+
+  def changeset(lesson, %{state: _} = attrs) do
+    lesson
+    |> cast(attrs, [:state])
+    |> validate_required([:state])
+  end
+
   def changeset(lesson, attrs) do
     lesson
     |> cast(attrs, [
@@ -58,15 +92,10 @@ defmodule Clickr.Lessons.Lesson do
     )
   end
 
-  def changeset_state(lesson, attrs) do
+  defp changeset_graded(lesson, attrs) do
     lesson
     |> cast(attrs, [:state])
+    |> cast_embed(:grade, required: true)
     |> validate_required([:state])
-  end
-
-  def changeset_roll_call(lesson, attrs) do
-    lesson
-    |> cast(attrs, [:state])
-    |> cast_assoc(:lesson_students)
   end
 end
