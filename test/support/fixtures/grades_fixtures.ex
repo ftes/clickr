@@ -19,4 +19,20 @@ defmodule Clickr.GradesFixtures do
 
     lesson_grade
   end
+
+  @doc """
+  Generate a grade.
+  """
+  def grade_fixture(attrs \\ %{}) do
+    {:ok, grade} =
+      attrs
+      |> Enum.into(%{
+        percent: 0.25
+      })
+      |> Map.put_new_lazy(:student_id, fn -> Clickr.StudentsFixtures.student_fixture().id end)
+      |> Map.put_new_lazy(:subject_id, fn -> Clickr.SubjectsFixtures.subject_fixture().id end)
+      |> Clickr.Grades.create_grade()
+
+    grade
+  end
 end

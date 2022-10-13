@@ -1,0 +1,12 @@
+<.header>
+  Grade <%= @grade.id %>
+  <:subtitle>This is a grade record from your database.</:subtitle>
+</.header>
+
+<.list>
+  <:item title="Student"><%= @grade.student.name %></:item>
+  <:item title="Subject"><%= @grade.subject.name %></:item>
+  <:item title="Percent"><%= Clickr.Grades.format(@grade.percent) %></:item>
+</.list>
+
+<.back navigate={~p"/grades"}>Back to grades</.back>
