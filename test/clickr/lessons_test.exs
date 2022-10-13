@@ -99,6 +99,7 @@ defmodule Clickr.LessonsTest do
       seating_plan_seat_fixture(seating_plan_id: spid, student_id: sid, x: 1, y: 1)
       button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
 
+      Lessons.ActiveQuestion.start(lesson)
       Lessons.ActiveQuestion.answer(lesson, sid)
       {:ok, _} = Lessons.transition_lesson(lesson, :active)
       assert [%{student_id: ^sid}] = Lessons.list_lesson_students(lesson_id: lesson.id)
@@ -112,6 +113,7 @@ defmodule Clickr.LessonsTest do
       button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
       lesson_student_fixture(lesson_id: lesson.id, student_id: sid)
 
+      Lessons.ActiveQuestion.start(lesson)
       Lessons.ActiveQuestion.answer(lesson, sid)
       {:ok, _} = Lessons.transition_lesson(lesson, :active)
 

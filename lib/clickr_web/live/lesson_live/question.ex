@@ -6,6 +6,12 @@ defmodule ClickrWeb.LessonLive.Question do
   @impl true
   def render(assigns) do
     ~H"""
+    <.live_component
+      id="keyboard-device"
+      module={ClickrWeb.KeyboardDevice}
+      current_user={@current_user}
+    />
+
     <.header>
       Lesson <%= @lesson.name %>
       <:subtitle><%= @lesson.state %></:subtitle>
@@ -24,7 +30,7 @@ defmodule ClickrWeb.LessonLive.Question do
         :for={seat <- @lesson.seating_plan.seats}
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-        class="relative group flex-row items-center justify-center rounded-lg border border-gray-300 bg-white px-1 py-3 shadow-sm"
+        class={"relative group flex-row items-center justify-center rounded-lg border border-gray-300 px-1 py-3 shadow-sm #{if seat.student_id in @answers, do: "x-answered bg-green-400", else: "bg-white"}"}
       >
         <p class={"flex justify-center text-sm font-medium #{if seat.student_id in @student_ids, do: "x-attending text-gray-900", else: "text-gray-400"}"}>
           <%= seat.student.name %>
@@ -34,7 +40,7 @@ defmodule ClickrWeb.LessonLive.Question do
         </div>
 
         <div
-          :if={seat.student.id in @student_ids}
+          :if={@lesson.state != :question and seat.student.id in @student_ids}
           class="absolute inset-0 hidden group-hover:flex items-stretch justify-between bg-white/80 rounded-lg"
         >
           <button
@@ -63,7 +69,7 @@ defmodule ClickrWeb.LessonLive.Question do
           </button>
         </div>
         <button
-          :if={seat.student.id not in @student_ids}
+          :if={@lesson.state != :question and seat.student.id not in @student_ids}
           title="Add student"
           phx-click={JS.push("add_student", value: %{student_id: seat.student.id})}
           class="absolute inset-0 hidden group-hover:flex bg-green-400/80 items-center justify-center rounded-lg"
@@ -83,10 +89,19 @@ defmodule ClickrWeb.LessonLive.Question do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
+    if lesson = socket.assigns[:lesson] do
+      old_topic = Clickr.Lessons.active_question_topic(%{lesson_id: lesson.id})
+      Clickr.PubSub.unsubscribe(old_topic)
+    end
+
+    topic = Clickr.Lessons.active_question_topic(%{lesson_id: id})
+    Clickr.PubSub.subscribe(topic)
+
     {:noreply,
      socket
      |> assign(:page_title, "Lesson")
      |> assign_lesson_and_related(Lessons.get_lesson!(id))
+     |> load_answers()
      |> ClickrWeb.LessonLive.Router.maybe_navigate()}
   end
 
@@ -130,6 +145,11 @@ defmodule ClickrWeb.LessonLive.Question do
     {:noreply, assign_lesson_and_related(socket, socket.assigns.lesson)}
   end
 
+  @impl true
+  def handle_info({:active_question_answered, _}, socket) do
+    {:noreply, load_answers(socket)}
+  end
+
   defp assign_lesson_and_related(socket, lesson) do
     lesson =
       Clickr.Repo.preload(
@@ -151,4 +171,11 @@ defmodule ClickrWeb.LessonLive.Question do
     # TODO Add question points
     |> assign(:points, Map.new(lesson.lesson_students, &{&1.student_id, &1.extra_points}))
   end
+
+  defp load_answers(%{assigns: %{lesson: %{state: :question} = lesson}} = socket) do
+    student_ids = Clickr.Lessons.ActiveQuestion.get(lesson)
+    assign(socket, :answers, student_ids)
+  end
+
+  defp load_answers(socket), do: assign(socket, :answers, [])
 end

@@ -13,6 +13,19 @@ defmodule ClickrWeb.LessonLiveTest do
     %{lesson: lesson}
   end
 
+  defp seat_student_with_button(%{lesson: lesson}) do
+    student = student_fixture(class_id: lesson.class_id)
+    %{seating_plan_id: spid, button_plan_id: bpid} = lesson
+    seating_plan_seat_fixture(%{seating_plan_id: spid, student_id: student.id, x: 1, y: 1})
+    button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
+    %{student: student}
+  end
+
+  defp attend_student(%{lesson: lesson, student: student}) do
+    lesson_student_fixture(lesson_id: lesson.id, student_id: student.id, extra_points: 42)
+    %{}
+  end
+
   setup :register_and_log_in_user
 
   describe "Index" do
@@ -152,18 +165,14 @@ defmodule ClickrWeb.LessonLiveTest do
       %{lesson: lesson_fixture(user_id: user.id, state: :roll_call)}
     end
 
-    setup [:create_lesson_roll_call]
+    setup [:create_lesson_roll_call, :seat_student_with_button]
 
-    test "highlights student that answered", %{conn: conn, lesson: lesson} do
-      %{id: sid} = student_fixture(class_id: lesson.class_id)
-      %{seating_plan_id: spid, button_plan_id: bpid} = lesson
-      seating_plan_seat_fixture(%{seating_plan_id: spid, student_id: sid, x: 1, y: 1})
-      button_plan_seat_fixture(%{button_plan_id: bpid, x: 1, y: 1})
-
+    test "highlights student that answered", %{conn: conn, lesson: lesson, student: student} do
+      Clickr.Lessons.ActiveQuestion.start(lesson)
       {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/roll_call")
       refute render(live) =~ "x-answered"
 
-      Clickr.Lessons.ActiveQuestion.answer(lesson, sid)
+      Clickr.Lessons.ActiveQuestion.answer(lesson, student.id)
       assert render(live) =~ "x-answered"
     end
   end
@@ -173,14 +182,7 @@ defmodule ClickrWeb.LessonLiveTest do
       %{lesson: lesson_fixture(user_id: user.id, state: :active)}
     end
 
-    defp seat_student(%{lesson: lesson}) do
-      student = student_fixture(class_id: lesson.class_id)
-      spid = lesson.seating_plan_id
-      seating_plan_seat_fixture(%{seating_plan_id: spid, student_id: student.id, x: 1, y: 1})
-      %{student: student}
-    end
-
-    setup [:create_lesson_active, :seat_student]
+    setup [:create_lesson_active, :seat_student_with_button]
 
     test "adds and removes student with +/x buttons", %{conn: conn, lesson: lesson} do
       {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/active")
@@ -195,6 +197,23 @@ defmodule ClickrWeb.LessonLiveTest do
 
       live |> element("button", "Add point") |> render_click() =~ "43"
       live |> element("button", "Subtract point") |> render_click() =~ "42"
+    end
+  end
+
+  describe "question" do
+    defp create_lesson_question(%{user: user}) do
+      %{lesson: lesson_fixture(user_id: user.id, state: :question)}
+    end
+
+    setup [:create_lesson_question, :seat_student_with_button, :attend_student]
+
+    test "highlights student that answered", %{conn: conn, lesson: lesson, student: student} do
+      Clickr.Lessons.ActiveQuestion.start(lesson)
+      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/question")
+      refute render(live) =~ "x-answered"
+
+      Clickr.Lessons.ActiveQuestion.answer(lesson, student.id)
+      assert render(live) =~ "x-answered"
     end
   end
 end
