@@ -25,7 +25,7 @@ defmodule ClickrWeb.LessonLive.RollCall do
       </:actions>
     </.header>
 
-    <div class="flex-grow grid gap-2 auto-rows-fr auto-cols-fr">
+    <div class="mt-5 flex-grow grid gap-2 auto-rows-fr auto-cols-fr">
       <div
         :for={seat <- @lesson.seating_plan.seats}
         id={"student-#{seat.student_id}"}
