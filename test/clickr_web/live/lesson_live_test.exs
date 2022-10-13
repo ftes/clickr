@@ -253,7 +253,7 @@ defmodule ClickrWeb.LessonLiveTest do
 
       live
       |> form("#lesson-form", %{lesson: %{grade: %{min: 0.0, max: 100.0}}})
-      |> render_change() =~ "42.0 %"
+      |> render_change() =~ "42%"
     end
 
     test "transitions to graded using input", %{conn: conn, lesson: lesson} do
@@ -276,11 +276,22 @@ defmodule ClickrWeb.LessonLiveTest do
     test "shows initial and updated lesson grade", %{conn: conn, lesson: l, student: s} do
       lesson_grade_fixture(lesson_id: l.id, student_id: s.id, percent: 0.42)
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/graded")
-      assert render(live) =~ "42.0 %"
+      assert render(live) =~ "42%"
 
       assert live
              |> form("#lesson-form", %{lesson: %{grade: %{min: 0.0, max: 42.0}}})
-             |> render_change() =~ "100.0 %"
+             |> render_change() =~ "100%"
+    end
+
+    test "shows overall grade", %{conn: conn, lesson: l, student: s} do
+      lesson_grade_fixture(lesson_id: l.id, student_id: s.id, percent: 0.42)
+      l2 = lesson_fixture(subject_id: l.subject_id)
+      lesson_grade_fixture(lesson_id: l2.id, student_id: s.id, percent: 0.20)
+      Clickr.Grades.calculate_and_save_grade(%{student_id: s.id, subject_id: l.subject_id})
+
+      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/graded")
+      assert render(live) =~ "31%"
+      assert render(live) =~ "5-"
     end
   end
 end

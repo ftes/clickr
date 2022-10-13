@@ -30,7 +30,7 @@ defmodule ClickrWeb.LessonLive.RollCall do
         :for={seat <- @lesson.seating_plan.seats}
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-        class={"relative group flex-row items-center justify-center rounded-lg border border-gray-300 px-1 py-3 shadow-sm #{if MapSet.member?(@answers, seat.student_id), do: "x-answered bg-green-400", else: "bg-white"}"}
+        class={"relative group flex-row items-center justify-center rounded-lg border border-gray-300 p-3 shadow-sm #{if MapSet.member?(@answers, seat.student_id), do: "x-answered bg-green-400", else: "bg-white"}"}
       >
         <p class="flex justify-center text-sm font-medium text-gray-900">
           <%= seat.student.name %>

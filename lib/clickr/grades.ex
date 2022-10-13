@@ -11,8 +11,9 @@ defmodule Clickr.Grades do
   def calculate_linear_grade(%{min: _, max: _, value: _} = attrs),
     do: LinearGrade.calculate(attrs)
 
-  def format(nil), do: nil
-  def format(grade) when is_float(grade), do: "#{Float.round(grade * 100, 0)} %"
+  def format(:percent, nil), do: nil
+  def format(:percent, percent) when is_float(percent), do: "#{round(percent * 100)}%"
+  def format(:german, percent), do: Clickr.Grades.Format.German.format(percent)
 
   alias Clickr.Grades.LessonGrade
 
@@ -124,6 +125,9 @@ defmodule Clickr.Grades do
   def list_grades(opts \\ []) do
     Grade
     |> where_student_user_id(opts[:user_id])
+    |> where_subject_lesson_id(opts[:lesson_id])
+    |> where_student_id(opts[:student_id])
+    |> where_student_ids(opts[:student_ids])
     |> Repo.all()
   end
 
@@ -179,6 +183,39 @@ defmodule Clickr.Grades do
     |> Repo.update()
   end
 
+  def calculate_grade(%{student_id: _, subject_id: _} = args) do
+    query_lesson_grades(args)
+    |> Repo.all()
+    |> Enum.map(& &1.percent)
+    |> average()
+  end
+
+  defp average([]), do: 0.0
+  defp average(percentages), do: Enum.sum(percentages) / length(percentages)
+
+  def calculate_and_save_grade(%{student_id: student_id, subject_id: subject_id} = args) do
+    percent = calculate_grade(args)
+    grade = %Grade{student_id: student_id, subject_id: subject_id, percent: percent}
+
+    {:ok, grade} =
+      Repo.insert(grade,
+        conflict_target: [:student_id, :subject_id],
+        on_conflict: {:replace, [:percent]},
+        returning: true
+      )
+
+    Repo.update_all(query_lesson_grades(args), set: [grade_id: grade.id])
+
+    {:ok, grade}
+  end
+
+  defp query_lesson_grades(%{student_id: stid, subject_id: suid}) do
+    from(lg in LessonGrade,
+      join: l in assoc(lg, :lesson),
+      where: lg.student_id == ^stid and l.subject_id == ^suid
+    )
+  end
+
   @doc """
   Deletes a grade.
 
@@ -208,11 +245,25 @@ defmodule Clickr.Grades do
     Grade.changeset(grade, attrs)
   end
 
+  defp where_student_id(query, nil), do: query
+  defp where_student_id(query, id), do: where(query, [x], x.student_id == ^id)
+
+  defp where_student_ids(query, nil), do: query
+  defp where_student_ids(query, ids), do: where(query, [x], x.student_id in ^ids)
+
   defp where_student_user_id(query, nil), do: query
 
   defp where_student_user_id(query, id) do
     query
     |> join(:inner, [x], s in assoc(x, :student))
     |> where([x, s], s.user_id == ^id)
+  end
+
+  defp where_subject_lesson_id(query, nil), do: query
+
+  defp where_subject_lesson_id(query, id) do
+    query
+    |> join(:inner, [x], s in assoc(x, :subject))
+    |> where([x, s], s.lesson_id == ^id)
   end
 end

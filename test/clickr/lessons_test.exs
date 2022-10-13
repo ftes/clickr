@@ -11,7 +11,8 @@ defmodule Clickr.LessonsTest do
       ClassesFixtures,
       LessonsFixtures,
       RoomsFixtures,
-      SubjectsFixtures
+      SubjectsFixtures,
+      StudentsFixtures
     }
 
     @invalid_attrs %{name: nil, state: nil}
@@ -82,6 +83,24 @@ defmodule Clickr.LessonsTest do
       assert lesson == Lessons.get_lesson!(lesson.id)
     end
 
+    defp seat_student(%{lesson: lesson}) do
+      %{seating_plan_id: spid, button_plan_id: bpid} = lesson
+      %{id: sid} = student = student_fixture(class_id: lesson.class_id)
+      seating_plan_seat_fixture(seating_plan_id: spid, student_id: sid, x: 1, y: 1)
+      button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
+      %{student: student}
+    end
+
+    defp attend_student(%{lesson: lesson, student: student} = opts) do
+      lesson_student_fixture(
+        lesson_id: lesson.id,
+        student_id: student.id,
+        extra_points: opts[:extra_points] || 0
+      )
+
+      %{}
+    end
+
     test "transition_lesson/2 with valid data moves lesson through entire lifecycle" do
       lesson = lesson_fixture()
       {:ok, lesson} = Lessons.transition_lesson(lesson, :roll_call)
@@ -95,10 +114,7 @@ defmodule Clickr.LessonsTest do
 
     test "transition_lesson roll_call -> active saves lesson_students" do
       lesson = lesson_fixture(state: :roll_call)
-      %{seating_plan_id: spid, button_plan_id: bpid} = lesson
-      %{id: sid} = Clickr.StudentsFixtures.student_fixture(class_id: lesson.class_id)
-      seating_plan_seat_fixture(seating_plan_id: spid, student_id: sid, x: 1, y: 1)
-      button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
+      %{student: %{id: sid}} = seat_student(%{lesson: lesson})
 
       Lessons.ActiveQuestion.answer(lesson, sid)
       {:ok, _} = Lessons.transition_lesson(lesson, :active)
@@ -107,11 +123,8 @@ defmodule Clickr.LessonsTest do
 
     test "transition_lesson question -> active saves question_answers" do
       lesson = lesson_fixture(state: :question)
-      %{seating_plan_id: spid, button_plan_id: bpid} = lesson
-      %{id: sid} = Clickr.StudentsFixtures.student_fixture(class_id: lesson.class_id)
-      seating_plan_seat_fixture(seating_plan_id: spid, student_id: sid, x: 1, y: 1)
-      button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
-      lesson_student_fixture(lesson_id: lesson.id, student_id: sid)
+      %{student: %{id: sid} = student} = seat_student(%{lesson: lesson})
+      attend_student(%{lesson: lesson, student: student})
 
       Lessons.ActiveQuestion.answer(lesson, sid)
       {:ok, _} = Lessons.transition_lesson(lesson, :active)
@@ -120,11 +133,20 @@ defmodule Clickr.LessonsTest do
                Lessons.list_questions(lesson_id: lesson.id) |> Clickr.Repo.preload(:answers)
     end
 
-    test "transition_lesson ended -> graded stores grade" do
-      lesson = lesson_fixture(state: :ended)
+    test "transition_lesson ended -> graded stores grade, lesson grades and updates grade" do
+      %{id: lid} = lesson = lesson_fixture(state: :ended)
+      %{student: %{id: sid} = student} = seat_student(%{lesson: lesson})
+      attend_student(%{lesson: lesson, student: student, extra_points: 15})
+      question = question_fixture(lesson_id: lesson.id, points: 1)
+      question_answer_fixture(question_id: question.id, student_id: sid)
 
       assert {:ok, %{grade: %{min: 10.0, max: 20.0}}} =
                Lessons.transition_lesson(lesson, :graded, %{grade: %{min: 10.0, max: 20.0}})
+
+      assert [%{lesson_id: ^lid, student_id: ^sid, percent: 0.6}] =
+               Clickr.Grades.list_lesson_grades()
+
+      assert [%{student_id: ^sid, percent: 0.6}] = Clickr.Grades.list_grades()
     end
 
     test "delete_lesson/1 deletes the lesson" do

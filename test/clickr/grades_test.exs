@@ -128,4 +128,39 @@ defmodule Clickr.GradesTest do
       assert %Ecto.Changeset{} = Grades.change_grade(grade)
     end
   end
+
+  describe "calculate_grade" do
+    import Clickr.{GradesFixtures, LessonsFixtures, StudentsFixtures, SubjectsFixtures}
+
+    defp create_lesson_grades(_) do
+      subject = subject_fixture()
+      student = student_fixture()
+      lesson_1 = lesson_fixture(subject_id: subject.id)
+      lesson_2 = lesson_fixture(subject_id: subject.id)
+      lesson_grade_fixture(lesson_id: lesson_1.id, student_id: student.id, percent: 0.1)
+      lesson_grade_fixture(lesson_id: lesson_2.id, student_id: student.id, percent: 0.3)
+      %{student: student, subject: subject}
+    end
+
+    setup :create_lesson_grades
+
+    test "calculate_grade/1 returns average", %{student: %{id: stid}, subject: %{id: suid}} do
+      assert 0.2 == Grades.calculate_grade(%{student_id: stid, subject_id: suid})
+    end
+
+    test "creates new grade", %{student: %{id: stid}, subject: %{id: suid}} do
+      assert {:ok, grade} = Grades.calculate_and_save_grade(%{student_id: stid, subject_id: suid})
+
+      assert [%{subject_id: ^suid, student_id: ^stid, percent: 0.2}] = Grades.list_grades()
+      assert [_, _] = Clickr.Repo.preload(grade, :lesson_grades).lesson_grades
+    end
+
+    test "updates existing grade", %{student: %{id: stid}, subject: %{id: suid}} do
+      grade_fixture(student_id: stid, subject_id: suid, percent: 0.42)
+      assert {:ok, grade} = Grades.calculate_and_save_grade(%{student_id: stid, subject_id: suid})
+
+      assert [%{subject_id: ^suid, student_id: ^stid, percent: 0.2}] = Grades.list_grades()
+      assert [_, _] = Clickr.Repo.preload(grade, :lesson_grades).lesson_grades
+    end
+  end
 end

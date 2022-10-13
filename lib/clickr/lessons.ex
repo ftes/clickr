@@ -140,6 +140,8 @@ defmodule Clickr.Lessons do
   def transition_lesson(%Lesson{state: :active} = lesson, :ended = new_state),
     do: Repo.update(Lesson.changeset(lesson, %{state: new_state}))
 
+  alias Clickr.Grades
+
   def transition_lesson(%Lesson{state: old_state} = lesson, :graded, attrs \\ %{})
       when old_state in [:ended, :graded] do
     lesson = Repo.preload(lesson, [:lesson_students, :grades])
@@ -148,7 +150,7 @@ defmodule Clickr.Lessons do
     %{min: min, max: max} = change_lesson(lesson, attrs) |> Ecto.Changeset.get_field(:grade)
 
     calc_grade = fn sid ->
-      Clickr.Grades.calculate_linear_grade(%{min: min, max: max, value: points[sid]})
+      Grades.calculate_linear_grade(%{min: min, max: max, value: points[sid]})
     end
 
     grades =
@@ -160,7 +162,14 @@ defmodule Clickr.Lessons do
       |> Lesson.changeset(attrs)
       |> Lesson.changeset(%{grades: grades})
 
-    Repo.update(changeset)
+    with {:ok, _} = res <- Repo.update(changeset) do
+      suid = lesson.subject_id
+
+      for ls <- lesson.lesson_students,
+          do: Grades.calculate_and_save_grade(%{subject_id: suid, student_id: ls.student_id})
+
+      res
+    end
   end
 
   defp add_state_graded(attrs, first_key) when is_atom(first_key),

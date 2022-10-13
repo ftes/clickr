@@ -5,6 +5,7 @@ defmodule Clickr.Grades.Grade do
     field :percent, :float
     belongs_to :student, Clickr.Students.Student
     belongs_to :subject, Clickr.Subjects.Subject
+    has_many :lesson_grades, Clickr.Grades.LessonGrade
 
     timestamps(type: :utc_datetime)
   end

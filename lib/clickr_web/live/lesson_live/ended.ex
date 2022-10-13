@@ -43,17 +43,25 @@ defmodule ClickrWeb.LessonLive.Ended do
         :for={seat <- @lesson.seating_plan.seats}
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-        class="relative group flex-row items-center justify-center rounded-lg border border-gray-300 px-1 py-3 shadow-sm bg-white"
+        class="relative group flex-row items-center justify-center rounded-lg border border-gray-300 p-3 shadow-sm bg-white"
       >
         <p class={"flex justify-center text-sm font-medium  #{if MapSet.member?(@student_ids, seat.student_id), do: "x-attending text-gray-900", else: "text-gray-400"}"}>
           <%= seat.student.name %>
         </p>
-        <div class={"grid grid-cols-2 #{unless MapSet.member?(@student_ids, seat.student_id), do: "invisible"}"}>
+        <div class={"flex justify-between text-zinc-600 text-sm #{unless MapSet.member?(@student_ids, seat.student_id), do: "invisible"}"}>
           <span class="flex justify-center"><%= @points[seat.student_id] || 0 %></span>
           <span class="flex justify-center">
             <%= Grades.format(
+              :percent,
               @new_lesson_grades[seat.student_id] || @old_lesson_grades[seat.student_id] || 0.0
             ) %>
+          </span>
+          <span
+            :if={@lesson.state == :graded}
+            class="flex justify-center"
+            title={Grades.format(:percent, @grades[seat.student_id] || 0.0)}
+          >
+            <%= Grades.format(:german, @grades[seat.student_id] || 0.0) %>
           </span>
         </div>
       </div>
@@ -107,13 +115,17 @@ defmodule ClickrWeb.LessonLive.Ended do
         seating_plan: [seats: :student]
       ])
 
+    student_ids = Enum.map(lesson.lesson_students, & &1.student_id)
+    grades = Clickr.Grades.list_grades(subject_id: lesson.subject_id, student_ids: student_ids)
+
     socket
     |> assign(:lesson, lesson)
     |> assign(:changeset, Lessons.change_lesson(lesson, %{}))
-    |> assign(:student_ids, MapSet.new(lesson.lesson_students, & &1.student_id))
+    |> assign(:student_ids, MapSet.new(student_ids))
     |> assign(:points, Lessons.get_lesson_points(lesson))
     |> assign_old_lesson_grades()
     |> assign_new_lesson_grades()
+    |> assign(:grades, Map.new(grades, &{&1.student_id, &1.percent}))
   end
 
   defp assign_old_lesson_grades(socket) do

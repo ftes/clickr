@@ -1,12 +1,29 @@
 <.header>
-  Grade <%= @grade.id %>
+  Grade
   <:subtitle>This is a grade record from your database.</:subtitle>
 </.header>
 
 <.list>
   <:item title="Student"><%= @grade.student.name %></:item>
   <:item title="Subject"><%= @grade.subject.name %></:item>
-  <:item title="Percent"><%= Clickr.Grades.format(@grade.percent) %></:item>
+  <:item title="Grade"><%= Clickr.Grades.format(:german, @grade.percent) %></:item>
+  <:item title="Percent"><%= Clickr.Grades.format(:percent, @grade.percent) %></:item>
 </.list>
+
+<.table
+  id="lesson-grades"
+  compact
+  rows={@grade.lesson_grades}
+  row_click={&JS.navigate(~p"/lessons/#{&1.lesson_id}/router")}
+>
+  <:col :let={lg} label="Lesson"><%= lg.lesson.name %></:col>
+  <:col :let={lg} label="Date"><%= Timex.format!(lg.lesson.inserted_at, "{D}.{M}.") %></:col>
+  <:col :let={lg} label="Percent"><%= Clickr.Grades.format(:percent, lg.percent) %></:col>
+  <:action :let={lg}>
+    <div class="sr-only">
+      <.link navigate={~p"/lessons/#{lg.lesson_id}/router"}>Show</.link>
+    </div>
+  </:action>
+</.table>
 
 <.back navigate={~p"/grades"}>Back to grades</.back>

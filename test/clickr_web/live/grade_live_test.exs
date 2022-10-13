@@ -19,18 +19,23 @@ defmodule ClickrWeb.GradeLiveTest do
       {:ok, _index_live, html} = live(conn, ~p"/grades")
 
       assert html =~ "Listing Grades"
-      assert html =~ "42.0 %"
+      # 42%
+      assert html =~ "5+"
     end
   end
 
   describe "Show" do
     setup [:create_grade]
 
-    test "displays grade", %{conn: conn, grade: grade} do
+    @tag :inspect
+    test "displays grade and lesson grades", %{conn: conn, grade: grade} do
+      lesson_grade_fixture(grade_id: grade.id, percent: 0.18)
       {:ok, _show_live, html} = live(conn, ~p"/grades/#{grade}")
 
       assert html =~ "Show Grade"
-      assert html =~ "42.0 %"
+      assert html =~ "42%"
+      assert html =~ "5+"
+      assert html =~ "18%"
     end
   end
 end
