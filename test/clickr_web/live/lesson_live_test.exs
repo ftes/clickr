@@ -2,7 +2,7 @@ defmodule ClickrWeb.LessonLiveTest do
   use ClickrWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Clickr.{ClassesFixtures, LessonsFixtures, StudentsFixtures}
+  import Clickr.{ClassesFixtures, LessonsFixtures, RoomsFixtures, StudentsFixtures}
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
@@ -156,8 +156,9 @@ defmodule ClickrWeb.LessonLiveTest do
 
     test "highlights student that answered", %{conn: conn, lesson: lesson} do
       %{id: sid} = student_fixture(class_id: lesson.class_id)
-      spid = lesson.seating_plan_id
+      %{seating_plan_id: spid, button_plan_id: bpid} = lesson
       seating_plan_seat_fixture(%{seating_plan_id: spid, student_id: sid, x: 1, y: 1})
+      button_plan_seat_fixture(%{button_plan_id: bpid, x: 1, y: 1})
 
       {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/roll_call")
       refute render(live) =~ "x-answered"

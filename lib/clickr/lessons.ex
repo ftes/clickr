@@ -8,7 +8,10 @@ defmodule Clickr.Lessons do
 
   alias Clickr.Lessons.{ActiveQuestion, Lesson, Question}
 
-  def get_button_mapping(%Lesson{} = lesson), do: Clickr.Lessons.ButtonMapping.get(lesson)
+  def get_button_mapping(%Lesson{} = lesson), do: Clickr.Lessons.ButtonMapping.get_mapping(lesson)
+
+  def get_button_mapping_whitelist(%Lesson{} = lesson),
+    do: Clickr.Lessons.ButtonMapping.get_whitelist(lesson)
 
   @doc """
   Returns the list of lessons.

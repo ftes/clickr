@@ -1,5 +1,5 @@
 defmodule Clickr.Lessons.ButtonMapping do
-  def get(%{seating_plan_id: spid, button_plan_id: bpid}) do
+  def get_mapping(%{seating_plan_id: spid, button_plan_id: bpid}) do
     sp = Clickr.Classes.get_seating_plan!(spid) |> Clickr.Repo.preload(:seats)
     bp = Clickr.Rooms.get_button_plan!(bpid) |> Clickr.Repo.preload(:seats)
     xy_to_student = Map.new(sp.seats, &{{&1.x, &1.y}, &1.student_id})
@@ -10,4 +10,11 @@ defmodule Clickr.Lessons.ButtonMapping do
         into: %{},
         do: {bid, sid}
   end
+
+  def get_whitelist(%{state: :question} = lesson) do
+    lesson = Clickr.Repo.preload(lesson, :lesson_students)
+    Enum.map(lesson.lesson_students, & &1.student_id)
+  end
+
+  def get_whitelist(_), do: :all
 end
