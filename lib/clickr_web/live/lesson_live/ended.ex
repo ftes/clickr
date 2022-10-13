@@ -15,6 +15,8 @@ defmodule ClickrWeb.LessonLive.Ended do
         </:actions>
       </.header>
 
+      <.input field={{f, :state}} type="hidden" value="graded" />
+
       <%= for grade_f <- inputs_for(f, :grade) do %>
         <.input
           field={{grade_f, :min}}
@@ -49,7 +51,9 @@ defmodule ClickrWeb.LessonLive.Ended do
         <div class={"grid grid-cols-2 #{unless MapSet.member?(@student_ids, seat.student_id), do: "invisible"}"}>
           <span class="flex justify-center"><%= @points[seat.student_id] || 0 %></span>
           <span class="flex justify-center">
-            <%= Grades.format(@lesson_grades[seat.student_id] || 0.0) %>
+            <%= Grades.format(
+              @new_lesson_grades[seat.student_id] || @old_lesson_grades[seat.student_id] || 0.0
+            ) %>
           </span>
         </div>
       </div>
@@ -73,7 +77,7 @@ defmodule ClickrWeb.LessonLive.Ended do
 
   @impl true
   def handle_event("submit", %{"lesson" => lesson_params}, socket) do
-    {:ok, l} = Lessons.transition_lesson(socket.assigns.lesson, :graded, lesson_params)
+    {:ok, _} = Lessons.transition_lesson(socket.assigns.lesson, :graded, lesson_params)
 
     {:noreply,
      socket
@@ -90,36 +94,47 @@ defmodule ClickrWeb.LessonLive.Ended do
     {:noreply,
      socket
      |> assign(:changeset, changeset)
-     |> assign_lesson_grades()}
+     |> assign_new_lesson_grades()}
   end
 
   defp assign_lesson_and_related(socket, id \\ nil) do
     lesson =
       Lessons.get_lesson!(id || socket.assigns.lesson.id)
-      |> Clickr.Repo.preload([:lesson_students, :questions, seating_plan: [seats: :student]])
+      |> Clickr.Repo.preload([
+        :lesson_students,
+        :questions,
+        :grades,
+        seating_plan: [seats: :student]
+      ])
 
     socket
     |> assign(:lesson, lesson)
     |> assign(:changeset, Lessons.change_lesson(lesson, %{}))
     |> assign(:student_ids, MapSet.new(lesson.lesson_students, & &1.student_id))
     |> assign(:points, Lessons.get_lesson_points(lesson))
-    |> assign_lesson_grades()
+    |> assign_old_lesson_grades()
+    |> assign_new_lesson_grades()
   end
 
-  defp assign_lesson_grades(socket) do
+  defp assign_old_lesson_grades(socket) do
+    grades = socket.assigns.lesson.grades
+    assign(socket, :old_lesson_grades, Map.new(grades, &{&1.student_id, &1.percent}))
+  end
+
+  defp assign_new_lesson_grades(socket) do
     %{lesson: lesson, points: points, changeset: changeset} = socket.assigns
 
-    case Ecto.Changeset.get_field(changeset, :grade) do
-      %{min: min, max: max} ->
-        grades =
-          Map.new(lesson.lesson_students, fn %{student_id: sid} ->
-            {sid, Grades.calculate_linear_grade(%{min: min, max: max, value: points[sid]})}
-          end)
+    grades =
+      if changeset.changes[:grade] do
+        %{min: min, max: max} = Ecto.Changeset.get_field(changeset, :grade)
 
-        assign(socket, :lesson_grades, grades)
+        for %{student_id: sid} <- lesson.lesson_students,
+            into: %{},
+            do: {sid, Grades.calculate_linear_grade(%{min: min, max: max, value: points[sid]})}
+      else
+        %{}
+      end
 
-      _ ->
-        assign(socket, :lesson_grades, %{})
-    end
+    assign(socket, :new_lesson_grades, grades)
   end
 end

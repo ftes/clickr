@@ -13,6 +13,7 @@ defmodule Clickr.Lessons.Lesson do
     belongs_to :seating_plan, Clickr.Classes.SeatingPlan
     has_many :lesson_students, Clickr.Lessons.LessonStudent
     has_many :questions, Clickr.Lessons.Question
+    has_many :grades, Clickr.Grades.LessonGrade, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
@@ -90,6 +91,7 @@ defmodule Clickr.Lessons.Lesson do
       name: :seating_plan_matches_class,
       message: "does not match class"
     )
+    |> cast_assoc(:grades)
   end
 
   defp changeset_graded(lesson, attrs) do

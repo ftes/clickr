@@ -2,7 +2,14 @@ defmodule ClickrWeb.LessonLiveTest do
   use ClickrWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Clickr.{ClassesFixtures, LessonsFixtures, RoomsFixtures, StudentsFixtures}
+
+  import Clickr.{
+    ClassesFixtures,
+    GradesFixtures,
+    LessonsFixtures,
+    RoomsFixtures,
+    StudentsFixtures
+  }
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
@@ -135,7 +142,6 @@ defmodule ClickrWeb.LessonLiveTest do
   describe "State detail pages" do
     setup [:create_lesson]
 
-    @tag :inspect
     test "action buttons transition lesson through entire lifecycle", %{
       conn: conn,
       lesson: lesson
@@ -242,6 +248,14 @@ defmodule ClickrWeb.LessonLiveTest do
       assert render(live) =~ "47"
     end
 
+    test "shows new lesson grade", %{conn: conn, lesson: lesson} do
+      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/ended")
+
+      live
+      |> form("#lesson-form", %{lesson: %{grade: %{min: 0.0, max: 100.0}}})
+      |> render_change() =~ "42.0 %"
+    end
+
     test "transitions to graded using input", %{conn: conn, lesson: lesson} do
       {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/ended")
 
@@ -259,9 +273,14 @@ defmodule ClickrWeb.LessonLiveTest do
 
     setup [:create_lesson_graded, :seat_student_with_button, :attend_student]
 
-    test "shows lesson grade as percentage", %{conn: conn, lesson: lesson} do
-      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/graded")
+    test "shows initial and updated lesson grade", %{conn: conn, lesson: l, student: s} do
+      lesson_grade_fixture(lesson_id: l.id, student_id: s.id, percent: 0.42)
+      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/graded")
       assert render(live) =~ "42.0 %"
+
+      assert live
+             |> form("#lesson-form", %{lesson: %{grade: %{min: 0.0, max: 42.0}}})
+             |> render_change() =~ "100.0 %"
     end
   end
 end

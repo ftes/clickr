@@ -142,15 +142,31 @@ defmodule Clickr.Lessons do
 
   def transition_lesson(%Lesson{state: old_state} = lesson, :graded, attrs \\ %{})
       when old_state in [:ended, :graded] do
-    [first_key | _] = Map.keys(attrs)
+    lesson = Repo.preload(lesson, [:lesson_students, :grades])
+    attrs = add_state_graded(attrs, Enum.at(Map.keys(attrs), 0))
+    points = get_lesson_points(lesson)
+    %{min: min, max: max} = change_lesson(lesson, attrs) |> Ecto.Changeset.get_field(:grade)
 
-    attrs =
-      if is_atom(first_key),
-        do: Map.put(attrs, :state, :graded),
-        else: Map.put(attrs, "state", "graded")
+    calc_grade = fn sid ->
+      Clickr.Grades.calculate_linear_grade(%{min: min, max: max, value: points[sid]})
+    end
 
-    Repo.update(Lesson.changeset(lesson, attrs))
+    grades =
+      for %{student_id: sid} <- lesson.lesson_students,
+          do: %{student_id: sid, percent: calc_grade.(sid)}
+
+    changeset =
+      lesson
+      |> Lesson.changeset(attrs)
+      |> Lesson.changeset(%{grades: grades})
+
+    Repo.update(changeset)
   end
+
+  defp add_state_graded(attrs, first_key) when is_atom(first_key),
+    do: Map.put(attrs, :state, :graded)
+
+  defp add_state_graded(attrs, _), do: Map.put(attrs, "state", "graded")
 
   @doc """
   Deletes a lesson.
