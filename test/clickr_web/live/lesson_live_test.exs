@@ -168,7 +168,6 @@ defmodule ClickrWeb.LessonLiveTest do
     setup [:create_lesson_roll_call, :seat_student_with_button]
 
     test "highlights student that answered", %{conn: conn, lesson: lesson, student: student} do
-      Clickr.Lessons.ActiveQuestion.start(lesson)
       {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/roll_call")
       refute render(live) =~ "x-answered"
 
@@ -198,6 +197,15 @@ defmodule ClickrWeb.LessonLiveTest do
       live |> element("button", "Add point") |> render_click() =~ "43"
       live |> element("button", "Subtract point") |> render_click() =~ "42"
     end
+
+    test "shows extra points + question points", %{conn: conn, lesson: lesson, student: student} do
+      lesson_student_fixture(lesson_id: lesson.id, student_id: student.id, extra_points: 42)
+      question = question_fixture(lesson_id: lesson.id, points: 5)
+      question_answer_fixture(question_id: question.id, student_id: student.id)
+
+      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/active")
+      assert render(live) =~ "47"
+    end
   end
 
   describe "question" do
@@ -208,7 +216,6 @@ defmodule ClickrWeb.LessonLiveTest do
     setup [:create_lesson_question, :seat_student_with_button, :attend_student]
 
     test "highlights student that answered", %{conn: conn, lesson: lesson, student: student} do
-      Clickr.Lessons.ActiveQuestion.start(lesson)
       {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/question")
       refute render(live) =~ "x-answered"
 

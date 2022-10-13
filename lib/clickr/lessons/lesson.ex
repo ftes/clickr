@@ -11,6 +11,7 @@ defmodule Clickr.Lessons.Lesson do
     belongs_to :button_plan, Clickr.Rooms.ButtonPlan
     belongs_to :seating_plan, Clickr.Classes.SeatingPlan
     has_many :lesson_students, Clickr.Lessons.LessonStudent
+    has_many :questions, Clickr.Lessons.Question
 
     timestamps(type: :utc_datetime)
   end

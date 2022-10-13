@@ -44,6 +44,15 @@ defmodule Clickr.Lessons do
   """
   def get_lesson!(id), do: Repo.get!(Lesson, id)
 
+  def get_lesson_points(%Lesson{} = lesson) do
+    lesson = Repo.preload(lesson, [:lesson_students, questions: :answers])
+    extra_points = Map.new(lesson.lesson_students, &{&1.student_id, &1.extra_points})
+
+    for question <- lesson.questions, answer <- question.answers, reduce: extra_points do
+      points -> Map.update(points, answer.student_id, question.points, &(&1 + question.points))
+    end
+  end
+
   @doc """
   Creates a lesson.
 
@@ -438,6 +447,14 @@ defmodule Clickr.Lessons do
     lesson_student
     |> LessonStudent.changeset(attrs)
     |> Repo.update()
+  end
+
+  def add_extra_points(%{lesson_id: lid, student_id: sid}, delta) do
+    {1, _} =
+      from(ls in LessonStudent, where: ls.lesson_id == ^lid and ls.student_id == ^sid)
+      |> Repo.update_all(inc: [extra_points: delta])
+
+    {:ok, nil}
   end
 
   @doc """

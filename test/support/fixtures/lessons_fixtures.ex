@@ -67,7 +67,7 @@ defmodule Clickr.LessonsFixtures do
     {:ok, lesson_student} =
       attrs
       |> Enum.into(%{
-        extra_points: 42
+        extra_points: 0
       })
       |> Map.put_new(:lesson_id, lesson_fixture().id)
       |> Map.put_new(:student_id, Clickr.StudentsFixtures.student_fixture().id)

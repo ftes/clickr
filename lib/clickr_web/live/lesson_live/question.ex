@@ -134,14 +134,14 @@ defmodule ClickrWeb.LessonLive.Question do
   end
 
   def handle_event("add_point", %{"student_id" => student_id}, socket) do
-    ls = Enum.find(socket.assigns.lesson.lesson_students, &(&1.student_id == student_id))
-    {:ok, _} = Lessons.update_lesson_student(ls, %{extra_points: ls.extra_points + 1})
+    lesson = socket.assigns.lesson
+    {:ok, _} = Lessons.add_extra_points(%{lesson_id: lesson.id, student_id: student_id}, 1)
     {:noreply, assign_lesson_and_related(socket, socket.assigns.lesson)}
   end
 
   def handle_event("subtract_point", %{"student_id" => student_id}, socket) do
-    ls = Enum.find(socket.assigns.lesson.lesson_students, &(&1.student_id == student_id))
-    {:ok, _} = Lessons.update_lesson_student(ls, %{extra_points: ls.extra_points - 1})
+    lesson = socket.assigns.lesson
+    {:ok, _} = Lessons.add_extra_points(%{lesson_id: lesson.id, student_id: student_id}, -1)
     {:noreply, assign_lesson_and_related(socket, socket.assigns.lesson)}
   end
 
@@ -168,8 +168,7 @@ defmodule ClickrWeb.LessonLive.Question do
     socket
     |> assign(:lesson, lesson)
     |> assign(:student_ids, MapSet.new(lesson.lesson_students, & &1.student_id))
-    # TODO Add question points
-    |> assign(:points, Map.new(lesson.lesson_students, &{&1.student_id, &1.extra_points}))
+    |> assign(:points, Lessons.get_lesson_points(lesson))
   end
 
   defp load_answers(%{assigns: %{lesson: %{state: :question} = lesson}} = socket) do

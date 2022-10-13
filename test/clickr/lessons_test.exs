@@ -99,7 +99,6 @@ defmodule Clickr.LessonsTest do
       seating_plan_seat_fixture(seating_plan_id: spid, student_id: sid, x: 1, y: 1)
       button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
 
-      Lessons.ActiveQuestion.start(lesson)
       Lessons.ActiveQuestion.answer(lesson, sid)
       {:ok, _} = Lessons.transition_lesson(lesson, :active)
       assert [%{student_id: ^sid}] = Lessons.list_lesson_students(lesson_id: lesson.id)
@@ -113,7 +112,6 @@ defmodule Clickr.LessonsTest do
       button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
       lesson_student_fixture(lesson_id: lesson.id, student_id: sid)
 
-      Lessons.ActiveQuestion.start(lesson)
       Lessons.ActiveQuestion.answer(lesson, sid)
       {:ok, _} = Lessons.transition_lesson(lesson, :active)
 
@@ -311,6 +309,50 @@ defmodule Clickr.LessonsTest do
     test "change_lesson_student/1 returns a lesson_student changeset" do
       lesson_student = lesson_student_fixture()
       assert %Ecto.Changeset{} = Lessons.change_lesson_student(lesson_student)
+    end
+  end
+
+  describe "get_lesson_points/1" do
+    import Clickr.{LessonsFixtures, StudentsFixtures}
+
+    defp create_lesson(_) do
+      %{lesson: lesson_fixture()}
+    end
+
+    defp create_students_in_lesson(%{lesson: lesson}) do
+      student_1 = student_fixture(class_id: lesson.class_id)
+      student_2 = student_fixture(class_id: lesson.class_id)
+      lesson_student_fixture(lesson_id: lesson.id, student_id: student_1.id)
+      lesson_student_fixture(lesson_id: lesson.id, student_id: student_2.id)
+
+      %{student_1: student_1, student_2: student_2}
+    end
+
+    setup [:create_lesson, :create_students_in_lesson]
+
+    test "uses extra points", %{lesson: l, student_1: %{id: s1id}, student_2: %{id: s2id}} do
+      Lessons.add_extra_points(%{lesson_id: l.id, student_id: s1id}, 5)
+      Lessons.add_extra_points(%{lesson_id: l.id, student_id: s2id}, 10)
+
+      assert %{^s1id => 5, ^s2id => 10} = Lessons.get_lesson_points(l)
+    end
+
+    test "uses question answers", %{lesson: l, student_1: %{id: s1id}, student_2: %{id: s2id}} do
+      q = question_fixture(lesson_id: l.id, points: 3)
+      question_answer_fixture(question_id: q.id, student_id: s1id)
+      q = question_fixture(lesson_id: l.id, points: 5)
+      question_answer_fixture(question_id: q.id, student_id: s1id)
+      question_answer_fixture(question_id: q.id, student_id: s2id)
+
+      assert %{^s1id => 8, ^s2id => 5} = Lessons.get_lesson_points(l)
+    end
+
+    test "sums up extra points and question answers", %{lesson: l, student_1: %{id: s1id}} do
+      Lessons.add_extra_points(%{lesson_id: l.id, student_id: s1id}, 5)
+      q = question_fixture(lesson_id: l.id, points: 3)
+      question_answer_fixture(question_id: q.id, student_id: s1id)
+
+      assert %{^s1id => 8} = Lessons.get_lesson_points(l)
     end
   end
 end
