@@ -71,7 +71,7 @@ defmodule ClickrWeb.Router do
     live_session :require_authenticated_user,
       on_mount: [
         {ClickrWeb.UserAuth, :ensure_authenticated},
-        {ClickrWeb.GatewayPresence, :load_and_subscribe}
+        ClickrWeb.GatewayPresence
       ] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email

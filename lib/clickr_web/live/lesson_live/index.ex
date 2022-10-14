@@ -1,6 +1,5 @@
 defmodule ClickrWeb.LessonLive.Index do
   use ClickrWeb, :live_view
-  use ClickrWeb.GatewayPresence
 
   alias Clickr.Lessons
   alias Clickr.Lessons.Lesson
