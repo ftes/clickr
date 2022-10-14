@@ -7,7 +7,7 @@ processes = []
 release_command = "/app/bin/migrate"
 
 [env]
-PHX_HOST = "clickr-new.fly.dev"
+PHX_HOST = "new.klassenknopf.de"
 PORT = "8080"
 
 [experimental]
