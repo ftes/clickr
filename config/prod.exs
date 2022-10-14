@@ -50,3 +50,5 @@ config :logger, level: :info
 
 # Disable in production for now
 config :swoosh, :api_client, false
+
+config :gettext, :default_locale, "de"
