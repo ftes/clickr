@@ -34,7 +34,7 @@
     :for={seat <- @button_plan.seats}
     id={"button-#{seat.button_id}"}
     style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-    class={"cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 px-4 py-3 shadow-sm hover:border-gray-400 #{if MapSet.member?(@active, seat.button_id), do: "x-active bg-green-400", else: "bg-white"}"}
+    class={"cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 p-3 shadow-sm hover:border-gray-400 #{if MapSet.member?(@active, seat.button_id), do: "x-active bg-green-400", else: "bg-white"}"}
     draggable="true"
     data={[x: seat.x, y: seat.y, id: seat.button_id]}
     x-on:dragstart.self="
@@ -44,11 +44,11 @@
     "
     x-on:dragend.self="dragging = false"
   >
-    <p class="flex-1 text-sm font-medium text-gray-900">
+    <p class="flex-1 overflow-hidden text-ellipsis text-sm font-medium text-gray-900">
       <%= seat.button.name %>
     </p>
     <button
-      class="flex-shrink-0"
+      class="absolute right-3 top-1 bg-white"
       title={gettext("Remove")}
       phx-click={JS.push("delete_seat", value: %{id: seat.id})}
     >
@@ -77,8 +77,8 @@
     x-on:dragover.self="dragging = $el, console.log(dragging == $el)"
     x-on:dragleave.self="dragging = true"
     x-bind:class="{
-      'bg-green-200': dragging && dragging != $el,
-      'bg-green-400': dragging == $el,
+      '!bg-green-200': dragging && dragging != $el,
+      '!bg-green-400': dragging == $el,
     }"
   >
     <span class="invisible"><%= dgettext("rooms.button_plans", "Empty seat") %></span>

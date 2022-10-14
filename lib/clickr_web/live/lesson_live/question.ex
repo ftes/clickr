@@ -30,12 +30,12 @@ defmodule ClickrWeb.LessonLive.Question do
         :for={seat <- @lesson.seating_plan.seats}
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-        class={"relative group flex-row items-center justify-center rounded-lg border border-gray-300 p-3 shadow-sm #{if MapSet.member?(@answers, seat.student_id), do: "x-answered bg-green-400", else: "bg-white"}"}
+        class={"relative group flex flex-col items-stretch justify-between rounded-lg border border-gray-300 p-3 shadow-sm #{if MapSet.member?(@answers, seat.student_id), do: "x-answered bg-green-400", else: "bg-white"}"}
       >
-        <p class={"flex justify-center text-sm font-medium #{if MapSet.member?(@student_ids, seat.student_id), do: "x-attending text-gray-900", else: "text-gray-400"}"}>
+        <p class={"overflow-hidden text-ellipsis text-sm font-medium text-center #{if MapSet.member?(@student_ids, seat.student_id), do: "x-attending text-gray-900", else: "text-gray-400"}"}>
           <%= seat.student.name %>
         </p>
-        <div class={"flex justify-center x-points #{unless MapSet.member?(@student_ids, seat.student_id), do: "invisible"}"}>
+        <div class={"flex justify-center text-center #{unless MapSet.member?(@student_ids, seat.student_id), do: "invisible"}"}>
           <%= @points[seat.student_id] || 0 %>
         </div>
 
@@ -72,7 +72,7 @@ defmodule ClickrWeb.LessonLive.Question do
           :if={@lesson.state != :question and not MapSet.member?(@student_ids, seat.student.id)}
           title={dgettext("lessons.actions", "Add student")}
           phx-click={JS.push("add_student", value: %{student_id: seat.student.id})}
-          class="absolute inset-0 hidden group-hover:flex bg-green-400/80 items-center justify-center rounded-lg"
+          class="absolute w-full inset-0 hidden group-hover:flex bg-green-400/80 items-center justify-center rounded-lg"
         >
           <span class="sr-only"><%= dgettext("lessons.actions", "Add student") %></span>
           <Heroicons.plus class="w-8 h-8" />

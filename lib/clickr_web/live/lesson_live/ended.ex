@@ -45,9 +45,9 @@ defmodule ClickrWeb.LessonLive.Ended do
         :for={seat <- @lesson.seating_plan.seats}
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-        class="relative group flex-row items-center justify-center rounded-lg border border-gray-300 p-3 shadow-sm bg-white"
+        class="relative group flex flex-col items-stretch justify-between rounded-lg border border-gray-300 p-3 shadow-sm bg-white"
       >
-        <p class={"flex justify-center text-sm font-medium  #{if MapSet.member?(@student_ids, seat.student_id), do: "x-attending text-gray-900", else: "text-gray-400"}"}>
+        <p class={"overflow-hidden text-ellipsis text-sm font-medium text-center #{if MapSet.member?(@student_ids, seat.student_id), do: "x-attending text-gray-900", else: "text-gray-400"}"}>
           <%= seat.student.name %>
         </p>
         <div class={"flex justify-between text-zinc-600 text-sm #{unless MapSet.member?(@student_ids, seat.student_id), do: "invisible"}"}>
