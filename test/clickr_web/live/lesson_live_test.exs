@@ -50,7 +50,7 @@ defmodule ClickrWeb.LessonLiveTest do
       Clickr.Presence.track_gateway(%{user_id: user.id, gateway_id: gateway.id})
       {:ok, _index_live, html} = live(conn, ~p"/lessons")
 
-      assert html =~ "1 gateway"
+      assert html =~ "1 Gateway"
     end
 
     test "saves new lesson", %{conn: conn, lesson: lesson} do

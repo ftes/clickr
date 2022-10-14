@@ -1,9 +1,22 @@
 defmodule ClickrWeb.GatewayPresence do
   use ClickrWeb, :component
 
+  @spec render(any) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
     ~H"""
-    <div :if={@present_gateways} class="hidden"><%= length(@present_gateways) %> gateways</div>
+    <div
+      :if={@present_gateways}
+      class="relative flex h-5 w-5 items-center justify-center"
+      title={"#{length(@present_gateways)} #{dgettext("devices.gateways", "Gateways")}"}
+    >
+      <span
+        :if={length(@present_gateways) == 0}
+        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+      >
+      </span>
+      <span class={"relative inline-flex rounded-full h-3 w-3 #{if length(@present_gateways) > 0, do: "bg-green-500", else: "bg-red-500"}"}>
+      </span>
+    </div>
     """
   end
 
