@@ -75,4 +75,4 @@ msgstr "Klasse anzeigen"
 #: lib/clickr_web/templates/layout/root.html.heex:9
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Classes"
-msgstr "Klasse"
+msgstr "Klassen"

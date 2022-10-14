@@ -82,4 +82,4 @@ msgstr "Schüler"
 #: lib/clickr_web/templates/layout/root.html.heex:10
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Seating plans"
-msgstr "Sitzplan"
+msgstr "Sitzpläne"
