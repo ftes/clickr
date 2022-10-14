@@ -71,6 +71,7 @@ defmodule ClickrWeb.Router do
     live_session :require_authenticated_user,
       on_mount: [
         {ClickrWeb.UserAuth, :ensure_authenticated},
+        ClickrWeb.Menu,
         ClickrWeb.GatewayPresence
       ] do
       live "/users/settings", UserSettingsLive, :edit

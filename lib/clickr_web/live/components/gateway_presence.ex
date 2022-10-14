@@ -1,5 +1,5 @@
 defmodule ClickrWeb.GatewayPresence do
-  use Phoenix.Component
+  use ClickrWeb, :component
 
   def render(assigns) do
     ~H"""
@@ -10,12 +10,10 @@ defmodule ClickrWeb.GatewayPresence do
   def on_mount(:default, _params, _session, socket) do
     Clickr.PubSub.subscribe(presence_topic(socket))
 
-    socket =
-      socket
-      |> load_present_gateways()
-      |> Phoenix.LiveView.attach_hook(:load_present_gateways, :handle_info, &handle_info/2)
-
-    {:cont, socket}
+    {:cont,
+     socket
+     |> load_present_gateways()
+     |> Phoenix.LiveView.attach_hook(:load_present_gateways, :handle_info, &handle_info/2)}
   end
 
   defp handle_info(%{event: "presence_diff"}, socket), do: {:cont, load_present_gateways(socket)}
