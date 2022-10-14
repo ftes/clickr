@@ -43,8 +43,8 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" - Clickr">
-      <%= assigns[:page_title] || "Clickr" %>
+    <.live_title suffix=" - Klassenknopf">
+      <%= assigns[:page_title] || "Klassenknopf" %>
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <link rel="icon" href="/favicon.ico" />
