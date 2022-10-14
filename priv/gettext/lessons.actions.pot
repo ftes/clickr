@@ -10,14 +10,14 @@
 msgid ""
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/question.ex:55
-#: lib/clickr_web/live/lesson_live/question.ex:59
+#: lib/clickr_web/live/lesson_live/question.ex:57
+#: lib/clickr_web/live/lesson_live/question.ex:61
 #, elixir-autogen, elixir-format
 msgid "Add point"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/question.ex:73
-#: lib/clickr_web/live/lesson_live/question.ex:77
+#: lib/clickr_web/live/lesson_live/question.ex:75
+#: lib/clickr_web/live/lesson_live/question.ex:79
 #, elixir-autogen, elixir-format
 msgid "Add student"
 msgstr ""
@@ -37,7 +37,7 @@ msgstr ""
 msgid "End Question"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/ended.ex:15
+#: lib/clickr_web/live/lesson_live/ended.ex:17
 #: lib/clickr_web/live/lesson_live/router.ex:47
 #: lib/clickr_web/live/lesson_live/router.ex:48
 #, elixir-autogen, elixir-format
@@ -49,8 +49,8 @@ msgstr ""
 msgid "Note Attendance"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/question.ex:47
-#: lib/clickr_web/live/lesson_live/question.ex:51
+#: lib/clickr_web/live/lesson_live/question.ex:49
+#: lib/clickr_web/live/lesson_live/question.ex:53
 #, elixir-autogen, elixir-format
 msgid "Remove student"
 msgstr ""
@@ -60,7 +60,7 @@ msgstr ""
 msgid "Roll Call"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/index.html.heex:16
+#: lib/clickr_web/live/lesson_live/index.html.heex:18
 #, elixir-autogen, elixir-format
 msgid "Run"
 msgstr ""
@@ -70,8 +70,8 @@ msgstr ""
 msgid "Run lesson"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/question.ex:63
-#: lib/clickr_web/live/lesson_live/question.ex:67
+#: lib/clickr_web/live/lesson_live/question.ex:65
+#: lib/clickr_web/live/lesson_live/question.ex:69
 #, elixir-autogen, elixir-format
 msgid "Subtract point"
 msgstr ""

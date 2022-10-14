@@ -12,7 +12,9 @@
 
 <.list>
   <:item title={dgettext("lessons.lessons", "Name")}><%= @lesson.name %></:item>
-  <:item title={dgettext("lessons.lessons", "State")}><%= @lesson.state %></:item>
+  <:item title={dgettext("lessons.lessons", "State")}>
+    <%= translate_lesson_state(@lesson) %>
+  </:item>
   <:item title={dgettext("lessons.lessons", "Class")}><%= @lesson.class.name %></:item>
   <:item title={dgettext("lessons.lessons", "Subject")}><%= @lesson.subject.name %></:item>
   <:item title={dgettext("lessons.lessons", "Room")}><%= @lesson.room.name %></:item>

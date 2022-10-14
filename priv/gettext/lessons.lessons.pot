@@ -11,13 +11,13 @@ msgid ""
 msgstr ""
 
 #: lib/clickr_web/live/lesson_live/form_component.ex:45
-#: lib/clickr_web/live/lesson_live/show.html.heex:19
+#: lib/clickr_web/live/lesson_live/show.html.heex:21
 #, elixir-autogen, elixir-format
 msgid "Button Plan"
 msgstr ""
 
 #: lib/clickr_web/live/lesson_live/form_component.ex:26
-#: lib/clickr_web/live/lesson_live/show.html.heex:16
+#: lib/clickr_web/live/lesson_live/show.html.heex:18
 #, elixir-autogen, elixir-format
 msgid "Class"
 msgstr ""
@@ -29,17 +29,17 @@ msgstr ""
 msgid "Edit Lesson"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/ended.ex:14
+#: lib/clickr_web/live/lesson_live/ended.ex:16
 #, elixir-autogen, elixir-format
 msgid "Grading..."
 msgstr ""
 
 #: lib/clickr_web/live/lesson_live/ended.ex:11
-#: lib/clickr_web/live/lesson_live/ended.ex:83
+#: lib/clickr_web/live/lesson_live/ended.ex:85
 #: lib/clickr_web/live/lesson_live/question.ex:16
-#: lib/clickr_web/live/lesson_live/question.ex:102
+#: lib/clickr_web/live/lesson_live/question.ex:104
 #: lib/clickr_web/live/lesson_live/roll_call.ex:16
-#: lib/clickr_web/live/lesson_live/roll_call.ex:61
+#: lib/clickr_web/live/lesson_live/roll_call.ex:63
 #: lib/clickr_web/live/lesson_live/show.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Lesson"
@@ -50,7 +50,7 @@ msgstr ""
 msgid "Lesson created successfully"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/ended.ex:95
+#: lib/clickr_web/live/lesson_live/ended.ex:97
 #, elixir-autogen, elixir-format
 msgid "Lesson graded successfully"
 msgstr ""
@@ -66,12 +66,12 @@ msgstr ""
 msgid "Listing Lessons"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/ended.ex:34
+#: lib/clickr_web/live/lesson_live/ended.ex:36
 #, elixir-autogen, elixir-format
 msgid "Maximum"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/ended.ex:25
+#: lib/clickr_web/live/lesson_live/ended.ex:27
 #, elixir-autogen, elixir-format
 msgid "Minimum"
 msgstr ""
@@ -90,13 +90,13 @@ msgid "New Lesson"
 msgstr ""
 
 #: lib/clickr_web/live/lesson_live/form_component.ex:38
-#: lib/clickr_web/live/lesson_live/show.html.heex:18
+#: lib/clickr_web/live/lesson_live/show.html.heex:20
 #, elixir-autogen, elixir-format
 msgid "Room"
 msgstr ""
 
 #: lib/clickr_web/live/lesson_live/form_component.ex:55
-#: lib/clickr_web/live/lesson_live/show.html.heex:22
+#: lib/clickr_web/live/lesson_live/show.html.heex:24
 #, elixir-autogen, elixir-format
 msgid "Seating Plan"
 msgstr ""
@@ -113,7 +113,7 @@ msgid "State"
 msgstr ""
 
 #: lib/clickr_web/live/lesson_live/form_component.ex:32
-#: lib/clickr_web/live/lesson_live/show.html.heex:17
+#: lib/clickr_web/live/lesson_live/show.html.heex:19
 #, elixir-autogen, elixir-format
 msgid "Subject"
 msgstr ""

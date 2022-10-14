@@ -9,7 +9,9 @@ defmodule ClickrWeb.LessonLive.Ended do
     <.simple_form :let={f} phx-submit="submit" phx-change="validate" id="lesson-form" for={@changeset}>
       <.header>
         <%= dgettext("lessons.lessons", "Lesson") %> <%= @lesson.name %>
-        <:subtitle><%= @lesson.state %></:subtitle>
+        <:subtitle>
+          <%= translate_lesson_state(@lesson) %>
+        </:subtitle>
         <:actions>
           <.button phx-disable-with={dgettext("lessons.lessons", "Grading...")}>
             <%= dgettext("lessons.actions", "Grade") %>

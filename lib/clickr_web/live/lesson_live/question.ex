@@ -14,7 +14,9 @@ defmodule ClickrWeb.LessonLive.Question do
 
     <.header>
       <%= dgettext("lessons.lessons", "Lesson") %> <%= @lesson.name %>
-      <:subtitle><%= @lesson.state %></:subtitle>
+      <:subtitle>
+        <%= translate_lesson_state(@lesson) %>
+      </:subtitle>
       <:actions>
         <.button
           :for={{label, state} <- ClickrWeb.LessonLive.Router.transitions(@lesson)}

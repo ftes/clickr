@@ -28,7 +28,8 @@ fly proxy 15432:5432 -a clickr-new-db
 ```
 
 ## Translate
-  *  `mix gettext.extract --merge --locale de`
+  * `mix gettext.extract --merge --locale de`
+  * `mix gettext.extract --merge --locale de`
 
 ## Learn more
 

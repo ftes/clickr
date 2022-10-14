@@ -9,7 +9,9 @@
 
 <.table id="lessons" rows={@lessons} row_click={&JS.navigate(~p"/lessons/#{&1}/router")}>
   <:col :let={lesson} label={dgettext("lessons.lessons", "Name")}><%= lesson.name %></:col>
-  <:col :let={lesson} label={dgettext("lessons.lessons", "State")}><%= lesson.state %></:col>
+  <:col :let={lesson} label={dgettext("lessons.lessons", "State")}>
+    <%= translate_lesson_state(lesson) %>
+  </:col>
   <:action :let={lesson}>
     <div class="sr-only">
       <.link navigate={~p"/lessons/#{lesson}/router"}>
