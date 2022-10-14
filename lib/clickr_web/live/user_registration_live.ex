@@ -45,8 +45,8 @@ defmodule ClickrWeb.UserRegistrationLive do
         />
 
         <:actions>
-          <.button phx-disable-with={dgettext("accounts", "Creating account...")} class="w-full">
-            <%= dgettext("accounts.actions", "Create an account") %>
+          <.button phx-disable-with={dgettext("accounts", "Signing up...")} class="w-full">
+            <%= dgettext("accounts.actions", "Sign up") %>
           </.button>
         </:actions>
       </.simple_form>

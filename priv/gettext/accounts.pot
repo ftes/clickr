@@ -1,0 +1,246 @@
+## This file is a PO Template file.
+##
+## "msgid"s here are often extracted from source code.
+## Add new translations manually only if they're dynamic
+## translations that can't be statically extracted.
+##
+## Run "mix gettext.extract" to bring this file up to
+## date. Leave "msgstr"s empty as changing them here has no
+## effect: edit them in PO (.po) files instead.
+msgid ""
+msgstr ""
+
+#: lib/clickr_web/live/user_settings_live.ex:156
+#, elixir-autogen, elixir-format
+msgid "A link to confirm your email change has been sent to the new address."
+msgstr ""
+
+#: lib/clickr_web/controllers/user_session_controller.ex:8
+#, elixir-autogen, elixir-format
+msgid "Account created successfully!"
+msgstr ""
+
+#: lib/clickr_web/live/user_registration_live.ex:13
+#, elixir-autogen, elixir-format
+msgid "Already registered?"
+msgstr ""
+
+#: lib/clickr_web/live/user_settings_live.ex:8
+#, elixir-autogen, elixir-format
+msgid "Change Email"
+msgstr ""
+
+#: lib/clickr_web/live/user_settings_live.ex:47
+#, elixir-autogen, elixir-format
+msgid "Change Password"
+msgstr ""
+
+#: lib/clickr_web/live/user_settings_live.ex:41
+#: lib/clickr_web/live/user_settings_live.ex:90
+#, elixir-autogen, elixir-format
+msgid "Changing..."
+msgstr ""
+
+#: lib/clickr_web/live/user_confirmation_live.ex:8
+#, elixir-autogen, elixir-format
+msgid "Confirm Account"
+msgstr ""
+
+#: lib/clickr_web/live/user_reset_password_live.ex:32
+#: lib/clickr_web/live/user_settings_live.ex:77
+#, elixir-autogen, elixir-format
+msgid "Confirm new password"
+msgstr ""
+
+#: lib/clickr_web/live/user_confirmation_live.ex:13
+#, elixir-autogen, elixir-format
+msgid "Confirming..."
+msgstr ""
+
+#: lib/clickr_web/live/user_settings_live.ex:36
+#: lib/clickr_web/live/user_settings_live.ex:84
+#, elixir-autogen, elixir-format
+msgid "Current password"
+msgstr ""
+
+#: lib/clickr_web/live/user_login_live.ex:10
+#, elixir-autogen, elixir-format
+msgid "Don't have an account?"
+msgstr ""
+
+#: lib/clickr_web/live/user_confirmation_instructions_live.ex:11
+#: lib/clickr_web/live/user_forgot_password_live.ex:17
+#: lib/clickr_web/live/user_login_live.ex:26
+#: lib/clickr_web/live/user_registration_live.ex:38
+#: lib/clickr_web/live/user_settings_live.ex:26
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr ""
+
+#: lib/clickr_web/live/user_settings_live.ex:108
+#, elixir-autogen, elixir-format
+msgid "Email change link is invalid or it has expired."
+msgstr ""
+
+#: lib/clickr_web/live/user_settings_live.ex:102
+#, elixir-autogen, elixir-format
+msgid "Email changed successfully."
+msgstr ""
+
+#: lib/clickr_web/live/user_forgot_password_live.ex:10
+#: lib/clickr_web/live/user_login_live.ex:41
+#, elixir-autogen, elixir-format
+msgid "Forgot your password?"
+msgstr ""
+
+#: lib/clickr_web/live/user_confirmation_instructions_live.ex:40
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
+msgstr ""
+
+#: lib/clickr_web/live/user_forgot_password_live.ex:41
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system, you will receive instructions to reset your password shortly."
+msgstr ""
+
+#: lib/clickr_web/controllers/user_session_controller.ex:31
+#, elixir-autogen, elixir-format
+msgid "Invalid email or password"
+msgstr ""
+
+#: lib/clickr_web/live/user_login_live.ex:38
+#, elixir-autogen, elixir-format
+msgid "Keep me logged in"
+msgstr ""
+
+#: lib/clickr_web/controllers/user_session_controller.ex:39
+#, elixir-autogen, elixir-format
+msgid "Logged out successfully."
+msgstr ""
+
+#: lib/clickr_web/live/user_reset_password_live.ex:25
+#: lib/clickr_web/live/user_settings_live.ex:70
+#, elixir-autogen, elixir-format
+msgid "New password"
+msgstr ""
+
+#: lib/clickr_web/live/user_registration_live.ex:34
+#: lib/clickr_web/live/user_reset_password_live.ex:19
+#: lib/clickr_web/live/user_settings_live.ex:19
+#: lib/clickr_web/live/user_settings_live.ex:61
+#, elixir-autogen, elixir-format
+msgid "Oops, something went wrong! Please check the errors below."
+msgstr ""
+
+#: lib/clickr_web/live/user_login_live.ex:30
+#: lib/clickr_web/live/user_registration_live.ex:42
+#, elixir-autogen, elixir-format
+msgid "Password"
+msgstr ""
+
+#: lib/clickr_web/live/user_reset_password_live.ex:73
+#, elixir-autogen, elixir-format
+msgid "Password reset successfully."
+msgstr ""
+
+#: lib/clickr_web/controllers/user_session_controller.ex:14
+#, elixir-autogen, elixir-format
+msgid "Password updated successfully!"
+msgstr ""
+
+#: lib/clickr_web/live/user_registration_live.ex:11
+#, elixir-autogen, elixir-format
+msgid "Register for an account"
+msgstr ""
+
+#: lib/clickr_web/live/user_confirmation_instructions_live.ex:8
+#, elixir-autogen, elixir-format
+msgid "Resend confirmation instructions"
+msgstr ""
+
+#: lib/clickr_web/live/user_reset_password_live.ex:8
+#, elixir-autogen, elixir-format
+msgid "Reset Password"
+msgstr ""
+
+#: lib/clickr_web/live/user_reset_password_live.ex:93
+#, elixir-autogen, elixir-format
+msgid "Reset password link is invalid or it has expired."
+msgstr ""
+
+#: lib/clickr_web/live/user_reset_password_live.ex:37
+#, elixir-autogen, elixir-format
+msgid "Resetting..."
+msgstr ""
+
+#: lib/clickr_web/live/user_confirmation_instructions_live.ex:13
+#: lib/clickr_web/live/user_forgot_password_live.ex:19
+#, elixir-autogen, elixir-format
+msgid "Sending..."
+msgstr ""
+
+#: lib/clickr_web/templates/layout/root.html.heex:35
+#, elixir-autogen, elixir-format
+msgid "Settings"
+msgstr ""
+
+#: lib/clickr_web/live/user_login_live.ex:45
+#, elixir-autogen, elixir-format
+msgid "Sigining in..."
+msgstr ""
+
+#: lib/clickr_web/templates/layout/root.html.heex:29
+#, elixir-autogen, elixir-format
+msgid "Sign up"
+msgstr ""
+
+#: lib/clickr_web/templates/layout/root.html.heex:30
+#, elixir-autogen, elixir-format
+msgid "Sign in"
+msgstr ""
+
+#: lib/clickr_web/live/user_login_live.ex:8
+#, elixir-autogen, elixir-format
+msgid "Sign in to account"
+msgstr ""
+
+#: lib/clickr_web/live/user_confirmation_live.ex:55
+#, elixir-autogen, elixir-format
+msgid "User confirmation link is invalid or it has expired."
+msgstr ""
+
+#: lib/clickr_web/live/user_confirmation_live.ex:38
+#, elixir-autogen, elixir-format
+msgid "User confirmed successfully."
+msgstr ""
+
+#: lib/clickr_web/live/user_forgot_password_live.ex:12
+#, elixir-autogen, elixir-format
+msgid "We'll send a password reset link to your inbox"
+msgstr ""
+
+#: lib/clickr_web/controllers/user_session_controller.ex:18
+#, elixir-autogen, elixir-format
+msgid "Welcome back!"
+msgstr ""
+
+#: lib/clickr_web/user_auth.ex:161
+#: lib/clickr_web/user_auth.ex:217
+#, elixir-autogen, elixir-format
+msgid "You must log in to access this page."
+msgstr ""
+
+#: lib/clickr_web/live/user_login_live.ex:14
+#, elixir-autogen, elixir-format
+msgid "for an account now."
+msgstr ""
+
+#: lib/clickr_web/live/user_registration_live.ex:17
+#, elixir-autogen, elixir-format
+msgid "to your account now."
+msgstr ""
+
+#: lib/clickr_web/live/user_registration_live.ex:48
+#, elixir-autogen, elixir-format
+msgid "Signing up..."
+msgstr ""

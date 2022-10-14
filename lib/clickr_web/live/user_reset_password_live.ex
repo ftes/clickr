@@ -41,7 +41,7 @@ defmodule ClickrWeb.UserResetPasswordLive do
     </.simple_form>
 
     <p>
-      <.link href={~p"/users/register"}><%= dgettext("accounts.actions", "Register") %></.link>
+      <.link href={~p"/users/register"}><%= dgettext("accounts.actions", "Sign up") %></.link>
       |
       <.link href={~p"/users/log_in"}><%= dgettext("accounts.actions", "Sign in") %></.link>
     </p>

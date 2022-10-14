@@ -1,0 +1,69 @@
+## "msgid"s in this file come from POT (.pot) files.
+##
+## Do not add, change, or remove "msgid"s manually here as
+## they're tied to the ones in the corresponding POT file
+## (with the same domain).
+##
+## Use "mix gettext.extract --merge" or "mix gettext.merge"
+## to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: de\n"
+"Plural-Forms: nplurals=2\n"
+
+#: lib/clickr_web/live/button_live/show.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "Button"
+msgstr "Knopf"
+
+#: lib/clickr_web/live/button_live/form_component.ex:82
+#, elixir-autogen, elixir-format
+msgid "Button created successfully"
+msgstr "Knopf erstellt"
+
+#: lib/clickr_web/live/button_live/form_component.ex:69
+#, elixir-autogen, elixir-format
+msgid "Button updated successfully"
+msgstr "Knopf geändert"
+
+#: lib/clickr_web/live/button_live/form_component.ex:26
+#: lib/clickr_web/live/button_live/show.html.heex:13
+#, elixir-autogen, elixir-format
+msgid "Device"
+msgstr "Gerät"
+
+#: lib/clickr_web/live/button_live/index.ex:21
+#: lib/clickr_web/live/button_live/show.ex:22
+#: lib/clickr_web/live/button_live/show.html.heex:5
+#, elixir-autogen, elixir-format
+msgid "Edit Button"
+msgstr "Knopf bearbeiten"
+
+#: lib/clickr_web/live/button_live/show.html.heex:12
+#, elixir-autogen, elixir-format
+msgid "Gateway"
+msgstr "Gateway"
+
+#: lib/clickr_web/live/button_live/index.ex:33
+#: lib/clickr_web/live/button_live/index.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "Listing Buttons"
+msgstr "Knöpfe"
+
+#: lib/clickr_web/live/button_live/form_component.ex:22
+#: lib/clickr_web/live/button_live/index.html.heex:13
+#: lib/clickr_web/live/button_live/show.html.heex:11
+#, elixir-autogen, elixir-format
+msgid "Name"
+msgstr "Name"
+
+#: lib/clickr_web/live/button_live/index.ex:27
+#: lib/clickr_web/live/button_live/index.html.heex:6
+#, elixir-autogen, elixir-format
+msgid "New Button"
+msgstr "Neuer Knopf"
+
+#: lib/clickr_web/live/button_live/show.ex:21
+#, elixir-autogen, elixir-format
+msgid "Show Button"
+msgstr "Knopf anzeigen"

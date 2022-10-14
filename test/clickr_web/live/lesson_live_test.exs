@@ -57,7 +57,8 @@ defmodule ClickrWeb.LessonLiveTest do
              |> form("#lesson-form", lesson: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      {:ok, _, html} =
+      {:error, {:live_redirect, %{to: redirect_to}}} =
+        index_live =
         index_live
         |> form("#lesson-form",
           lesson:
@@ -70,8 +71,8 @@ defmodule ClickrWeb.LessonLiveTest do
             })
         )
         |> render_submit()
-        |> follow_redirect(conn, ~p"/lessons")
 
+      {:ok, _, html} = index_live |> follow_redirect(conn, redirect_to)
       assert html =~ "Lesson created successfully"
       assert html =~ "some name"
     end
@@ -92,7 +93,7 @@ defmodule ClickrWeb.LessonLiveTest do
         index_live
         |> form("#lesson-form", lesson: @update_attrs)
         |> render_submit()
-        |> follow_redirect(conn, ~p"/lessons")
+        |> follow_redirect(conn, ~p"/lessons/#{lesson}/started")
 
       assert html =~ "Lesson updated successfully"
       assert html =~ "some updated name"
@@ -132,7 +133,7 @@ defmodule ClickrWeb.LessonLiveTest do
         show_live
         |> form("#lesson-form", lesson: @update_attrs)
         |> render_submit()
-        |> follow_redirect(conn, ~p"/lessons/#{lesson}")
+        |> follow_redirect(conn, ~p"/lessons/#{lesson}/started")
 
       assert html =~ "Lesson updated successfully"
       assert html =~ "some updated name"

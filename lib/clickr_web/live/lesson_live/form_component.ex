@@ -101,11 +101,11 @@ defmodule ClickrWeb.LessonLive.FormComponent do
 
   defp save_lesson(socket, :edit, lesson_params) do
     case Lessons.update_lesson(socket.assigns.lesson, set_user_id(socket, lesson_params)) do
-      {:ok, _lesson} ->
+      {:ok, lesson} ->
         {:noreply,
          socket
          |> put_flash(:info, dgettext("lessons.lessons", "Lesson updated successfully"))
-         |> push_navigate(to: socket.assigns.navigate)}
+         |> push_navigate(to: "/lessons/#{lesson.id}/#{lesson.state}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
@@ -114,11 +114,11 @@ defmodule ClickrWeb.LessonLive.FormComponent do
 
   defp save_lesson(socket, :new, lesson_params) do
     case Lessons.create_lesson(set_user_id(socket, lesson_params)) do
-      {:ok, _lesson} ->
+      {:ok, lesson} ->
         {:noreply,
          socket
          |> put_flash(:info, dgettext("lessons.lessons", "Lesson created successfully"))
-         |> push_navigate(to: socket.assigns.navigate)}
+         |> push_navigate(to: "/lessons/#{lesson.id}/#{lesson.state}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

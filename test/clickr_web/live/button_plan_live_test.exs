@@ -52,7 +52,7 @@ defmodule ClickrWeb.ButtonPlanLiveTest do
       {:ok, index_live, _html} = live(conn, ~p"/button_plans")
 
       assert index_live |> element("#button_plans-#{button_plan.id} a", "Edit") |> render_click() =~
-               "Edit Button plan"
+               "Edit Button Plan"
 
       assert_patch(index_live, ~p"/button_plans/#{button_plan}/edit")
 
@@ -145,7 +145,7 @@ defmodule ClickrWeb.ButtonPlanLiveTest do
       {:ok, show_live, _html} = live(conn, ~p"/button_plans/#{button_plan}")
 
       assert show_live |> element("a", "Edit") |> render_click() =~
-               "Edit Button plan"
+               "Edit Button Plan"
 
       assert_patch(show_live, ~p"/button_plans/#{button_plan}/show/edit")
 

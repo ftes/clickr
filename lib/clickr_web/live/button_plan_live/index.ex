@@ -18,7 +18,7 @@ defmodule ClickrWeb.ButtonPlanLive.Index do
     # TODO Check permission
 
     socket
-    |> assign(:page_title, dgettext("rooms.button_plans", "Edit Button plan"))
+    |> assign(:page_title, dgettext("rooms.button_plans", "Edit Button Plan"))
     |> assign(:button_plan, Rooms.get_button_plan!(id))
   end
 

@@ -57,7 +57,7 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
       assert index_live
              |> element("#seating_plans-#{seating_plan.id} a", "Edit")
              |> render_click() =~
-               "Edit Seating plan"
+               "Edit Seating Plan"
 
       assert_patch(index_live, ~p"/seating_plans/#{seating_plan}/edit")
 
@@ -128,7 +128,7 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
       {:ok, show_live, _html} = live(conn, ~p"/seating_plans/#{seating_plan}")
 
       assert show_live |> element("a", "Edit") |> render_click() =~
-               "Edit Seating plan"
+               "Edit Seating Plan"
 
       assert_patch(show_live, ~p"/seating_plans/#{seating_plan}/show/edit")
 

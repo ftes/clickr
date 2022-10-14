@@ -2,7 +2,7 @@
   <%= dgettext("devices.buttons", "Button") %> <%= @button.name %>
   <:actions>
     <.link patch={~p"/buttons/#{@button}/show/edit"} phx-click={JS.push_focus()}>
-      <.button><%= dgettext("devices.buttons", "Edit button") %></.button>
+      <.button><%= dgettext("devices.buttons", "Edit Button") %></.button>
     </.link>
   </:actions>
 </.header>

@@ -12,7 +12,7 @@ defmodule ClickrWeb.UserForgotPasswordLiveTest do
       {:ok, _lv, html} = live(conn, ~p"/users/reset_password")
 
       assert html =~ "Forgot your password?"
-      assert html =~ "Register\n"
+      assert html =~ "Sign up\n"
       assert html =~ "Sign in\n"
     end
 

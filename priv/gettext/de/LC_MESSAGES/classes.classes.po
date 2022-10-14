@@ -1,0 +1,78 @@
+## "msgid"s in this file come from POT (.pot) files.
+##
+## Do not add, change, or remove "msgid"s manually here as
+## they're tied to the ones in the corresponding POT file
+## (with the same domain).
+##
+## Use "mix gettext.extract --merge" or "mix gettext.merge"
+## to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: de\n"
+"Plural-Forms: nplurals=2\n"
+
+#: lib/clickr_web/live/class_live/show.html.heex:49
+#, elixir-autogen, elixir-format
+msgid "Add students"
+msgstr "Schüler erstellen"
+
+#: lib/clickr_web/live/class_live/show.html.heex:48
+#, elixir-autogen, elixir-format
+msgid "Adding students..."
+msgstr "Erstelle Schüler..."
+
+#: lib/clickr_web/live/class_live/show.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "Class"
+msgstr "Klasse"
+
+#: lib/clickr_web/live/class_live/form_component.ex:75
+#, elixir-autogen, elixir-format
+msgid "Class created successfully"
+msgstr "Klasse erstellt"
+
+#: lib/clickr_web/live/class_live/form_component.ex:62
+#, elixir-autogen, elixir-format
+msgid "Class updated successfully"
+msgstr "Klasse geändert"
+
+#: lib/clickr_web/live/class_live/index.ex:19
+#: lib/clickr_web/live/class_live/show.ex:41
+#: lib/clickr_web/live/class_live/show.html.heex:5
+#, elixir-autogen, elixir-format
+msgid "Edit Class"
+msgstr "Klasse bearbeiten"
+
+#: lib/clickr_web/live/class_live/index.ex:31
+#: lib/clickr_web/live/class_live/index.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "Listing Classes"
+msgstr "Klassen"
+
+#: lib/clickr_web/live/class_live/form_component.ex:22
+#: lib/clickr_web/live/class_live/index.html.heex:11
+#: lib/clickr_web/live/class_live/show.html.heex:11
+#, elixir-autogen, elixir-format
+msgid "Name"
+msgstr "Name"
+
+#: lib/clickr_web/live/class_live/show.html.heex:42
+#, elixir-autogen, elixir-format
+msgid "Names (one per line)"
+msgstr "Namen (einer pro Zeile)"
+
+#: lib/clickr_web/live/class_live/index.ex:25
+#: lib/clickr_web/live/class_live/index.html.heex:5
+#, elixir-autogen, elixir-format
+msgid "New Class"
+msgstr "Neue Klasse"
+
+#: lib/clickr_web/live/class_live/show.ex:40
+#, elixir-autogen, elixir-format
+msgid "Show Class"
+msgstr "Klasse anzeigen"
+
+#: lib/clickr_web/templates/layout/root.html.heex:9
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Classes"
+msgstr "Klasse"

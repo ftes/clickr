@@ -2,30 +2,31 @@
 <% user_main_menu =
   [
     [
-      {dgettext("lessons", "Lessons"), ~p"/lessons", [], &Heroicons.academic_cap/1},
-      {dgettext("grades", "Grades"), ~p"/grades", [], &Heroicons.chart_bar/1}
+      {dgettext("lessons.lessons", "Lessons"), ~p"/lessons", [], &Heroicons.academic_cap/1},
+      {dgettext("grades.grades", "Grades"), ~p"/grades", [], &Heroicons.chart_bar/1}
     ],
     [
-      {dgettext("classes", "Classes"), ~p"/classes", [], &Heroicons.users/1},
-      {dgettext("classes", "Seating plans"), ~p"/seating_plans", [], &Heroicons.map/1}
+      {dgettext("classes.classes", "Classes"), ~p"/classes", [], &Heroicons.users/1},
+      {dgettext("classes.seating_plans", "Seating plans"), ~p"/seating_plans", [],
+       &Heroicons.map/1}
     ],
     [
-      {dgettext("rooms", "Rooms"), ~p"/rooms", [], &Heroicons.building_office/1},
-      {dgettext("rooms", "Button Plans"), ~p"/button_plans", [], &Heroicons.map/1}
+      {dgettext("rooms.rooms", "Rooms"), ~p"/rooms", [], &Heroicons.building_office/1},
+      {dgettext("rooms.button_plans", "Button Plans"), ~p"/button_plans", [], &Heroicons.map/1}
     ],
     [
-      {dgettext("subjects", "Subjects"), ~p"/subjects", [], &Heroicons.folder/1},
-      # {dgettext("students", "Students"), ~p"/students", [], &Heroicons.user/1},
-      {dgettext("devices", "Gateways"), ~p"/gateways", [], &Heroicons.server/1}
-      # {dgettext("devices", "Devices"), ~p"/devices", [], &Heroicons.device_phone_mobile/1},
-      # {dgettext("devices", "Buttons"), ~p"/buttons", [], &Heroicons.cursor_arrow_ripple/1}
+      {dgettext("subjects.subjects", "Subjects"), ~p"/subjects", [], &Heroicons.folder/1},
+      # {dgettext("students.students", "Students"), ~p"/students", [], &Heroicons.user/1},
+      {dgettext("devices.gateways", "Gateways"), ~p"/gateways", [], &Heroicons.server/1}
+      # {dgettext("devices.devices", "Devices"), ~p"/devices", [], &Heroicons.device_phone_mobile/1},
+      # {dgettext("devices.buttons", "Buttons"), ~p"/buttons", [], &Heroicons.cursor_arrow_ripple/1}
     ]
   ]
   |> Enum.filter(&Function.identity/1)
 
 anon_main_menu = [
   [
-    {dgettext("accounts", "Register"), ~p"/users/register", [], &Heroicons.home/1},
+    {dgettext("accounts", "Sign up"), ~p"/users/register", [], &Heroicons.home/1},
     {dgettext("accounts", "Sign in"), ~p"/users/log_in", [], &Heroicons.home/1}
   ]
 ]

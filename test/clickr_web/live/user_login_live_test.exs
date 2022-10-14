@@ -9,7 +9,7 @@ defmodule ClickrWeb.UserLoginLiveTest do
       {:ok, _lv, html} = live(conn, ~p"/users/log_in")
 
       assert html =~ "Sign in"
-      assert html =~ "Register"
+      assert html =~ "Sign up"
       assert html =~ "Forgot your password?"
     end
 
@@ -67,7 +67,7 @@ defmodule ClickrWeb.UserLoginLiveTest do
         |> render_click()
         |> follow_redirect(conn, ~p"/users/register")
 
-      assert login_html =~ "Register"
+      assert login_html =~ "Sign up"
     end
 
     test "redirects to forgot password page when the Forgot Password button is clicked", %{

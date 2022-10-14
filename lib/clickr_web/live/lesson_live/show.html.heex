@@ -5,7 +5,7 @@
       <.button><%= dgettext("lessons.actions", "Run lesson") %></.button>
     </.link>
     <.link patch={~p"/lessons/#{@lesson}/show/edit"} phx-click={JS.push_focus()}>
-      <.button><%= dgettext("lessons.lessons", "Edit lesson") %></.button>
+      <.button><%= dgettext("lessons.lessons", "Edit Lesson") %></.button>
     </.link>
   </:actions>
 </.header>
@@ -35,7 +35,6 @@
       title={@page_title}
       action={@live_action}
       lesson={@lesson}
-      navigate={~p"/lessons/#{@lesson}"}
     />
   </.modal>
 <% end %>

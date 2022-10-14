@@ -1,0 +1,247 @@
+## "msgid"s in this file come from POT (.pot) files.
+##
+## Do not add, change, or remove "msgid"s manually here as
+## they're tied to the ones in the corresponding POT file
+## (with the same domain).
+##
+## Use "mix gettext.extract --merge" or "mix gettext.merge"
+## to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: de\n"
+"Plural-Forms: nplurals=2\n"
+
+#: lib/clickr_web/live/user_settings_live.ex:156
+#, elixir-autogen, elixir-format
+msgid "A link to confirm your email change has been sent to the new address."
+msgstr "Ein Bestätigungslink wurde an Ihre neue Adresse gesendet."
+
+#: lib/clickr_web/controllers/user_session_controller.ex:8
+#, elixir-autogen, elixir-format
+msgid "Account created successfully!"
+msgstr "Account angelegt!"
+
+#: lib/clickr_web/live/user_registration_live.ex:13
+#, elixir-autogen, elixir-format
+msgid "Already registered?"
+msgstr "Bereits registiert?"
+
+#: lib/clickr_web/live/user_settings_live.ex:8
+#, elixir-autogen, elixir-format
+msgid "Change Email"
+msgstr "Email ändern"
+
+#: lib/clickr_web/live/user_settings_live.ex:47
+#, elixir-autogen, elixir-format
+msgid "Change Password"
+msgstr "Passwort ändern"
+
+#: lib/clickr_web/live/user_settings_live.ex:41
+#: lib/clickr_web/live/user_settings_live.ex:90
+#, elixir-autogen, elixir-format
+msgid "Changing..."
+msgstr "Ändere..."
+
+#: lib/clickr_web/live/user_confirmation_live.ex:8
+#, elixir-autogen, elixir-format
+msgid "Confirm Account"
+msgstr "Account bestätigen"
+
+#: lib/clickr_web/live/user_reset_password_live.ex:32
+#: lib/clickr_web/live/user_settings_live.ex:77
+#, elixir-autogen, elixir-format
+msgid "Confirm new password"
+msgstr "Neues Passwort bestätigen"
+
+#: lib/clickr_web/live/user_confirmation_live.ex:13
+#, elixir-autogen, elixir-format
+msgid "Confirming..."
+msgstr "Bestätige..."
+
+#: lib/clickr_web/live/user_settings_live.ex:36
+#: lib/clickr_web/live/user_settings_live.ex:84
+#, elixir-autogen, elixir-format
+msgid "Current password"
+msgstr "Aktuelles Passwort"
+
+#: lib/clickr_web/live/user_login_live.ex:10
+#, elixir-autogen, elixir-format
+msgid "Don't have an account?"
+msgstr "Kein Account?"
+
+#: lib/clickr_web/live/user_confirmation_instructions_live.ex:11
+#: lib/clickr_web/live/user_forgot_password_live.ex:17
+#: lib/clickr_web/live/user_login_live.ex:26
+#: lib/clickr_web/live/user_registration_live.ex:38
+#: lib/clickr_web/live/user_settings_live.ex:26
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr "Email"
+
+#: lib/clickr_web/live/user_settings_live.ex:108
+#, elixir-autogen, elixir-format
+msgid "Email change link is invalid or it has expired."
+msgstr "Link ist ungültig oder abgelaufen."
+
+#: lib/clickr_web/live/user_settings_live.ex:102
+#, elixir-autogen, elixir-format
+msgid "Email changed successfully."
+msgstr "Email geändert."
+
+#: lib/clickr_web/live/user_forgot_password_live.ex:10
+#: lib/clickr_web/live/user_login_live.ex:41
+#, elixir-autogen, elixir-format
+msgid "Forgot your password?"
+msgstr "Passwort vergessen?"
+
+#: lib/clickr_web/live/user_confirmation_instructions_live.ex:40
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
+msgstr "Sie erhalten in Kürze eine Email mit weiteren Anweisungen."
+
+#: lib/clickr_web/live/user_forgot_password_live.ex:41
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system, you will receive instructions to reset your password shortly."
+msgstr "Sie erhalten in Kürze eine Email mit weiteren Anweisungen."
+
+#: lib/clickr_web/controllers/user_session_controller.ex:31
+#, elixir-autogen, elixir-format
+msgid "Invalid email or password"
+msgstr "Email oder Passwort ungültig"
+
+#: lib/clickr_web/live/user_login_live.ex:38
+#, elixir-autogen, elixir-format
+msgid "Keep me logged in"
+msgstr "Angemeldet bleiben"
+
+#: lib/clickr_web/controllers/user_session_controller.ex:39
+#, elixir-autogen, elixir-format
+msgid "Logged out successfully."
+msgstr "Erfolgreich abgemeldet."
+
+#: lib/clickr_web/live/user_reset_password_live.ex:25
+#: lib/clickr_web/live/user_settings_live.ex:70
+#, elixir-autogen, elixir-format
+msgid "New password"
+msgstr "Neues Passwort"
+
+#: lib/clickr_web/live/user_registration_live.ex:34
+#: lib/clickr_web/live/user_reset_password_live.ex:19
+#: lib/clickr_web/live/user_settings_live.ex:19
+#: lib/clickr_web/live/user_settings_live.ex:61
+#, elixir-autogen, elixir-format
+msgid "Oops, something went wrong! Please check the errors below."
+msgstr "Da ist etwas schief gelaufen! Bitte prüfen Sie die Fehlermeldungen unten."
+
+#: lib/clickr_web/live/user_login_live.ex:30
+#: lib/clickr_web/live/user_registration_live.ex:42
+#, elixir-autogen, elixir-format
+msgid "Password"
+msgstr "Passwort"
+
+#: lib/clickr_web/live/user_reset_password_live.ex:73
+#, elixir-autogen, elixir-format
+msgid "Password reset successfully."
+msgstr "Passwort erfolgreich zurückgesetzt."
+
+#: lib/clickr_web/controllers/user_session_controller.ex:14
+#, elixir-autogen, elixir-format
+msgid "Password updated successfully!"
+msgstr "Passwort erfolgreich geändert!"
+
+#: lib/clickr_web/live/user_registration_live.ex:11
+#, elixir-autogen, elixir-format
+msgid "Register for an account"
+msgstr "Account anlegen"
+
+#: lib/clickr_web/live/user_confirmation_instructions_live.ex:8
+#, elixir-autogen, elixir-format
+msgid "Resend confirmation instructions"
+msgstr "Anleitung zum Bestätigen erneut zusenden"
+
+#: lib/clickr_web/live/user_reset_password_live.ex:8
+#, elixir-autogen, elixir-format
+msgid "Reset Password"
+msgstr "Passwort zurücksetzen"
+
+#: lib/clickr_web/live/user_reset_password_live.ex:93
+#, elixir-autogen, elixir-format
+msgid "Reset password link is invalid or it has expired."
+msgstr "Links ist ungültig oder abgelaufen."
+
+#: lib/clickr_web/live/user_reset_password_live.ex:37
+#, elixir-autogen, elixir-format
+msgid "Resetting..."
+msgstr "Setze zurück..."
+
+#: lib/clickr_web/live/user_confirmation_instructions_live.ex:13
+#: lib/clickr_web/live/user_forgot_password_live.ex:19
+#, elixir-autogen, elixir-format
+msgid "Sending..."
+msgstr "Sende..."
+
+#: lib/clickr_web/templates/layout/root.html.heex:35
+#, elixir-autogen, elixir-format
+msgid "Settings"
+msgstr ""
+
+#: lib/clickr_web/live/user_login_live.ex:45
+#, elixir-autogen, elixir-format
+msgid "Sigining in..."
+msgstr "Melde an..."
+
+#: lib/clickr_web/templates/layout/root.html.heex:29
+#, elixir-autogen, elixir-format
+msgid "Sign up"
+msgstr "Registrieren"
+
+#: lib/clickr_web/templates/layout/root.html.heex:30
+#, elixir-autogen, elixir-format
+msgid "Sign in"
+msgstr "Anmelden"
+
+#: lib/clickr_web/live/user_login_live.ex:8
+#, elixir-autogen, elixir-format
+msgid "Sign in to account"
+msgstr "Anmelden"
+
+#: lib/clickr_web/live/user_confirmation_live.ex:55
+#, elixir-autogen, elixir-format
+msgid "User confirmation link is invalid or it has expired."
+msgstr "Link ist ungültig oder abgelaufen."
+
+#: lib/clickr_web/live/user_confirmation_live.ex:38
+#, elixir-autogen, elixir-format
+msgid "User confirmed successfully."
+msgstr "Account erfolgreich bestätigt."
+
+#: lib/clickr_web/live/user_forgot_password_live.ex:12
+#, elixir-autogen, elixir-format
+msgid "We'll send a password reset link to your inbox"
+msgstr "Sie erhalten in Kürze eine Email mit weiteren Anweisungen."
+
+#: lib/clickr_web/controllers/user_session_controller.ex:18
+#, elixir-autogen, elixir-format
+msgid "Welcome back!"
+msgstr "Willkommen zurück!"
+
+#: lib/clickr_web/user_auth.ex:161
+#: lib/clickr_web/user_auth.ex:217
+#, elixir-autogen, elixir-format
+msgid "You must log in to access this page."
+msgstr "Sie müssen sich erst anmelden."
+
+#: lib/clickr_web/live/user_login_live.ex:14
+#, elixir-autogen, elixir-format
+msgid "for an account now."
+msgstr "Sie jetzt einen Account."
+
+#: lib/clickr_web/live/user_registration_live.ex:17
+#, elixir-autogen, elixir-format
+msgid "to your account now."
+msgstr ""
+
+#: lib/clickr_web/live/user_registration_live.ex:48
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Signing up..."
+msgstr "Registiere..."

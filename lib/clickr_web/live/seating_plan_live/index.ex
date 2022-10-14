@@ -18,7 +18,7 @@ defmodule ClickrWeb.SeatingPlanLive.Index do
     # TODO Check permission
 
     socket
-    |> assign(:page_title, dgettext("classes.seating_plans", "Edit Seating plan"))
+    |> assign(:page_title, dgettext("classes.seating_plans", "Edit Seating Plan"))
     |> assign(:seating_plan, Classes.get_seating_plan!(id))
   end
 

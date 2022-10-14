@@ -1,0 +1,63 @@
+## "msgid"s in this file come from POT (.pot) files.
+##
+## Do not add, change, or remove "msgid"s manually here as
+## they're tied to the ones in the corresponding POT file
+## (with the same domain).
+##
+## Use "mix gettext.extract --merge" or "mix gettext.merge"
+## to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: de\n"
+"Plural-Forms: nplurals=2\n"
+
+#: lib/clickr_web/live/subject_live/index.ex:21
+#: lib/clickr_web/live/subject_live/show.ex:22
+#: lib/clickr_web/live/subject_live/show.html.heex:5
+#, elixir-autogen, elixir-format
+msgid "Edit Subject"
+msgstr "Fach bearbeiten"
+
+#: lib/clickr_web/live/subject_live/index.ex:33
+#: lib/clickr_web/live/subject_live/index.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "Listing Subjects"
+msgstr "Fächer"
+
+#: lib/clickr_web/live/subject_live/form_component.ex:22
+#: lib/clickr_web/live/subject_live/index.html.heex:11
+#: lib/clickr_web/live/subject_live/show.html.heex:11
+#, elixir-autogen, elixir-format
+msgid "Name"
+msgstr "Name"
+
+#: lib/clickr_web/live/subject_live/index.ex:27
+#: lib/clickr_web/live/subject_live/index.html.heex:5
+#, elixir-autogen, elixir-format
+msgid "New Subject"
+msgstr "Neues Fach"
+
+#: lib/clickr_web/live/subject_live/show.ex:21
+#, elixir-autogen, elixir-format
+msgid "Show Subject"
+msgstr "Fach anzeigen"
+
+#: lib/clickr_web/live/subject_live/show.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "Subject"
+msgstr "Fach"
+
+#: lib/clickr_web/live/subject_live/form_component.ex:75
+#, elixir-autogen, elixir-format
+msgid "Subject created successfully"
+msgstr "Fach angelegt"
+
+#: lib/clickr_web/live/subject_live/form_component.ex:62
+#, elixir-autogen, elixir-format
+msgid "Subject updated successfully"
+msgstr "Fach geändert"
+
+#: lib/clickr_web/templates/layout/root.html.heex:18
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Subjects"
+msgstr "Fächer"
