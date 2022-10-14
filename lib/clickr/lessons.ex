@@ -99,7 +99,7 @@ defmodule Clickr.Lessons do
   def transition_lesson(%Lesson{state: :roll_call} = lesson, :active = new_state) do
     student_ids = ActiveQuestion.get(lesson)
     ActiveQuestion.stop(lesson)
-    lesson_students = Enum.map(student_ids, &%{student_id: &1, extra_points: 0})
+    lesson_students = Enum.map(student_ids, &%{student_id: &1})
     lesson = Repo.preload(lesson, :lesson_students)
     changeset = Lesson.changeset(lesson, %{state: new_state, lesson_students: lesson_students})
     Repo.update(changeset)
@@ -113,20 +113,11 @@ defmodule Clickr.Lessons do
   end
 
   def transition_lesson(%Lesson{state: :question} = lesson, :active = new_state) do
-    student_ids = ActiveQuestion.get(lesson)
-
-    lesson_student_ids =
-      Enum.map(Repo.preload(lesson, :lesson_students).lesson_students, & &1.student_id)
-
+    answers = ActiveQuestion.get(lesson)
+    attending = Enum.map(Repo.preload(lesson, :lesson_students).lesson_students, & &1.student_id)
     ActiveQuestion.stop(lesson)
-    answers = for id <- student_ids, id in lesson_student_ids, do: %{student_id: id}
-
-    question = %{
-      lesson_id: lesson.id,
-      name: "Question",
-      points: 1,
-      answers: answers
-    }
+    answers = for sid <- answers, sid in attending, do: %{student_id: sid}
+    question = %{lesson_id: lesson.id, name: "Question", answers: answers}
 
     with {:ok, %{lesson: lesson}} <-
            Ecto.Multi.new()

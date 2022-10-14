@@ -11,11 +11,12 @@ defmodule ClickrWeb.StudentLive.Show do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     # TODO Check permission
+    student = Students.get_student!(id) |> Clickr.Repo.preload([:class, grades: :subject])
 
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:student, Students.get_student!(id) |> Clickr.Repo.preload(:class))}
+     |> assign(:student, student)}
   end
 
   defp page_title(:show), do: dgettext("students.students", "Show Student")

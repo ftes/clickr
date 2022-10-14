@@ -2,7 +2,7 @@ defmodule Clickr.Lessons.LessonStudent do
   use Clickr.Schema
 
   schema "lesson_students" do
-    field :extra_points, :integer
+    field :extra_points, :integer, default: 0
     belongs_to :lesson, Clickr.Lessons.Lesson
     belongs_to :student, Clickr.Students.Student
 

@@ -119,11 +119,7 @@ defmodule ClickrWeb.LessonLive.Question do
 
   def handle_event("add_student", %{"student_id" => student_id}, socket) do
     {:ok, _} =
-      Lessons.create_lesson_student(%{
-        lesson_id: socket.assigns.lesson.id,
-        student_id: student_id,
-        extra_points: 0
-      })
+      Lessons.create_lesson_student(%{lesson_id: socket.assigns.lesson.id, student_id: student_id})
 
     {:noreply, assign_lesson_and_related(socket)}
   end

@@ -17,7 +17,7 @@
     <div class="sr-only">
       <.link navigate={~p"/students/#{student}"}><%= gettext("Show") %></.link>
     </div>
-    <.link patch={~p"/students/#{student}/show/edit"}><%= gettext("Edit") %></.link>
+    <.link navigate={~p"/students/#{student}/show/edit"}><%= gettext("Edit") %></.link>
   </:action>
   <:action :let={student}>
     <.link

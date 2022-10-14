@@ -5,6 +5,7 @@ defmodule Clickr.Students.Student do
     field :name, :string
     belongs_to :user, Clickr.Accounts.User
     belongs_to :class, Clickr.Classes.Class
+    has_many :grades, Clickr.Grades.Grade
 
     timestamps(type: :utc_datetime)
   end

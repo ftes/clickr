@@ -1,8 +1,12 @@
 # Todo
 
+- [ ] Filter and sort lists
 - [ ] Permissions
   - user as first (second?) arg to all context functions
-- [ ] Remove _id from changets
+- [ ] Bonus grade
+- [ ] Delete questions
+- [ ] Change question points
+- [ ] Remove _id from changesets
   - set only initially, prevent any further change
   - remove from edit forms
 - [ ] Soft delete stale devices

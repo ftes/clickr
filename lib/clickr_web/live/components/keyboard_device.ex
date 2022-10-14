@@ -4,7 +4,17 @@ defmodule ClickrWeb.KeyboardDevice do
   @impl true
   def render(assigns) do
     ~H"""
-    <div id={@id} class="hidden" tabindex="0" phx-window-keyup="keyup" phx-target={@myself}></div>
+    <div>
+      <div
+        :if={@gateway}
+        id={@id}
+        class="hidden"
+        tabindex="0"
+        phx-window-keyup="keyup"
+        phx-target={@myself}
+      >
+      </div>
+    </div>
     """
   end
 

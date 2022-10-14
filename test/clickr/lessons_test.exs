@@ -137,7 +137,7 @@ defmodule Clickr.LessonsTest do
       %{id: lid} = lesson = lesson_fixture(state: :ended)
       %{student: %{id: sid} = student} = seat_student(%{lesson: lesson})
       attend_student(%{lesson: lesson, student: student, extra_points: 15})
-      question = question_fixture(lesson_id: lesson.id, points: 1)
+      question = question_fixture(lesson_id: lesson.id)
       question_answer_fixture(question_id: question.id, student_id: sid)
 
       assert {:ok, %{grade: %{min: 10.0, max: 20.0}}} =

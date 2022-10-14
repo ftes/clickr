@@ -3,7 +3,7 @@ defmodule Clickr.Lessons.Question do
 
   schema "questions" do
     field :name, :string
-    field :points, :integer
+    field :points, :integer, default: 1
     belongs_to :lesson, Clickr.Lessons.Lesson
     has_many :answers, Clickr.Lessons.QuestionAnswer
 
