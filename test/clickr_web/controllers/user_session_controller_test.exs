@@ -18,7 +18,7 @@ defmodule ClickrWeb.UserSessionControllerTest do
       assert redirected_to(conn) == ~p"/"
 
       # Now do a logged in request and assert on the menu
-      conn = get(conn, ~p"/dashboard")
+      conn = get(conn, ~p"/lessons")
       response = html_response(conn, 200)
       assert response =~ user.email
       assert response =~ "Settings\n"

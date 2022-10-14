@@ -19,7 +19,7 @@ defmodule ClickrWeb.Router do
 
   scope "/", ClickrWeb do
     pipe_through :browser
-    get "/", Redirector, to: "/dashboard"
+    get "/", Redirector, to: "/lessons"
   end
 
   # Other scopes may use custom stacks.
@@ -72,8 +72,6 @@ defmodule ClickrWeb.Router do
       on_mount: [{ClickrWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
-
-      live "/dashboard", DashboardLive.Index, :index
 
       live "/classes", ClassLive.Index, :index
       live "/classes/new", ClassLive.Index, :new
