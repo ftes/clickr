@@ -4,9 +4,9 @@ defmodule ClickrWeb.DeconzChannelTest do
 
   setup do
     user = user_fixture()
-    gateway = gateway_fixture(user_id: user.id)
+    gateway = gateway_fixture(user_id: user.id, api_token: "xyz")
     socket = socket(ClickrWeb.ApiSocket)
-    {:ok, socket} = ClickrWeb.ApiSocket.connect(%{"api_token" => gateway.api_token}, socket, %{})
+    {:ok, socket} = ClickrWeb.ApiSocket.connect(%{"api_token" => "xyz"}, socket, %{})
     {:ok, _, socket} = subscribe_and_join(socket, ClickrWeb.DeconzChannel, "deconz")
 
     %{user: user, gateway: gateway, socket: socket}
