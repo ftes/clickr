@@ -6,7 +6,7 @@ defmodule ClickrWeb.ClassLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :classes, list_classes(socket))}
+    {:ok, load_classes(socket)}
   end
 
   @impl true
@@ -39,10 +39,10 @@ defmodule ClickrWeb.ClassLive.Index do
     class = Classes.get_class!(id)
     {:ok, _} = Classes.delete_class(class)
 
-    {:noreply, assign(socket, :classes, list_classes(socket))}
+    {:noreply, load_classes(socket)}
   end
 
-  defp list_classes(socket) do
-    Classes.list_classes(user_id: socket.assigns.current_user.id)
+  defp load_classes(socket) do
+    assign(socket, :classes, Classes.list_classes(user_id: socket.assigns.current_user.id))
   end
 end

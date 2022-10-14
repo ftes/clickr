@@ -6,7 +6,7 @@ defmodule ClickrWeb.ButtonLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :buttons, list_buttons())}
+    {:ok, load_buttons(socket)}
   end
 
   @impl true
@@ -41,10 +41,10 @@ defmodule ClickrWeb.ButtonLive.Index do
     button = Devices.get_button!(id)
     {:ok, _} = Devices.delete_button(button)
 
-    {:noreply, assign(socket, :buttons, list_buttons())}
+    {:noreply, load_buttons(socket)}
   end
 
-  defp list_buttons do
-    Devices.list_buttons()
+  defp load_buttons(socket) do
+    assign(socket, :buttons, Devices.list_buttons(user_id: socket.assigns.current_user.id))
   end
 end

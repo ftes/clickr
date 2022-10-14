@@ -6,7 +6,7 @@ defmodule ClickrWeb.GatewayLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :gateways, list_gateways(socket))}
+    {:ok, load_gateways(socket)}
   end
 
   @impl true
@@ -41,10 +41,10 @@ defmodule ClickrWeb.GatewayLive.Index do
     gateway = Devices.get_gateway!(id)
     {:ok, _} = Devices.delete_gateway(gateway)
 
-    {:noreply, assign(socket, :gateways, list_gateways(socket))}
+    {:noreply, load_gateways(socket)}
   end
 
-  defp list_gateways(socket) do
-    Devices.list_gateways(user_id: socket.assigns.current_user.id)
+  defp load_gateways(socket) do
+    assign(socket, :gateways, Devices.list_gateways(user_id: socket.assigns.current_user.id))
   end
 end

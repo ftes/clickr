@@ -42,7 +42,7 @@ defmodule ClickrWeb.ButtonLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> list_devices()
+     |> load_devices()
      |> assign(:changeset, changeset)}
   end
 
@@ -90,7 +90,7 @@ defmodule ClickrWeb.ButtonLive.FormComponent do
 
   defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 
-  defp list_devices(socket) do
+  defp load_devices(socket) do
     assign(socket, :devices, Devices.list_devices(user_id: socket.assigns.current_user.id))
   end
 end

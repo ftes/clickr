@@ -6,7 +6,7 @@ defmodule ClickrWeb.SeatingPlanLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :seating_plans, list_seating_plans(socket))}
+    {:ok, load_seating_plans(socket)}
   end
 
   @impl true
@@ -41,10 +41,11 @@ defmodule ClickrWeb.SeatingPlanLive.Index do
 
     {:ok, _} = Classes.delete_seating_plan(seating_plan)
 
-    {:noreply, assign(socket, :seating_plans, list_seating_plans(socket))}
+    {:noreply, load_seating_plans(socket)}
   end
 
-  defp list_seating_plans(socket) do
-    Classes.list_seating_plans(user_id: socket.assigns.current_user.id)
+  defp load_seating_plans(socket) do
+    seating_plans = Classes.list_seating_plans(user_id: socket.assigns.current_user.id)
+    assign(socket, :seating_plans, seating_plans)
   end
 end

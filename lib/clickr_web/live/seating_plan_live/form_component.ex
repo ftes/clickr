@@ -48,8 +48,8 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> list_classes()
-     |> list_rooms()
+     |> load_classes()
+     |> load_rooms()
      |> assign(:changeset, changeset)}
   end
 
@@ -100,11 +100,11 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
 
   defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 
-  defp list_classes(socket) do
+  defp load_classes(socket) do
     assign(socket, :classes, Classes.list_classes(user_id: socket.assigns.current_user.id))
   end
 
-  defp list_rooms(socket) do
+  defp load_rooms(socket) do
     assign(socket, :rooms, Clickr.Rooms.list_rooms(user_id: socket.assigns.current_user.id))
   end
 end

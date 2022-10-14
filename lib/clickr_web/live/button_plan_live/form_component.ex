@@ -42,7 +42,7 @@ defmodule ClickrWeb.ButtonPlanLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> list_rooms()
+     |> load_rooms()
      |> assign(:changeset, changeset)}
   end
 
@@ -93,7 +93,7 @@ defmodule ClickrWeb.ButtonPlanLive.FormComponent do
 
   defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 
-  defp list_rooms(socket) do
+  defp load_rooms(socket) do
     assign(socket, :rooms, Rooms.list_rooms(user_id: socket.assigns.current_user.id))
   end
 end

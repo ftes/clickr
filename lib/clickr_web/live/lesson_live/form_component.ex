@@ -73,11 +73,11 @@ defmodule ClickrWeb.LessonLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:changeset, changeset)
-     |> list_subjects()
-     |> list_classes()
-     |> list_rooms()
-     |> list_button_plans()
-     |> list_seating_plans()}
+     |> load_subjects()
+     |> load_classes()
+     |> load_rooms()
+     |> load_button_plans()
+     |> load_seating_plans()}
   end
 
   @impl true
@@ -92,8 +92,8 @@ defmodule ClickrWeb.LessonLive.FormComponent do
     {:noreply,
      socket
      |> assign(:changeset, changeset)
-     |> list_button_plans()
-     |> list_seating_plans()}
+     |> load_button_plans()
+     |> load_seating_plans()}
   end
 
   def handle_event("save", %{"lesson" => lesson_params}, socket) do
@@ -128,50 +128,40 @@ defmodule ClickrWeb.LessonLive.FormComponent do
 
   defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 
-  defp list_subjects(socket) do
+  defp load_subjects(socket) do
     user_id = socket.assigns.current_user.id
     assign(socket, :subjects, Clickr.Subjects.list_subjects(user_id: user_id))
   end
 
-  defp list_classes(socket) do
+  defp load_classes(socket) do
     user_id = socket.assigns.current_user.id
     assign(socket, :classes, Clickr.Classes.list_classes(user_id: user_id))
   end
 
-  defp list_rooms(socket) do
+  defp load_rooms(socket) do
     assign(socket, :rooms, Clickr.Rooms.list_rooms(user_id: socket.assigns.current_user.id))
   end
 
-  defp list_button_plans(%{assigns: %{changeset: _}} = socket) do
+  defp load_button_plans(%{assigns: %{changeset: _}} = socket) do
     user_id = socket.assigns.current_user.id
     room_id = get_field(socket.assigns.changeset, :room_id)
-
-    button_plans =
-      Clickr.Rooms.list_button_plans(
-        [user_id: user_id, room_id: room_id]
-        |> Keyword.filter(fn {_, v} -> v != "" end)
-      )
-
+    filters = [user_id: user_id, room_id: room_id] |> reject_blank()
+    button_plans = Clickr.Rooms.list_button_plans(filters)
     assign(socket, :button_plans, button_plans)
   end
 
-  defp list_button_plans(socket), do: assign(socket, :button_plans, [])
+  defp load_button_plans(socket), do: assign(socket, :button_plans, [])
 
-  defp list_seating_plans(%{assigns: %{changeset: _}} = socket) do
+  defp load_seating_plans(%{assigns: %{changeset: _}} = socket) do
     uid = socket.assigns.current_user.id
     rid = get_field(socket.assigns.changeset, :room_id)
     cid = get_field(socket.assigns.changeset, :class_id)
-
-    seating_plans =
-      Clickr.Classes.list_seating_plans(
-        [user_id: uid, room_id: rid, class_id: cid]
-        |> Keyword.filter(fn {_, v} -> v != "" end)
-      )
-
+    filters = [user_id: uid, room_id: rid, class_id: cid] |> reject_blank()
+    seating_plans = Clickr.Classes.list_seating_plans(filters)
     assign(socket, :seating_plans, seating_plans)
   end
 
-  defp list_seating_plans(socket), do: assign(socket, :seating_plans, [])
+  defp load_seating_plans(socket), do: assign(socket, :seating_plans, [])
 
   defp generate_name(changeset, params) do
     sid = params["subject_id"]
@@ -189,4 +179,6 @@ defmodule ClickrWeb.LessonLive.FormComponent do
       params
     end
   end
+
+  defp reject_blank(keywords), do: Keyword.filter(keywords, fn {_, v} -> v != "" end)
 end

@@ -6,7 +6,7 @@ defmodule ClickrWeb.SubjectLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :subjects, list_subjects(socket))}
+    {:ok, load_subjects(socket)}
   end
 
   @impl true
@@ -41,10 +41,10 @@ defmodule ClickrWeb.SubjectLive.Index do
     subject = Subjects.get_subject!(id)
     {:ok, _} = Subjects.delete_subject(subject)
 
-    {:noreply, assign(socket, :subjects, list_subjects(socket))}
+    {:noreply, load_subjects(socket)}
   end
 
-  defp list_subjects(socket) do
-    Subjects.list_subjects(user_id: socket.assigns.current_user.id)
+  defp load_subjects(socket) do
+    assign(socket, :subjects, Subjects.list_subjects(user_id: socket.assigns.current_user.id))
   end
 end

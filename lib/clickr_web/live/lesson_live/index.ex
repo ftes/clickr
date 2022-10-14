@@ -6,7 +6,7 @@ defmodule ClickrWeb.LessonLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :lessons, list_lessons())}
+    {:ok, load_lessons(socket)}
   end
 
   @impl true
@@ -37,10 +37,10 @@ defmodule ClickrWeb.LessonLive.Index do
     lesson = Lessons.get_lesson!(id)
     {:ok, _} = Lessons.delete_lesson(lesson)
 
-    {:noreply, assign(socket, :lessons, list_lessons())}
+    {:noreply, load_lessons(socket)}
   end
 
-  defp list_lessons do
-    Lessons.list_lessons()
+  defp load_lessons(socket) do
+    assign(socket, :lessons, Lessons.list_lessons(user_id: socket.assigns.current_user.id))
   end
 end

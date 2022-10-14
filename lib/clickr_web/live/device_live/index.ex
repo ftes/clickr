@@ -6,7 +6,7 @@ defmodule ClickrWeb.DeviceLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :devices, list_devices())}
+    {:ok, load_devices(socket)}
   end
 
   @impl true
@@ -41,10 +41,10 @@ defmodule ClickrWeb.DeviceLive.Index do
     device = Devices.get_device!(id)
     {:ok, _} = Devices.delete_device(device)
 
-    {:noreply, assign(socket, :devices, list_devices())}
+    {:noreply, load_devices(socket)}
   end
 
-  defp list_devices do
-    Devices.list_devices()
+  defp load_devices(socket) do
+    assign(socket, :devices, Devices.list_devices(user_id: socket.assigns.current_user.id))
   end
 end

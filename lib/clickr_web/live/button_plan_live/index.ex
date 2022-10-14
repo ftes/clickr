@@ -6,7 +6,7 @@ defmodule ClickrWeb.ButtonPlanLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :button_plans, list_button_plans())}
+    {:ok, load_button_plans(socket)}
   end
 
   @impl true
@@ -41,10 +41,14 @@ defmodule ClickrWeb.ButtonPlanLive.Index do
     button_plan = Rooms.get_button_plan!(id)
     {:ok, _} = Rooms.delete_button_plan(button_plan)
 
-    {:noreply, assign(socket, :button_plans, list_button_plans())}
+    {:noreply, load_button_plans(socket)}
   end
 
-  defp list_button_plans do
-    Rooms.list_button_plans()
+  defp load_button_plans(socket) do
+    assign(
+      socket,
+      :button_plans,
+      Rooms.list_button_plans(user_id: socket.assigns.current_user.id)
+    )
   end
 end

@@ -42,7 +42,7 @@ defmodule ClickrWeb.DeviceLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> list_gateways()
+     |> load_gateways()
      |> assign(:changeset, changeset)}
   end
 
@@ -90,7 +90,7 @@ defmodule ClickrWeb.DeviceLive.FormComponent do
 
   defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 
-  defp list_gateways(socket) do
+  defp load_gateways(socket) do
     assign(socket, :gateways, Devices.list_gateways(user_id: socket.assigns.current_user.id))
   end
 end

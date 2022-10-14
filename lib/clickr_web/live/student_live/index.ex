@@ -6,7 +6,7 @@ defmodule ClickrWeb.StudentLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :students, list_students(socket))}
+    {:ok, load_students(socket)}
   end
 
   @impl true
@@ -41,10 +41,10 @@ defmodule ClickrWeb.StudentLive.Index do
     student = Students.get_student!(id)
     {:ok, _} = Students.delete_student(student)
 
-    {:noreply, assign(socket, :students, list_students(socket))}
+    {:noreply, load_students(socket)}
   end
 
-  defp list_students(socket) do
-    Students.list_students(user_id: socket.assigns.current_user.id)
+  defp load_students(socket) do
+    assign(socket, :students, Students.list_students(user_id: socket.assigns.current_user.id))
   end
 end
