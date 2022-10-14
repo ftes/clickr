@@ -23,7 +23,7 @@
 </h2>
 
 <div
-  class="flex-grow grid gap-4 auto-rows-fr auto-cols-fr"
+  class="flex-grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr"
   id="seating-plan-grid"
   x-data="{dragging: false}"
   phx-hook="PushEvent"
@@ -34,7 +34,7 @@
     :for={seat <- @button_plan.seats}
     id={"button-#{seat.button_id}"}
     style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-    class={"cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 p-3 shadow-sm hover:border-gray-400 #{if MapSet.member?(@active, seat.button_id), do: "x-active bg-green-400", else: "bg-white"}"}
+    class={"cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 p-1 lg:p-3 shadow-sm hover:border-gray-400 #{if MapSet.member?(@active, seat.button_id), do: "x-active bg-green-400", else: "bg-white"}"}
     draggable="true"
     data={[x: seat.x, y: seat.y, id: seat.button_id]}
     x-on:dragstart.self="

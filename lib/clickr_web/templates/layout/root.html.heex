@@ -38,6 +38,7 @@ user_dropdown_menu = [
 ]
 
 main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
+
 <html lang="en" class="h-full bg-gray-50">
   <head>
     <meta charset="utf-8" />
@@ -83,8 +84,8 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
             <span class="ml-2 text-xl text-zinc-500">Klassenknopf</span>
           </div>
           <div class="mt-5 h-0 flex-1 overflow-y-auto">
-            <nav class="space-y-1 px-2">
-              <div :for={menu_section <- main_menu}>
+            <nav class="space-y-1 px-2 divide-y">
+              <div :for={menu_section <- main_menu} class="py-2">
                 <%= for {label, path, opts, icon} <- menu_section do %>
                   <% current? = String.starts_with?(path, Phoenix.Controller.current_path(@conn)) %>
                   <% class =
