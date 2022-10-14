@@ -1,23 +1,33 @@
 <!DOCTYPE html>
 <% user_main_menu =
   [
-    {"Classes", ~p"/classes", [], &Heroicons.users/1},
-    {"Rooms", ~p"/rooms", [], &Heroicons.building_office/1},
-    {"Gateways", ~p"/gateways", [], &Heroicons.server/1},
-    {"Devices", ~p"/devices", [], &Heroicons.device_phone_mobile/1},
-    {"Buttons", ~p"/buttons", [], &Heroicons.cursor_arrow_ripple/1},
-    {"Button Plans", ~p"/button_plans", [], &Heroicons.map/1},
-    {"Students", ~p"/students", [], &Heroicons.user/1},
-    {"Subjects", ~p"/subjects", [], &Heroicons.folder/1},
-    {"Seating Plans", ~p"/seating_plans", [], &Heroicons.map/1},
-    {"Lessons", ~p"/lessons", [], &Heroicons.academic_cap/1},
-    {"Grades", ~p"/grades", [], &Heroicons.chart_bar/1}
+    [
+      {"Lessons", ~p"/lessons", [], &Heroicons.academic_cap/1},
+      {"Grades", ~p"/grades", [], &Heroicons.chart_bar/1}
+    ],
+    [
+      {"Classes", ~p"/classes", [], &Heroicons.users/1},
+      {"Seating Plans", ~p"/seating_plans", [], &Heroicons.map/1}
+    ],
+    [
+      {"Rooms", ~p"/rooms", [], &Heroicons.building_office/1},
+      {"Button Plans", ~p"/button_plans", [], &Heroicons.map/1}
+    ],
+    [
+      {"Subjects", ~p"/subjects", [], &Heroicons.folder/1},
+      # {"Students", ~p"/students", [], &Heroicons.user/1},
+      {"Gateways", ~p"/gateways", [], &Heroicons.server/1}
+      # {"Devices", ~p"/devices", [], &Heroicons.device_phone_mobile/1},
+      # {"Buttons", ~p"/buttons", [], &Heroicons.cursor_arrow_ripple/1}
+    ]
   ]
   |> Enum.filter(&Function.identity/1)
 
 anon_main_menu = [
-  {"Register", ~p"/users/register", [], &Heroicons.home/1},
-  {"Sign in", ~p"/users/log_in", [], &Heroicons.home/1}
+  [
+    {"Register", ~p"/users/register", [], &Heroicons.home/1},
+    {"Sign in", ~p"/users/log_in", [], &Heroicons.home/1}
+  ]
 ]
 
 user_dropdown_menu = [
@@ -68,24 +78,27 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
 
           <div class="flex flex-shrink-0 items-center px-4">
             <img class="h-12 w-auto" src={~p"/images/logo.png"} alt="Clickr" />
+            <span class="ml-2 text-xl text-zinc-500">Klassenknopf</span>
           </div>
           <div class="mt-5 h-0 flex-1 overflow-y-auto">
             <nav class="space-y-1 px-2">
-              <%= for {label, path, opts, icon} <- main_menu do %>
-                <% current? = String.starts_with?(path, Phoenix.Controller.current_path(@conn)) %>
-                <% class =
-                  "group flex items-center px-2 py-2 text-base font-medium rounded-md #{if current?, do: "bg-gray-100 text-gray-900", else: "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}" %>
-                <.link href={path} class={class} {opts}>
+              <div :for={menu_section <- main_menu}>
+                <%= for {label, path, opts, icon} <- menu_section do %>
+                  <% current? = String.starts_with?(path, Phoenix.Controller.current_path(@conn)) %>
                   <% class =
-                    "mr-4 flex-shrink-0 h-6 w-6 #{if current?, do: "text-gray-500", else: "text-gray-400 group-hover:text-gray-500"}" %>
-                  <%= Phoenix.LiveView.HTMLEngine.component(
-                    icon,
-                    [class: class],
-                    {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
-                  ) %>
-                  <%= label %>
-                </.link>
-              <% end %>
+                    "group flex items-center px-2 py-2 text-base font-medium rounded-md #{if current?, do: "bg-gray-100 text-gray-900", else: "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}" %>
+                  <.link href={path} class={class} {opts}>
+                    <% class =
+                      "mr-4 flex-shrink-0 h-6 w-6 #{if current?, do: "text-gray-500", else: "text-gray-400 group-hover:text-gray-500"}" %>
+                    <%= Phoenix.LiveView.HTMLEngine.component(
+                      icon,
+                      [class: class],
+                      {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
+                    ) %>
+                    <%= label %>
+                  </.link>
+                <% end %>
+              </div>
             </nav>
           </div>
         </div>
@@ -101,24 +114,27 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
       <div class="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-white pt-5">
         <div class="flex flex-shrink-0 items-center px-4">
           <img class="h-12 w-auto" src={~p"/images/logo.png"} alt="Clickr" />
+          <span class="ml-2 text-xl text-zinc-500">Klassenknopf</span>
         </div>
         <div class="mt-5 flex flex-grow flex-col">
-          <nav class="flex-1 space-y-1 px-2 pb-4">
-            <%= for {label, path, opts, icon} <- main_menu do %>
-              <% current? = String.starts_with?(Phoenix.Controller.current_path(@conn), path) %>
-              <% class =
-                "group rounded-md py-2 px-2 flex items-center text-sm font-medium #{if current?, do: "bg-gray-100 text-gray-900", else: "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}" %>
-              <.link href={path} class={class} {opts}>
+          <nav class="flex-1 px-2 pb-4 divide-y">
+            <div :for={menu_section <- main_menu} class="py-2">
+              <%= for {label, path, opts, icon} <- menu_section do %>
+                <% current? = String.starts_with?(Phoenix.Controller.current_path(@conn), path) %>
                 <% class =
-                  "group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6 #{if current?, do: "text-gray-500", else: "text-gray-400"}" %>
-                <%= Phoenix.LiveView.HTMLEngine.component(
-                  icon,
-                  [class: class],
-                  {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
-                ) %>
-                <%= label %>
-              </.link>
-            <% end %>
+                  "group rounded-md py-2 px-2 flex items-center text-sm font-medium #{if current?, do: "bg-gray-100 text-gray-900", else: "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}" %>
+                <.link href={path} class={class} {opts}>
+                  <% class =
+                    "group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6 #{if current?, do: "text-gray-500", else: "text-gray-400"}" %>
+                  <%= Phoenix.LiveView.HTMLEngine.component(
+                    icon,
+                    [class: class],
+                    {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
+                  ) %>
+                  <%= label %>
+                </.link>
+              <% end %>
+            </div>
           </nav>
         </div>
       </div>
@@ -136,7 +152,7 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
 
         <div :if={@current_user} class="flex flex-1 justify-between px-4">
           <div class="flex flex-1">
-            <form class="flex w-full md:ml-0" action="#" method="GET">
+            <!--form class="flex w-full md:ml-0" action="#" method="GET">
               <label for="search-field" class="sr-only">Search</label>
               <div class="relative w-full text-gray-400 focus-within:text-gray-600">
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center">
@@ -150,16 +166,16 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
                   name="search"
                 />
               </div>
-            </form>
+            </form-->
           </div>
           <div class="ml-4 flex items-center md:ml-6">
-            <button
+            <!--button
               type="button"
               class="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
             >
               <span class="sr-only">View notifications</span>
               <Heroicons.bell class="h-6 w-6" />
-            </button>
+            </button-->
             <!-- Profile dropdown -->
             <div
               class="relative ml-3"
