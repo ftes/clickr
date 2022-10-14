@@ -2,6 +2,7 @@ defmodule ClickrWeb.Router do
   use ClickrWeb, :router
 
   import ClickrWeb.UserAuth
+  import ClickrWeb.Menu, only: [mount_menu: 2]
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -11,6 +12,7 @@ defmodule ClickrWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug :mount_menu
   end
 
   pipeline :api do
@@ -55,7 +57,7 @@ defmodule ClickrWeb.Router do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
-      on_mount: [{ClickrWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      on_mount: [{ClickrWeb.UserAuth, :redirect_if_user_is_authenticated}, ClickrWeb.Menu] do
       live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
@@ -155,7 +157,7 @@ defmodule ClickrWeb.Router do
     delete "/users/log_out", UserSessionController, :delete
 
     live_session :current_user,
-      on_mount: [{ClickrWeb.UserAuth, :mount_current_user}] do
+      on_mount: [{ClickrWeb.UserAuth, :mount_current_user}, ClickrWeb.Menu] do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end

@@ -1,10 +1,4 @@
 <!DOCTYPE html>
-<% user_dropdown_menu = [
-  {dgettext("accounts", "Settings"), ~p"/users/settings", [], &Heroicons.cog/1},
-  {dgettext("accounts.actions", "Sign out"), ~p"/users/log_out", [method: :delete],
-   &Heroicons.x_mark/1}
-] %>
-
 <html lang="en" class="h-full bg-gray-50">
   <head>
     <meta charset="utf-8" />
@@ -50,7 +44,11 @@
             <span class="ml-2 text-xl text-zinc-500">Klassenknopf</span>
           </div>
           <div class="mt-5 h-0 flex-1 overflow-y-auto">
-            <ClickrWeb.Menu.render {assigns} />
+            <ClickrWeb.Menu.sidebar
+              sidebar_menu_entries={@sidebar_menu_entries}
+              current_path={@current_path}
+              current_user={@current_user}
+            />
           </div>
         </div>
 
@@ -68,7 +66,11 @@
           <span class="ml-2 text-xl text-zinc-500">Klassenknopf</span>
         </div>
         <div class="mt-5 flex flex-grow flex-col">
-          <ClickrWeb.Menu.render {assigns} />
+          <ClickrWeb.Menu.sidebar
+            sidebar_menu_entries={@sidebar_menu_entries}
+            current_path={@current_path}
+            current_user={@current_user}
+          />
         </div>
       </div>
     </div>
@@ -111,53 +113,10 @@
             </button-->
             <!-- Profile dropdown -->
             <ClickrWeb.GatewayPresence.render present_gateways={assigns[:present_gateways]} />
-            <div
-              class="relative ml-3"
-              x-data="{userMenuOpen: false}"
-              x-onclick.outside="open = false"
-            >
-              <div>
-                <button
-                  x-on:click="userMenuOpen = !userMenuOpen"
-                  type="button"
-                  class="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-                  id="user-menu-button"
-                  x-bind:aria-expanded="userMenuOpen"
-                  aria-haspopup="true"
-                >
-                  <span class="sr-only"><%= dgettext("layout", "Open user menu") %></span>
-                  <img
-                    class="h-8 w-8 rounded-full"
-                    src={"https://www.gravatar.com/avatar/#{:crypto.hash(:md5, @current_user.email |> String.downcase() |> String.trim()) |> Base.encode16(case: :lower)}"}
-                    alt={@current_user.email}
-                  />
-                </button>
-              </div>
-
-              <div
-                x-cloak
-                x-show="userMenuOpen"
-                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                role="menu"
-                aria-orientation="vertical"
-                aria-labelledby="user-menu-button"
-                tabindex="-1"
-              >
-                <.link
-                  :for={{label, path, opts, icon} <- user_dropdown_menu}
-                  href={path}
-                  class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 flex"
-                  {opts}
-                >
-                  <%= Phoenix.LiveView.HTMLEngine.component(
-                    icon,
-                    [class: "mr-2 flex-shrink-0 h-5 w-5 text-gray-400"],
-                    {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
-                  ) %>
-                  <%= label %>
-                </.link>
-              </div>
-            </div>
+            <ClickrWeb.Menu.user
+              user_menu_entries={@user_menu_entries}
+              current_user={@current_user}
+            />
           </div>
         </div>
       </div>
