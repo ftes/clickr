@@ -13,7 +13,7 @@ defmodule ClickrWeb.LessonLive.RollCall do
     />
 
     <.header>
-      Lesson <%= @lesson.name %>
+      <%= dgettext("lessons.lessons", "Lesson") %> <%= @lesson.name %>
       <:subtitle><%= @lesson.state %></:subtitle>
       <:actions>
         <.button
@@ -58,7 +58,7 @@ defmodule ClickrWeb.LessonLive.RollCall do
 
     {:noreply,
      socket
-     |> assign(:page_title, "Lesson")
+     |> assign(:page_title, dgettext("lessons.lessons", "Lesson"))
      |> assign_lesson(id)
      |> load_answers()
      |> ClickrWeb.LessonLive.Router.maybe_navigate()}

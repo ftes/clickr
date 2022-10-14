@@ -1,14 +1,16 @@
 <.header>
-  Listing Grades
+  <%= dgettext("grades.grades", "Listing Grades") %>
 </.header>
 
 <.table id="grades" rows={@grades} row_click={&JS.navigate(~p"/grades/#{&1}")}>
-  <:col :let={grade} label="Student"><%= grade.student.name %></:col>
-  <:col :let={grade} label="Subject"><%= grade.subject.name %></:col>
-  <:col :let={grade} label="Grade"><%= Clickr.Grades.format(:german, grade.percent) %></:col>
+  <:col :let={grade} label={dgettext("grades.grades", "Student")}><%= grade.student.name %></:col>
+  <:col :let={grade} label={dgettext("grades.grades", "Subject")}><%= grade.subject.name %></:col>
+  <:col :let={grade} label={dgettext("grades.grades", "Grade")}>
+    <%= Clickr.Grades.format(:german, grade.percent) %>
+  </:col>
   <:action :let={grade}>
     <div class="sr-only">
-      <.link navigate={~p"/grades/#{grade}"}>Show</.link>
+      <.link navigate={~p"/grades/#{grade}"}><%= gettext("Show") %></.link>
     </div>
   </:action>
 </.table>

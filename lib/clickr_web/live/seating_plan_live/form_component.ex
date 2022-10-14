@@ -9,7 +9,6 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage Seating Plan records in your database.</:subtitle>
       </.header>
 
       <.simple_form
@@ -20,21 +19,21 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :name}} type="text" label="Name" />
+        <.input field={{f, :name}} type="text" label={dgettext("classes.seating_plans", "Name")} />
         <.input
           field={{f, :class_id}}
           type="select"
-          label="Class"
+          label={dgettext("classes.seating_plans", "Class")}
           options={Enum.map(@classes, &{&1.id, &1.name})}
         />
         <.input
           field={{f, :room_id}}
           type="select"
-          label="Room"
+          label={dgettext("classes.seating_plans", "Room")}
           options={Enum.map(@rooms, &{&1.id, &1.name})}
         />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Seating plan</.button>
+          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
         </:actions>
       </.simple_form>
     </div>
@@ -77,7 +76,10 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
       {:ok, _seating_plan} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Seating plan updated successfully")
+         |> put_flash(
+           :info,
+           dgettext("classes.seating_plans", "Seating plan updated successfully")
+         )
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -90,7 +92,10 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
       {:ok, _seating_plan} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Seating plan created successfully")
+         |> put_flash(
+           :info,
+           dgettext("classes.seating_plans", "Seating plan created successfully")
+         )
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

@@ -1,20 +1,23 @@
 <.header>
-  Seating plan <%= @seating_plan.name %>
-  <:subtitle>This is a Seating Plan record from your database.</:subtitle>
+  <%= dgettext("classes.seating_plans", "Seating plan") %> <%= @seating_plan.name %>
   <:actions>
     <.link patch={~p"/seating_plans/#{@seating_plan}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit Seating Plan</.button>
+      <.button><%= dgettext("classes.seating_plans", "Edit Seating Plan") %></.button>
     </.link>
   </:actions>
 </.header>
 
 <.list>
-  <:item title="Name"><%= @seating_plan.name %></:item>
-  <:item title="Class"><%= @seating_plan.class.name %></:item>
-  <:item title="Room"><%= @seating_plan.room.name %></:item>
+  <:item title={dgettext("classes.seating_plans", "Name")}><%= @seating_plan.name %></:item>
+  <:item title={dgettext("classes.seating_plans", "Class")}>
+    <%= @seating_plan.class.name %>
+  </:item>
+  <:item title={dgettext("classes.seating_plans", "Room")}><%= @seating_plan.room.name %></:item>
 </.list>
 
-<h2 class="mt-6 text-[0.8125rem] leading-6 text-zinc-500">Students</h2>
+<h2 class="mt-6 text-[0.8125rem] leading-6 text-zinc-500">
+  <%= dgettext("classes.seating_plans", "Students") %>
+</h2>
 
 <div class="flex flex-col divide-y divide-solid gap-4">
   <div
@@ -44,10 +47,10 @@
       </p>
       <button
         class="flex-shrink-0"
-        title="Remove"
+        title={gettext("Remove")}
         phx-click={JS.push("delete_seat", value: %{id: seat.id})}
       >
-        <span class="sr-only">Remove</span>
+        <span class="sr-only"><%= gettext("Remove") %></span>
         <Heroicons.x_mark class="w-4 h-4 -mr-2" />
       </button>
     </div>
@@ -71,7 +74,7 @@
         'bg-green-400': dragging == $el,
       }"
     >
-      <span class="invisible">Empty</span>
+      <span class="invisible"><%= dgettext("classes.seating_plans", "Empty seat") %></span>
     </div>
   </div>
 
@@ -99,7 +102,7 @@
   </div>
 </div>
 
-<.back navigate={~p"/seating_plans"}>Back to Seating Plans</.back>
+<.back navigate={~p"/seating_plans"}><%= gettext("Back") %></.back>
 
 <%= if @live_action in [:edit] do %>
   <.modal id="seating_plan-modal" show on_cancel={JS.patch(~p"/seating_plans/#{@seating_plan}")}>

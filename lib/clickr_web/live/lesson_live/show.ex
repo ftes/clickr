@@ -20,6 +20,6 @@ defmodule ClickrWeb.LessonLive.Show do
      )}
   end
 
-  defp page_title(:show), do: "Show Lesson"
-  defp page_title(:edit), do: "Edit Lesson"
+  defp page_title(:show), do: dgettext("lessons.lessons", "Show Lesson")
+  defp page_title(:edit), do: dgettext("lessons.lessons", "Edit Lesson")
 end

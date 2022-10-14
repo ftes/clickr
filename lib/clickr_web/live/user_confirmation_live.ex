@@ -5,19 +5,21 @@ defmodule ClickrWeb.UserConfirmationLive do
 
   def render(%{live_action: :edit} = assigns) do
     ~H"""
-    <.header>Confirm Account</.header>
+    <.header><%= dgettext("accounts", "Confirm Account") %></.header>
 
     <.simple_form :let={f} for={:user} id="confirmation_form" phx-submit="confirm_account">
       <.input field={{f, :token}} type="hidden" value={@token} />
       <:actions>
-        <.button phx-disable-with="Confirming...">Confirm my account</.button>
+        <.button phx-disable-with={dgettext("accounts", "Confirming...")}>
+          <%= dgettext("accounts.actions", "Confirm my account") %>
+        </.button>
       </:actions>
     </.simple_form>
 
     <p>
-      <.link href={~p"/users/register"}>Register</.link>
+      <.link href={~p"/users/register"}><%= dgettext("accounts.actions", "Register") %></.link>
       |
-      <.link href={~p"/users/log_in"}>Sign in</.link>
+      <.link href={~p"/users/log_in"}><%= dgettext("accounts.actions", "Sign in") %></.link>
     </p>
     """
   end
@@ -33,7 +35,7 @@ defmodule ClickrWeb.UserConfirmationLive do
       {:ok, _} ->
         {:noreply,
          socket
-         |> put_flash(:info, "User confirmed successfully.")
+         |> put_flash(:info, dgettext("accounts", "User confirmed successfully."))
          |> redirect(to: ~p"/")}
 
       :error ->
@@ -48,7 +50,10 @@ defmodule ClickrWeb.UserConfirmationLive do
           %{} ->
             {:noreply,
              socket
-             |> put_flash(:error, "User confirmation link is invalid or it has expired.")
+             |> put_flash(
+               :error,
+               dgettext("accounts", "User confirmation link is invalid or it has expired.")
+             )
              |> redirect(to: ~p"/")}
         end
     end

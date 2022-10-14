@@ -9,7 +9,6 @@ defmodule ClickrWeb.StudentLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage student records in your database.</:subtitle>
       </.header>
 
       <.simple_form
@@ -20,15 +19,15 @@ defmodule ClickrWeb.StudentLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :name}} type="text" label="Name" />
+        <.input field={{f, :name}} type="text" label={dgettext("students.students", "Name")} />
         <.input
           field={{f, :class_id}}
           type="select"
-          label="Class"
+          label={dgettext("students.students", "Class")}
           options={Enum.map(@classes, &{&1.id, &1.name})}
         />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Student</.button>
+          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
         </:actions>
       </.simple_form>
     </div>
@@ -67,7 +66,7 @@ defmodule ClickrWeb.StudentLive.FormComponent do
       {:ok, _student} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Student updated successfully")
+         |> put_flash(:info, dgettext("students.students", "Student updated successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -80,7 +79,7 @@ defmodule ClickrWeb.StudentLive.FormComponent do
       {:ok, _student} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Student created successfully")
+         |> put_flash(:info, dgettext("students.students", "Student created successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

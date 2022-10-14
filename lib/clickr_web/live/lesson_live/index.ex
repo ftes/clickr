@@ -16,19 +16,19 @@ defmodule ClickrWeb.LessonLive.Index do
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
-    |> assign(:page_title, "Edit Lesson")
+    |> assign(:page_title, dgettext("lessons.lessons", "Edit Lesson"))
     |> assign(:lesson, Lessons.get_lesson!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Lesson")
+    |> assign(:page_title, dgettext("lessons.lessons", "New Lesson"))
     |> assign(:lesson, %Lesson{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Lessons")
+    |> assign(:page_title, dgettext("lessons.lessons", "Listing Lessons"))
     |> assign(:lesson, nil)
   end
 

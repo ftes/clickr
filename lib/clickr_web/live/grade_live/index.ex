@@ -15,7 +15,7 @@ defmodule ClickrWeb.GradeLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Grades")
+    |> assign(:page_title, dgettext("grades.grades", "Listing Grades"))
     |> assign(:grade, nil)
   end
 

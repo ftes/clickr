@@ -18,19 +18,19 @@ defmodule ClickrWeb.GatewayLive.Index do
     # TODO Check permission
 
     socket
-    |> assign(:page_title, "Edit Gateway")
+    |> assign(:page_title, dgettext("devices.gateways", "Edit Gateway"))
     |> assign(:gateway, Devices.get_gateway!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Gateway")
+    |> assign(:page_title, dgettext("devices.gateways", "New Gateway"))
     |> assign(:gateway, %Gateway{api_token: UUID.uuid4(:hex)})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Gateways")
+    |> assign(:page_title, dgettext("devices.gateways", "Listing Gateways"))
     |> assign(:gateway, nil)
   end
 

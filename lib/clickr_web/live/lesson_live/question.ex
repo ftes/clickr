@@ -13,7 +13,7 @@ defmodule ClickrWeb.LessonLive.Question do
     />
 
     <.header>
-      Lesson <%= @lesson.name %>
+      <%= dgettext("lessons.lessons", "Lesson") %> <%= @lesson.name %>
       <:subtitle><%= @lesson.state %></:subtitle>
       <:actions>
         <.button
@@ -44,37 +44,37 @@ defmodule ClickrWeb.LessonLive.Question do
           class="absolute inset-0 hidden group-hover:flex items-stretch justify-between bg-white/80 rounded-lg"
         >
           <button
-            title="Remove student"
+            title={dgettext("lessons.actions", "Remove student")}
             phx-click={JS.push("remove_student", value: %{student_id: seat.student.id})}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
-            <span class="sr-only">Remove student</span>
+            <span class="sr-only"><%= dgettext("lessons.actions", "Remove student") %></span>
             <Heroicons.x_mark class="w-8 h-8" />
           </button>
           <button
-            title="Add point"
+            title={dgettext("lessons.actions", "Add point")}
             phx-click={JS.push("add_point", value: %{student_id: seat.student.id})}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
-            <span class="sr-only">Add point</span>
+            <span class="sr-only"><%= dgettext("lessons.actions", "Add point") %></span>
             <Heroicons.plus class="w-8 h-8" />
           </button>
           <button
-            title="Subtract point"
+            title={dgettext("lessons.actions", "Subtract point")}
             phx-click={JS.push("subtract_point", value: %{student_id: seat.student.id})}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
-            <span class="sr-only">Subtract point</span>
+            <span class="sr-only"><%= dgettext("lessons.actions", "Subtract point") %></span>
             <Heroicons.minus class="w-8 h-8" />
           </button>
         </div>
         <button
           :if={@lesson.state != :question and not MapSet.member?(@student_ids, seat.student.id)}
-          title="Add student"
+          title={dgettext("lessons.actions", "Add student")}
           phx-click={JS.push("add_student", value: %{student_id: seat.student.id})}
           class="absolute inset-0 hidden group-hover:flex bg-green-400/80 items-center justify-center rounded-lg"
         >
-          <span class="sr-only">Add student</span>
+          <span class="sr-only"><%= dgettext("lessons.actions", "Add student") %></span>
           <Heroicons.plus class="w-8 h-8" />
         </button>
       </div>
@@ -99,7 +99,7 @@ defmodule ClickrWeb.LessonLive.Question do
 
     {:noreply,
      socket
-     |> assign(:page_title, "Lesson")
+     |> assign(:page_title, dgettext("lessons.lessons", "Lesson"))
      |> assign_lesson_and_related(id)
      |> load_answers()
      |> ClickrWeb.LessonLive.Router.maybe_navigate()}

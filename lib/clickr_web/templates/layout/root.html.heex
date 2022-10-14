@@ -2,37 +2,38 @@
 <% user_main_menu =
   [
     [
-      {"Lessons", ~p"/lessons", [], &Heroicons.academic_cap/1},
-      {"Grades", ~p"/grades", [], &Heroicons.chart_bar/1}
+      {dgettext("lessons", "Lessons"), ~p"/lessons", [], &Heroicons.academic_cap/1},
+      {dgettext("grades", "Grades"), ~p"/grades", [], &Heroicons.chart_bar/1}
     ],
     [
-      {"Classes", ~p"/classes", [], &Heroicons.users/1},
-      {"Seating Plans", ~p"/seating_plans", [], &Heroicons.map/1}
+      {dgettext("classes", "Classes"), ~p"/classes", [], &Heroicons.users/1},
+      {dgettext("classes", "Seating plans"), ~p"/seating_plans", [], &Heroicons.map/1}
     ],
     [
-      {"Rooms", ~p"/rooms", [], &Heroicons.building_office/1},
-      {"Button Plans", ~p"/button_plans", [], &Heroicons.map/1}
+      {dgettext("rooms", "Rooms"), ~p"/rooms", [], &Heroicons.building_office/1},
+      {dgettext("rooms", "Button Plans"), ~p"/button_plans", [], &Heroicons.map/1}
     ],
     [
-      {"Subjects", ~p"/subjects", [], &Heroicons.folder/1},
-      # {"Students", ~p"/students", [], &Heroicons.user/1},
-      {"Gateways", ~p"/gateways", [], &Heroicons.server/1}
-      # {"Devices", ~p"/devices", [], &Heroicons.device_phone_mobile/1},
-      # {"Buttons", ~p"/buttons", [], &Heroicons.cursor_arrow_ripple/1}
+      {dgettext("subjects", "Subjects"), ~p"/subjects", [], &Heroicons.folder/1},
+      # {dgettext("students", "Students"), ~p"/students", [], &Heroicons.user/1},
+      {dgettext("devices", "Gateways"), ~p"/gateways", [], &Heroicons.server/1}
+      # {dgettext("devices", "Devices"), ~p"/devices", [], &Heroicons.device_phone_mobile/1},
+      # {dgettext("devices", "Buttons"), ~p"/buttons", [], &Heroicons.cursor_arrow_ripple/1}
     ]
   ]
   |> Enum.filter(&Function.identity/1)
 
 anon_main_menu = [
   [
-    {"Register", ~p"/users/register", [], &Heroicons.home/1},
-    {"Sign in", ~p"/users/log_in", [], &Heroicons.home/1}
+    {dgettext("accounts", "Register"), ~p"/users/register", [], &Heroicons.home/1},
+    {dgettext("accounts", "Sign in"), ~p"/users/log_in", [], &Heroicons.home/1}
   ]
 ]
 
 user_dropdown_menu = [
-  {"Settings", ~p"/users/settings", [], &Heroicons.cog/1},
-  {"Sign out", ~p"/users/log_out", [method: :delete], &Heroicons.x_mark/1}
+  {dgettext("accounts", "Settings"), ~p"/users/settings", [], &Heroicons.cog/1},
+  {dgettext("accounts.actions", "Sign out"), ~p"/users/log_out", [method: :delete],
+   &Heroicons.x_mark/1}
 ]
 
 main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
@@ -71,7 +72,7 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
               type="button"
               class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
             >
-              <span class="sr-only">Close sidebar</span>
+              <span class="sr-only"><% dgettext("layout", "Close sidebar") %></span>
               <Heroicons.x_circle class="h-6 w-6 text-white" />
             </button>
           </div>
@@ -146,7 +147,7 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
           type="button"
           class="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 md:hidden"
         >
-          <span class="sr-only">Open sidebar</span>
+          <span class="sr-only"><%= dgettext("layout", "Open sidebar") %></span>
           <Heroicons.bars_3 class="h-6 w-6" />
         </button>
 
@@ -191,7 +192,7 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
                   x-bind:aria-expanded="userMenuOpen"
                   aria-haspopup="true"
                 >
-                  <span class="sr-only">Open user menu</span>
+                  <span class="sr-only"><%= dgettext("layout", "Open user menu") %></span>
                   <img
                     class="h-8 w-8 rounded-full"
                     src={"https://www.gravatar.com/avatar/#{:crypto.hash(:md5, @current_user.email |> String.downcase() |> String.trim()) |> Base.encode16(case: :lower)}"}

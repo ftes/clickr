@@ -5,21 +5,22 @@
 />
 
 <.header>
-  Button plan <%= @button_plan.name %>
-  <:subtitle>This is a Button Plan record from your database.</:subtitle>
+  <%= dgettext("rooms.button_plans", "Button plan") %> <%= @button_plan.name %>
   <:actions>
     <.link patch={~p"/button_plans/#{@button_plan}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit Button Plan</.button>
+      <.button><%= dgettext("rooms.button_plans", "Edit Button Plan") %></.button>
     </.link>
   </:actions>
 </.header>
 
 <.list>
-  <:item title="Name"><%= @button_plan.name %></:item>
-  <:item title="Room"><%= @button_plan.room.name %></:item>
+  <:item title={dgettext("rooms.button_plans", "Name")}><%= @button_plan.name %></:item>
+  <:item title={dgettext("rooms.button_plans", "Room")}><%= @button_plan.room.name %></:item>
 </.list>
 
-<h2 class="mt-6 text-[0.8125rem] leading-6 text-zinc-500">Buttons</h2>
+<h2 class="mt-6 text-[0.8125rem] leading-6 text-zinc-500">
+  <%= dgettext("rooms.button_plans", "Buttons") %>
+</h2>
 
 <div
   class="flex-grow grid gap-4 auto-rows-fr auto-cols-fr"
@@ -48,10 +49,10 @@
     </p>
     <button
       class="flex-shrink-0"
-      title="Remove"
+      title={gettext("Remove")}
       phx-click={JS.push("delete_seat", value: %{id: seat.id})}
     >
-      <span class="sr-only">Remove</span>
+      <span class="sr-only"><%= gettext("Remove") %></span>
       <Heroicons.x_mark class="w-4 h-4 -mr-2" />
     </button>
   </div>
@@ -80,11 +81,11 @@
       'bg-green-400': dragging == $el,
     }"
   >
-    <span class="invisible">Empty</span>
+    <span class="invisible"><%= dgettext("rooms.button_plans", "Empty seat") %></span>
   </button>
 </div>
 
-<.back navigate={~p"/button_plans"}>Back to Button Plans</.back>
+<.back navigate={~p"/button_plans"}><%= gettext("Back") %></.back>
 
 <%= if @live_action in [:edit] do %>
   <.modal id="button_plan-modal" show on_cancel={JS.patch(~p"/button_plans/#{@button_plan}")}>

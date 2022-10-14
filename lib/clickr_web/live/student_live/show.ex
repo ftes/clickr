@@ -18,6 +18,6 @@ defmodule ClickrWeb.StudentLive.Show do
      |> assign(:student, Students.get_student!(id) |> Clickr.Repo.preload(:class))}
   end
 
-  defp page_title(:show), do: "Show Student"
-  defp page_title(:edit), do: "Edit Student"
+  defp page_title(:show), do: dgettext("students.students", "Show Student")
+  defp page_title(:edit), do: dgettext("students.students", "Edit Student")
 end

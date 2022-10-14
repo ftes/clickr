@@ -9,7 +9,6 @@ defmodule ClickrWeb.ClassLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage class records in your database.</:subtitle>
       </.header>
 
       <.simple_form
@@ -20,9 +19,9 @@ defmodule ClickrWeb.ClassLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :name}} type="text" label="Name" />
+        <.input field={{f, :name}} type="text" label={dgettext("classes.classes", "Name")} />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Class</.button>
+          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
         </:actions>
       </.simple_form>
     </div>
@@ -60,7 +59,7 @@ defmodule ClickrWeb.ClassLive.FormComponent do
       {:ok, _class} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Class updated successfully")
+         |> put_flash(:info, dgettext("classes.classes", "Class updated successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -73,7 +72,7 @@ defmodule ClickrWeb.ClassLive.FormComponent do
       {:ok, _class} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Class created successfully")
+         |> put_flash(:info, dgettext("classes.classes", "Class created successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

@@ -9,7 +9,6 @@ defmodule ClickrWeb.GatewayLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage gateway records in your database.</:subtitle>
       </.header>
 
       <.simple_form
@@ -20,10 +19,10 @@ defmodule ClickrWeb.GatewayLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :name}} type="text" label="Name" />
-        <.input field={{f, :api_token}} type="text" label="API Token" />
+        <.input field={{f, :name}} type="text" label={dgettext("devices.gateways", "Name")} />
+        <.input field={{f, :api_token}} type="text" label={dgettext("devices.gateways", "API Token")} />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Gateway</.button>
+          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
         </:actions>
       </.simple_form>
     </div>
@@ -61,7 +60,7 @@ defmodule ClickrWeb.GatewayLive.FormComponent do
       {:ok, _gateway} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Gateway updated successfully")
+         |> put_flash(:info, dgettext("devices.gateways", "Gateway updated successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -74,7 +73,7 @@ defmodule ClickrWeb.GatewayLive.FormComponent do
       {:ok, _gateway} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Gateway created successfully")
+         |> put_flash(:info, dgettext("devices.gateways", "Gateway created successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

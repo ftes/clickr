@@ -8,10 +8,12 @@ defmodule ClickrWeb.LessonLive.Ended do
     ~H"""
     <.simple_form :let={f} phx-submit="submit" phx-change="validate" id="lesson-form" for={@changeset}>
       <.header>
-        Lesson <%= @lesson.name %>
+        <%= dgettext("lessons.lessons", "Lesson") %> <%= @lesson.name %>
         <:subtitle><%= @lesson.state %></:subtitle>
         <:actions>
-          <.button phx-disable-with="Grading...">Grade</.button>
+          <.button phx-disable-with={dgettext("lessons.lessons", "Grading...")}>
+            <%= dgettext("lessons.actions", "Grade") %>
+          </.button>
         </:actions>
       </.header>
 
@@ -20,7 +22,7 @@ defmodule ClickrWeb.LessonLive.Ended do
       <%= for grade_f <- inputs_for(f, :grade) do %>
         <.input
           field={{grade_f, :min}}
-          label={"Min #{Phoenix.HTML.Form.input_value(grade_f, :min)}"}
+          label={"#{dgettext("lessons.lessons", "Minimum")} #{Phoenix.HTML.Form.input_value(grade_f, :min)}"}
           type="range"
           step="0.1"
           min="0"
@@ -29,7 +31,7 @@ defmodule ClickrWeb.LessonLive.Ended do
 
         <.input
           field={{grade_f, :max}}
-          label={"Max #{Phoenix.HTML.Form.input_value(grade_f, :max)}"}
+          label={"#{dgettext("lessons.lessons", "Maximum")} #{Phoenix.HTML.Form.input_value(grade_f, :max)}"}
           type="range"
           step="0.1"
           min="0"
@@ -78,7 +80,7 @@ defmodule ClickrWeb.LessonLive.Ended do
   def handle_params(%{"id" => id}, _, socket) do
     {:noreply,
      socket
-     |> assign(:page_title, "Lesson")
+     |> assign(:page_title, dgettext("lessons.lessons", "Lesson"))
      |> assign_lesson_and_related(id)
      |> ClickrWeb.LessonLive.Router.maybe_navigate()}
   end
@@ -90,6 +92,7 @@ defmodule ClickrWeb.LessonLive.Ended do
     {:noreply,
      socket
      |> assign_lesson_and_related()
+     |> put_flash(:info, dgettext("lessons.lessons", "Lesson graded successfully"))
      |> ClickrWeb.LessonLive.Router.maybe_navigate()}
   end
 

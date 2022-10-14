@@ -18,19 +18,19 @@ defmodule ClickrWeb.DeviceLive.Index do
     # TODO Check permission
 
     socket
-    |> assign(:page_title, "Edit Device")
+    |> assign(:page_title, dgettext("devices.devices", "Edit Device"))
     |> assign(:device, Devices.get_device!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Device")
+    |> assign(:page_title, dgettext("devices.devices", "New Device"))
     |> assign(:device, %Device{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Devices")
+    |> assign(:page_title, dgettext("devices.devices", "Listing Devices"))
     |> assign(:device, nil)
   end
 

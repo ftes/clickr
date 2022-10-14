@@ -18,6 +18,6 @@ defmodule ClickrWeb.SubjectLive.Show do
      |> assign(:subject, Subjects.get_subject!(id))}
   end
 
-  defp page_title(:show), do: "Show Subject"
-  defp page_title(:edit), do: "Edit Subject"
+  defp page_title(:show), do: dgettext("subjects.subjects", "Show Subject")
+  defp page_title(:edit), do: dgettext("subjects.subjects", "Edit Subject")
 end

@@ -5,13 +5,13 @@ defmodule ClickrWeb.UserLoginLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        Sign in to account
+        <%= dgettext("accounts", "Sign in to account") %>
         <:subtitle>
-          Don't have an account?
+          <%= dgettext("accounts", "Don't have an account?") %>
           <.link navigate={~p"/users/register"} class="font-semibold text-brand hover:underline">
-            Sign up
+            <%= dgettext("accounts.actions", "Sign up") %>
           </.link>
-          for an account now.
+          <%= dgettext("accounts", "for an account now.") %>
         </:subtitle>
       </.header>
 
@@ -23,18 +23,27 @@ defmodule ClickrWeb.UserLoginLive do
         as={:user}
         phx-update="ignore"
       >
-        <.input field={{f, :email}} type="email" label="Email" required />
-        <.input field={{f, :password}} type="password" label="Password" required />
+        <.input field={{f, :email}} type="email" label={dgettext("accounts", "Email")} required />
+        <.input
+          field={{f, :password}}
+          type="password"
+          label={dgettext("accounts", "Password")}
+          required
+        />
 
         <:actions :let={f}>
-          <.input field={{f, :remember_me}} type="checkbox" label="Keep me logged in" />
+          <.input
+            field={{f, :remember_me}}
+            type="checkbox"
+            label={dgettext("accounts", "Keep me logged in")}
+          />
           <.link href={~p"/users/reset_password"} class="text-sm font-semibold">
-            Forgot your password?
+            <%= dgettext("accounts", "Forgot your password?") %>
           </.link>
         </:actions>
         <:actions>
-          <.button phx-disable-with="Sigining in..." class="w-full">
-            Sign in <span aria-hidden="true">→</span>
+          <.button phx-disable-with={dgettext("accounts", "Sigining in...")} class="w-full">
+            <%= dgettext("accounts.actions", "Sign in") %> <span aria-hidden="true">→</span>
           </.button>
         </:actions>
       </.simple_form>

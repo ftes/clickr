@@ -1,19 +1,18 @@
 <.header>
-  Device <%= @device.name %>
-  <:subtitle>This is a device record from your database.</:subtitle>
+  <%= dgettext("devices.devices", "Device") %> <%= @device.name %>
   <:actions>
     <.link patch={~p"/devices/#{@device}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit device</.button>
+      <.button><%= dgettext("devices.devices", "Edit device") %></.button>
     </.link>
   </:actions>
 </.header>
 
 <.list>
-  <:item title="Name"><%= @device.name %></:item>
-  <:item title="Gateway"><%= @device.gateway.name %></:item>
+  <:item title={dgettext("devices.devices", "Name")}><%= @device.name %></:item>
+  <:item title={dgettext("devices.devices", "Gateway")}><%= @device.gateway.name %></:item>
 </.list>
 
-<.back navigate={~p"/devices"}>Back to devices</.back>
+<.back navigate={~p"/devices"}><%= gettext("Back") %></.back>
 
 <%= if @live_action in [:edit] do %>
   <.modal id="device-modal" show on_cancel={JS.patch(~p"/devices/#{@device}")}>

@@ -1,23 +1,26 @@
 <.header>
-  Listing Subjects
+  <%= dgettext("subjects.subjects", "Listing Subjects") %>
   <:actions>
     <.link patch={~p"/subjects/new"}>
-      <.button>New Subject</.button>
+      <.button><%= dgettext("subjects.subjects", "New Subject") %></.button>
     </.link>
   </:actions>
 </.header>
 
 <.table id="subjects" rows={@subjects} row_click={&JS.navigate(~p"/subjects/#{&1}")}>
-  <:col :let={subject} label="Name"><%= subject.name %></:col>
+  <:col :let={subject} label={dgettext("subjects.subjects", "Name")}><%= subject.name %></:col>
   <:action :let={subject}>
     <div class="sr-only">
-      <.link navigate={~p"/subjects/#{subject}"}>Show</.link>
+      <.link navigate={~p"/subjects/#{subject}"}><%= gettext("Show") %></.link>
     </div>
-    <.link patch={~p"/subjects/#{subject}/edit"}>Edit</.link>
+    <.link patch={~p"/subjects/#{subject}/edit"}><%= gettext("Edit") %></.link>
   </:action>
   <:action :let={subject}>
-    <.link phx-click={JS.push("delete", value: %{id: subject.id})} data-confirm="Are you sure?">
-      Delete
+    <.link
+      phx-click={JS.push("delete", value: %{id: subject.id})}
+      data-confirm={gettext("Are you sure?")}
+    >
+      <%= gettext("Delete") %>
     </.link>
   </:action>
 </.table>

@@ -32,8 +32,8 @@ defmodule ClickrWeb.SeatingPlanLive.Show do
     {:noreply, load_seating_plan(socket, socket.assigns.seating_plan.id)}
   end
 
-  defp page_title(:show), do: "Show Seating plan"
-  defp page_title(:edit), do: "Edit Seating plan"
+  defp page_title(:show), do: dgettext("classes.seating_plans", "Show Seating plan")
+  defp page_title(:edit), do: dgettext("classes.seating_plans", "Edit Seating plan")
 
   defp load_seating_plan(socket, id) do
     sp =

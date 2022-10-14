@@ -1,20 +1,19 @@
 <.header>
-  Button <%= @button.name %>
-  <:subtitle>This is a button record from your database.</:subtitle>
+  <%= dgettext("devices.buttons", "Button") %> <%= @button.name %>
   <:actions>
     <.link patch={~p"/buttons/#{@button}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit button</.button>
+      <.button><%= dgettext("devices.buttons", "Edit button") %></.button>
     </.link>
   </:actions>
 </.header>
 
 <.list>
-  <:item title="Name"><%= @button.name %></:item>
-  <:item title="Gateway"><%= @button.device.gateway.name %></:item>
-  <:item title="Device"><%= @button.device.name %></:item>
+  <:item title={dgettext("devices.buttons", "Name")}><%= @button.name %></:item>
+  <:item title={dgettext("devices.buttons", "Gateway")}><%= @button.device.gateway.name %></:item>
+  <:item title={dgettext("devices.buttons", "Device")}><%= @button.device.name %></:item>
 </.list>
 
-<.back navigate={~p"/buttons"}>Back to buttons</.back>
+<.back navigate={~p"/buttons"}><%= gettext("Back") %></.back>
 
 <%= if @live_action in [:edit] do %>
   <.modal id="button-modal" show on_cancel={JS.patch(~p"/buttons/#{@button}")}>

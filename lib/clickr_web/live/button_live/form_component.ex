@@ -9,7 +9,6 @@ defmodule ClickrWeb.ButtonLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage button records in your database.</:subtitle>
       </.header>
 
       <.simple_form
@@ -20,15 +19,15 @@ defmodule ClickrWeb.ButtonLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :name}} type="text" label="Name" />
+        <.input field={{f, :name}} type="text" label={dgettext("devices.buttons", "Name")} />
         <.input
           field={{f, :device_id}}
           type="select"
-          label="Device"
+          label={dgettext("devices.buttons", "Device")}
           options={Enum.map(@devices, &{&1.id, &1.name})}
         />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Button</.button>
+          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
         </:actions>
       </.simple_form>
     </div>
@@ -67,7 +66,7 @@ defmodule ClickrWeb.ButtonLive.FormComponent do
       {:ok, _button} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Button updated successfully")
+         |> put_flash(:info, dgettext("devices.buttons", "Button updated successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -80,7 +79,7 @@ defmodule ClickrWeb.ButtonLive.FormComponent do
       {:ok, _button} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Button created successfully")
+         |> put_flash(:info, dgettext("devices.buttons", "Button created successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

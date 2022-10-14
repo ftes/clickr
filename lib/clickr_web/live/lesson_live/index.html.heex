@@ -1,27 +1,32 @@
 <.header>
-  Listing Lessons
+  <%= dgettext("lessons.lessons", "Listing Lessons") %>
   <:actions>
     <.link patch={~p"/lessons/new"}>
-      <.button>New Lesson</.button>
+      <.button><%= dgettext("lessons.lessons", "New Lesson") %></.button>
     </.link>
   </:actions>
 </.header>
 
 <.table id="lessons" rows={@lessons} row_click={&JS.navigate(~p"/lessons/#{&1}/router")}>
-  <:col :let={lesson} label="Name"><%= lesson.name %></:col>
-  <:col :let={lesson} label="State"><%= lesson.state %></:col>
+  <:col :let={lesson} label={dgettext("lessons.lessons", "Name")}><%= lesson.name %></:col>
+  <:col :let={lesson} label={dgettext("lessons.lessons", "State")}><%= lesson.state %></:col>
   <:action :let={lesson}>
     <div class="sr-only">
-      <.link navigate={~p"/lessons/#{lesson}/router"}>Run</.link>
+      <.link navigate={~p"/lessons/#{lesson}/router"}>
+        <%= dgettext("lessons.actions", "Run") %>
+      </.link>
     </div>
-    <.link navigate={~p"/lessons/#{lesson}"}>Show</.link>
+    <.link navigate={~p"/lessons/#{lesson}"}><%= gettext("Show") %></.link>
   </:action>
   <:action :let={lesson}>
-    <.link patch={~p"/lessons/#{lesson}/edit"}>Edit</.link>
+    <.link patch={~p"/lessons/#{lesson}/edit"}><%= gettext("Edit") %></.link>
   </:action>
   <:action :let={lesson}>
-    <.link phx-click={JS.push("delete", value: %{id: lesson.id})} data-confirm="Are you sure?">
-      Delete
+    <.link
+      phx-click={JS.push("delete", value: %{id: lesson.id})}
+      data-confirm={gettext("Are you sure?")}
+    >
+      <%= gettext("Delete") %>
     </.link>
   </:action>
 </.table>

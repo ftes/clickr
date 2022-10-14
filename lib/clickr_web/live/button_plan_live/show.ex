@@ -64,8 +64,8 @@ defmodule ClickrWeb.ButtonPlanLive.Show do
     {:noreply, assign(socket, :active, MapSet.delete(socket.assigns.active, bid))}
   end
 
-  defp page_title(:show), do: "Show Button plan"
-  defp page_title(:edit), do: "Edit Button plan"
+  defp page_title(:show), do: dgettext("rooms.button_plans", "Show Button plan")
+  defp page_title(:edit), do: dgettext("rooms.button_plans", "Edit Button plan")
 
   defp load_button_plan(socket, id) do
     bp =

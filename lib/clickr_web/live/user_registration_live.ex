@@ -8,13 +8,13 @@ defmodule ClickrWeb.UserRegistrationLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        Register for an account
+        <%= dgettext("accounts", "Register for an account") %>
         <:subtitle>
-          Already registered?
+          <%= dgettext("accounts", "Already registered?") %>
           <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            Sign in
+            <%= dgettext("accounts.actions", "Sign in") %>
           </.link>
-          to your account now.
+          <%= dgettext("accounts", "to your account now.") %>
         </:subtitle>
       </.header>
 
@@ -30,20 +30,24 @@ defmodule ClickrWeb.UserRegistrationLive do
         as={:user}
       >
         <%= if @changeset.action == :insert do %>
-          <.error message="Oops, something went wrong! Please check the errors below." />
+          <.error message={
+            dgettext("accounts", "Oops, something went wrong! Please check the errors below.")
+          } />
         <% end %>
 
-        <.input field={{f, :email}} type="email" label="Email" required />
+        <.input field={{f, :email}} type="email" label={dgettext("accounts", "Email")} required />
         <.input
           field={{f, :password}}
           type="password"
-          label="Password"
+          label={dgettext("accounts", "Password")}
           value={input_value(f, :password)}
           required
         />
 
         <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
+          <.button phx-disable-with={dgettext("accounts", "Creating account...")} class="w-full">
+            <%= dgettext("accounts.actions", "Create an account") %>
+          </.button>
         </:actions>
       </.simple_form>
     </div>

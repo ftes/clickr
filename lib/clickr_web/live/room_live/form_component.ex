@@ -9,7 +9,6 @@ defmodule ClickrWeb.RoomLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage room records in your database.</:subtitle>
       </.header>
 
       <.simple_form
@@ -20,11 +19,11 @@ defmodule ClickrWeb.RoomLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :name}} type="text" label="Name" />
-        <.input field={{f, :width}} type="number" label="Width" />
-        <.input field={{f, :height}} type="number" label="Height" />
+        <.input field={{f, :name}} type="text" label={dgettext("rooms.rooms", "Name")} />
+        <.input field={{f, :width}} type="number" label={dgettext("rooms.rooms", "Width")} />
+        <.input field={{f, :height}} type="number" label={dgettext("rooms.rooms", "Height")} />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Room</.button>
+          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
         </:actions>
       </.simple_form>
     </div>
@@ -62,7 +61,7 @@ defmodule ClickrWeb.RoomLive.FormComponent do
       {:ok, _room} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Room updated successfully")
+         |> put_flash(:info, dgettext("rooms.rooms", "Room updated successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -75,7 +74,7 @@ defmodule ClickrWeb.RoomLive.FormComponent do
       {:ok, _room} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Room created successfully")
+         |> put_flash(:info, dgettext("rooms.rooms", "Room created successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

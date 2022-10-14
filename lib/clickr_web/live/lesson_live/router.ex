@@ -29,12 +29,23 @@ defmodule ClickrWeb.LessonLive.Router do
     end
   end
 
-  def transitions(%{state: :started}), do: [{"Roll Call", :roll_call}]
-  def transitions(%{state: :roll_call}), do: [{"Note Attendance", :active}]
-  def transitions(%{state: :active}), do: [{"Ask Question", :question}, {"End Lesson", :ended}]
-  def transitions(%{state: :question}), do: [{"End Question", :active}]
-  def transitions(%{state: :ended}), do: [{"Grade", :graded}]
-  def transitions(%{state: :graded}), do: [{"Grade", :graded}]
+  def transitions(%{state: :started}),
+    do: [{dgettext("lessons.actions", "Roll Call"), :roll_call}]
+
+  def transitions(%{state: :roll_call}),
+    do: [{dgettext("lessons.actions", "Note Attendance"), :active}]
+
+  def transitions(%{state: :active}),
+    do: [
+      {dgettext("lessons.actions", "Ask Question"), :question},
+      {dgettext("lessons.actions", "End Lesson"), :ended}
+    ]
+
+  def transitions(%{state: :question}),
+    do: [{dgettext("lessons.actions", "End Question"), :active}]
+
+  def transitions(%{state: :ended}), do: [{dgettext("lessons.actions", "Grade"), :graded}]
+  def transitions(%{state: :graded}), do: [{dgettext("lessons.actions", "Grade"), :graded}]
 
   defp path(lesson), do: "/lessons/#{lesson.id}/#{lesson.state}"
 end

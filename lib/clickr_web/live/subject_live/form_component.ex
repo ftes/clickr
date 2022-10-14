@@ -9,7 +9,6 @@ defmodule ClickrWeb.SubjectLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage subject records in your database.</:subtitle>
       </.header>
 
       <.simple_form
@@ -20,9 +19,9 @@ defmodule ClickrWeb.SubjectLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :name}} type="text" label="Name" />
+        <.input field={{f, :name}} type="text" label={dgettext("subjects.subjects", "Name")} />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Subject</.button>
+          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
         </:actions>
       </.simple_form>
     </div>
@@ -60,7 +59,7 @@ defmodule ClickrWeb.SubjectLive.FormComponent do
       {:ok, _subject} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Subject updated successfully")
+         |> put_flash(:info, dgettext("subjects.subjects", "Subject updated successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -73,7 +72,7 @@ defmodule ClickrWeb.SubjectLive.FormComponent do
       {:ok, _subject} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Subject created successfully")
+         |> put_flash(:info, dgettext("subjects.subjects", "Subject created successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

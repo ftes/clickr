@@ -18,6 +18,6 @@ defmodule ClickrWeb.DeviceLive.Show do
      |> assign(:device, Devices.get_device!(id) |> Clickr.Repo.preload(:gateway))}
   end
 
-  defp page_title(:show), do: "Show Device"
-  defp page_title(:edit), do: "Edit Device"
+  defp page_title(:show), do: dgettext("devices.devices", "Show Device")
+  defp page_title(:edit), do: dgettext("devices.devices", "Edit Device")
 end

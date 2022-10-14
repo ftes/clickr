@@ -18,6 +18,6 @@ defmodule ClickrWeb.GatewayLive.Show do
      |> assign(:gateway, Devices.get_gateway!(id))}
   end
 
-  defp page_title(:show), do: "Show Gateway"
-  defp page_title(:edit), do: "Edit Gateway"
+  defp page_title(:show), do: dgettext("devices.gateways", "Show Gateway")
+  defp page_title(:edit), do: dgettext("devices.gateways", "Edit Gateway")
 end

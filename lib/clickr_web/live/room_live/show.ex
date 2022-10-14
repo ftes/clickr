@@ -18,6 +18,6 @@ defmodule ClickrWeb.RoomLive.Show do
      |> assign(:room, Rooms.get_room!(id))}
   end
 
-  defp page_title(:show), do: "Show Room"
-  defp page_title(:edit), do: "Edit Room"
+  defp page_title(:show), do: dgettext("rooms.rooms", "Show Room")
+  defp page_title(:edit), do: dgettext("rooms.rooms", "Edit Room")
 end

@@ -1,20 +1,19 @@
 <.header>
-  Room <%= @room.name %>
-  <:subtitle>This is a room record from your database.</:subtitle>
+  <%= dgettext("rooms.rooms", "Room") %> <%= @room.name %>
   <:actions>
     <.link patch={~p"/rooms/#{@room}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit room</.button>
+      <.button><%= dgettext("rooms.rooms", "Edit room") %></.button>
     </.link>
   </:actions>
 </.header>
 
 <.list>
-  <:item title="Name"><%= @room.name %></:item>
-  <:item title="Width"><%= @room.width %></:item>
-  <:item title="Height"><%= @room.height %></:item>
+  <:item title={dgettext("rooms.rooms", "Name")}><%= @room.name %></:item>
+  <:item title={dgettext("rooms.rooms", "Width")}><%= @room.width %></:item>
+  <:item title={dgettext("rooms.rooms", "Height")}><%= @room.height %></:item>
 </.list>
 
-<.back navigate={~p"/rooms"}>Back to rooms</.back>
+<.back navigate={~p"/rooms"}><%= gettext("Back") %></.back>
 
 <%= if @live_action in [:edit] do %>
   <.modal id="room-modal" show on_cancel={JS.patch(~p"/rooms/#{@room}")}>

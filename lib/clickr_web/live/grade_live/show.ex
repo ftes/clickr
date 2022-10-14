@@ -19,5 +19,5 @@ defmodule ClickrWeb.GradeLive.Show do
      )}
   end
 
-  defp page_title(:show), do: "Show Grade"
+  defp page_title(:show), do: dgettext("grades.grades", "Show Grade")
 end

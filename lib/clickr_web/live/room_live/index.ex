@@ -18,19 +18,19 @@ defmodule ClickrWeb.RoomLive.Index do
     # TODO Check permission
 
     socket
-    |> assign(:page_title, "Edit Room")
+    |> assign(:page_title, dgettext("rooms.rooms", "Edit Room"))
     |> assign(:room, Rooms.get_room!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Room")
+    |> assign(:page_title, dgettext("rooms.rooms", "New Room"))
     |> assign(:room, %Room{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Rooms")
+    |> assign(:page_title, dgettext("rooms.rooms", "Listing Rooms"))
     |> assign(:room, nil)
   end
 

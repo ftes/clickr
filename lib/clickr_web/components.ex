@@ -165,10 +165,10 @@ defmodule ClickrWeb.Components do
   ## Examples
 
       <.simple_form :let={f} for={:user} phx-change="validate" phx-submit="save">
-        <.input field={{f, :email}} label="Email"/>
-        <.input field={{f, :username}} label="Username" />
+        <.input field={{f, :email}} label={dgettext("accounts", "Email")}/>
+        <.input field={{f, :username}} label={dgettext("accounts", "Username")} />
         <:actions>
-          <.button>Save</.button>
+          <.button><%= gettext("Save") %></.button>
         </:actions>
       </.simple_form>
   """
@@ -426,8 +426,8 @@ defmodule ClickrWeb.Components do
   ## Examples
 
       <.table rows={@users}>
-        <:col :let={user} label="id"><%= user.id %></:col>
-        <:col :let={user} label="username"><%= user.username %></:col>
+        <:col :let={user} label={dgettext("accounts", "id")}><%= user.id %></:col>
+        <:col :let={user} label={dgettext("accounts", "username")}><%= user.username %></:col>
       </.table>
   """
   attr :id, :string, required: true
@@ -493,8 +493,8 @@ defmodule ClickrWeb.Components do
   ## Examples
 
       <.list>
-        <:item title="Title"><%= @post.title %></:item>
-        <:item title="Views"><%= @post.views %></:item>
+        <:item title={dgettext("posts", "Title")}><%= @post.title %></:item>
+        <:item title={dgettext("posts", "Views")}><%= @post.views %></:item>
       </.list>
   """
   slot :item, required: true do
@@ -519,7 +519,7 @@ defmodule ClickrWeb.Components do
 
   ## Examples
 
-      <.back navigate={~p"/posts"}>Back to posts</.back>
+      <.back navigate={~p"/posts"}><%= gettext("Back") %></.back>
   """
   attr :navigate, :any, required: true
   slot :inner_block, required: true

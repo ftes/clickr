@@ -18,19 +18,19 @@ defmodule ClickrWeb.StudentLive.Index do
     # TODO Check permission
 
     socket
-    |> assign(:page_title, "Edit Student")
+    |> assign(:page_title, dgettext("students.students", "Edit Student"))
     |> assign(:student, Students.get_student!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Student")
+    |> assign(:page_title, dgettext("students.students", "New Student"))
     |> assign(:student, %Student{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Students")
+    |> assign(:page_title, dgettext("students.students", "Listing Students"))
     |> assign(:student, nil)
   end
 
@@ -45,6 +45,10 @@ defmodule ClickrWeb.StudentLive.Index do
   end
 
   defp load_students(socket) do
-    assign(socket, :students, Students.list_students(user_id: socket.assigns.current_user.id))
+    students =
+      Students.list_students(user_id: socket.assigns.current_user.id)
+      |> Clickr.Repo.preload(:class)
+
+    assign(socket, :students, students)
   end
 end

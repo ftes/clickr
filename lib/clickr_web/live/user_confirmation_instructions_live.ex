@@ -5,19 +5,21 @@ defmodule ClickrWeb.UserConfirmationInstructionsLive do
 
   def render(assigns) do
     ~H"""
-    <.header>Resend confirmation instructions</.header>
+    <.header><%= dgettext("accounts", "Resend confirmation instructions") %></.header>
 
     <.simple_form :let={f} for={:user} id="resend_confirmation_form" phx-submit="send_instructions">
-      <.input field={{f, :email}} type="email" label="Email" required />
+      <.input field={{f, :email}} type="email" label={dgettext("accounts", "Email")} required />
       <:actions>
-        <.button phx-disable-with="Sending...">Resend confirmation instructions</.button>
+        <.button phx-disable-with={dgettext("accounts", "Sending...")}>
+          <%= dgettext("accounts.actions", "Resend confirmation instructions") %>
+        </.button>
       </:actions>
     </.simple_form>
 
     <p>
-      <.link href={~p"/users/register"}>Register</.link>
+      <.link href={~p"/users/register"}><%= dgettext("accounts.actions", "Register") %></.link>
       |
-      <.link href={~p"/users/log_in"}>Sign in</.link>
+      <.link href={~p"/users/log_in"}><%= dgettext("accounts.actions", "Sign in") %></.link>
     </p>
     """
   end
@@ -35,7 +37,10 @@ defmodule ClickrWeb.UserConfirmationInstructionsLive do
     end
 
     info =
-      "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
+      dgettext(
+        "accounts",
+        "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
+      )
 
     {:noreply,
      socket

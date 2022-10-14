@@ -37,8 +37,8 @@ defmodule ClickrWeb.ClassLive.Show do
     {:noreply, load_class(socket, socket.assigns.class.id)}
   end
 
-  defp page_title(:show), do: "Show Class"
-  defp page_title(:edit), do: "Edit Class"
+  defp page_title(:show), do: dgettext("classes.classes", "Show Class")
+  defp page_title(:edit), do: dgettext("classes.classes", "Edit Class")
 
   defp student_params(%{"names" => names}, socket) do
     a = socket.assigns

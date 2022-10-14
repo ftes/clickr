@@ -18,19 +18,19 @@ defmodule ClickrWeb.SeatingPlanLive.Index do
     # TODO Check permission
 
     socket
-    |> assign(:page_title, "Edit Seating plan")
+    |> assign(:page_title, dgettext("classes.seating_plans", "Edit Seating plan"))
     |> assign(:seating_plan, Classes.get_seating_plan!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Seating plan")
+    |> assign(:page_title, dgettext("classes.seating_plans", "New Seating plan"))
     |> assign(:seating_plan, %SeatingPlan{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Seating plans")
+    |> assign(:page_title, dgettext("classes.seating_plans", "Listing Seating plans"))
     |> assign(:seating_plan, nil)
   end
 

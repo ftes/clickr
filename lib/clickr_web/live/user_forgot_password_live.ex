@@ -7,15 +7,17 @@ defmodule ClickrWeb.UserForgotPasswordLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        Forgot your password?
-        <:subtitle>We'll send a password reset link to your inbox</:subtitle>
+        <%= dgettext("accounts", "Forgot your password?") %>
+        <:subtitle>
+          <%= dgettext("accounts", "We'll send a password reset link to your inbox") %>
+        </:subtitle>
       </.header>
 
       <.simple_form :let={f} id="reset_password_form" for={:user} phx-submit="send_email">
-        <.input field={{f, :email}} type="email" placeholder="Email" required />
+        <.input field={{f, :email}} type="email" placeholder={dgettext("accounts", "Email")} required />
         <:actions>
-          <.button phx-disable-with="Sending..." class="w-full">
-            Send password reset instructions
+          <.button phx-disable-with={dgettext("accounts", "Sending...")} class="w-full">
+            <%= dgettext("accounts.actions", "Send password reset instructions") %>
           </.button>
         </:actions>
       </.simple_form>
@@ -36,7 +38,10 @@ defmodule ClickrWeb.UserForgotPasswordLive do
     end
 
     info =
-      "If your email is in our system, you will receive instructions to reset your password shortly."
+      dgettext(
+        "accounts",
+        "If your email is in our system, you will receive instructions to reset your password shortly."
+      )
 
     {:noreply,
      socket

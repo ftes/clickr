@@ -18,19 +18,19 @@ defmodule ClickrWeb.ButtonPlanLive.Index do
     # TODO Check permission
 
     socket
-    |> assign(:page_title, "Edit Button plan")
+    |> assign(:page_title, dgettext("rooms.button_plans", "Edit Button plan"))
     |> assign(:button_plan, Rooms.get_button_plan!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Button plan")
+    |> assign(:page_title, dgettext("rooms.button_plans", "New Button plan"))
     |> assign(:button_plan, %ButtonPlan{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Button plans")
+    |> assign(:page_title, dgettext("rooms.button_plans", "Listing Button plans"))
     |> assign(:button_plan, nil)
   end
 

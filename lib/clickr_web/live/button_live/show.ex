@@ -18,6 +18,6 @@ defmodule ClickrWeb.ButtonLive.Show do
      |> assign(:button, Devices.get_button!(id) |> Clickr.Repo.preload(device: :gateway))}
   end
 
-  defp page_title(:show), do: "Show Button"
-  defp page_title(:edit), do: "Edit Button"
+  defp page_title(:show), do: dgettext("devices.buttons", "Show Button")
+  defp page_title(:edit), do: dgettext("devices.buttons", "Edit Button")
 end

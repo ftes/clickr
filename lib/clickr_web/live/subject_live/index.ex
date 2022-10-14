@@ -18,19 +18,19 @@ defmodule ClickrWeb.SubjectLive.Index do
     # TODO Check permission
 
     socket
-    |> assign(:page_title, "Edit Subject")
+    |> assign(:page_title, dgettext("subjects.subjects", "Edit Subject"))
     |> assign(:subject, Subjects.get_subject!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Subject")
+    |> assign(:page_title, dgettext("subjects.subjects", "New Subject"))
     |> assign(:subject, %Subject{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Subjects")
+    |> assign(:page_title, dgettext("subjects.subjects", "Listing Subjects"))
     |> assign(:subject, nil)
   end
 

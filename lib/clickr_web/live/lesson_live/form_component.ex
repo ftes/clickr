@@ -10,7 +10,6 @@ defmodule ClickrWeb.LessonLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage lesson records in your database.</:subtitle>
       </.header>
 
       <.simple_form
@@ -24,26 +23,26 @@ defmodule ClickrWeb.LessonLive.FormComponent do
         <.input
           field={{f, :class_id}}
           type="select"
-          label="Class"
+          label={dgettext("lessons.lessons", "Class")}
           options={Enum.map(@classes, &{&1.id, &1.name})}
         />
         <.input
           field={{f, :subject_id}}
           type="select"
-          label="Subject"
+          label={dgettext("lessons.lessons", "Subject")}
           options={Enum.map(@subjects, &{&1.id, &1.name})}
         />
         <.input
           field={{f, :room_id}}
           type="select"
-          label="Room"
+          label={dgettext("lessons.lessons", "Room")}
           options={Enum.map(@rooms, &{&1.id, &1.name})}
         />
         <.input
           disabled={!Phoenix.HTML.Form.input_value(f, :room_id)}
           field={{f, :button_plan_id}}
           type="select"
-          label="Button Plan"
+          label={dgettext("lessons.lessons", "Button Plan")}
           options={Enum.map(@button_plans, &{&1.id, &1.name})}
         />
         <.input
@@ -53,12 +52,12 @@ defmodule ClickrWeb.LessonLive.FormComponent do
               !Phoenix.HTML.Form.input_value(f, :room_id)
           }
           type="select"
-          label="Seating Plan"
+          label={dgettext("lessons.lessons", "Seating Plan")}
           options={Enum.map(@seating_plans, &{&1.id, &1.name})}
         />
-        <.input field={{f, :name}} type="text" label="Name" />
+        <.input field={{f, :name}} type="text" label={dgettext("lessons.lessons", "Name")} />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Lesson</.button>
+          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
         </:actions>
       </.simple_form>
     </div>
@@ -105,7 +104,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
       {:ok, _lesson} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Lesson updated successfully")
+         |> put_flash(:info, dgettext("lessons.lessons", "Lesson updated successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -118,7 +117,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
       {:ok, _lesson} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Lesson created successfully")
+         |> put_flash(:info, dgettext("lessons.lessons", "Lesson created successfully"))
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
