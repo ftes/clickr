@@ -179,6 +179,7 @@ main_menu = if @current_user, do: user_main_menu, else: anon_main_menu %>
               <Heroicons.bell class="h-6 w-6" />
             </button-->
             <!-- Profile dropdown -->
+            <ClickrWeb.GatewayPresence.render present_gateways={assigns[:present_gateways]} />
             <div
               class="relative ml-3"
               x-data="{userMenuOpen: false}"

@@ -1,5 +1,6 @@
 # Todo
 
+- [ ] Indicate gateway connected
 - [ ] Filter and sort lists
 - [ ] Permissions
   - user as first (second?) arg to all context functions

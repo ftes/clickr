@@ -14,6 +14,7 @@ defmodule Clickr.Application do
       Clickr.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: Clickr.PubSub},
+      Clickr.Presence,
       # Start the Endpoint (http/https)
       ClickrWeb.Endpoint,
       # Start a worker by calling: Clickr.Worker.start_link(arg)

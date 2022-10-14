@@ -7,6 +7,7 @@ defmodule ClickrWeb.DeconzChannel do
 
   @impl true
   def join("deconz", _params, socket) do
+    send(self(), :track_presence)
     send(self(), :get_sensors)
     {:ok, socket}
   end
@@ -56,6 +57,12 @@ defmodule ClickrWeb.DeconzChannel do
   def handle_info(:get_sensors, socket) do
     Process.send_after(self(), :get_sensors, @get_sensors_every_minute)
     push(socket, "get_sensors", %{})
+    {:noreply, socket}
+  end
+
+  def handle_info(:track_presence, socket) do
+    %{current_gateway: gateway, current_user: user} = socket.assigns
+    Clickr.Presence.track_gateway(%{user_id: user.id, gateway_id: gateway.id})
     {:noreply, socket}
   end
 

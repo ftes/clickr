@@ -45,6 +45,14 @@ defmodule ClickrWeb.LessonLiveTest do
       assert html =~ lesson.name
     end
 
+    test "shows gateway presence", %{conn: conn, user: user} do
+      gateway = Clickr.DevicesFixtures.gateway_fixture()
+      Clickr.Presence.track_gateway(%{user_id: user.id, gateway_id: gateway.id})
+      {:ok, _index_live, html} = live(conn, ~p"/lessons")
+
+      assert html =~ "1 gateway"
+    end
+
     test "saves new lesson", %{conn: conn, lesson: lesson} do
       {:ok, index_live, _html} = live(conn, ~p"/lessons")
 

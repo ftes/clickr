@@ -19,6 +19,7 @@ defmodule Clickr.Devices do
   """
   def list_gateways(opts \\ []) do
     Gateway
+    |> where_ids(opts[:ids])
     |> where_user_id(opts[:user_id])
     |> Repo.all()
   end
@@ -338,6 +339,9 @@ defmodule Clickr.Devices do
       res
     end
   end
+
+  defp where_ids(query, nil), do: query
+  defp where_ids(query, ids), do: where(query, [x], x.id in ^ids)
 
   defp where_user_id(query, nil), do: query
   defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)

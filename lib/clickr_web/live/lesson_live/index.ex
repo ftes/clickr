@@ -1,5 +1,6 @@
 defmodule ClickrWeb.LessonLive.Index do
   use ClickrWeb, :live_view
+  use ClickrWeb.GatewayPresence
 
   alias Clickr.Lessons
   alias Clickr.Lessons.Lesson
@@ -12,6 +13,14 @@ defmodule ClickrWeb.LessonLive.Index do
   @impl true
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    lesson = Lessons.get_lesson!(id)
+    {:ok, _} = Lessons.delete_lesson(lesson)
+
+    {:noreply, load_lessons(socket)}
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
@@ -30,14 +39,6 @@ defmodule ClickrWeb.LessonLive.Index do
     socket
     |> assign(:page_title, dgettext("lessons.lessons", "Listing Lessons"))
     |> assign(:lesson, nil)
-  end
-
-  @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    lesson = Lessons.get_lesson!(id)
-    {:ok, _} = Lessons.delete_lesson(lesson)
-
-    {:noreply, load_lessons(socket)}
   end
 
   defp load_lessons(socket) do
