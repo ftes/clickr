@@ -145,6 +145,7 @@ defmodule Clickr.Grades do
       ** (Ecto.NoResultsError)
 
   """
+  def get_grade!(%{student_id: _, subject_id: _} = args), do: Repo.get_by!(Grade, args)
   def get_grade!(id), do: Repo.get!(Grade, id)
 
   @doc """

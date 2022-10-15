@@ -43,11 +43,12 @@ defmodule ClickrWeb.LessonLive.Ended do
     </.simple_form>
 
     <div class="mt-5 flex-grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr">
-      <div
+      <.link
         :for={seat <- @lesson.seating_plan.seats}
+        navigate={~p"/grades/student/#{seat.student_id}/subject/#{@lesson.subject_id}"}
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-        class="relative group flex flex-col items-stretch justify-between rounded-lg border border-gray-300 p-1 lg:p-3 shadow-sm bg-white"
+        class={"relative group flex flex-col items-stretch justify-between rounded-lg border border-gray-300 p-1 lg:p-3 shadow-sm bg-white #{unless MapSet.member?(@student_ids, seat.student_id), do: "pointer-events-none"}"}
       >
         <p class={"overflow-hidden text-ellipsis text-sm font-medium text-center #{if MapSet.member?(@student_ids, seat.student_id), do: "x-attending text-gray-900", else: "text-gray-400"}"}>
           <%= seat.student.name %>
@@ -68,7 +69,7 @@ defmodule ClickrWeb.LessonLive.Ended do
             <%= Grades.format(:german, @grades[seat.student_id] || 0.0) %>
           </span>
         </div>
-      </div>
+      </.link>
     </div>
     """
   end

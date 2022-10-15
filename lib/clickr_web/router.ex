@@ -147,6 +147,7 @@ defmodule ClickrWeb.Router do
       live "/lessons/:id/graded", LessonLive.Ended, :graded
 
       live "/grades", GradeLive.Index, :index
+      live "/grades/student/:student_id/subject/:subject_id", GradeLive.Show, :show
       live "/grades/:id", GradeLive.Show, :show
     end
   end
