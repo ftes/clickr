@@ -14,7 +14,7 @@ defmodule Clickr.Devices.Deconz.IkeaStyrbarRemote do
   def parse_event(sensor, %{"state" => %{"buttonevent" => 2002}} = event),
     do: parse_event(sensor, event, :up)
 
-  def parse_event(_event), do: {:error, :unrecognized}
+  def parse_event(sensor, _event), do: {:error, :unrecognized}
 
   defp parse_event(sensor, event, button) do
     {:ok,
