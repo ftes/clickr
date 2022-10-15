@@ -33,7 +33,8 @@ defmodule ClickrWeb.DeconzChannel do
         Devices.broadcast_button_click(Map.merge(other_attrs, attrs))
 
       err ->
-        Logger.info("Failed to handle deconz sensor event: #{inspect(err)}, #{inspect(msg)}")
+        details = %{sensor: sensors[id], message: msg}
+        Logger.info("Failed to handle deconz sensor event: #{inspect(err)}, #{inspect(details)}")
     end
 
     {:reply, :ok, socket}
