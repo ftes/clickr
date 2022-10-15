@@ -16,9 +16,10 @@ defmodule ClickrWeb.DeconzChannelTest do
     assert_push "get_sensors", %{}
   end
 
-  test "server uses initial sensor data to create device and button upon click event", %{
-    socket: socket
-  } do
+  test "tradfri remote: server uses initial sensor data to create device and button upon click event",
+       %{
+         socket: socket
+       } do
     assert_push "get_sensors", %{}
 
     ref =
@@ -38,6 +39,37 @@ defmodule ClickrWeb.DeconzChannelTest do
         "r" => "sensors",
         "uniqueid" => "some ieee id",
         "state" => %{"buttonevent" => 4002}
+      })
+
+    assert_reply ref, :ok
+
+    assert [%{name: "some device"}] = Clickr.Devices.list_devices()
+    assert [%{name: "some device/left"}] = Clickr.Devices.list_buttons()
+  end
+
+  test "styrbar remote: server uses initial sensor data to create device and button upon click event",
+       %{
+         socket: socket
+       } do
+    assert_push "get_sensors", %{}
+
+    ref =
+      push(socket, "sensors", %{
+        "some ieee id" => %{
+          "modelid" => "Remote Control N2",
+          "uniqueid" => "some ieee id",
+          "name" => "some device"
+        }
+      })
+
+    assert_reply ref, :ok
+
+    ref =
+      push(socket, "event", %{
+        "e" => "changed",
+        "r" => "sensors",
+        "uniqueid" => "some ieee id",
+        "state" => %{"buttonevent" => 3002}
       })
 
     assert_reply ref, :ok

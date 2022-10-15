@@ -1,5 +1,5 @@
 defmodule Clickr.Devices.Deconz do
-  alias Clickr.Devices.Deconz.IkeaTradfriRemote
+  alias Clickr.Devices.Deconz.{IkeaTradfriRemote, IkeaStyrbarRemote}
 
   @tradfri_model_id "TRADFRI remote control"
   @styrbar_model_id "Remote Control N2"
