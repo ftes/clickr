@@ -4,8 +4,9 @@ defmodule ClickrWeb.GatewayPresence do
   @spec render(any) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
     ~H"""
-    <div
+    <.link
       :if={@present_gateways}
+      navigate={~p"/gateways"}
       class="relative flex h-5 w-5 items-center justify-center"
       title={"#{length(@present_gateways)} #{dgettext("devices.gateways", "Gateways")}"}
     >
@@ -16,7 +17,7 @@ defmodule ClickrWeb.GatewayPresence do
       </span>
       <span class={"relative inline-flex rounded-full h-3 w-3 #{if length(@present_gateways) > 0, do: "bg-green-500", else: "bg-red-500"}"}>
       </span>
-    </div>
+    </.link>
     """
   end
 
