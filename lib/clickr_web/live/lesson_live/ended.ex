@@ -126,16 +126,15 @@ defmodule ClickrWeb.LessonLive.Ended do
     points = Lessons.get_lesson_points(lesson)
     max_points = points |> Enum.map(fn {_student_id, points} -> points end) |> Enum.max()
 
-    changeset =
-      socket
-      |> assign(:lesson, lesson)
-      |> assign(:student_ids, MapSet.new(student_ids))
-      |> assign(:points, points)
-      |> assign(:max_points, max_points)
-      |> assign_initial_changeset()
-      |> assign_old_lesson_grades()
-      |> assign_new_lesson_grades()
-      |> assign(:grades, Map.new(grades, &{&1.student_id, &1.percent}))
+    socket
+    |> assign(:lesson, lesson)
+    |> assign(:student_ids, MapSet.new(student_ids))
+    |> assign(:points, points)
+    |> assign(:max_points, max_points)
+    |> assign_initial_changeset()
+    |> assign_old_lesson_grades()
+    |> assign_new_lesson_grades()
+    |> assign(:grades, Map.new(grades, &{&1.student_id, &1.percent}))
   end
 
   defp assign_old_lesson_grades(socket) do

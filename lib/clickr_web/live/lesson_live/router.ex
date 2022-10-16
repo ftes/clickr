@@ -37,8 +37,8 @@ defmodule ClickrWeb.LessonLive.Router do
 
   def transitions(%{state: :active}),
     do: [
-      {dgettext("lessons.actions", "Ask Question"), :question},
-      {dgettext("lessons.actions", "End Lesson"), :ended}
+      {dgettext("lessons.actions", "End Lesson"), :ended},
+      {dgettext("lessons.actions", "Ask Question"), :question}
     ]
 
   def transitions(%{state: :question}),
