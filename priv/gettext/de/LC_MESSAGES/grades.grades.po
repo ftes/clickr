@@ -14,6 +14,7 @@ msgstr ""
 #: lib/clickr_web/live/grade_live/index.html.heex:8
 #: lib/clickr_web/live/grade_live/show.html.heex:2
 #: lib/clickr_web/live/grade_live/show.html.heex:8
+#: lib/clickr_web/live/student_live/show.html.heex:17
 #, elixir-autogen, elixir-format
 msgid "Grade"
 msgstr "Note"
@@ -29,7 +30,7 @@ msgstr "Noten"
 msgid "Percent"
 msgstr "Prozent"
 
-#: lib/clickr_web/live/grade_live/show.ex:22
+#: lib/clickr_web/live/grade_live/show.ex:26
 #, elixir-autogen, elixir-format
 msgid "Show Grade"
 msgstr "Note anzeigen"
@@ -42,11 +43,12 @@ msgstr "Schüler"
 
 #: lib/clickr_web/live/grade_live/index.html.heex:7
 #: lib/clickr_web/live/grade_live/show.html.heex:7
+#: lib/clickr_web/live/student_live/show.html.heex:16
 #, elixir-autogen, elixir-format
 msgid "Subject"
 msgstr "Fach"
 
-#: lib/clickr_web/templates/layout/root.html.heex:6
+#: lib/clickr_web/live/components/menu.ex:7
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Grades"
 msgstr "Noten"

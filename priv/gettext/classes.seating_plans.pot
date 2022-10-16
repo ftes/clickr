@@ -78,7 +78,7 @@ msgstr ""
 msgid "Students"
 msgstr ""
 
-#: lib/clickr_web/templates/layout/root.html.heex:10
+#: lib/clickr_web/live/components/menu.ex:11
 #, elixir-autogen, elixir-format
 msgid "Seating plans"
 msgstr ""

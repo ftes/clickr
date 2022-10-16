@@ -23,7 +23,7 @@ msgstr "Raumplan"
 msgid "Class"
 msgstr "Klasse"
 
-#: lib/clickr_web/live/lesson_live/index.ex:19
+#: lib/clickr_web/live/lesson_live/index.ex:27
 #: lib/clickr_web/live/lesson_live/show.ex:24
 #: lib/clickr_web/live/lesson_live/show.html.heex:8
 #, elixir-autogen, elixir-format
@@ -36,7 +36,7 @@ msgid "Grading..."
 msgstr "Benote..."
 
 #: lib/clickr_web/live/lesson_live/ended.ex:11
-#: lib/clickr_web/live/lesson_live/ended.ex:85
+#: lib/clickr_web/live/lesson_live/ended.ex:86
 #: lib/clickr_web/live/lesson_live/question.ex:16
 #: lib/clickr_web/live/lesson_live/question.ex:104
 #: lib/clickr_web/live/lesson_live/roll_call.ex:16
@@ -51,7 +51,7 @@ msgstr "Stunde"
 msgid "Lesson created successfully"
 msgstr "Stunde erstellt"
 
-#: lib/clickr_web/live/lesson_live/ended.ex:97
+#: lib/clickr_web/live/lesson_live/ended.ex:98
 #, elixir-autogen, elixir-format
 msgid "Lesson graded successfully"
 msgstr "Stunde benotet"
@@ -61,7 +61,7 @@ msgstr "Stunde benotet"
 msgid "Lesson updated successfully"
 msgstr "Stunde geändert"
 
-#: lib/clickr_web/live/lesson_live/index.ex:31
+#: lib/clickr_web/live/lesson_live/index.ex:39
 #: lib/clickr_web/live/lesson_live/index.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Listing Lessons"
@@ -84,7 +84,7 @@ msgstr "Minimum"
 msgid "Name"
 msgstr "Name"
 
-#: lib/clickr_web/live/lesson_live/index.ex:25
+#: lib/clickr_web/live/lesson_live/index.ex:33
 #: lib/clickr_web/live/lesson_live/index.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "New Lesson"
@@ -119,7 +119,7 @@ msgstr "Status"
 msgid "Subject"
 msgstr "Fach"
 
-#: lib/clickr_web/templates/layout/root.html.heex:5
+#: lib/clickr_web/live/components/menu.ex:6
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Lessons"
 msgstr "Stunden"

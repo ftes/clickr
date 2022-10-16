@@ -73,7 +73,7 @@ msgstr "Raum"
 msgid "Show Button plan"
 msgstr "Raumplan anzeigen"
 
-#: lib/clickr_web/templates/layout/root.html.heex:15
+#: lib/clickr_web/live/components/menu.ex:15
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Button Plans"
 msgstr "Raumpläne"

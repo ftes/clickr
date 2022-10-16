@@ -8,7 +8,7 @@ defmodule ClickrWeb.GatewayPresence do
       :if={@present_gateways}
       navigate={~p"/gateways"}
       class="relative flex h-5 w-5 items-center justify-center"
-      title={"#{map_size(@present_gateways)} #{dgettext("devices.gateways", "Gateways connected")}"}
+      title={"#{dngettext("devices.gateways", "1 Gateway connected", "%{count} Gateways connected", map_size(@present_gateways))}"}
     >
       <span
         :if={map_size(@present_gateways) == 0}

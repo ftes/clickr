@@ -79,7 +79,7 @@ msgstr "Sitzplan anzeigen"
 msgid "Students"
 msgstr "Schüler"
 
-#: lib/clickr_web/templates/layout/root.html.heex:10
+#: lib/clickr_web/live/components/menu.ex:11
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Seating plans"
 msgstr "Sitzpläne"

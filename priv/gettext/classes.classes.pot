@@ -71,7 +71,7 @@ msgstr ""
 msgid "Show Class"
 msgstr ""
 
-#: lib/clickr_web/templates/layout/root.html.heex:9
+#: lib/clickr_web/live/components/menu.ex:10
 #, elixir-autogen, elixir-format
 msgid "Classes"
 msgstr ""
