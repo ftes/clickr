@@ -53,6 +53,7 @@ defmodule ClickrWeb.LessonLiveTest do
       assert html =~ "1 Gateway"
     end
 
+    @tag :inspect
     test "saves new lesson", %{conn: conn, lesson: lesson} do
       {:ok, index_live, _html} = live(conn, ~p"/lessons")
 
@@ -71,9 +72,7 @@ defmodule ClickrWeb.LessonLiveTest do
         |> form("#lesson-form",
           lesson:
             Map.merge(@create_attrs, %{
-              class_id: lesson.class_id,
               subject_id: lesson.subject_id,
-              room_id: lesson.room_id,
               button_plan_id: lesson.button_plan_id,
               seating_plan_id: lesson.seating_plan_id
             })
