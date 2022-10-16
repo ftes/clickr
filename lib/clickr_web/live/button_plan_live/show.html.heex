@@ -48,7 +48,7 @@
       <%= seat.button.name %>
     </p>
     <button
-      class="absolute right-3 top-1 bg-white"
+      class="absolute right-3 top-1"
       title={gettext("Remove")}
       phx-click={JS.push("delete_seat", value: %{id: seat.id})}
     >
