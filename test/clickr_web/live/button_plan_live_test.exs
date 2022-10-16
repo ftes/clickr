@@ -38,11 +38,12 @@ defmodule ClickrWeb.ButtonPlanLiveTest do
              |> form("#button_plan-form", button_plan: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      {:ok, _, html} =
+      {:error, {:live_redirect, %{to: redirect_to}}} = index_live =
         index_live
         |> form("#button_plan-form", button_plan: Map.put(@create_attrs, :room_id, room.id))
         |> render_submit()
-        |> follow_redirect(conn, ~p"/button_plans")
+
+      {:ok, _, html} = index_live |> follow_redirect(conn, redirect_to)
 
       assert html =~ "Button plan created successfully"
       assert html =~ "some name"
@@ -64,7 +65,7 @@ defmodule ClickrWeb.ButtonPlanLiveTest do
         index_live
         |> form("#button_plan-form", button_plan: @update_attrs)
         |> render_submit()
-        |> follow_redirect(conn, ~p"/button_plans")
+        |> follow_redirect(conn, ~p"/button_plans/#{button_plan}")
 
       assert html =~ "Button plan updated successfully"
       assert html =~ "some updated name"

@@ -66,11 +66,11 @@ defmodule ClickrWeb.ButtonPlanLive.FormComponent do
            socket.assigns.button_plan,
            set_user_id(socket, button_plan_params)
          ) do
-      {:ok, _button_plan} ->
+      {:ok, button_plan} ->
         {:noreply,
          socket
          |> put_flash(:info, dgettext("rooms.button_plans", "Button plan updated successfully"))
-         |> push_navigate(to: socket.assigns.navigate)}
+         |> push_navigate(to: socket.assigns[:navigate] || ~p"/button_plans/#{button_plan}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
@@ -79,11 +79,11 @@ defmodule ClickrWeb.ButtonPlanLive.FormComponent do
 
   defp save_button_plan(socket, :new, button_plan_params) do
     case Rooms.create_button_plan(set_user_id(socket, button_plan_params)) do
-      {:ok, _button_plan} ->
+      {:ok, button_plan} ->
         {:noreply,
          socket
          |> put_flash(:info, dgettext("rooms.button_plans", "Button plan created successfully"))
-         |> push_navigate(to: socket.assigns.navigate)}
+         |> push_navigate(to: socket.assigns[:navigate] || ~p"/button_plans/#{button_plan}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

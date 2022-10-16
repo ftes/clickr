@@ -73,14 +73,14 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
            socket.assigns.seating_plan,
            set_user_id(socket, seating_plan_params)
          ) do
-      {:ok, _seating_plan} ->
+      {:ok, seating_plan} ->
         {:noreply,
          socket
          |> put_flash(
            :info,
            dgettext("classes.seating_plans", "Seating plan updated successfully")
          )
-         |> push_navigate(to: socket.assigns.navigate)}
+         |> push_navigate(to: socket.assigns[:navigate] || ~p"/seating_plans/#{seating_plan}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
@@ -89,14 +89,14 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
 
   defp save_seating_plan(socket, :new, seating_plan_params) do
     case Classes.create_seating_plan(seating_plan_params) do
-      {:ok, _seating_plan} ->
+      {:ok, seating_plan} ->
         {:noreply,
          socket
          |> put_flash(
            :info,
            dgettext("classes.seating_plans", "Seating plan created successfully")
          )
-         |> push_navigate(to: socket.assigns.navigate)}
+         |> push_navigate(to: socket.assigns[:navigate] || ~p"/seating_plans/#{seating_plan}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
