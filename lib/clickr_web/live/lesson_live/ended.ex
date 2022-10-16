@@ -28,7 +28,7 @@ defmodule ClickrWeb.LessonLive.Ended do
           type="range"
           step="0.1"
           min="0"
-          max={length(@lesson.questions)}
+          max={@max_points}
         />
 
         <.input
@@ -37,7 +37,7 @@ defmodule ClickrWeb.LessonLive.Ended do
           type="range"
           step="0.1"
           min="0"
-          max={length(@lesson.questions)}
+          max={@max_points}
         />
       <% end %>
     </.simple_form>
@@ -123,15 +123,19 @@ defmodule ClickrWeb.LessonLive.Ended do
 
     student_ids = Enum.map(lesson.lesson_students, & &1.student_id)
     grades = Clickr.Grades.list_grades(subject_id: lesson.subject_id, student_ids: student_ids)
+    points = Lessons.get_lesson_points(lesson)
+    max_points = points |> Enum.map(fn {_student_id, points} -> points end) |> Enum.max()
 
-    socket
-    |> assign(:lesson, lesson)
-    |> assign(:changeset, Lessons.change_lesson(lesson, %{}))
-    |> assign(:student_ids, MapSet.new(student_ids))
-    |> assign(:points, Lessons.get_lesson_points(lesson))
-    |> assign_old_lesson_grades()
-    |> assign_new_lesson_grades()
-    |> assign(:grades, Map.new(grades, &{&1.student_id, &1.percent}))
+    changeset =
+      socket
+      |> assign(:lesson, lesson)
+      |> assign(:student_ids, MapSet.new(student_ids))
+      |> assign(:points, points)
+      |> assign(:max_points, max_points)
+      |> assign_initial_changeset()
+      |> assign_old_lesson_grades()
+      |> assign_new_lesson_grades()
+      |> assign(:grades, Map.new(grades, &{&1.student_id, &1.percent}))
   end
 
   defp assign_old_lesson_grades(socket) do
@@ -154,5 +158,14 @@ defmodule ClickrWeb.LessonLive.Ended do
       end
 
     assign(socket, :new_lesson_grades, grades)
+  end
+
+  defp assign_initial_changeset(%{assigns: %{lesson: %{state: :graded}}} = socket),
+    do: assign(socket, :changeset, Lessons.change_lesson(socket.assigns.lesson))
+
+  defp assign_initial_changeset(socket) do
+    defaults = %{state: :graded, grade: %{min: 0.0, max: socket.assigns.max_points}}
+    changeset = Lessons.change_lesson(socket.assigns.lesson, defaults)
+    assign(socket, :changeset, changeset)
   end
 end
