@@ -8,14 +8,14 @@ defmodule ClickrWeb.GatewayPresence do
       :if={@present_gateways}
       navigate={~p"/gateways"}
       class="relative flex h-5 w-5 items-center justify-center"
-      title={"#{length(@present_gateways)} #{dgettext("devices.gateways", "Gateways")}"}
+      title={"#{map_size(@present_gateways)} #{dgettext("devices.gateways", "Gateways connected")}"}
     >
       <span
-        :if={length(@present_gateways) == 0}
+        :if={map_size(@present_gateways) == 0}
         class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
       >
       </span>
-      <span class={"relative inline-flex rounded-full h-3 w-3 #{if length(@present_gateways) > 0, do: "bg-green-500", else: "bg-red-500"}"}>
+      <span class={"relative inline-flex rounded-full h-3 w-3 #{if map_size(@present_gateways) > 0, do: "bg-green-500", else: "bg-red-500"}"}>
       </span>
     </.link>
     """
@@ -35,7 +35,7 @@ defmodule ClickrWeb.GatewayPresence do
 
   defp load_present_gateways(socket) do
     ids = Clickr.Presence.list(presence_topic(socket)) |> Map.keys()
-    gateways = Clickr.Devices.list_gateways(ids: ids)
+    gateways = Map.new(Clickr.Devices.list_gateways(ids: ids), &{&1.id, &1})
     Phoenix.Component.assign(socket, :present_gateways, gateways)
   end
 
