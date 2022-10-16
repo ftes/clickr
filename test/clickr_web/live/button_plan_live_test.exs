@@ -38,7 +38,8 @@ defmodule ClickrWeb.ButtonPlanLiveTest do
              |> form("#button_plan-form", button_plan: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      {:error, {:live_redirect, %{to: redirect_to}}} = index_live =
+      {:error, {:live_redirect, %{to: redirect_to}}} =
+        index_live =
         index_live
         |> form("#button_plan-form", button_plan: Map.put(@create_attrs, :room_id, room.id))
         |> render_submit()
