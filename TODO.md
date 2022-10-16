@@ -4,6 +4,7 @@
 - [ ] raumplan und raum verschmelzen
 - [ ] new lesson: als erstes Sitzplan auswählen, daraus ergibt sich autom. Klase/Raum
 - [ ] automatisch Namen vergeben, z.B. Sitzplan 6a/R402
+- [ ] navigate from new to show (room, seatingPlan)
  
 - [ ] Filter and sort lists
 - [ ] Permissions
