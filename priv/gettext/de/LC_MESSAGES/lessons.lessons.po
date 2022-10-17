@@ -11,7 +11,7 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2\n"
 
-#: lib/clickr_web/live/lesson_live/form_component.ex:38
+#: lib/clickr_web/live/lesson_live/form_component.ex:62
 #: lib/clickr_web/live/lesson_live/show.html.heex:21
 #, elixir-autogen, elixir-format
 msgid "Button Plan"
@@ -45,7 +45,7 @@ msgstr "Benote..."
 msgid "Lesson"
 msgstr "Stunde"
 
-#: lib/clickr_web/live/lesson_live/form_component.ex:111
+#: lib/clickr_web/live/lesson_live/form_component.ex:141
 #, elixir-autogen, elixir-format
 msgid "Lesson created successfully"
 msgstr "Stunde erstellt"
@@ -55,7 +55,7 @@ msgstr "Stunde erstellt"
 msgid "Lesson graded successfully"
 msgstr "Stunde benotet"
 
-#: lib/clickr_web/live/lesson_live/form_component.ex:93
+#: lib/clickr_web/live/lesson_live/form_component.ex:123
 #, elixir-autogen, elixir-format
 msgid "Lesson updated successfully"
 msgstr "Stunde geändert"
@@ -76,7 +76,7 @@ msgstr "Maximum"
 msgid "Minimum"
 msgstr "Minimum"
 
-#: lib/clickr_web/live/lesson_live/form_component.ex:41
+#: lib/clickr_web/live/lesson_live/form_component.ex:65
 #: lib/clickr_web/live/lesson_live/index.html.heex:11
 #: lib/clickr_web/live/lesson_live/show.html.heex:14
 #, elixir-autogen, elixir-format
@@ -94,7 +94,7 @@ msgstr "Neue Stunde"
 msgid "Room"
 msgstr "Raum"
 
-#: lib/clickr_web/live/lesson_live/form_component.ex:32
+#: lib/clickr_web/live/lesson_live/form_component.ex:56
 #: lib/clickr_web/live/lesson_live/show.html.heex:24
 #, elixir-autogen, elixir-format
 msgid "Seating Plan"
@@ -111,7 +111,7 @@ msgstr "Stunde anzeigen"
 msgid "State"
 msgstr "Status"
 
-#: lib/clickr_web/live/lesson_live/form_component.ex:26
+#: lib/clickr_web/live/lesson_live/form_component.ex:50
 #: lib/clickr_web/live/lesson_live/show.html.heex:19
 #, elixir-autogen, elixir-format
 msgid "Subject"
@@ -121,3 +121,8 @@ msgstr "Fach"
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Lessons"
 msgstr "Stunden"
+
+#: lib/clickr_web/live/lesson_live/form_component.ex:17
+#, elixir-autogen, elixir-format
+msgid "Recent combinations"
+msgstr "Auswahl von letzten Stunden übernehmen"
