@@ -16,12 +16,12 @@ msgstr ""
 msgid "Button plan"
 msgstr "Button"
 
-#: lib/clickr_web/live/button_plan_live/form_component.ex:85
+#: lib/clickr_web/live/button_plan_live/form_component.ex:88
 #, elixir-autogen, elixir-format
 msgid "Button plan created successfully"
 msgstr "Button angelegt"
 
-#: lib/clickr_web/live/button_plan_live/form_component.ex:72
+#: lib/clickr_web/live/button_plan_live/form_component.ex:75
 #, elixir-autogen, elixir-format
 msgid "Button plan updated successfully"
 msgstr "Button geändert"
@@ -49,7 +49,7 @@ msgstr "Leerer Sitz"
 msgid "Listing Button plans"
 msgstr "Buttonpläne"
 
-#: lib/clickr_web/live/button_plan_live/form_component.ex:22
+#: lib/clickr_web/live/button_plan_live/form_component.ex:29
 #: lib/clickr_web/live/button_plan_live/index.html.heex:11
 #: lib/clickr_web/live/button_plan_live/show.html.heex:17
 #, elixir-autogen, elixir-format
