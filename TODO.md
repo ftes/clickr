@@ -1,6 +1,9 @@
 # Todo
 
 - [ ] new lesson: recent combinations (12 last)
+- [ ] delete lesson -> room, seating_plan -> room
+  - seating_plan defines own width/height
+- [ ] delete button_plan (move into room)
  
 - [ ] Filter and sort lists
 - [ ] Permissions

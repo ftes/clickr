@@ -33,7 +33,6 @@ defmodule ClickrWeb.LessonLive.FormComponent do
           options={Enum.map(@seating_plans, &{&1.id, &1.name})}
         />
         <.input
-          disabled={!Phoenix.HTML.Form.input_value(f, :seating_plan_id)}
           field={{f, :button_plan_id}}
           type="select"
           label={dgettext("lessons.lessons", "Button Plan")}
