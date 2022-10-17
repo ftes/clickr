@@ -15,7 +15,7 @@ msgstr ""
 #: lib/clickr_web/live/lesson_live/show.html.heex:21
 #, elixir-autogen, elixir-format
 msgid "Button Plan"
-msgstr "Raumplan"
+msgstr "Buttonplan"
 
 #: lib/clickr_web/live/lesson_live/form_component.ex:26
 #: lib/clickr_web/live/lesson_live/show.html.heex:18
