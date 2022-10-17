@@ -28,6 +28,17 @@ defmodule Clickr.Lessons do
     |> Repo.all()
   end
 
+  def list_lesson_combinations(opts \\ []) do
+    from(l in Lesson,
+      distinct: [l.subject_id, l.seating_plan_id, l.button_plan_id],
+      limit: ^opts[:limit]
+    )
+    |> where_user_id(opts[:user_id])
+    |> Repo.all()
+    # order_by in query doesn't work
+    |> Enum.sort_by(& &1.inserted_at, :desc)
+  end
+
   @doc """
   Gets a single lesson.
 

@@ -22,6 +22,17 @@ defmodule Clickr.LessonsTest do
       assert Lessons.list_lessons() == [lesson]
     end
 
+    test "list_lesson_combinations/0 returns most recent unique combinations" do
+      at = fn x -> DateTime.from_unix!(x) end
+      lesson_fixture(name: "l1", inserted_at: at.(1))
+      lesson_fixture(name: "l2", inserted_at: at.(2))
+      l3 = lesson_fixture(name: "l3", inserted_at: at.(3))
+      l3_dup = Map.take(l3, [:subject_id, :seating_plan_id, :button_plan_id, :room_id, :class_id])
+      lesson_fixture(Map.merge(%{name: "l4", inserted_at: at.(4)}, l3_dup))
+
+      assert ["l3", "l2", "l1"] = Lessons.list_lesson_combinations() |> Enum.map(& &1.name)
+    end
+
     test "get_lesson!/1 returns the lesson with given id" do
       lesson = lesson_fixture()
       assert Lessons.get_lesson!(lesson.id) == lesson

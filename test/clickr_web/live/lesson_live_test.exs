@@ -66,22 +66,18 @@ defmodule ClickrWeb.LessonLiveTest do
              |> form("#lesson-form", lesson: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      {:error, {:live_redirect, %{to: redirect_to}}} =
-        index_live =
-        index_live
-        |> form("#lesson-form",
-          lesson:
-            Map.merge(@create_attrs, %{
-              subject_id: lesson.subject_id,
-              button_plan_id: lesson.button_plan_id,
-              seating_plan_id: lesson.seating_plan_id
-            })
-        )
-        |> render_submit()
+      index_live
+      |> form("#lesson-form",
+        lesson:
+          Map.merge(@create_attrs, %{
+            subject_id: lesson.subject_id,
+            button_plan_id: lesson.button_plan_id,
+            seating_plan_id: lesson.seating_plan_id
+          })
+      )
+      |> render_submit()
 
-      {:ok, _, html} = index_live |> follow_redirect(conn, redirect_to)
-      assert html =~ "Lesson created successfully"
-      assert html =~ "some name"
+      assert {_, %{"info" => "Lesson created successfully"}} = assert_redirect(index_live)
     end
 
     test "generates lesson name", %{conn: conn, user: user} do
@@ -97,6 +93,19 @@ defmodule ClickrWeb.LessonLiveTest do
 
       expected_name = "class subject #{Timex.format!(Date.utc_today(), "{D}.{M}.")}"
       assert index_live |> has_element?("#lesson-form_name[value='#{expected_name}']")
+    end
+
+    test "creates lesson using recent combination", %{conn: conn, lesson: old_lesson} do
+      {:ok, index_live, _html} = live(conn, ~p"/lessons/new")
+      index_live |> element("button.x-create") |> render_click()
+
+      assert {<<"/lessons/", lesson_id::binary-size(36), "/started">>,
+              %{"info" => "Lesson created successfully"}} = assert_redirect(index_live)
+
+      lesson = Clickr.Lessons.get_lesson!(lesson_id)
+      assert lesson.subject_id == old_lesson.subject_id
+      assert lesson.seating_plan_id == old_lesson.seating_plan_id
+      assert lesson.button_plan_id == old_lesson.button_plan_id
     end
 
     test "updates lesson in listing", %{conn: conn, lesson: lesson} do

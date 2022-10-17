@@ -39,17 +39,13 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
              |> form("#seating_plan-form", seating_plan: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      {:error, {:live_redirect, %{to: redirect_to}}} =
-        index_live =
-        index_live
-        |> form("#seating_plan-form",
-          seating_plan: Map.merge(@create_attrs, %{class_id: class.id, room_id: room.id})
-        )
-        |> render_submit()
+      index_live
+      |> form("#seating_plan-form",
+        seating_plan: Map.merge(@create_attrs, %{class_id: class.id, room_id: room.id})
+      )
+      |> render_submit()
 
-      {:ok, _, html} = index_live |> follow_redirect(conn, redirect_to)
-      assert html =~ "Seating plan created successfully"
-      assert html =~ "some name"
+      assert {_, %{"info" => "Seating plan created successfully"}} = assert_redirect(index_live)
     end
 
     test "generates seating_plan name", %{conn: conn, user: user} do

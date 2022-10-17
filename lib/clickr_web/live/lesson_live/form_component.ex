@@ -12,6 +12,30 @@ defmodule ClickrWeb.LessonLive.FormComponent do
         <%= @title %>
       </.header>
 
+      <div :if={@action == :new} class="my-3">
+        <h2 class="my-1 text-[0.8125rem] leading-6 text-zinc-500">
+          <%= dgettext("lessons.lessons", "Recent combinations") %>
+        </h2>
+        <button
+          :for={lesson <- @combinations}
+          phx-click={
+            JS.push("create",
+              value: %{
+                lesson: %{
+                  subject_id: lesson.subject_id,
+                  seating_plan_id: lesson.seating_plan_id,
+                  button_plan_id: lesson.button_plan_id
+                }
+              }
+            )
+          }
+          phx-target={@myself}
+          class="x-create block my-1 bg-zinc-500 text-white text-sm py-1 px-2 rounded"
+        >
+          <%= lesson.subject.name %> • <%= lesson.seating_plan.name %> • <%= lesson.button_plan.name %>
+        </button>
+      </div>
+
       <.simple_form
         :let={f}
         for={@changeset}
@@ -57,7 +81,8 @@ defmodule ClickrWeb.LessonLive.FormComponent do
      |> assign(:changeset, changeset)
      |> load_subjects()
      |> load_seating_plans()
-     |> load_button_plans()}
+     |> load_button_plans()
+     |> load_combinations()}
   end
 
   @impl true
@@ -77,6 +102,11 @@ defmodule ClickrWeb.LessonLive.FormComponent do
   end
 
   def handle_event("save", %{"lesson" => lesson_params}, socket) do
+    save_lesson(socket, socket.assigns.action, lesson_params)
+  end
+
+  def handle_event("create", %{"lesson" => lesson_params}, socket) do
+    lesson_params = generate_name(lesson_params, socket, force: true)
     save_lesson(socket, socket.assigns.action, lesson_params)
   end
 
@@ -112,8 +142,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
          |> push_navigate(to: "/lessons/#{lesson.id}/#{lesson.state}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.puts("couldn't save")
-        {:noreply, assign(socket, changeset: changeset |> IO.inspect())}
+        {:noreply, assign(socket, changeset: changeset)}
     end
   end
 
@@ -145,18 +174,31 @@ defmodule ClickrWeb.LessonLive.FormComponent do
 
   defp load_button_plans(socket), do: assign(socket, :button_plans, [])
 
-  defp generate_name(params, socket) do
+  defp load_combinations(socket) do
+    user_id = socket.assigns.current_user.id
+
+    combinations =
+      Clickr.Lessons.list_lesson_combinations(user_id: user_id, limit: 12)
+      |> Clickr.Repo.preload([:subject, :seating_plan, :button_plan])
+
+    assign(socket, :combinations, combinations)
+  end
+
+  defp generate_name(params, socket, opts \\ []) do
     sid = params["subject_id"]
     spid = params["seating_plan_id"]
     a = socket.assigns
 
-    if sid != "" && spid != "" &&
-         (sid != get_field(a.changeset, :subject_id) ||
-            spid != get_field(a.changeset, :seating_plan_id)) do
+    changed? =
+      sid != "" && spid != "" &&
+        (sid != get_field(a.changeset, :subject_id) ||
+           spid != get_field(a.changeset, :seating_plan_id))
+
+    if changed? || opts[:force] do
       s = Enum.find(a.subjects, &(&1.id == sid))
       sp = Enum.find(a.seating_plans, &(&1.id == spid))
       date = DateTime.utc_now() |> Timex.format!("{D}.{M}.")
-      %{params | "name" => "#{sp.class.name} #{s.name} #{date}"}
+      Map.put(params, "name", "#{sp.class.name} #{s.name} #{date}")
     else
       params
     end
