@@ -50,6 +50,17 @@ defmodule ClickrWeb.ButtonPlanLiveTest do
       assert html =~ "some name"
     end
 
+    test "generates button_plan name", %{conn: conn, user: user} do
+      room = room_fixture(name: "this room", user_id: user.id)
+      {:ok, index_live, _html} = live(conn, ~p"/button_plans/new")
+
+      assert index_live
+             |> form("#button_plan-form", button_plan: %{room_id: room.id})
+             |> render_change()
+
+      assert index_live |> has_element?("#button_plan-form_name[value='this room']")
+    end
+
     test "updates button_plan in listing", %{conn: conn, button_plan: button_plan} do
       {:ok, index_live, _html} = live(conn, ~p"/button_plans")
 

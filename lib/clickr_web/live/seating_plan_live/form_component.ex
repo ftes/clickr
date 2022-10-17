@@ -2,6 +2,7 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
   use ClickrWeb, :live_component
 
   alias Clickr.Classes
+  import Ecto.Changeset, only: [get_field: 2]
 
   @impl true
   def render(assigns) do
@@ -19,7 +20,6 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :name}} type="text" label={dgettext("classes.seating_plans", "Name")} />
         <.input
           field={{f, :class_id}}
           type="select"
@@ -32,6 +32,7 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
           label={dgettext("classes.seating_plans", "Room")}
           options={Enum.map(@rooms, &{&1.id, &1.name})}
         />
+        <.input field={{f, :name}} type="text" label={dgettext("classes.seating_plans", "Name")} />
         <:actions>
           <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
         </:actions>
@@ -54,6 +55,8 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"seating_plan" => seating_plan_params}, socket) do
+    seating_plan_params = generate_name(seating_plan_params, socket)
+
     changeset =
       socket.assigns.seating_plan
       |> Classes.change_seating_plan(seating_plan_params)
@@ -111,5 +114,21 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
 
   defp load_rooms(socket) do
     assign(socket, :rooms, Clickr.Rooms.list_rooms(user_id: socket.assigns.current_user.id))
+  end
+
+  defp generate_name(params, socket) do
+    class_id = params["class_id"]
+    room_id = params["room_id"]
+    a = socket.assigns
+
+    if class_id != "" && room_id != "" &&
+         (class_id != get_field(a.changeset, :class_id) ||
+            room_id != get_field(a.changeset, :room_id)) do
+      class = Enum.find(a.classes, &(&1.id == class_id))
+      room = Enum.find(a.rooms, &(&1.id == room_id))
+      %{params | "name" => "#{class.name} #{room.name}"}
+    else
+      params
+    end
   end
 end

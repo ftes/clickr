@@ -63,7 +63,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"lesson" => lesson_params}, socket) do
-    lesson_params = generate_name(socket.assigns.changeset, lesson_params)
+    lesson_params = generate_name(lesson_params, socket)
 
     changeset =
       socket.assigns.lesson
@@ -126,7 +126,10 @@ defmodule ClickrWeb.LessonLive.FormComponent do
   end
 
   defp load_seating_plans(%{assigns: %{changeset: _}} = socket) do
-    seating_plans = Clickr.Classes.list_seating_plans(user_id: socket.assigns.current_user.id)
+    seating_plans =
+      Clickr.Classes.list_seating_plans(user_id: socket.assigns.current_user.id)
+      |> Clickr.Repo.preload(:class)
+
     assign(socket, :seating_plans, seating_plans)
   end
 
@@ -143,15 +146,16 @@ defmodule ClickrWeb.LessonLive.FormComponent do
 
   defp load_button_plans(socket), do: assign(socket, :button_plans, [])
 
-  defp generate_name(changeset, params) do
+  defp generate_name(params, socket) do
     sid = params["subject_id"]
     spid = params["seating_plan_id"]
+    a = socket.assigns
 
     if sid != "" && spid != "" &&
-         (sid != get_field(changeset, :subject_id) ||
-            spid != get_field(changeset, :seating_plan_id)) do
-      s = Clickr.Subjects.get_subject!(sid)
-      sp = Clickr.Classes.get_seating_plan!(spid) |> Clickr.Repo.preload(:class)
+         (sid != get_field(a.changeset, :subject_id) ||
+            spid != get_field(a.changeset, :seating_plan_id)) do
+      s = Enum.find(a.subjects, &(&1.id == sid))
+      sp = Enum.find(a.seating_plans, &(&1.id == spid))
       date = DateTime.utc_now() |> Timex.format!("{D}.{M}.")
       %{params | "name" => "#{sp.class.name} #{s.name} #{date}"}
     else

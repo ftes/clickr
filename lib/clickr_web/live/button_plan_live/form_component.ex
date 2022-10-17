@@ -2,6 +2,7 @@ defmodule ClickrWeb.ButtonPlanLive.FormComponent do
   use ClickrWeb, :live_component
 
   alias Clickr.Rooms
+  import Ecto.Changeset, only: [get_field: 2]
 
   @impl true
   def render(assigns) do
@@ -19,13 +20,13 @@ defmodule ClickrWeb.ButtonPlanLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :name}} type="text" label={dgettext("rooms.button_plans", "Name")} />
         <.input
           field={{f, :room_id}}
           type="select"
           label={dgettext("rooms.button_plans", "Room")}
           options={Enum.map(@rooms, &{&1.id, &1.name})}
         />
+        <.input field={{f, :name}} type="text" label={dgettext("rooms.button_plans", "Name")} />
         <:actions>
           <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
         </:actions>
@@ -47,6 +48,8 @@ defmodule ClickrWeb.ButtonPlanLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"button_plan" => button_plan_params}, socket) do
+    button_plan_params = generate_name(button_plan_params, socket)
+
     changeset =
       socket.assigns.button_plan
       |> Rooms.change_button_plan(button_plan_params)
@@ -94,5 +97,17 @@ defmodule ClickrWeb.ButtonPlanLive.FormComponent do
 
   defp load_rooms(socket) do
     assign(socket, :rooms, Rooms.list_rooms(user_id: socket.assigns.current_user.id))
+  end
+
+  defp generate_name(params, socket) do
+    room_id = params["room_id"]
+    a = socket.assigns
+
+    if room_id != "" && room_id != get_field(a.changeset, :room_id) do
+      room = Enum.find(a.rooms, &(&1.id == room_id))
+      %{params | "name" => room.name}
+    else
+      params
+    end
   end
 end

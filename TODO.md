@@ -1,7 +1,6 @@
 # Todo
 
 - [ ] new lesson: recent combinations (12 last)
-- [ ] automatisch Namen vergeben, z.B. Sitzplan 6a/R402
  
 - [ ] Filter and sort lists
 - [ ] Permissions

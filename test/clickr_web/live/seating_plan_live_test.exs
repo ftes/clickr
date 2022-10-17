@@ -52,6 +52,19 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
       assert html =~ "some name"
     end
 
+    test "generates seating_plan name", %{conn: conn, user: user} do
+      class = class_fixture(name: "class", user_id: user.id)
+      room = room_fixture(name: "room", user_id: user.id)
+
+      {:ok, index_live, _html} = live(conn, ~p"/seating_plans/new")
+
+      index_live
+      |> form("#seating_plan-form", seating_plan: %{class_id: class.id, room_id: room.id})
+      |> render_change()
+
+      assert index_live |> has_element?("#seating_plan-form_name[value='class room']")
+    end
+
     test "updates seating_plan in listing", %{conn: conn, seating_plan: seating_plan} do
       {:ok, index_live, _html} = live(conn, ~p"/seating_plans")
 

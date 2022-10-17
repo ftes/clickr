@@ -8,7 +8,8 @@ defmodule ClickrWeb.LessonLiveTest do
     GradesFixtures,
     LessonsFixtures,
     RoomsFixtures,
-    StudentsFixtures
+    StudentsFixtures,
+    SubjectsFixtures
   }
 
   @create_attrs %{name: "some name"}
@@ -53,7 +54,6 @@ defmodule ClickrWeb.LessonLiveTest do
       assert html =~ "1 Gateway"
     end
 
-    @tag :inspect
     test "saves new lesson", %{conn: conn, lesson: lesson} do
       {:ok, index_live, _html} = live(conn, ~p"/lessons")
 
@@ -82,6 +82,21 @@ defmodule ClickrWeb.LessonLiveTest do
       {:ok, _, html} = index_live |> follow_redirect(conn, redirect_to)
       assert html =~ "Lesson created successfully"
       assert html =~ "some name"
+    end
+
+    test "generates lesson name", %{conn: conn, user: user} do
+      s = subject_fixture(name: "subject", user_id: user.id)
+      c = class_fixture(name: "class", user_id: user.id)
+      sp = seating_plan_fixture(class_id: c.id, user_id: user.id)
+
+      {:ok, index_live, _html} = live(conn, ~p"/lessons/new")
+
+      index_live
+      |> form("#lesson-form", lesson: %{subject_id: s.id, seating_plan_id: sp.id})
+      |> render_change()
+
+      expected_name = "class subject #{Timex.format!(Date.utc_today(), "{D}.{M}.")}"
+      assert index_live |> has_element?("#lesson-form_name[value='#{expected_name}']")
     end
 
     test "updates lesson in listing", %{conn: conn, lesson: lesson} do
