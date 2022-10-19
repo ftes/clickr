@@ -26,11 +26,11 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
           label={dgettext("classes.seating_plans", "Class")}
           options={Enum.map(@classes, &{&1.id, &1.name})}
         />
+        <.input field={{f, :width}} type="number" label={dgettext("classes.seating_plans", "Width")} />
         <.input
-          field={{f, :room_id}}
-          type="select"
-          label={dgettext("classes.seating_plans", "Room")}
-          options={Enum.map(@rooms, &{&1.id, &1.name})}
+          field={{f, :height}}
+          type="number"
+          label={dgettext("classes.seating_plans", "Height")}
         />
         <.input field={{f, :name}} type="text" label={dgettext("classes.seating_plans", "Name")} />
         <:actions>
@@ -49,7 +49,6 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
      socket
      |> assign(assigns)
      |> load_classes()
-     |> load_rooms()
      |> assign(:changeset, changeset)}
   end
 
@@ -112,21 +111,14 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
     assign(socket, :classes, Classes.list_classes(user_id: socket.assigns.current_user.id))
   end
 
-  defp load_rooms(socket) do
-    assign(socket, :rooms, Clickr.Rooms.list_rooms(user_id: socket.assigns.current_user.id))
-  end
-
   defp generate_name(params, socket) do
-    class_id = params["class_id"]
-    room_id = params["room_id"]
+    cid = params["class_id"]
     a = socket.assigns
+    changed? = cid != "" && cid != get_field(a.changeset, :class_id)
 
-    if class_id != "" && room_id != "" &&
-         (class_id != get_field(a.changeset, :class_id) ||
-            room_id != get_field(a.changeset, :room_id)) do
-      class = Enum.find(a.classes, &(&1.id == class_id))
-      room = Enum.find(a.rooms, &(&1.id == room_id))
-      %{params | "name" => "#{class.name} #{room.name}"}
+    if changed? do
+      class = Enum.find(a.classes, &(&1.id == cid))
+      Map.put(params, "name", class.name)
     else
       params
     end

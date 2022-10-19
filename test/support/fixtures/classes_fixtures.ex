@@ -4,6 +4,8 @@ defmodule Clickr.ClassesFixtures do
   entities via the `Clickr.Classes` context.
   """
 
+  import Clickr.{AccountsFixtures, FixturesHelper}
+
   @doc """
   Generate a class.
   """
@@ -13,7 +15,7 @@ defmodule Clickr.ClassesFixtures do
       |> Enum.into(%{
         name: "some class name"
       })
-      |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
       |> Clickr.Classes.create_class()
 
     class
@@ -26,11 +28,12 @@ defmodule Clickr.ClassesFixtures do
     {:ok, seating_plan} =
       attrs
       |> Enum.into(%{
-        name: "some name"
+        name: "some name",
+        width: 8,
+        height: 4
       })
-      |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
-      |> Map.put_new_lazy(:class_id, fn -> class_fixture().id end)
-      |> Map.put_new_lazy(:room_id, fn -> Clickr.RoomsFixtures.room_fixture().id end)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+      |> put_with_user(:class_id, fn uid -> class_fixture(user_id: uid).id end)
       |> Clickr.Classes.create_seating_plan()
 
     seating_plan
@@ -46,8 +49,11 @@ defmodule Clickr.ClassesFixtures do
         x: 42,
         y: 42
       })
-      |> Map.put_new_lazy(:seating_plan_id, fn -> seating_plan_fixture().id end)
-      |> Map.put_new_lazy(:student_id, fn -> Clickr.StudentsFixtures.student_fixture().id end)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+      |> put_with_user(:seating_plan_id, fn uid -> seating_plan_fixture(user_id: uid).id end)
+      |> put_with_user(:student_id, fn uid ->
+        Clickr.StudentsFixtures.student_fixture(user_id: uid).id
+      end)
       |> Clickr.Classes.create_seating_plan_seat()
 
     seating_plan_seat

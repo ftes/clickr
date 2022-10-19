@@ -4,6 +4,14 @@ defmodule Clickr.GradesFixtures do
   entities via the `Clickr.Grades` context.
   """
 
+  import Clickr.{
+    AccountsFixtures,
+    FixturesHelper,
+    LessonsFixtures,
+    StudentsFixtures,
+    SubjectsFixtures
+  }
+
   @doc """
   Generate a lesson_grade.
   """
@@ -13,8 +21,9 @@ defmodule Clickr.GradesFixtures do
       |> Enum.into(%{
         percent: 0.25
       })
-      |> Map.put_new_lazy(:lesson_id, fn -> Clickr.LessonsFixtures.lesson_fixture().id end)
-      |> Map.put_new_lazy(:student_id, fn -> Clickr.StudentsFixtures.student_fixture().id end)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+      |> put_with_user(:lesson_id, fn uid -> lesson_fixture(user_id: uid).id end)
+      |> put_with_user(:student_id, fn uid -> student_fixture(user_id: uid).id end)
       |> Clickr.Grades.create_lesson_grade()
 
     lesson_grade
@@ -29,8 +38,9 @@ defmodule Clickr.GradesFixtures do
       |> Enum.into(%{
         percent: 0.25
       })
-      |> Map.put_new_lazy(:student_id, fn -> Clickr.StudentsFixtures.student_fixture().id end)
-      |> Map.put_new_lazy(:subject_id, fn -> Clickr.SubjectsFixtures.subject_fixture().id end)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+      |> put_with_user(:student_id, fn uid -> student_fixture(user_id: uid).id end)
+      |> put_with_user(:subject_id, fn uid -> subject_fixture(user_id: uid).id end)
       |> Clickr.Grades.create_grade()
 
     grade

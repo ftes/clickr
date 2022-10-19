@@ -15,14 +15,12 @@
   <:item title={dgettext("lessons.lessons", "State")}>
     <%= translate_lesson_state(@lesson) %>
   </:item>
-  <:item title={dgettext("lessons.lessons", "Class")}><%= @lesson.class.name %></:item>
   <:item title={dgettext("lessons.lessons", "Subject")}><%= @lesson.subject.name %></:item>
-  <:item title={dgettext("lessons.lessons", "Room")}><%= @lesson.room.name %></:item>
-  <:item title={dgettext("lessons.lessons", "Button Plan")}>
-    <%= @lesson.button_plan.name %>
-  </:item>
   <:item title={dgettext("lessons.lessons", "Seating Plan")}>
     <%= @lesson.seating_plan.name %>
+  </:item>
+  <:item title={dgettext("lessons.lessons", "Button Plan")}>
+    <%= @lesson.button_plan.name %>
   </:item>
 </.list>
 

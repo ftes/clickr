@@ -118,8 +118,6 @@ defmodule Clickr.Classes do
   def list_seating_plans(opts \\ []) do
     SeatingPlan
     |> where_user_id(opts[:user_id])
-    |> where_class_id(opts[:class_id])
-    |> where_room_id(opts[:room_id])
     |> Repo.all()
   end
 
@@ -320,10 +318,4 @@ defmodule Clickr.Classes do
 
   defp where_seating_plan_id(query, nil), do: query
   defp where_seating_plan_id(query, id), do: where(query, [x], x.seating_plan_id == ^id)
-
-  defp where_class_id(query, nil), do: query
-  defp where_class_id(query, id), do: where(query, [x], x.class_id == ^id)
-
-  defp where_room_id(query, nil), do: query
-  defp where_room_id(query, id), do: where(query, [x], x.room_id == ^id)
 end

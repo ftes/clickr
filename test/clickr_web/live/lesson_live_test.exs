@@ -22,8 +22,9 @@ defmodule ClickrWeb.LessonLiveTest do
   end
 
   defp seat_student_with_button(%{lesson: lesson}) do
-    student = student_fixture(class_id: lesson.class_id)
     %{seating_plan_id: spid, button_plan_id: bpid} = lesson
+    seating_plan = Clickr.Classes.get_seating_plan!(spid)
+    student = student_fixture(class_id: seating_plan.class_id)
     seating_plan_seat_fixture(%{seating_plan_id: spid, student_id: student.id, x: 1, y: 1})
     button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
     %{student: student}
@@ -95,6 +96,7 @@ defmodule ClickrWeb.LessonLiveTest do
       assert index_live |> has_element?("#lesson-form_name[value='#{expected_name}']")
     end
 
+    @tag :inspect
     test "creates lesson using recent combination", %{conn: conn, lesson: old_lesson} do
       {:ok, index_live, _html} = live(conn, ~p"/lessons/new")
       index_live |> element("button.x-create") |> render_click()

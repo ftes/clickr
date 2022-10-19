@@ -61,9 +61,9 @@ defmodule Clickr.ClassesTest do
   describe "seating_plans" do
     alias Clickr.Classes.SeatingPlan
 
-    import Clickr.{AccountsFixtures, ClassesFixtures, RoomsFixtures}
+    import Clickr.{AccountsFixtures, ClassesFixtures}
 
-    @invalid_attrs %{name: nil}
+    @invalid_attrs %{name: nil, width: nil, height: nil}
 
     test "list_seating_plans/0 returns all seating_plans" do
       seating_plan = seating_plan_fixture()
@@ -78,11 +78,19 @@ defmodule Clickr.ClassesTest do
     test "create_seating_plan/1 with valid data creates a seating_plan" do
       user = user_fixture()
       class = class_fixture()
-      room = room_fixture()
-      valid_attrs = %{name: "some name", user_id: user.id, class_id: class.id, room_id: room.id}
+
+      valid_attrs = %{
+        name: "some name",
+        width: 8,
+        height: 4,
+        user_id: user.id,
+        class_id: class.id
+      }
 
       assert {:ok, %SeatingPlan{} = seating_plan} = Classes.create_seating_plan(valid_attrs)
       assert seating_plan.name == "some name"
+      assert seating_plan.width == 8
+      assert seating_plan.height == 4
     end
 
     test "create_seating_plan/1 with invalid data returns error changeset" do
@@ -91,12 +99,14 @@ defmodule Clickr.ClassesTest do
 
     test "update_seating_plan/2 with valid data updates the seating_plan" do
       seating_plan = seating_plan_fixture()
-      update_attrs = %{name: "some updated name"}
+      update_attrs = %{name: "some updated name", width: 18, height: 14}
 
       assert {:ok, %SeatingPlan{} = seating_plan} =
                Classes.update_seating_plan(seating_plan, update_attrs)
 
       assert seating_plan.name == "some updated name"
+      assert seating_plan.width == 18
+      assert seating_plan.height == 14
     end
 
     test "update_seating_plan/2 with invalid data returns error changeset" do

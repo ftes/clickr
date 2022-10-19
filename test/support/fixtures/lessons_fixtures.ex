@@ -3,7 +3,14 @@ defmodule Clickr.LessonsFixtures do
   This module defines test helpers for creating
   entities via the `Clickr.Lessons` context.
   """
-  import Clickr.{AccountsFixtures, ClassesFixtures, RoomsFixtures, SubjectsFixtures}
+  import Clickr.{
+    AccountsFixtures,
+    ClassesFixtures,
+    FixturesHelper,
+    RoomsFixtures,
+    StudentsFixtures,
+    SubjectsFixtures
+  }
 
   @doc """
   Generate a lesson.
@@ -15,20 +22,13 @@ defmodule Clickr.LessonsFixtures do
         state: :started,
         name: "some name"
       })
-      |> put_new(:user_id, fn _ -> user_fixture().id end)
-      |> put_new(:class_id, &class_fixture(Map.take(&1, [:user_id])).id)
-      |> put_new(:room_id, &room_fixture(Map.take(&1, [:user_id])).id)
-      |> put_new(:subject_id, &subject_fixture(Map.take(&1, [:user_id])).id)
-      |> put_new(:button_plan_id, &button_plan_fixture(Map.take(&1, [:user_id, :room_id])).id)
-      |> put_new(
-        :seating_plan_id,
-        &seating_plan_fixture(Map.take(&1, [:user_id, :class_id, :room_id])).id
-      )
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+      |> put_with_user(:subject_id, fn uid -> subject_fixture(user_id: uid).id end)
+      |> put_with_user(:button_plan_id, fn uid -> button_plan_fixture(user_id: uid).id end)
+      |> put_with_user(:seating_plan_id, fn uid -> seating_plan_fixture(user_id: uid).id end)
 
     Clickr.Repo.insert!(struct!(Clickr.Lessons.Lesson, attrs))
   end
-
-  def put_new(map, key, function), do: Map.put_new_lazy(map, key, fn -> function.(map) end)
 
   @doc """
   Generate a question.
@@ -40,7 +40,8 @@ defmodule Clickr.LessonsFixtures do
         name: "some name",
         points: 1
       })
-      |> Map.put_new(:lesson_id, lesson_fixture().id)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+      |> put_with_user(:lesson_id, fn uid -> lesson_fixture(user_id: uid).id end)
       |> Clickr.Lessons.create_question()
 
     question
@@ -53,8 +54,9 @@ defmodule Clickr.LessonsFixtures do
     {:ok, question_answer} =
       attrs
       |> Enum.into(%{})
-      |> Map.put_new(:question_id, question_fixture().id)
-      |> Map.put_new(:student_id, Clickr.StudentsFixtures.student_fixture().id)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+      |> put_with_user(:question_id, fn uid -> question_fixture(user_id: uid).id end)
+      |> put_with_user(:student_id, fn uid -> student_fixture(user_id: uid).id end)
       |> Clickr.Lessons.create_question_answer()
 
     question_answer
@@ -69,8 +71,9 @@ defmodule Clickr.LessonsFixtures do
       |> Enum.into(%{
         extra_points: 0
       })
-      |> Map.put_new(:lesson_id, lesson_fixture().id)
-      |> Map.put_new(:student_id, Clickr.StudentsFixtures.student_fixture().id)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+      |> put_with_user(:lesson_id, fn uid -> lesson_fixture(user_id: uid).id end)
+      |> put_with_user(:student_id, fn uid -> student_fixture(user_id: uid).id end)
       |> Clickr.Lessons.create_lesson_student()
 
     lesson_student

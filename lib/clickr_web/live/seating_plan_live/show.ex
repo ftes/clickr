@@ -38,12 +38,12 @@ defmodule ClickrWeb.SeatingPlanLive.Show do
   defp load_seating_plan(socket, id) do
     sp =
       Classes.get_seating_plan!(id)
-      |> Clickr.Repo.preload([:room, class: :students, seats: :student])
+      |> Clickr.Repo.preload(class: :students, seats: :student)
 
     seated_ids = for s <- sp.seats, into: MapSet.new(), do: s.student.id
     seated_xy = for s <- sp.seats, into: MapSet.new(), do: {s.x, s.y}
     unseated = Enum.filter(sp.class.students, &(not MapSet.member?(seated_ids, &1.id)))
-    %{width: w, height: h} = sp.room
+    %{width: w, height: h} = sp
     empty = for x <- 1..w, y <- 1..h, not MapSet.member?(seated_xy, {x, y}), do: %{x: x, y: y}
 
     socket

@@ -111,12 +111,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
   end
 
   defp save_lesson(socket, :edit, lesson_params) do
-    lesson_params =
-      lesson_params
-      |> set_user_id(socket)
-      |> set_room_and_class_id()
-
-    case Lessons.update_lesson(socket.assigns.lesson, lesson_params) do
+    case Lessons.update_lesson(socket.assigns.lesson, set_user_id(lesson_params, socket)) do
       {:ok, lesson} ->
         {:noreply,
          socket
@@ -129,12 +124,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
   end
 
   defp save_lesson(socket, :new, lesson_params) do
-    lesson_params =
-      lesson_params
-      |> set_user_id(socket)
-      |> set_room_and_class_id()
-
-    case Lessons.create_lesson(lesson_params) do
+    case Lessons.create_lesson(set_user_id(lesson_params, socket)) do
       {:ok, lesson} ->
         {:noreply,
          socket
@@ -164,11 +154,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
   defp load_seating_plans(socket), do: assign(socket, :seating_plans, [])
 
   defp load_button_plans(%{assigns: %{changeset: _}} = socket) do
-    user_id = socket.assigns.current_user.id
-    spid = get_field(socket.assigns.changeset, :seating_plan_id)
-    room_id = if spid, do: Clickr.Classes.get_seating_plan!(spid).room_id, else: ""
-    filters = [user_id: user_id, room_id: room_id] |> reject_blank()
-    button_plans = Clickr.Rooms.list_button_plans(filters)
+    button_plans = Clickr.Rooms.list_button_plans(user_id: socket.assigns.current_user.id)
     assign(socket, :button_plans, button_plans)
   end
 
@@ -202,14 +188,5 @@ defmodule ClickrWeb.LessonLive.FormComponent do
     else
       params
     end
-  end
-
-  defp reject_blank(keywords), do: Keyword.filter(keywords, fn {_, v} -> v != "" end)
-
-  defp set_room_and_class_id(%{"seating_plan_id" => ""} = params), do: params
-
-  defp set_room_and_class_id(%{"seating_plan_id" => spid} = params) do
-    sp = Clickr.Classes.get_seating_plan!(spid)
-    Map.merge(params, %{"room_id" => sp.room_id, "class_id" => sp.class_id})
   end
 end

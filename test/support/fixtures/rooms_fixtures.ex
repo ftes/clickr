@@ -4,6 +4,8 @@ defmodule Clickr.RoomsFixtures do
   entities via the `Clickr.Rooms` context.
   """
 
+  import Clickr.{AccountsFixtures, DevicesFixtures, FixturesHelper}
+
   @doc """
   Generate a room.
   """
@@ -15,7 +17,7 @@ defmodule Clickr.RoomsFixtures do
         width: 8,
         height: 4
       })
-      |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
       |> Clickr.Rooms.create_room()
 
     room
@@ -30,8 +32,8 @@ defmodule Clickr.RoomsFixtures do
       |> Enum.into(%{
         name: "some name"
       })
-      |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
-      |> Map.put_new_lazy(:room_id, fn -> room_fixture().id end)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+      |> put_with_user(:room_id, fn uid -> room_fixture(user_id: uid).id end)
       |> Clickr.Rooms.create_button_plan()
 
     button_plan
@@ -47,9 +49,9 @@ defmodule Clickr.RoomsFixtures do
         x: 42,
         y: 42
       })
-      |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
-      |> Map.put_new_lazy(:button_plan_id, fn -> button_plan_fixture().id end)
-      |> Map.put_new_lazy(:button_id, fn -> Clickr.DevicesFixtures.button_fixture().id end)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+      |> put_with_user(:button_plan_id, fn uid -> button_plan_fixture(user_id: uid).id end)
+      |> put_with_user(:button_id, fn uid -> button_fixture(user_id: uid).id end)
       |> Clickr.Rooms.create_button_plan_seat()
 
     button_plan_seat

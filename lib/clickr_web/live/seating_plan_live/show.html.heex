@@ -9,10 +9,11 @@
 
 <.list>
   <:item title={dgettext("classes.seating_plans", "Name")}><%= @seating_plan.name %></:item>
+  <:item title={dgettext("classes.seating_plans", "Width")}><%= @seating_plan.width %></:item>
+  <:item title={dgettext("classes.seating_plans", "Height")}><%= @seating_plan.height %></:item>
   <:item title={dgettext("classes.seating_plans", "Class")}>
     <%= @seating_plan.class.name %>
   </:item>
-  <:item title={dgettext("classes.seating_plans", "Room")}><%= @seating_plan.room.name %></:item>
 </.list>
 
 <h2 class="mt-6 text-[0.8125rem] leading-6 text-zinc-500">

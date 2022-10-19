@@ -4,6 +4,8 @@ defmodule Clickr.SubjectsFixtures do
   entities via the `Clickr.Subjects` context.
   """
 
+  import Clickr.{AccountsFixtures}
+
   @doc """
   Generate a subject.
   """
@@ -13,7 +15,7 @@ defmodule Clickr.SubjectsFixtures do
       |> Enum.into(%{
         name: "some name"
       })
-      |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
       |> Clickr.Subjects.create_subject()
 
     subject

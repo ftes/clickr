@@ -2,17 +2,16 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
   use ClickrWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Clickr.{ClassesFixtures, RoomsFixtures, StudentsFixtures}
+  import Clickr.{ClassesFixtures, StudentsFixtures}
 
-  @create_attrs %{name: "some name"}
-  @update_attrs %{name: "some updated name"}
-  @invalid_attrs %{name: nil}
+  @create_attrs %{name: "some name", width: 8, height: 4}
+  @update_attrs %{name: "some updated name", width: 18, height: 14}
+  @invalid_attrs %{name: nil, width: nil, height: nil}
 
   defp create_seating_plan(%{user: user}) do
     class = class_fixture(user_id: user.id)
-    room = room_fixture(user_id: user.id)
-    seating_plan = seating_plan_fixture(user_id: user.id, class_id: class.id, room_id: room.id)
-    %{class: class, room: room, seating_plan: seating_plan}
+    seating_plan = seating_plan_fixture(user_id: user.id, class_id: class.id)
+    %{class: class, seating_plan: seating_plan}
   end
 
   setup :register_and_log_in_user
@@ -27,7 +26,7 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
       assert html =~ seating_plan.name
     end
 
-    test "saves new seating_plan", %{conn: conn, class: class, room: room} do
+    test "saves new seating_plan", %{conn: conn, class: class} do
       {:ok, index_live, _html} = live(conn, ~p"/seating_plans")
 
       assert index_live |> element("a", "New Seating plan") |> render_click() =~
@@ -41,7 +40,7 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
 
       index_live
       |> form("#seating_plan-form",
-        seating_plan: Map.merge(@create_attrs, %{class_id: class.id, room_id: room.id})
+        seating_plan: Map.merge(@create_attrs, %{class_id: class.id})
       )
       |> render_submit()
 
@@ -49,16 +48,15 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
     end
 
     test "generates seating_plan name", %{conn: conn, user: user} do
-      class = class_fixture(name: "class", user_id: user.id)
-      room = room_fixture(name: "room", user_id: user.id)
+      class = class_fixture(name: "this class", user_id: user.id)
 
       {:ok, index_live, _html} = live(conn, ~p"/seating_plans/new")
 
       index_live
-      |> form("#seating_plan-form", seating_plan: %{class_id: class.id, room_id: room.id})
+      |> form("#seating_plan-form", seating_plan: %{class_id: class.id})
       |> render_change()
 
-      assert index_live |> has_element?("#seating_plan-form_name[value='class room']")
+      assert index_live |> has_element?("#seating_plan-form_name[value='this class']")
     end
 
     test "updates seating_plan in listing", %{conn: conn, seating_plan: seating_plan} do

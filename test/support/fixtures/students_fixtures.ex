@@ -4,6 +4,8 @@ defmodule Clickr.StudentsFixtures do
   entities via the `Clickr.Students` context.
   """
 
+  import Clickr.{AccountsFixtures, ClassesFixtures, FixturesHelper}
+
   @doc """
   Generate a student.
   """
@@ -13,8 +15,8 @@ defmodule Clickr.StudentsFixtures do
       |> Enum.into(%{
         name: "some student name"
       })
-      |> Map.put_new_lazy(:user_id, fn -> Clickr.AccountsFixtures.user_fixture().id end)
-      |> Map.put_new_lazy(:class_id, fn -> Clickr.ClassesFixtures.class_fixture().id end)
+      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+      |> put_with_user(:class_id, fn uid -> class_fixture(user_id: uid).id end)
       |> Clickr.Students.create_student()
 
     student

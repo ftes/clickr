@@ -27,7 +27,7 @@ defmodule Clickr.LessonsTest do
       lesson_fixture(name: "l1", inserted_at: at.(1))
       lesson_fixture(name: "l2", inserted_at: at.(2))
       l3 = lesson_fixture(name: "l3", inserted_at: at.(3))
-      l3_dup = Map.take(l3, [:subject_id, :seating_plan_id, :button_plan_id, :room_id, :class_id])
+      l3_dup = Map.take(l3, [:subject_id, :seating_plan_id, :button_plan_id])
       lesson_fixture(Map.merge(%{name: "l4", inserted_at: at.(4)}, l3_dup))
 
       assert ["l3", "l2", "l1"] = Lessons.list_lesson_combinations() |> Enum.map(& &1.name)
@@ -40,14 +40,12 @@ defmodule Clickr.LessonsTest do
 
     test "create_lesson/1 with valid data creates a lesson" do
       bp = button_plan_fixture()
-      sp = seating_plan_fixture(room_id: bp.room_id)
+      sp = seating_plan_fixture()
 
       valid_attrs = %{
         name: "some name",
         user_id: user_fixture().id,
         subject_id: subject_fixture().id,
-        class_id: sp.class_id,
-        room_id: bp.room_id,
         button_plan_id: bp.id,
         seating_plan_id: sp.id
       }
@@ -55,25 +53,6 @@ defmodule Clickr.LessonsTest do
       assert {:ok, %Lesson{} = lesson} = Lessons.create_lesson(valid_attrs)
       assert lesson.name == "some name"
       assert lesson.state == :started
-    end
-
-    test "create_lesson/1 with non-matching classes returns error changeset" do
-      c = class_fixture()
-      bp = button_plan_fixture()
-      sp = seating_plan_fixture(class_id: class_fixture().id, room_id: bp.room_id)
-
-      invalid_attrs = %{
-        name: "some name",
-        user_id: user_fixture().id,
-        subject_id: subject_fixture().id,
-        class_id: c.id,
-        room_id: bp.room_id,
-        button_plan_id: bp.id,
-        seating_plan_id: sp.id
-      }
-
-      assert {:error, %Ecto.Changeset{errors: [seating_plan_id: {"does not match class", _}]}} =
-               Lessons.create_lesson(invalid_attrs)
     end
 
     test "create_lesson/1 with invalid data returns error changeset" do
@@ -96,7 +75,8 @@ defmodule Clickr.LessonsTest do
 
     defp seat_student(%{lesson: lesson}) do
       %{seating_plan_id: spid, button_plan_id: bpid} = lesson
-      %{id: sid} = student = student_fixture(class_id: lesson.class_id)
+      seating_plan = Clickr.Classes.get_seating_plan!(spid)
+      %{id: sid} = student = student_fixture(class_id: seating_plan.class_id)
       seating_plan_seat_fixture(seating_plan_id: spid, student_id: sid, x: 1, y: 1)
       button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
       %{student: student}
@@ -361,8 +341,9 @@ defmodule Clickr.LessonsTest do
     end
 
     defp create_students_in_lesson(%{lesson: lesson}) do
-      student_1 = student_fixture(class_id: lesson.class_id)
-      student_2 = student_fixture(class_id: lesson.class_id)
+      seating_plan = Clickr.Classes.get_seating_plan!(lesson.seating_plan_id)
+      student_1 = student_fixture(class_id: seating_plan.class_id)
+      student_2 = student_fixture(class_id: seating_plan.class_id)
       lesson_student_fixture(lesson_id: lesson.id, student_id: student_1.id)
       lesson_student_fixture(lesson_id: lesson.id, student_id: student_2.id)
 

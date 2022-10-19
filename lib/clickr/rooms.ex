@@ -118,7 +118,6 @@ defmodule Clickr.Rooms do
   def list_button_plans(opts \\ []) do
     ButtonPlan
     |> where_user_id(opts[:user_id])
-    |> where_room_id(opts[:room_id])
     |> Repo.all()
   end
 
@@ -320,7 +319,4 @@ defmodule Clickr.Rooms do
 
   defp where_button_plan_id(query, nil), do: query
   defp where_button_plan_id(query, id), do: where(query, [x], x.button_plan_id == ^id)
-
-  defp where_room_id(query, nil), do: query
-  defp where_room_id(query, id), do: where(query, [x], x.room_id == ^id)
 end
