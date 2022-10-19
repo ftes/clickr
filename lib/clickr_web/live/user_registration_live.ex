@@ -12,9 +12,8 @@ defmodule ClickrWeb.UserRegistrationLive do
         <:subtitle>
           <%= dgettext("accounts", "Already registered?") %>
           <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            <%= dgettext("accounts.actions", "Sign in") %>
+            <%= dgettext("accounts.accounts", "Sign in") %>
           </.link>
-          <%= dgettext("accounts", "to your account now.") %>
         </:subtitle>
       </.header>
 

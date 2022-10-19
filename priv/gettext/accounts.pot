@@ -70,8 +70,8 @@ msgstr ""
 
 #: lib/clickr_web/live/user_confirmation_instructions_live.ex:11
 #: lib/clickr_web/live/user_forgot_password_live.ex:17
-#: lib/clickr_web/live/user_login_live.ex:26
-#: lib/clickr_web/live/user_registration_live.ex:38
+#: lib/clickr_web/live/user_login_live.ex:25
+#: lib/clickr_web/live/user_registration_live.ex:37
 #: lib/clickr_web/live/user_settings_live.ex:26
 #, elixir-autogen, elixir-format
 msgid "Email"
@@ -88,7 +88,7 @@ msgid "Email changed successfully."
 msgstr ""
 
 #: lib/clickr_web/live/user_forgot_password_live.ex:10
-#: lib/clickr_web/live/user_login_live.ex:41
+#: lib/clickr_web/live/user_login_live.ex:40
 #, elixir-autogen, elixir-format
 msgid "Forgot your password?"
 msgstr ""
@@ -108,7 +108,7 @@ msgstr ""
 msgid "Invalid email or password"
 msgstr ""
 
-#: lib/clickr_web/live/user_login_live.ex:38
+#: lib/clickr_web/live/user_login_live.ex:37
 #, elixir-autogen, elixir-format
 msgid "Keep me logged in"
 msgstr ""
@@ -124,7 +124,7 @@ msgstr ""
 msgid "New password"
 msgstr ""
 
-#: lib/clickr_web/live/user_registration_live.ex:34
+#: lib/clickr_web/live/user_registration_live.ex:33
 #: lib/clickr_web/live/user_reset_password_live.ex:19
 #: lib/clickr_web/live/user_settings_live.ex:19
 #: lib/clickr_web/live/user_settings_live.ex:61
@@ -132,8 +132,8 @@ msgstr ""
 msgid "Oops, something went wrong! Please check the errors below."
 msgstr ""
 
-#: lib/clickr_web/live/user_login_live.ex:30
-#: lib/clickr_web/live/user_registration_live.ex:42
+#: lib/clickr_web/live/user_login_live.ex:29
+#: lib/clickr_web/live/user_registration_live.ex:41
 #, elixir-autogen, elixir-format
 msgid "Password"
 msgstr ""
@@ -184,7 +184,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: lib/clickr_web/live/user_login_live.ex:45
+#: lib/clickr_web/live/user_login_live.ex:44
 #, elixir-autogen, elixir-format
 msgid "Sigining in..."
 msgstr ""
@@ -230,17 +230,7 @@ msgstr ""
 msgid "You must log in to access this page."
 msgstr ""
 
-#: lib/clickr_web/live/user_login_live.ex:14
-#, elixir-autogen, elixir-format
-msgid "for an account now."
-msgstr ""
-
-#: lib/clickr_web/live/user_registration_live.ex:17
-#, elixir-autogen, elixir-format
-msgid "to your account now."
-msgstr ""
-
-#: lib/clickr_web/live/user_registration_live.ex:48
+#: lib/clickr_web/live/user_registration_live.ex:47
 #, elixir-autogen, elixir-format
 msgid "Signing up..."
 msgstr ""
