@@ -140,9 +140,20 @@ defmodule Clickr.LessonsTest do
       assert [%{student_id: ^sid, percent: 0.6}] = Clickr.Grades.list_grades()
     end
 
-    test "delete_lesson/1 deletes the lesson" do
-      lesson = lesson_fixture()
+    test "delete_lesson/1 deletes the lesson, lesson_grade and recalculates grades" do
+      lesson = lesson_fixture(state: :ended)
+      %{student: student} = seat_student(%{lesson: lesson})
+      attend_student(%{lesson: lesson, student: student, extra_points: 5})
+
+      assert {:ok, _} =
+               Lessons.transition_lesson(lesson, :graded, %{grade: %{min: 0.0, max: 10.0}})
+
+      assert [_] = Clickr.Grades.list_lesson_grades()
+      assert [%{percent: 0.5}] = Clickr.Grades.list_grades()
+
       assert {:ok, %Lesson{}} = Lessons.delete_lesson(lesson)
+      assert [] = Clickr.Grades.list_lesson_grades()
+      assert [%{percent: 0.0}] = Clickr.Grades.list_grades()
       assert_raise Ecto.NoResultsError, fn -> Lessons.get_lesson!(lesson.id) end
     end
 

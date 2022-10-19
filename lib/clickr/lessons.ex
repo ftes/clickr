@@ -192,7 +192,16 @@ defmodule Clickr.Lessons do
 
   """
   def delete_lesson(%Lesson{} = lesson) do
-    Repo.delete(lesson)
+    lesson = Repo.preload(lesson, :lesson_students)
+
+    with {:ok, _} = res <- Repo.delete(lesson) do
+      suid = lesson.subject_id
+
+      for ls <- lesson.lesson_students,
+          do: Grades.calculate_and_save_grade(%{subject_id: suid, student_id: ls.student_id})
+
+      res
+    end
   end
 
   @doc """
@@ -207,12 +216,6 @@ defmodule Clickr.Lessons do
   def change_lesson(%Lesson{} = lesson, attrs \\ %{}) do
     Lesson.changeset(lesson, attrs)
   end
-
-  defp where_user_id(query, nil), do: query
-  defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
-
-  defp where_lesson_id(query, nil), do: query
-  defp where_lesson_id(query, id), do: where(query, [x], x.lesson_id == ^id)
 
   alias Clickr.Lessons.Question
 
@@ -518,4 +521,10 @@ defmodule Clickr.Lessons do
   def change_lesson_student(%LessonStudent{} = lesson_student, attrs \\ %{}) do
     LessonStudent.changeset(lesson_student, attrs)
   end
+
+  defp where_user_id(query, nil), do: query
+  defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
+
+  defp where_lesson_id(query, nil), do: query
+  defp where_lesson_id(query, id), do: where(query, [x], x.lesson_id == ^id)
 end
