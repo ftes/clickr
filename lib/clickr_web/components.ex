@@ -618,7 +618,9 @@ defmodule ClickrWeb.Components do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
 
-  def translate_lesson_state(%{state: state}) do
-    Gettext.dgettext(ClickrWeb.Gettext, "lessons.lessons.state", to_string(state))
+  for state <- Clickr.Lessons.Lesson.states() do
+    def translate_lesson_state(%{state: unquote(state)}) do
+      Gettext.dgettext(ClickrWeb.Gettext, "lessons.lessons.state", to_string(unquote(state)))
+    end
   end
 end

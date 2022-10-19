@@ -69,7 +69,11 @@ defmodule Clickr.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
+      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"],
+      "gettext.extract_and_merge": [
+        "gettext.extract --merge --locale de",
+        "gettext.merge priv/gettext --locale de"
+      ]
     ]
   end
 end

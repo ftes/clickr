@@ -1,3 +1,9 @@
+<.live_component
+  id="keyboard-device"
+  module={ClickrWeb.KeyboardDevice}
+  current_user={@current_user}
+/>
+
 <.header>
   <%= dgettext("rooms.rooms", "Room") %> <%= @room.name %>
   <:actions>
@@ -12,6 +18,73 @@
   <:item title={dgettext("rooms.rooms", "Width")}><%= @room.width %></:item>
   <:item title={dgettext("rooms.rooms", "Height")}><%= @room.height %></:item>
 </.list>
+
+<h2 class="mt-6 text-[0.8125rem] leading-6 text-zinc-500">
+  <%= dgettext("rooms.rooms", "Buttons") %>
+</h2>
+
+<div
+  class="flex-grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr"
+  id="seating-plan-grid"
+  x-data="{dragging: false}"
+  phx-hook="PushEvent"
+  x-on:start-dragging="dragging = true"
+  x-on:stop-dragging="dragging = false"
+>
+  <div
+    :for={seat <- @room.seats}
+    id={"button-#{seat.button_id}"}
+    style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
+    class={"cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 p-1 lg:p-3 shadow-sm hover:border-gray-400 #{if MapSet.member?(@active, seat.button_id), do: "x-active bg-green-400", else: "bg-white"}"}
+    draggable="true"
+    data={[x: seat.x, y: seat.y, id: seat.button_id]}
+    x-on:dragstart.self="
+      dragging = true
+      event.dataTransfer.effectAllowed = 'move'
+      event.dataTransfer.setData('text/plain', event.target.id)
+    "
+    x-on:dragend.self="dragging = false"
+  >
+    <p class="flex-1 overflow-hidden text-ellipsis text-sm font-medium text-center text-gray-900">
+      <%= seat.button.name %>
+    </p>
+    <button
+      class="absolute right-3 top-1"
+      title={gettext("Remove")}
+      phx-click={JS.push("delete_seat", value: %{id: seat.id})}
+    >
+      <span class="sr-only"><%= gettext("Remove") %></span>
+      <Heroicons.x_mark class="w-4 h-4 -mr-2" />
+    </button>
+  </div>
+
+  <button
+    :for={seat <- @empty_seats}
+    disabled={!!@awaiting_click}
+    phx-click={
+      JS.push("await_click", value: %{x: seat.x, y: seat.y}) |> JS.focus(to: "#keyboard-device")
+    }
+    style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
+    class={"rounded-lg px-4 py-3 #{if @awaiting_click == {seat.x, seat.y}, do: "bg-green-400", else: "bg-zinc-200"}"}
+    id={"empty-seat-#{seat.x}-#{seat.y}"}
+    data={[x: seat.x, y: seat.y]}
+    x-on:drop.self="
+      dragging = false
+
+      const from = document.getElementById(event.dataTransfer.getData('text/plain')).dataset
+      const to = event.target.dataset
+      $root.__pushEvent('assign_seat', { x: Number.parseInt(to.x), y: Number.parseInt(to.y), button_id: from.id })
+    "
+    x-on:dragover.self="dragging = $el, console.log(dragging == $el)"
+    x-on:dragleave.self="dragging = true"
+    x-bind:class="{
+      '!bg-green-200': dragging && dragging != $el,
+      '!bg-green-400': dragging == $el,
+    }"
+  >
+    <span class="invisible"><%= dgettext("rooms.rooms", "Empty seat") %></span>
+  </button>
+</div>
 
 <.back navigate={~p"/rooms"}><%= gettext("Back") %></.back>
 

@@ -1,7 +1,6 @@
 # Todo
 
-- [ ] delete button_plan (move into room)
- 
+- [ ] Move edit room/seating_plan into form component (save button)
 - [ ] Search (global and lists)
 - [ ] Filter and sort lists
 - [ ] Permissions

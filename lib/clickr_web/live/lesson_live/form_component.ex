@@ -12,7 +12,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
         <%= @title %>
       </.header>
 
-      <div :if={@action == :new} class="my-3">
+      <div :if={@action == :new && not Enum.empty?(@combinations)} class="my-3">
         <h2 class="my-1 text-[0.8125rem] leading-6 text-zinc-500">
           <%= dgettext("lessons.lessons", "Recent combinations") %>
         </h2>
@@ -24,7 +24,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
                 lesson: %{
                   subject_id: lesson.subject_id,
                   seating_plan_id: lesson.seating_plan_id,
-                  button_plan_id: lesson.button_plan_id
+                  room_id: lesson.room_id
                 }
               }
             )
@@ -32,7 +32,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
           phx-target={@myself}
           class="x-create block my-1 bg-zinc-500 text-white text-sm py-1 px-2 rounded"
         >
-          <%= lesson.subject.name %> • <%= lesson.seating_plan.name %> • <%= lesson.button_plan.name %>
+          <%= lesson.subject.name %> • <%= lesson.seating_plan.name %> • <%= lesson.room.name %>
         </button>
       </div>
 
@@ -57,10 +57,10 @@ defmodule ClickrWeb.LessonLive.FormComponent do
           options={Enum.map(@seating_plans, &{&1.id, &1.name})}
         />
         <.input
-          field={{f, :button_plan_id}}
+          field={{f, :room_id}}
           type="select"
-          label={dgettext("lessons.lessons", "Button Plan")}
-          options={Enum.map(@button_plans, &{&1.id, &1.name})}
+          label={dgettext("lessons.lessons", "Room")}
+          options={Enum.map(@rooms, &{&1.id, &1.name})}
         />
         <.input field={{f, :name}} type="text" label={dgettext("lessons.lessons", "Name")} />
         <:actions>
@@ -81,7 +81,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
      |> assign(:changeset, changeset)
      |> load_subjects()
      |> load_seating_plans()
-     |> load_button_plans()
+     |> load_rooms()
      |> load_combinations()}
   end
 
@@ -97,7 +97,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
     {:noreply,
      socket
      |> assign(:changeset, changeset)
-     |> load_button_plans()
+     |> load_rooms()
      |> load_seating_plans()}
   end
 
@@ -153,19 +153,19 @@ defmodule ClickrWeb.LessonLive.FormComponent do
 
   defp load_seating_plans(socket), do: assign(socket, :seating_plans, [])
 
-  defp load_button_plans(%{assigns: %{changeset: _}} = socket) do
-    button_plans = Clickr.Rooms.list_button_plans(user_id: socket.assigns.current_user.id)
-    assign(socket, :button_plans, button_plans)
+  defp load_rooms(%{assigns: %{changeset: _}} = socket) do
+    rooms = Clickr.Rooms.list_rooms(user_id: socket.assigns.current_user.id)
+    assign(socket, :rooms, rooms)
   end
 
-  defp load_button_plans(socket), do: assign(socket, :button_plans, [])
+  defp load_rooms(socket), do: assign(socket, :rooms, [])
 
   defp load_combinations(socket) do
     user_id = socket.assigns.current_user.id
 
     combinations =
       Clickr.Lessons.list_lesson_combinations(user_id: user_id, limit: 12)
-      |> Clickr.Repo.preload([:subject, :seating_plan, :button_plan])
+      |> Clickr.Repo.preload([:subject, :seating_plan, :room])
 
     assign(socket, :combinations, combinations)
   end

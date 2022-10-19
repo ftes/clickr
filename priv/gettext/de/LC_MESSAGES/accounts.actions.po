@@ -59,7 +59,7 @@ msgstr "Registrieren"
 msgid "Sign in"
 msgstr "Anmelden"
 
-#: lib/clickr_web/live/components/menu.ex:35
+#: lib/clickr_web/live/components/menu.ex:32
 #, elixir-autogen, elixir-format
 msgid "Sign out"
 msgstr "Abmelden"

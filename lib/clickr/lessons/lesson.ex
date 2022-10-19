@@ -1,13 +1,15 @@
 defmodule Clickr.Lessons.Lesson do
   use Clickr.Schema
 
+  @states [:started, :roll_call, :active, :question, :ended, :graded]
+
   schema "lessons" do
     field :name, :string
-    field :state, Ecto.Enum, values: [:started, :roll_call, :active, :question, :ended, :graded]
+    field :state, Ecto.Enum, values: @states
     embeds_one :grade, Clickr.Lessons.Lesson.Grade, on_replace: :update
     belongs_to :user, Clickr.Accounts.User
     belongs_to :subject, Clickr.Subjects.Subject
-    belongs_to :button_plan, Clickr.Rooms.ButtonPlan
+    belongs_to :room, Clickr.Rooms.Room
     belongs_to :seating_plan, Clickr.Classes.SeatingPlan
     has_many :lesson_students, Clickr.Lessons.LessonStudent
     has_many :questions, Clickr.Lessons.Question
@@ -31,6 +33,8 @@ defmodule Clickr.Lessons.Lesson do
       |> validate_required([:min, :max])
     end
   end
+
+  def states(), do: @states
 
   @doc false
   def changeset(%{state: :roll_call} = lesson, %{state: :active} = attrs) do
@@ -56,7 +60,7 @@ defmodule Clickr.Lessons.Lesson do
       :name,
       :user_id,
       :subject_id,
-      :button_plan_id,
+      :room_id,
       :seating_plan_id
     ])
     |> validate_required([
@@ -64,12 +68,12 @@ defmodule Clickr.Lessons.Lesson do
       :state,
       :user_id,
       :subject_id,
-      :button_plan_id,
+      :room_id,
       :seating_plan_id
     ])
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:subject_id)
-    |> foreign_key_constraint(:button_plan_id)
+    |> foreign_key_constraint(:room_id)
     |> foreign_key_constraint(:seating_plan_id)
     |> cast_assoc(:grades)
   end

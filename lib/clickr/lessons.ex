@@ -30,7 +30,7 @@ defmodule Clickr.Lessons do
 
   def list_lesson_combinations(opts \\ []) do
     from(l in Lesson,
-      distinct: [l.subject_id, l.seating_plan_id, l.button_plan_id],
+      distinct: [l.subject_id, l.seating_plan_id, l.room_id],
       limit: ^opts[:limit]
     )
     |> where_user_id(opts[:user_id])

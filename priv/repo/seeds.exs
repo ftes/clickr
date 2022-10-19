@@ -10,37 +10,39 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Clickr.{Accounts, Classes, Devices, Rooms, Students, Subjects}
+alias Clickr.{Accounts, Classes, Devices, Repo, Rooms, Students, Subjects}
 
 if Mix.env() != :test do
   {:ok, %{id: uid}} = Accounts.register_user(%{email: "f@ftes.de", password: "passwordpassword"})
 
+  {:ok, %{id: rid}} = Rooms.create_room(%{user_id: uid, name: "R42", width: 8, height: 4})
+
   {:ok, %{id: gid}} =
-    Devices.create_gateway(%{user_id: uid, name: "Raspberry Pi v3 #42", api_token: "xyz"})
+    Devices.create_gateway(%{user_id: uid, name: "Keyboard", api_token: "keyboard"})
 
-  {:ok, _} = Devices.create_gateway(%{user_id: uid, name: "Keyboard", api_token: "keyboard"})
-
-  devices =
-    for i <- 1..16 do
-      {:ok, d} = Devices.create_device(%{user_id: uid, gateway_id: gid, name: "Tradfri #{i}"})
-      d
-    end
+  {:ok, %{id: did}} =
+    Repo.insert(%Devices.Device{
+      id: Devices.Keyboard.device_id(%{user_id: uid}),
+      user_id: uid,
+      gateway_id: gid,
+      name: "Keyboard"
+    })
 
   buttons =
-    for d <- devices,
-        t <- ~w(left right) do
-      {:ok, b} = Devices.create_button(%{user_id: uid, device_id: d.id, name: "#{d.name}/#{t}"})
-      b
+    for {row, y} <- Enum.with_index(["qweruiop", "asdfjkl;", "zxcvnm,."]),
+        {key, x} <- Enum.with_index(String.graphemes(row)) do
+      Clickr
+
+      {:ok, %{id: bid}} =
+        Repo.insert(%Devices.Button{
+          id: Devices.Keyboard.button_id(%{user_id: uid, key: key}),
+          user_id: uid,
+          device_id: did,
+          name: "Keyboard/#{key}"
+        })
+
+      {:ok, _} = Rooms.create_room_seat(%{room_id: rid, button_id: bid, x: x + 1, y: y + 1})
     end
-
-  {:ok, %{id: rid}} = Rooms.create_room(%{user_id: uid, name: "R42", width: 8, height: 4})
-  {:ok, %{id: bpid}} = Rooms.create_button_plan(%{user_id: uid, room_id: rid, name: "R42 Main"})
-
-  for {b, i} <- Enum.with_index(buttons) do
-    y = div(i, 8) + 1
-    x = rem(i, 8) + 1
-    {:ok, _} = Rooms.create_button_plan_seat(%{button_plan_id: bpid, button_id: b.id, x: x, y: y})
-  end
 
   {:ok, _} = Subjects.create_subject(%{user_id: uid, name: "Chemie"})
   {:ok, %{id: cid}} = Classes.create_class(%{user_id: uid, name: "6a"})
@@ -52,7 +54,14 @@ if Mix.env() != :test do
     end
 
   {:ok, %{id: spid}} =
-    Classes.create_seating_plan(%{user_id: uid, class_id: cid, room_id: rid, name: "R42/6a"})
+    Classes.create_seating_plan(%{
+      user_id: uid,
+      class_id: cid,
+      room_id: rid,
+      name: "R42/6a",
+      width: 8,
+      height: 4
+    })
 
   for {s, i} <- Enum.with_index(students) do
     y = div(i, 8) + 1

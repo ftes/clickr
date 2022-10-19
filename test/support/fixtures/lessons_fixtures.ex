@@ -24,7 +24,7 @@ defmodule Clickr.LessonsFixtures do
       })
       |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
       |> put_with_user(:subject_id, fn uid -> subject_fixture(user_id: uid).id end)
-      |> put_with_user(:button_plan_id, fn uid -> button_plan_fixture(user_id: uid).id end)
+      |> put_with_user(:room_id, fn uid -> room_fixture(user_id: uid).id end)
       |> put_with_user(:seating_plan_id, fn uid -> seating_plan_fixture(user_id: uid).id end)
 
     Clickr.Repo.insert!(struct!(Clickr.Lessons.Lesson, attrs))

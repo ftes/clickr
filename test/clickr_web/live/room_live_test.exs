@@ -2,7 +2,7 @@ defmodule ClickrWeb.RoomLiveTest do
   use ClickrWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Clickr.RoomsFixtures
+  import Clickr.{DevicesFixtures, RoomsFixtures}
 
   @create_attrs %{name: "some name", width: 8, height: 4}
   @update_attrs %{name: "some updated name", width: 9, height: 5}
@@ -107,6 +107,64 @@ defmodule ClickrWeb.RoomLiveTest do
 
       assert html =~ "Room updated successfully"
       assert html =~ "some updated name"
+    end
+
+    test "assigns seat to previously unseated button", %{conn: conn, user: user, room: r} do
+      %{id: bid} = button = button_fixture() |> Clickr.Repo.preload(:device)
+      {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
+      show_live |> element("#empty-seat-1-1") |> render_click()
+
+      Clickr.Devices.broadcast_button_click(%{
+        user_id: user.id,
+        gateway_id: button.device.gateway_id,
+        device_id: button.device_id,
+        button_id: bid
+      })
+
+      assert show_live |> has_element?("#button-#{bid}")
+    end
+
+    test "changes button seat", %{conn: conn, room: r} do
+      %{id: bid} = button_fixture()
+      room_seat_fixture(room_id: r.id, button_id: bid, x: 1, y: 1)
+      {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
+      assert show_live |> has_element?("#button-#{bid}[data-x=1, data-y=1]")
+
+      show_live |> render_hook(:assign_seat, %{x: 2, y: 2, button_id: bid})
+      assert show_live |> has_element?("#button-#{bid}[data-x=2, data-y=2]")
+    end
+
+    test "removes button from seat", %{conn: conn, room: r} do
+      %{id: bid} = button_fixture()
+      room_seat_fixture(room_id: r.id, button_id: bid, x: 1, y: 1)
+      {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
+
+      show_live |> element("#button-#{bid} button") |> render_click()
+      refute show_live |> has_element?("#button-#{bid}")
+    end
+
+    test "highlights active button in button-plan", %{conn: conn, user: user, room: r} do
+      %{id: bid} = button = button_fixture() |> Clickr.Repo.preload(:device)
+      room_seat_fixture(room_id: r.id, button_id: bid, x: 1, y: 1)
+      {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
+      refute show_live |> has_element?("#button-#{bid}.x-active")
+
+      Clickr.Devices.broadcast_button_click(%{
+        user_id: user.id,
+        gateway_id: button.device.gateway_id,
+        device_id: button.device_id,
+        button_id: bid
+      })
+
+      assert show_live |> has_element?("#button-#{bid}.x-active")
+    end
+
+    test "registers keyboard button_click", %{conn: conn, user: user, room: room} do
+      gateway_fixture(user_id: user.id, api_token: "keyboard")
+      {:ok, show_live, _html} = live(conn, ~p"/rooms/#{room}")
+
+      show_live |> element("#keyboard-device") |> render_keyup(%{"key" => "x"})
+      assert [%{name: "Keyboard/x"}] = Clickr.Devices.list_buttons()
     end
   end
 end

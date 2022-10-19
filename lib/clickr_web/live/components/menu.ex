@@ -12,9 +12,6 @@ defmodule ClickrWeb.Menu do
     ],
     [
       {dgettext("rooms.rooms", "Rooms"), "/rooms", [], &Heroicons.building_office/1},
-      {dgettext("rooms.button_plans", "Button Plans"), "/button_plans", [], &Heroicons.map/1}
-    ],
-    [
       {dgettext("subjects.subjects", "Subjects"), "/subjects", [], &Heroicons.folder/1},
       # {dgettext("students.students", "Students"), "/students", [], &Heroicons.user/1},
       {dgettext("devices.gateways", "Gateways"), "/gateways", [], &Heroicons.server/1}

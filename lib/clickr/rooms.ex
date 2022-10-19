@@ -104,219 +104,120 @@ defmodule Clickr.Rooms do
     Room.changeset(room, attrs)
   end
 
-  alias Clickr.Rooms.ButtonPlan
+  alias Clickr.Rooms.RoomSeat
 
   @doc """
-  Returns the list of button_plans.
+  Returns the list of room_seats.
 
   ## Examples
 
-      iex> list_button_plans()
-      [%ButtonPlan{}, ...]
+      iex> list_room_seats()
+      [%RoomSeat{}, ...]
 
   """
-  def list_button_plans(opts \\ []) do
-    ButtonPlan
-    |> where_user_id(opts[:user_id])
+  def list_room_seats(opts \\ []) do
+    RoomSeat
+    |> where_room_id(opts[:room_id])
     |> Repo.all()
   end
 
   @doc """
-  Gets a single button_plan.
+  Gets a single room_seat.
 
-  Raises `Ecto.NoResultsError` if the Button plan does not exist.
+  Raises `Ecto.NoResultsError` if the Room seat does not exist.
 
   ## Examples
 
-      iex> get_button_plan!(123)
-      %ButtonPlan{}
+      iex> get_room_seat!(123)
+      %RoomSeat{}
 
-      iex> get_button_plan!(456)
+      iex> get_room_seat!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_button_plan!(id), do: Repo.get!(ButtonPlan, id)
+  def get_room_seat!(id), do: Repo.get!(RoomSeat, id)
 
   @doc """
-  Creates a button_plan.
+  Creates a room_seat.
 
   ## Examples
 
-      iex> create_button_plan(%{field: value})
-      {:ok, %ButtonPlan{}}
+      iex> create_room_seat(%{field: value})
+      {:ok, %RoomSeat{}}
 
-      iex> create_button_plan(%{field: bad_value})
+      iex> create_room_seat(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_button_plan(attrs \\ %{}) do
-    %ButtonPlan{}
-    |> ButtonPlan.changeset(attrs)
+  def create_room_seat(attrs \\ %{}) do
+    %RoomSeat{}
+    |> RoomSeat.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a button_plan.
+  Updates a room_seat.
 
   ## Examples
 
-      iex> update_button_plan(button_plan, %{field: new_value})
-      {:ok, %ButtonPlan{}}
+      iex> update_room_seat(room_seat, %{field: new_value})
+      {:ok, %RoomSeat{}}
 
-      iex> update_button_plan(button_plan, %{field: bad_value})
+      iex> update_room_seat(room_seat, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_button_plan(%ButtonPlan{} = button_plan, attrs) do
-    button_plan
-    |> Repo.preload(:seats)
-    |> ButtonPlan.changeset(attrs)
+  def update_room_seat(%RoomSeat{} = room_seat, attrs) do
+    room_seat
+    |> RoomSeat.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a button_plan.
+  Deletes a room_seat.
 
   ## Examples
 
-      iex> delete_button_plan(button_plan)
-      {:ok, %ButtonPlan{}}
+      iex> delete_room_seat(room_seat)
+      {:ok, %RoomSeat{}}
 
-      iex> delete_button_plan(button_plan)
+      iex> delete_room_seat(room_seat)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_button_plan(%ButtonPlan{} = button_plan) do
-    Repo.delete(button_plan)
+  def delete_room_seat(%RoomSeat{} = room_seat) do
+    Repo.delete(room_seat)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking button_plan changes.
+  Returns an `%Ecto.Changeset{}` for tracking room_seat changes.
 
   ## Examples
 
-      iex> change_button_plan(button_plan)
-      %Ecto.Changeset{data: %ButtonPlan{}}
+      iex> change_room_seat(room_seat)
+      %Ecto.Changeset{data: %RoomSeat{}}
 
   """
-  def change_button_plan(%ButtonPlan{} = button_plan, attrs \\ %{}) do
-    ButtonPlan.changeset(button_plan, attrs)
+  def change_room_seat(%RoomSeat{} = room_seat, attrs \\ %{}) do
+    RoomSeat.changeset(room_seat, attrs)
   end
 
-  alias Clickr.Rooms.ButtonPlanSeat
-
-  @doc """
-  Returns the list of button_plan_seats.
-
-  ## Examples
-
-      iex> list_button_plan_seats()
-      [%ButtonPlanSeat{}, ...]
-
-  """
-  def list_button_plan_seats(opts \\ []) do
-    ButtonPlanSeat
-    |> where_button_plan_id(opts[:button_plan_id])
-    |> Repo.all()
-  end
-
-  @doc """
-  Gets a single button_plan_seat.
-
-  Raises `Ecto.NoResultsError` if the Button plan seat does not exist.
-
-  ## Examples
-
-      iex> get_button_plan_seat!(123)
-      %ButtonPlanSeat{}
-
-      iex> get_button_plan_seat!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_button_plan_seat!(id), do: Repo.get!(ButtonPlanSeat, id)
-
-  @doc """
-  Creates a button_plan_seat.
-
-  ## Examples
-
-      iex> create_button_plan_seat(%{field: value})
-      {:ok, %ButtonPlanSeat{}}
-
-      iex> create_button_plan_seat(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_button_plan_seat(attrs \\ %{}) do
-    %ButtonPlanSeat{}
-    |> ButtonPlanSeat.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a button_plan_seat.
-
-  ## Examples
-
-      iex> update_button_plan_seat(button_plan_seat, %{field: new_value})
-      {:ok, %ButtonPlanSeat{}}
-
-      iex> update_button_plan_seat(button_plan_seat, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_button_plan_seat(%ButtonPlanSeat{} = button_plan_seat, attrs) do
-    button_plan_seat
-    |> ButtonPlanSeat.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a button_plan_seat.
-
-  ## Examples
-
-      iex> delete_button_plan_seat(button_plan_seat)
-      {:ok, %ButtonPlanSeat{}}
-
-      iex> delete_button_plan_seat(button_plan_seat)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_button_plan_seat(%ButtonPlanSeat{} = button_plan_seat) do
-    Repo.delete(button_plan_seat)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking button_plan_seat changes.
-
-  ## Examples
-
-      iex> change_button_plan_seat(button_plan_seat)
-      %Ecto.Changeset{data: %ButtonPlanSeat{}}
-
-  """
-  def change_button_plan_seat(%ButtonPlanSeat{} = button_plan_seat, attrs \\ %{}) do
-    ButtonPlanSeat.changeset(button_plan_seat, attrs)
-  end
-
-  def assign_button_plan_seat(%ButtonPlan{id: bpid}, %{x: x, y: y, button_id: bid}) do
+  def assign_room_seat(%Room{id: rid}, %{x: x, y: y, button_id: bid}) do
     cond do
-      Repo.get_by(ButtonPlanSeat, button_plan_id: bpid, x: x, y: y) ->
+      Repo.get_by(RoomSeat, room_id: rid, x: x, y: y) ->
         {:error, :seat_occupied}
 
-      old_seat = Repo.get_by(ButtonPlanSeat, button_plan_id: bpid, button_id: bid) ->
-        update_button_plan_seat(old_seat, %{x: x, y: y})
+      old_seat = Repo.get_by(RoomSeat, room_id: rid, button_id: bid) ->
+        update_room_seat(old_seat, %{x: x, y: y})
 
       true ->
-        create_button_plan_seat(%{button_plan_id: bpid, button_id: bid, x: x, y: y})
+        create_room_seat(%{room_id: rid, button_id: bid, x: x, y: y})
     end
   end
 
   defp where_user_id(query, nil), do: query
   defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
 
-  defp where_button_plan_id(query, nil), do: query
-  defp where_button_plan_id(query, id), do: where(query, [x], x.button_plan_id == ^id)
+  defp where_room_id(query, nil), do: query
+  defp where_room_id(query, id), do: where(query, [x], x.room_id == ^id)
 end

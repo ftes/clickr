@@ -22,11 +22,11 @@ defmodule ClickrWeb.LessonLiveTest do
   end
 
   defp seat_student_with_button(%{lesson: lesson}) do
-    %{seating_plan_id: spid, button_plan_id: bpid} = lesson
+    %{seating_plan_id: spid, room_id: rid} = lesson
     seating_plan = Clickr.Classes.get_seating_plan!(spid)
     student = student_fixture(class_id: seating_plan.class_id)
     seating_plan_seat_fixture(%{seating_plan_id: spid, student_id: student.id, x: 1, y: 1})
-    button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
+    room_seat_fixture(room_id: rid, x: 1, y: 1)
     %{student: student}
   end
 
@@ -72,7 +72,7 @@ defmodule ClickrWeb.LessonLiveTest do
         lesson:
           Map.merge(@create_attrs, %{
             subject_id: lesson.subject_id,
-            button_plan_id: lesson.button_plan_id,
+            room_id: lesson.room_id,
             seating_plan_id: lesson.seating_plan_id
           })
       )
@@ -107,7 +107,7 @@ defmodule ClickrWeb.LessonLiveTest do
       lesson = Clickr.Lessons.get_lesson!(lesson_id)
       assert lesson.subject_id == old_lesson.subject_id
       assert lesson.seating_plan_id == old_lesson.seating_plan_id
-      assert lesson.button_plan_id == old_lesson.button_plan_id
+      assert lesson.room_id == old_lesson.room_id
     end
 
     test "updates lesson in listing", %{conn: conn, lesson: lesson} do

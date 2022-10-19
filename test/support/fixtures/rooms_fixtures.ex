@@ -24,36 +24,20 @@ defmodule Clickr.RoomsFixtures do
   end
 
   @doc """
-  Generate a button_plan.
+  Generate a room_seat.
   """
-  def button_plan_fixture(attrs \\ %{}) do
-    {:ok, button_plan} =
-      attrs
-      |> Enum.into(%{
-        name: "some name"
-      })
-      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
-      |> put_with_user(:room_id, fn uid -> room_fixture(user_id: uid).id end)
-      |> Clickr.Rooms.create_button_plan()
-
-    button_plan
-  end
-
-  @doc """
-  Generate a button_plan_seat.
-  """
-  def button_plan_seat_fixture(attrs \\ %{}) do
-    {:ok, button_plan_seat} =
+  def room_seat_fixture(attrs \\ %{}) do
+    {:ok, room_seat} =
       attrs
       |> Enum.into(%{
         x: 42,
         y: 42
       })
       |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
-      |> put_with_user(:button_plan_id, fn uid -> button_plan_fixture(user_id: uid).id end)
+      |> put_with_user(:room_id, fn uid -> room_fixture(user_id: uid).id end)
       |> put_with_user(:button_id, fn uid -> button_fixture(user_id: uid).id end)
-      |> Clickr.Rooms.create_button_plan_seat()
+      |> Clickr.Rooms.create_room_seat()
 
-    button_plan_seat
+    room_seat
   end
 end

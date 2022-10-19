@@ -27,7 +27,7 @@ defmodule Clickr.LessonsTest do
       lesson_fixture(name: "l1", inserted_at: at.(1))
       lesson_fixture(name: "l2", inserted_at: at.(2))
       l3 = lesson_fixture(name: "l3", inserted_at: at.(3))
-      l3_dup = Map.take(l3, [:subject_id, :seating_plan_id, :button_plan_id])
+      l3_dup = Map.take(l3, [:subject_id, :seating_plan_id, :room_id])
       lesson_fixture(Map.merge(%{name: "l4", inserted_at: at.(4)}, l3_dup))
 
       assert ["l3", "l2", "l1"] = Lessons.list_lesson_combinations() |> Enum.map(& &1.name)
@@ -39,14 +39,14 @@ defmodule Clickr.LessonsTest do
     end
 
     test "create_lesson/1 with valid data creates a lesson" do
-      bp = button_plan_fixture()
+      r = room_fixture()
       sp = seating_plan_fixture()
 
       valid_attrs = %{
         name: "some name",
         user_id: user_fixture().id,
         subject_id: subject_fixture().id,
-        button_plan_id: bp.id,
+        room_id: r.id,
         seating_plan_id: sp.id
       }
 
@@ -74,11 +74,11 @@ defmodule Clickr.LessonsTest do
     end
 
     defp seat_student(%{lesson: lesson}) do
-      %{seating_plan_id: spid, button_plan_id: bpid} = lesson
+      %{seating_plan_id: spid, room_id: rid} = lesson
       seating_plan = Clickr.Classes.get_seating_plan!(spid)
       %{id: sid} = student = student_fixture(class_id: seating_plan.class_id)
       seating_plan_seat_fixture(seating_plan_id: spid, student_id: sid, x: 1, y: 1)
-      button_plan_seat_fixture(button_plan_id: bpid, x: 1, y: 1)
+      room_seat_fixture(room_id: rid, x: 1, y: 1)
       %{student: student}
     end
 

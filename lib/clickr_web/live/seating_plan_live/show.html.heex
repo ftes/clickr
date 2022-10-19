@@ -79,7 +79,7 @@
     </div>
   </div>
 
-  <div :if={length(@unseated_students) > 0} class="pt-4 flex-grow-0 flex flex-wrap gap-1">
+  <div :if={not Enum.empty?(@unseated_students)} class="pt-4 flex-grow-0 flex flex-wrap gap-1">
     <div
       :for={student <- @unseated_students}
       id={"unseated-student-#{student.id}"}
