@@ -28,21 +28,18 @@ if Mix.env() != :test do
       name: "Keyboard"
     })
 
-  buttons =
-    for {row, y} <- Enum.with_index(["qweruiop", "asdfjkl;", "zxcvnm,."]),
-        {key, x} <- Enum.with_index(String.graphemes(row)) do
-      Clickr
+  for {row, y} <- Enum.with_index(["qweruiop", "asdfjkl;", "zxcvnm,."]),
+      {key, x} <- Enum.with_index(String.graphemes(row)) do
+    {:ok, %{id: bid}} =
+      Repo.insert(%Devices.Button{
+        id: Devices.Keyboard.button_id(%{user_id: uid, key: key}),
+        user_id: uid,
+        device_id: did,
+        name: "Keyboard/#{key}"
+      })
 
-      {:ok, %{id: bid}} =
-        Repo.insert(%Devices.Button{
-          id: Devices.Keyboard.button_id(%{user_id: uid, key: key}),
-          user_id: uid,
-          device_id: did,
-          name: "Keyboard/#{key}"
-        })
-
-      {:ok, _} = Rooms.create_room_seat(%{room_id: rid, button_id: bid, x: x + 1, y: y + 1})
-    end
+    {:ok, _} = Rooms.create_room_seat(%{room_id: rid, button_id: bid, x: x + 1, y: y + 1})
+  end
 
   {:ok, _} = Subjects.create_subject(%{user_id: uid, name: "Chemie"})
   {:ok, %{id: cid}} = Classes.create_class(%{user_id: uid, name: "6a"})
