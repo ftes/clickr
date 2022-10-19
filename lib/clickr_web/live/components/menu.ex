@@ -28,7 +28,7 @@ defmodule ClickrWeb.Menu do
   ]
 
   @user_menu_entries [
-    {dgettext("accounts", "Settings"), "/users/settings", [], &Heroicons.cog/1},
+    {dgettext("accounts", "Settings"), "/users/settings", [], &Heroicons.cog_6_tooth/1},
     {dgettext("accounts.actions", "Sign out"), "/users/log_out", [method: :delete],
      &Heroicons.x_mark/1}
   ]
@@ -69,11 +69,12 @@ defmodule ClickrWeb.Menu do
           aria-haspopup="true"
         >
           <span class="sr-only"><%= dgettext("layout", "Open user menu") %></span>
-          <img
-            class="h-8 w-8 rounded-full"
-            src={gravatar(@current_user.email)}
+          <div
+            class={"h-8 w-8 rounded-full text-xl text-white flex items-center justify-center font-bold #{user_bg(@current_user)}"}
             alt={@current_user.email}
-          />
+          >
+            <%= user_initial(@current_user) %>
+          </div>
         </button>
       </div>
 
@@ -86,6 +87,9 @@ defmodule ClickrWeb.Menu do
         aria-labelledby="user-menu-button"
         tabindex="-1"
       >
+        <div class="ml-7 py-2 px-4 text-sm text-gray-500">
+          <%= @current_user.email %>
+        </div>
         <.link
           :for={{label, path, opts, icon} <- @user_menu_entries}
           href={path}
@@ -141,9 +145,11 @@ defmodule ClickrWeb.Menu do
         {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
       )
 
-  defp gravatar(email) do
-    email = email |> String.downcase() |> String.trim()
-    hash = :crypto.hash(:md5, email) |> Base.encode16(case: :lower)
-    "https://www.gravatar.com/avatar/#{hash}"
+  @user_bgs ["bg-red-500", "bg-yellow-500", "bg-green-5000", "bg-blue-5000", "bg-fuchsia-5000"]
+  defp user_bg(%{email: email}) do
+    index = :erlang.phash2(email, length(@user_bgs))
+    Enum.at(@user_bgs, index)
   end
+
+  defp user_initial(%{email: <<initial::binary-size(1), _::binary>>}), do: initial
 end
