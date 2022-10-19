@@ -160,7 +160,7 @@ defmodule ClickrWeb.RoomLiveTest do
     end
 
     test "registers keyboard button_click", %{conn: conn, user: user, room: room} do
-      gateway_fixture(user_id: user.id, api_token: "keyboard")
+      gateway_fixture(user_id: user.id, name: "Keyboard")
       {:ok, show_live, _html} = live(conn, ~p"/rooms/#{room}")
 
       show_live |> element("#keyboard-device") |> render_keyup(%{"key" => "x"})
