@@ -19,12 +19,7 @@ defmodule ClickrWeb.LessonLive.QuestionModal do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input
-          field={{f, :points}}
-          type="number"
-          min="0"
-          label={dgettext("lessons.questions", "Points")}
-        />
+        <.input field={{f, :points}} type="number" label={dgettext("lessons.questions", "Points")} />
         <.input field={{f, :name}} type="text" label={dgettext("lessons.questions", "Name")} />
         <:actions>
           <.button><%= dgettext("lessons.actions", "Ask Question") %></.button>
