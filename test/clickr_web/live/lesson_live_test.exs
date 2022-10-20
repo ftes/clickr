@@ -96,7 +96,6 @@ defmodule ClickrWeb.LessonLiveTest do
       assert index_live |> has_element?("#lesson-form_name[value='#{expected_name}']")
     end
 
-    @tag :inspect
     test "creates lesson using recent combination", %{conn: conn, lesson: old_lesson} do
       {:ok, index_live, _html} = live(conn, ~p"/lessons/new")
       index_live |> element("button.x-create") |> render_click()
@@ -248,6 +247,31 @@ defmodule ClickrWeb.LessonLiveTest do
 
       {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/active")
       assert render(live) =~ "47"
+    end
+
+    test "asks question with custom name and points", %{conn: conn, lesson: l, student: s} do
+      lesson_student_fixture(lesson_id: l.id, student_id: s.id, extra_points: 42)
+
+      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
+
+      live |> element("button[title='Question options']") |> render_click() =~
+        "id=\"question-form\""
+
+      live
+      |> form("#question-form", %{question: %{points: 42, name: "this question"}})
+      |> render_submit() =~
+        "End Question"
+
+      assert_redirect(live, ~p"/lessons/#{l}/question")
+      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/question")
+
+      {:ok, _, html} =
+        live
+        |> element("button", "End Question")
+        |> render_click()
+        |> follow_redirect(conn, ~p"/lessons/#{l}/active")
+
+      assert html =~ "42"
     end
   end
 

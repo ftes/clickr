@@ -109,19 +109,30 @@ defmodule Clickr.LessonsTest do
 
       Lessons.ActiveQuestion.answer(lesson, sid)
       {:ok, _} = Lessons.transition_lesson(lesson, :active)
-      assert [%{student_id: ^sid}] = Lessons.list_lesson_students(lesson_id: lesson.id)
+      assert [%{student_id: ^sid}] = Lessons.list_lesson_students()
     end
 
-    test "transition_lesson question -> active saves question_answers" do
+    test "transition_lesson active -> question saves question points and name" do
+      lesson = lesson_fixture(state: :active)
+      attrs = %{question: %{points: 42, name: "q"}}
+      {:ok, _} = Lessons.transition_lesson(lesson, :question, attrs)
+
+      assert [%{points: 42, name: "q"}] = Lessons.list_questions()
+    end
+
+    test "transition_lesson question -> active saves question_answers and doesn't overwrite previous" do
       lesson = lesson_fixture(state: :question)
       %{student: %{id: sid} = student} = seat_student(%{lesson: lesson})
       attend_student(%{lesson: lesson, student: student})
+      prev_question = question_fixture(lesson_id: lesson.id, state: :ended)
+      question_answer_fixture(question_id: prev_question.id, student_id: sid)
 
+      Lessons.create_question(%{lesson_id: lesson.id})
       Lessons.ActiveQuestion.answer(lesson, sid)
       {:ok, _} = Lessons.transition_lesson(lesson, :active)
 
-      assert [%{answers: [%{student_id: ^sid}]}] =
-               Lessons.list_questions(lesson_id: lesson.id) |> Clickr.Repo.preload(:answers)
+      assert [%{answers: [%{student_id: ^sid}]}, %{answers: [%{student_id: ^sid}]}] =
+               Lessons.list_questions() |> Clickr.Repo.preload(:answers)
     end
 
     test "transition_lesson ended -> graded stores grade, lesson grades and updates grade" do

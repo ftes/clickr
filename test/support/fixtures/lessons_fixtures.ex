@@ -34,16 +34,19 @@ defmodule Clickr.LessonsFixtures do
   Generate a question.
   """
   def question_fixture(attrs \\ %{}) do
-    {:ok, question} =
+    attrs =
       attrs
       |> Enum.into(%{
         name: "some name",
-        points: 1
+        points: 1,
+        state: :started
       })
       |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
       |> put_with_user(:lesson_id, fn uid -> lesson_fixture(user_id: uid).id end)
-      |> Clickr.Lessons.create_question()
+      |> Map.drop([:user_id])
 
+    struct = struct!(Clickr.Lessons.Question, attrs)
+    {:ok, question} = Clickr.Repo.insert(struct)
     question
   end
 

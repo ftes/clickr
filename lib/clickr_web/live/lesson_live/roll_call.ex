@@ -68,12 +68,10 @@ defmodule ClickrWeb.LessonLive.RollCall do
 
   @impl true
   def handle_event("transition", %{"state" => state}, socket) do
-    {:ok, _} = Lessons.transition_lesson(socket.assigns.lesson, String.to_existing_atom(state))
+    {:ok, lesson} =
+      Lessons.transition_lesson(socket.assigns.lesson, String.to_existing_atom(state))
 
-    {:noreply,
-     socket
-     |> assign_lesson()
-     |> ClickrWeb.LessonLive.Router.maybe_navigate()}
+    {:noreply, ClickrWeb.LessonLive.Router.navigate(socket, lesson)}
   end
 
   @impl true
@@ -81,9 +79,9 @@ defmodule ClickrWeb.LessonLive.RollCall do
     {:noreply, load_answers(socket)}
   end
 
-  defp assign_lesson(socket, id \\ nil) do
+  defp assign_lesson(socket, id) do
     lesson =
-      Lessons.get_lesson!(id || socket.assigns.lesson.id)
+      Lessons.get_lesson!(id)
       |> Clickr.Repo.preload([:lesson_students, seating_plan: [seats: :student]])
 
     assign(socket, :lesson, lesson)

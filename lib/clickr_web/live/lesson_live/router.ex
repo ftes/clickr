@@ -19,6 +19,10 @@ defmodule ClickrWeb.LessonLive.Router do
     {:noreply, push_navigate(socket, to: path(lesson), replace: false)}
   end
 
+  def navigate(socket, lesson) do
+    push_navigate(socket, to: path(lesson), replace: true)
+  end
+
   def maybe_navigate(socket) do
     lesson = socket.assigns.lesson
 

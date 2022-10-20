@@ -100,14 +100,16 @@ defmodule Clickr.Lessons do
     |> Repo.update()
   end
 
-  def transition_lesson(%Lesson{state: :started} = lesson, :roll_call = new_state) do
+  def transition_lesson(lesson, new_state, attrs \\ %{})
+
+  def transition_lesson(%Lesson{state: :started} = lesson, :roll_call = new_state, _) do
     with {:ok, lesson} = res <- Repo.update(Lesson.changeset(lesson, %{state: new_state})) do
       ActiveQuestion.start(lesson)
       res
     end
   end
 
-  def transition_lesson(%Lesson{state: :roll_call} = lesson, :active = new_state) do
+  def transition_lesson(%Lesson{state: :roll_call} = lesson, :active = new_state, _) do
     student_ids = ActiveQuestion.get(lesson)
     ActiveQuestion.stop(lesson)
     lesson_students = Enum.map(student_ids, &%{student_id: &1})
@@ -116,39 +118,54 @@ defmodule Clickr.Lessons do
     Repo.update(changeset)
   end
 
-  def transition_lesson(%Lesson{state: :active} = lesson, :question = new_state) do
-    with {:ok, lesson} = res <- Repo.update(Lesson.changeset(lesson, %{state: new_state})) do
+  def transition_lesson(%Lesson{state: :active} = lesson, :question, attrs) do
+    question_params = put_params_attr(attrs[:question] || %{}, :lesson_id, lesson.id)
+
+    multi =
+      Ecto.Multi.new()
+      |> Ecto.Multi.update(:lesson, Lesson.changeset(lesson, %{state: :question}))
+      |> Ecto.Multi.insert(:question, Question.changeset(%Question{}, question_params))
+
+    with {:ok, %{lesson: lesson}} <- Repo.transaction(multi) do
       ActiveQuestion.start(lesson)
-      res
-    end
-  end
-
-  def transition_lesson(%Lesson{state: :question} = lesson, :active = new_state) do
-    answers = ActiveQuestion.get(lesson)
-    attending = Enum.map(Repo.preload(lesson, :lesson_students).lesson_students, & &1.student_id)
-    ActiveQuestion.stop(lesson)
-    answers = for sid <- answers, sid in attending, do: %{student_id: sid}
-    question = %{lesson_id: lesson.id, name: "Question", answers: answers}
-
-    with {:ok, %{lesson: lesson}} <-
-           Ecto.Multi.new()
-           |> Ecto.Multi.update(:lesson, Lesson.changeset(lesson, %{state: new_state}))
-           |> Ecto.Multi.insert(:question, Question.changeset(%Question{}, question))
-           |> Clickr.Repo.transaction() do
       {:ok, lesson}
     end
   end
 
-  def transition_lesson(%Lesson{state: :active} = lesson, :ended = new_state),
+  def transition_lesson(%Lesson{state: :question} = lesson, :active, _) do
+    question =
+      Repo.get_by!(Question, lesson_id: lesson.id, state: :started) |> Repo.preload(:answers)
+
+    answers = ActiveQuestion.get(lesson)
+    lesson = Repo.preload(lesson, :lesson_students)
+    attending = Enum.map(lesson.lesson_students, & &1.student_id)
+    ActiveQuestion.stop(lesson)
+    answers = for sid <- answers, sid in attending, do: %{student_id: sid}
+
+    multi =
+      Ecto.Multi.new()
+      |> Ecto.Multi.update(:lesson, Lesson.changeset(lesson, %{state: :active}))
+      |> Ecto.Multi.update(
+        :question,
+        Question.changeset(question, %{state: :ended, answers: answers})
+      )
+
+    with {:ok, %{lesson: lesson}} <- Repo.transaction(multi) do
+      {:ok, lesson}
+    end
+  end
+
+  def transition_lesson(%Lesson{state: :active} = lesson, :ended = new_state, _),
     do: Repo.update(Lesson.changeset(lesson, %{state: new_state}))
 
   alias Clickr.Grades
 
-  def transition_lesson(%Lesson{state: old_state} = lesson, :graded, attrs \\ %{})
+  def transition_lesson(%Lesson{state: old_state} = lesson, :graded, attrs)
       when old_state in [:ended, :graded] do
     lesson = Repo.preload(lesson, [:lesson_students, :grades])
-    attrs = add_state_graded(attrs, Enum.at(Map.keys(attrs), 0))
+    attrs = put_params_attr(attrs, :state, :graded)
     points = get_lesson_points(lesson)
+
     %{min: min, max: max} = change_lesson(lesson, attrs) |> Ecto.Changeset.get_field(:grade)
 
     calc_grade = fn sid ->
@@ -174,10 +191,14 @@ defmodule Clickr.Lessons do
     end
   end
 
-  defp add_state_graded(attrs, first_key) when is_atom(first_key),
-    do: Map.put(attrs, :state, :graded)
+  defp put_params_attr(attrs, key, value),
+    do: put_params_attr(attrs, key, value, Enum.at(Map.keys(attrs), 0))
 
-  defp add_state_graded(attrs, _), do: Map.put(attrs, "state", "graded")
+  defp put_params_attr(attrs, key, value, first_other_key) when is_atom(first_other_key),
+    do: Map.put(attrs, key, value)
+
+  defp put_params_attr(attrs, key, value, _),
+    do: Map.put(attrs, Atom.to_string(key), value)
 
   @doc """
   Deletes a lesson.

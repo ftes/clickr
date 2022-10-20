@@ -1,5 +1,8 @@
 # Todo
 
+- [ ] Bonus grade
+- [ ] Refactor transition_lesson: extract / domain specific
+
 - [ ] Move edit room/seating_plan into form component (save button)
 - [ ] Search (global and lists)
 - [ ] Filter and sort lists

@@ -12,7 +12,7 @@ defmodule Clickr.Lessons.Lesson do
     belongs_to :room, Clickr.Rooms.Room
     belongs_to :seating_plan, Clickr.Classes.SeatingPlan
     has_many :lesson_students, Clickr.Lessons.LessonStudent
-    has_many :questions, Clickr.Lessons.Question
+    has_many :questions, Clickr.Lessons.Question, on_replace: :delete
     has_many :grades, Clickr.Grades.LessonGrade, on_replace: :delete
 
     timestamps(type: :utc_datetime)
@@ -45,6 +45,7 @@ defmodule Clickr.Lessons.Lesson do
   end
 
   def changeset(lesson, %{"state" => "graded"} = attrs), do: changeset_graded(lesson, attrs)
+  def changeset(lesson, %{"state" => :graded} = attrs), do: changeset_graded(lesson, attrs)
   def changeset(lesson, %{state: :graded} = attrs), do: changeset_graded(lesson, attrs)
   def changeset(lesson, %{state: "graded"} = attrs), do: changeset_graded(lesson, attrs)
 

@@ -24,6 +24,14 @@ defmodule ClickrWeb.LessonLive.Question do
         >
           <%= label %>
         </.button>
+        <.button
+          :if={@lesson.state == :active}
+          phx-click="show_question_modal"
+          title={dgettext("lessons.lessons", "Question options")}
+          class="-ml-3 bg-zinc-500"
+        >
+          <Heroicons.cog_6_tooth class="h-6 w-6 text-white" />
+        </.button>
       </:actions>
     </.header>
 
@@ -81,6 +89,15 @@ defmodule ClickrWeb.LessonLive.Question do
         </button>
       </div>
     </div>
+
+    <.modal
+      :if={@show_question_modal?}
+      id="question-modal"
+      show
+      on_cancel={JS.push("hide_question_modal")}
+    >
+      <.live_component module={ClickrWeb.LessonLive.QuestionModal} id={@lesson.id} />
+    </.modal>
     """
   end
 
@@ -102,6 +119,7 @@ defmodule ClickrWeb.LessonLive.Question do
     {:noreply,
      socket
      |> assign(:page_title, dgettext("lessons.lessons", "Lesson"))
+     |> assign(:show_question_modal?, false)
      |> assign_lesson_and_related(id)
      |> load_answers()
      |> ClickrWeb.LessonLive.Router.maybe_navigate()}
@@ -109,13 +127,17 @@ defmodule ClickrWeb.LessonLive.Question do
 
   @impl true
   def handle_event("transition", %{"state" => state}, socket) do
-    {:ok, _} = Lessons.transition_lesson(socket.assigns.lesson, String.to_existing_atom(state))
+    {:ok, lesson} =
+      Lessons.transition_lesson(socket.assigns.lesson, String.to_existing_atom(state))
 
-    {:noreply,
-     socket
-     |> assign_lesson_and_related()
-     |> ClickrWeb.LessonLive.Router.maybe_navigate()}
+    {:noreply, ClickrWeb.LessonLive.Router.navigate(socket, lesson)}
   end
+
+  def handle_event("show_question_modal", _, socket),
+    do: {:noreply, assign(socket, :show_question_modal?, true)}
+
+  def handle_event("hide_question_modal", _, socket),
+    do: {:noreply, assign(socket, :show_question_modal?, false)}
 
   def handle_event("add_student", %{"student_id" => student_id}, socket) do
     {:ok, _} =
@@ -145,6 +167,13 @@ defmodule ClickrWeb.LessonLive.Question do
   @impl true
   def handle_info({:active_question_answered, _}, socket) do
     {:noreply, load_answers(socket)}
+  end
+
+  def handle_info({:ask_question, params}, socket) do
+    {:ok, lesson} =
+      Lessons.transition_lesson(socket.assigns.lesson, :question, %{question: params})
+
+    {:noreply, ClickrWeb.LessonLive.Router.navigate(socket, lesson)}
   end
 
   defp assign_lesson_and_related(socket, id \\ nil) do

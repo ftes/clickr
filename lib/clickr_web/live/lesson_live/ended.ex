@@ -13,7 +13,10 @@ defmodule ClickrWeb.LessonLive.Ended do
           <%= translate_lesson_state(@lesson) %>
         </:subtitle>
         <:actions>
-          <.button phx-disable-with={dgettext("lessons.lessons", "Grading...")}>
+          <.button
+            phx-disable-with={dgettext("lessons.lessons", "Grading...")}
+            data-confirm={@lesson.state == :graded && gettext("Are you sure?")}
+          >
             <%= dgettext("lessons.actions", "Grade") %>
           </.button>
         </:actions>
@@ -90,13 +93,12 @@ defmodule ClickrWeb.LessonLive.Ended do
 
   @impl true
   def handle_event("submit", %{"lesson" => lesson_params}, socket) do
-    {:ok, _} = Lessons.transition_lesson(socket.assigns.lesson, :graded, lesson_params)
+    {:ok, lesson} = Lessons.transition_lesson(socket.assigns.lesson, :graded, lesson_params)
 
     {:noreply,
      socket
-     |> assign_lesson_and_related()
      |> put_flash(:info, dgettext("lessons.lessons", "Lesson graded successfully"))
-     |> ClickrWeb.LessonLive.Router.maybe_navigate()}
+     |> ClickrWeb.LessonLive.Router.navigate(lesson)}
   end
 
   def handle_event("validate", %{"lesson" => lesson_params}, socket) do
@@ -111,9 +113,9 @@ defmodule ClickrWeb.LessonLive.Ended do
      |> assign_new_lesson_grades()}
   end
 
-  defp assign_lesson_and_related(socket, id \\ nil) do
+  defp assign_lesson_and_related(socket, id) do
     lesson =
-      Lessons.get_lesson!(id || socket.assigns.lesson.id)
+      Lessons.get_lesson!(id)
       |> Clickr.Repo.preload([
         :lesson_students,
         :questions,
