@@ -249,12 +249,29 @@ defmodule ClickrWeb.LessonLiveTest do
       assert render(live) =~ "47"
     end
 
+    @tag :inspect
+    test "creates bonus grade", %{conn: conn, lesson: l, student: s} do
+      lesson_student_fixture(lesson_id: l.id, student_id: s.id, extra_points: 42)
+      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
+
+      assert live |> element("#student-#{s.id} button", "Add bonus grade") |> render_click() =~
+               "id=\"bonus-grade-form\""
+
+      {:ok, _, html} =
+        live
+        |> form("#bonus-grade-form", %{bonus_grade: %{name: "some bonus", percent: 0.42}})
+        |> render_submit()
+        |> follow_redirect(conn, ~p"/lessons/#{l}/active")
+
+      assert html =~ "Bonus grade created successfully"
+    end
+
     test "asks question with custom name and points", %{conn: conn, lesson: l, student: s} do
       lesson_student_fixture(lesson_id: l.id, student_id: s.id, extra_points: 42)
 
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
 
-      live |> element("button[title='Question options']") |> render_click() =~
+      live |> element("button", "Question options") |> render_click() =~
         "id=\"question-form\""
 
       live

@@ -33,4 +33,39 @@
   </:action>
 </.table>
 
+<div class="flex justify-end mt-10">
+  <.button phx-click="show_bonus_grade_form_component">
+    <%= dgettext("grades.bonus_grades", "New bonus grade") %>
+  </.button>
+</div>
+
+<.table id="bonus-grades" compact rows={@grade.bonus_grades}>
+  <:col :let={bg} label={dgettext("grades.bonus_grades", "Name")}><%= bg.name %></:col>
+  <:col :let={bg} label={dgettext("grades.bonus_grades", "Date")}>
+    <%= Timex.format!(bg.inserted_at, "{D}.{M}.") %>
+  </:col>
+  <:col :let={bg} label={dgettext("grades.bonus_grades", "Percent")}>
+    <%= Clickr.Grades.format(:percent, bg.percent) %>
+  </:col>
+  <:action :let={bg}>
+    <.link
+      phx-click={JS.push("delete_bonus_grade", value: %{id: bg.id})}
+      data-confirm={gettext("Are you sure?")}
+    >
+      <%= gettext("Delete") %>
+    </.link>
+  </:action>
+</.table>
+
 <.back navigate={~p"/grades"}><%= gettext("Back") %></.back>
+
+<%= if @show_bonus_grade_form_component? do %>
+  <.modal id="bonus-grade-modal" show on_cancel={JS.push("hide_bonus_grade_form_component")}>
+    <.live_component
+      module={ClickrWeb.GradeLive.BonusGradeFormComponent}
+      id={"#{@grade.id}-bonus-grade"}
+      navigate={~p"/grades/#{@grade}"}
+      grade={@grade}
+    />
+  </.modal>
+<% end %>

@@ -27,14 +27,40 @@ defmodule ClickrWeb.GradeLiveTest do
   describe "Show" do
     setup [:create_grade]
 
-    test "displays grade and lesson grades", %{conn: conn, grade: grade} do
+    test "displays grade, lesson and bonus grades", %{conn: conn, grade: grade} do
       lesson_grade_fixture(grade_id: grade.id, percent: 0.18)
+      bonus_grade_fixture(grade_id: grade.id, percent: 0.28)
       {:ok, _show_live, html} = live(conn, ~p"/grades/#{grade}")
 
       assert html =~ "Show Grade"
       assert html =~ "42%"
       assert html =~ "5+"
       assert html =~ "18%"
+      assert html =~ "28%"
+    end
+
+    test "deletes bonus grade", %{conn: conn, grade: grade} do
+      bonus_grade_fixture(grade_id: grade.id, percent: 0.28)
+      {:ok, live, html} = live(conn, ~p"/grades/#{grade}")
+      assert html =~ "28%"
+
+      refute live |> element("#bonus-grades a", "Delete") |> render_click() =~ "28%"
+    end
+
+    test "creates bonus grade", %{conn: conn, grade: grade} do
+      {:ok, live, _html} = live(conn, ~p"/grades/#{grade}")
+
+      assert live |> element("button", "New bonus grade") |> render_click() =~
+               "id=\"bonus-grade-form\""
+
+      {:ok, _, html} =
+        live
+        |> form("#bonus-grade-form", %{bonus_grade: %{name: "some bonus", percent: 0.42}})
+        |> render_submit()
+        |> follow_redirect(conn, ~p"/grades/#{grade}")
+
+      assert html =~ "Bonus grade created successfully"
+      assert html =~ "some bonus"
     end
 
     test "finds grade by student and lesson id", %{conn: conn, grade: grade} do

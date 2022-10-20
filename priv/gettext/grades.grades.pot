@@ -29,7 +29,7 @@ msgstr ""
 msgid "Percent"
 msgstr ""
 
-#: lib/clickr_web/live/grade_live/show.ex:26
+#: lib/clickr_web/live/grade_live/show.ex:45
 #, elixir-autogen, elixir-format
 msgid "Show Grade"
 msgstr ""
@@ -50,4 +50,9 @@ msgstr ""
 #: lib/clickr_web/live/components/menu.ex:7
 #, elixir-autogen, elixir-format
 msgid "Grades"
+msgstr ""
+
+#: lib/clickr_web/live/grade_live/show.ex:35
+#, elixir-autogen, elixir-format
+msgid "Bonus grade was deleted!"
 msgstr ""

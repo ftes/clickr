@@ -59,9 +59,16 @@ defmodule Clickr.Grades do
 
   """
   def create_lesson_grade(attrs \\ %{}) do
-    %LessonGrade{}
-    |> LessonGrade.changeset(attrs)
-    |> Repo.insert()
+    res =
+      %LessonGrade{}
+      |> LessonGrade.changeset(attrs)
+      |> Repo.insert()
+
+    with {:ok, lg} <- res do
+      lg = Repo.preload(lg, :lesson)
+      calculate_and_save_grade(%{student_id: lg.student_id, subject_id: lg.lesson.subject_id})
+      res
+    end
   end
 
   @doc """
@@ -77,9 +84,16 @@ defmodule Clickr.Grades do
 
   """
   def update_lesson_grade(%LessonGrade{} = lesson_grade, attrs) do
-    lesson_grade
-    |> LessonGrade.changeset(attrs)
-    |> Repo.update()
+    res =
+      lesson_grade
+      |> LessonGrade.changeset(attrs)
+      |> Repo.update()
+
+    with {:ok, lg} <- res do
+      lg = Repo.preload(lg, :lesson)
+      calculate_and_save_grade(%{student_id: lg.student_id, subject_id: lg.lesson.subject_id})
+      res
+    end
   end
 
   @doc """
@@ -95,7 +109,12 @@ defmodule Clickr.Grades do
 
   """
   def delete_lesson_grade(%LessonGrade{} = lesson_grade) do
-    Repo.delete(lesson_grade)
+    lg = Repo.preload(lesson_grade, :lesson)
+
+    with {:ok, _} = res <- Repo.delete(lg) do
+      calculate_and_save_grade(%{student_id: lg.student_id, subject_id: lg.lesson.subject_id})
+      res
+    end
   end
 
   @doc """
@@ -184,39 +203,6 @@ defmodule Clickr.Grades do
     |> Repo.update()
   end
 
-  def calculate_grade(%{student_id: _, subject_id: _} = args) do
-    query_lesson_grades(args)
-    |> Repo.all()
-    |> Enum.map(& &1.percent)
-    |> average()
-  end
-
-  defp average([]), do: 0.0
-  defp average(percentages), do: Enum.sum(percentages) / length(percentages)
-
-  def calculate_and_save_grade(%{student_id: student_id, subject_id: subject_id} = args) do
-    percent = calculate_grade(args)
-    grade = %Grade{student_id: student_id, subject_id: subject_id, percent: percent}
-
-    {:ok, grade} =
-      Repo.insert(grade,
-        conflict_target: [:student_id, :subject_id],
-        on_conflict: {:replace, [:percent]},
-        returning: true
-      )
-
-    Repo.update_all(query_lesson_grades(args), set: [grade_id: grade.id])
-
-    {:ok, grade}
-  end
-
-  defp query_lesson_grades(%{student_id: stid, subject_id: suid}) do
-    from(lg in LessonGrade,
-      join: l in assoc(lg, :lesson),
-      where: lg.student_id == ^stid and l.subject_id == ^suid
-    )
-  end
-
   @doc """
   Deletes a grade.
 
@@ -266,5 +252,156 @@ defmodule Clickr.Grades do
     query
     |> join(:inner, [x], s in assoc(x, :subject))
     |> where([x, s], s.lesson_id == ^id)
+  end
+
+  alias Clickr.Grades.BonusGrade
+
+  @doc """
+  Returns the list of bonus_grades.
+
+  ## Examples
+
+      iex> list_bonus_grades()
+      [%BonusGrade{}, ...]
+
+  """
+  def list_bonus_grades do
+    Repo.all(BonusGrade)
+  end
+
+  @doc """
+  Gets a single bonus_grade.
+
+  Raises `Ecto.NoResultsError` if the Bonus grade does not exist.
+
+  ## Examples
+
+      iex> get_bonus_grade!(123)
+      %BonusGrade{}
+
+      iex> get_bonus_grade!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_bonus_grade!(id), do: Repo.get!(BonusGrade, id)
+
+  @doc """
+  Creates a bonus_grade.
+
+  ## Examples
+
+      iex> create_bonus_grade(%{field: value})
+      {:ok, %BonusGrade{}}
+
+      iex> create_bonus_grade(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_bonus_grade(attrs \\ %{}) do
+    res =
+      %BonusGrade{}
+      |> BonusGrade.changeset(attrs)
+      |> Repo.insert()
+
+    with {:ok, bg} <- res do
+      calculate_and_save_grade(%{student_id: bg.student_id, subject_id: bg.subject_id})
+      res
+    end
+  end
+
+  @doc """
+  Updates a bonus_grade.
+
+  ## Examples
+
+      iex> update_bonus_grade(bonus_grade, %{field: new_value})
+      {:ok, %BonusGrade{}}
+
+      iex> update_bonus_grade(bonus_grade, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_bonus_grade(%BonusGrade{} = bonus_grade, attrs) do
+    res =
+      bonus_grade
+      |> BonusGrade.changeset(attrs)
+      |> Repo.update()
+
+    with {:ok, bg} <- res do
+      calculate_and_save_grade(%{student_id: bg.student_id, subject_id: bg.subject_id})
+      res
+    end
+  end
+
+  @doc """
+  Deletes a bonus_grade.
+
+  ## Examples
+
+      iex> delete_bonus_grade(bonus_grade)
+      {:ok, %BonusGrade{}}
+
+      iex> delete_bonus_grade(bonus_grade)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_bonus_grade(%BonusGrade{} = bonus_grade) do
+    with {:ok, bg} = res <- Repo.delete(bonus_grade) do
+      calculate_and_save_grade(%{student_id: bg.student_id, subject_id: bg.subject_id})
+      res
+    end
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking bonus_grade changes.
+
+  ## Examples
+
+      iex> change_bonus_grade(bonus_grade)
+      %Ecto.Changeset{data: %BonusGrade{}}
+
+  """
+  def change_bonus_grade(%BonusGrade{} = bonus_grade, attrs \\ %{}) do
+    BonusGrade.changeset(bonus_grade, attrs)
+  end
+
+  def calculate_grade(%{student_id: _, subject_id: _} = args) do
+    lesson_grades = Repo.all(query_lesson_grades(args))
+    bonus_grades = Repo.all(query_bonus_grades(args))
+
+    Enum.concat([lesson_grades, bonus_grades])
+    |> Enum.map(& &1.percent)
+    |> average()
+  end
+
+  defp average([]), do: 0.0
+  defp average(percentages), do: Enum.sum(percentages) / length(percentages)
+
+  def calculate_and_save_grade(%{student_id: student_id, subject_id: subject_id} = args) do
+    percent = calculate_grade(args)
+    grade = %Grade{student_id: student_id, subject_id: subject_id, percent: percent}
+
+    {:ok, grade} =
+      Repo.insert(grade,
+        conflict_target: [:student_id, :subject_id],
+        on_conflict: {:replace, [:percent]},
+        returning: true
+      )
+
+    Repo.update_all(query_lesson_grades(args), set: [grade_id: grade.id])
+    Repo.update_all(query_bonus_grades(args), set: [grade_id: grade.id])
+
+    {:ok, grade}
+  end
+
+  defp query_lesson_grades(%{student_id: stid, subject_id: suid}) do
+    from(lg in LessonGrade,
+      join: l in assoc(lg, :lesson),
+      where: lg.student_id == ^stid and l.subject_id == ^suid
+    )
+  end
+
+  defp query_bonus_grades(%{student_id: stid, subject_id: suid}) do
+    from(bg in BonusGrade, where: bg.student_id == ^stid and bg.subject_id == ^suid)
   end
 end

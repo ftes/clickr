@@ -30,7 +30,7 @@ msgstr "Noten"
 msgid "Percent"
 msgstr "Prozent"
 
-#: lib/clickr_web/live/grade_live/show.ex:26
+#: lib/clickr_web/live/grade_live/show.ex:45
 #, elixir-autogen, elixir-format
 msgid "Show Grade"
 msgstr "Note anzeigen"
@@ -52,3 +52,8 @@ msgstr "Fach"
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Grades"
 msgstr "Noten"
+
+#: lib/clickr_web/live/grade_live/show.ex:35
+#, elixir-autogen, elixir-format
+msgid "Bonus grade was deleted!"
+msgstr "Bonusnote wurde gelöscht!"

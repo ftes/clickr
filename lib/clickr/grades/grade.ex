@@ -6,6 +6,7 @@ defmodule Clickr.Grades.Grade do
     belongs_to :student, Clickr.Students.Student
     belongs_to :subject, Clickr.Subjects.Subject
     has_many :lesson_grades, Clickr.Grades.LessonGrade
+    has_many :bonus_grades, Clickr.Grades.BonusGrade
 
     timestamps(type: :utc_datetime)
   end
