@@ -30,7 +30,7 @@ defmodule ClickrWeb.DeconzChannel do
 
     case Devices.Deconz.parse_event(sensors[id], msg) do
       {:ok, attrs} ->
-        Devices.broadcast_button_click(Map.merge(other_attrs, attrs))
+        Task.start(fn -> Devices.broadcast_button_click(Map.merge(other_attrs, attrs)) end)
 
       err ->
         details = %{sensor: sensors[id], message: msg}

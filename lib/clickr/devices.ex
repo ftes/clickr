@@ -308,6 +308,8 @@ defmodule Clickr.Devices do
   def broadcast_button_click(
         %{button_id: bid, device_id: did, gateway_id: gid, user_id: uid} = attrs
       ) do
+    Clickr.PubSub.broadcast(button_click_topic(attrs), {:button_clicked, attrs})
+
     device = %Device{
       id: did,
       gateway_id: gid,
@@ -322,22 +324,16 @@ defmodule Clickr.Devices do
       name: attrs[:button_name] || "Unknown"
     }
 
-    tx_result =
-      Ecto.Multi.new()
-      |> Ecto.Multi.insert(:device, device,
-        conflict_target: [:id],
-        on_conflict: {:replace, [:name]}
-      )
-      |> Ecto.Multi.insert(:button, button,
-        conflict_target: [:id],
-        on_conflict: {:replace, [:name]}
-      )
-      |> Repo.transaction()
-
-    with {:ok, _} = res <- tx_result do
-      Clickr.PubSub.broadcast(button_click_topic(attrs), {:button_clicked, attrs})
-      res
-    end
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:device, device,
+      conflict_target: [:id],
+      on_conflict: {:replace, [:name]}
+    )
+    |> Ecto.Multi.insert(:button, button,
+      conflict_target: [:id],
+      on_conflict: {:replace, [:name]}
+    )
+    |> Repo.transaction()
   end
 
   defp where_ids(query, nil), do: query
