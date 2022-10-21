@@ -11,14 +11,14 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2\n"
 
-#: lib/clickr_web/live/lesson_live/question.ex:58
-#: lib/clickr_web/live/lesson_live/question.ex:62
+#: lib/clickr_web/live/lesson_live/question.ex:73
+#: lib/clickr_web/live/lesson_live/question.ex:77
 #, elixir-autogen, elixir-format
 msgid "Add point"
 msgstr "Punkt hinzufügen"
 
-#: lib/clickr_web/live/lesson_live/question.ex:97
-#: lib/clickr_web/live/lesson_live/question.ex:101
+#: lib/clickr_web/live/lesson_live/question.ex:112
+#: lib/clickr_web/live/lesson_live/question.ex:116
 #, elixir-autogen, elixir-format
 msgid "Add student"
 msgstr "Schüler hinzufügen"
@@ -51,8 +51,8 @@ msgstr "Benoten"
 msgid "Note Attendance"
 msgstr "Anwesenheit eintragen"
 
-#: lib/clickr_web/live/lesson_live/question.ex:66
-#: lib/clickr_web/live/lesson_live/question.ex:71
+#: lib/clickr_web/live/lesson_live/question.ex:81
+#: lib/clickr_web/live/lesson_live/question.ex:86
 #, elixir-autogen, elixir-format
 msgid "Remove student"
 msgstr "Schüler entfernen"
@@ -72,14 +72,14 @@ msgstr "Durchführen"
 msgid "Run lesson"
 msgstr "Durchführen"
 
-#: lib/clickr_web/live/lesson_live/question.ex:75
-#: lib/clickr_web/live/lesson_live/question.ex:79
+#: lib/clickr_web/live/lesson_live/question.ex:90
+#: lib/clickr_web/live/lesson_live/question.ex:94
 #, elixir-autogen, elixir-format
 msgid "Subtract point"
 msgstr "Punkt abziehen"
 
-#: lib/clickr_web/live/lesson_live/question.ex:87
-#: lib/clickr_web/live/lesson_live/question.ex:90
+#: lib/clickr_web/live/lesson_live/question.ex:102
+#: lib/clickr_web/live/lesson_live/question.ex:105
 #, elixir-autogen, elixir-format
 msgid "Add bonus grade"
 msgstr "Bonusnote"

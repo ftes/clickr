@@ -463,7 +463,7 @@ defmodule ClickrWeb.Components do
               phx-click={@row_click && @row_click.(row)}
               class={["relative p-0", @row_click && "hover:cursor-pointer"]}
             >
-              <div class={"block #{if !@compact, do: "py-4"} pr-6"}>
+              <div class={["block pr-6", !@compact && "py-4"]}>
                 <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-200 sm:rounded-l-xl" />
                 <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
                   <%= render_slot(col, row) %>
@@ -471,7 +471,10 @@ defmodule ClickrWeb.Components do
               </div>
             </td>
             <td :if={@action != []} class="relative p-0 w-14">
-              <div class={"relative whitespace-nowrap #{if !@compact, do: "py-4"} text-right text-sm font-medium"}>
+              <div class={[
+                "relative whitespace-nowrap text-right text-sm font-medium",
+                !@compact && "py-4"
+              ]}>
                 <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-zinc-200 sm:rounded-r-xl" />
                 <span
                   :for={action <- @action}

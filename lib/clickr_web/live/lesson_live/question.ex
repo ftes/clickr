@@ -41,12 +41,27 @@ defmodule ClickrWeb.LessonLive.Question do
         :for={seat <- @lesson.seating_plan.seats}
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
-        class={"relative group flex flex-col items-stretch justify-between rounded-lg border border-gray-300 p-1 lg:p-3 shadow-sm #{if MapSet.member?(@answers, seat.student_id), do: "x-answered bg-green-400", else: "bg-white"}"}
+        class={[
+          "relative group flex flex-col items-stretch justify-between rounded-lg border border-gray-300 p-1 lg:p-3 shadow-sm",
+          if(MapSet.member?(@answers, seat.student_id),
+            do: "x-answered bg-green-400",
+            else: "bg-white"
+          )
+        ]}
       >
-        <p class={"overflow-hidden text-ellipsis text-sm font-medium text-center #{if MapSet.member?(@student_ids, seat.student_id), do: "x-attending text-gray-900", else: "text-gray-400"}"}>
+        <p class={[
+          "overflow-hidden text-ellipsis text-sm font-medium text-center",
+          if(MapSet.member?(@student_ids, seat.student_id),
+            do: "x-attending text-gray-900",
+            else: "text-gray-400"
+          )
+        ]}>
           <%= seat.student.name %>
         </p>
-        <div class={"flex justify-center text-center #{unless MapSet.member?(@student_ids, seat.student_id), do: "invisible"}"}>
+        <div class={[
+          "flex justify-center text-center",
+          !MapSet.member?(@student_ids, seat.student_id) && "invisible"
+        ]}>
           <%= @points[seat.student_id] || 0 %>
         </div>
 

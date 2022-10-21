@@ -70,7 +70,10 @@ defmodule ClickrWeb.Menu do
         >
           <span class="sr-only"><%= dgettext("layout", "Open user menu") %></span>
           <div
-            class={"h-8 w-8 rounded-full text-xl text-white flex items-center justify-center font-bold #{user_bg(@current_user)}"}
+            class={[
+              "h-8 w-8 rounded-full text-xl text-white flex items-center justify-center font-bold",
+              user_bg(@current_user)
+            ]}
             alt={@current_user.email}
           >
             <%= user_initial(@current_user) |> String.upcase() %>

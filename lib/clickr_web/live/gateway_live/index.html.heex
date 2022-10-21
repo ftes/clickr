@@ -11,7 +11,10 @@
   <:col :let={gateway} label={dgettext("devices.gateways", "Name")}><%= gateway.name %></:col>
   <:col :let={gateway} label={dgettext("devices.gateways", "Connected")}>
     <div class="flex items-center gap-3">
-      <span class={"rounded-full h-5 w-5 #{if Map.has_key?(@present_gateways, gateway.id), do: "bg-green-500", else: "bg-red-500"}"}>
+      <span class={[
+        "rounded-full h-5 w-5",
+        if(Map.has_key?(@present_gateways, gateway.id), do: "bg-green-500", else: "bg-red-500")
+      ]}>
       </span>
       <span>
         <%= if Map.has_key?(@present_gateways, gateway.id),
