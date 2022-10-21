@@ -21,6 +21,10 @@ format:
   stage: test
   script:
     - mix format --check-formatted
+
+i18n:
+  stage: test
+  script:
     - mix gettext.extract --check-up-to-date
 
 test:
