@@ -37,15 +37,23 @@ defmodule Clickr.Lessons.Lesson do
   def states(), do: @states
 
   @doc false
-  def changeset(lesson, %{"state" => "graded"} = attrs), do: changeset_graded(lesson, attrs)
-  def changeset(lesson, %{"state" => :graded} = attrs), do: changeset_graded(lesson, attrs)
-  def changeset(lesson, %{state: :graded} = attrs), do: changeset_graded(lesson, attrs)
-  def changeset(lesson, %{state: "graded"} = attrs), do: changeset_graded(lesson, attrs)
+  def changeset(%{state: old_state} = lesson, attrs) when old_state in [:ended, :graded] do
+    lesson
+    |> cast(attrs, [:state])
+    |> cast_embed(:grade, required: true)
+    |> validate_required([:state])
+    |> cast_assoc(:grades)
+  end
 
   def changeset(lesson, %{state: _} = attrs) do
     lesson
     |> cast(attrs, [:state])
     |> validate_required([:state])
+  end
+
+  def changeset(lesson, %{grades: _} = attrs) do
+    lesson
+    |> cast(attrs, [])
   end
 
   def changeset(lesson, attrs) do
@@ -69,13 +77,5 @@ defmodule Clickr.Lessons.Lesson do
     |> foreign_key_constraint(:subject_id)
     |> foreign_key_constraint(:room_id)
     |> foreign_key_constraint(:seating_plan_id)
-    |> cast_assoc(:grades)
-  end
-
-  defp changeset_graded(lesson, attrs) do
-    lesson
-    |> cast(attrs, [:state])
-    |> cast_embed(:grade, required: true)
-    |> validate_required([:state])
   end
 end

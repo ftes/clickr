@@ -52,18 +52,6 @@ defmodule Clickr.Lessons do
   """
   def get_lesson!(id), do: Repo.get!(Lesson, id)
 
-  def get_lesson_points(%Lesson{} = lesson) do
-    lesson = Repo.preload(lesson, [:lesson_students, questions: :answers])
-    extra_points = Map.new(lesson.lesson_students, &{&1.student_id, &1.extra_points})
-
-    for question <- lesson.questions,
-        question.state == :ended,
-        answer <- question.answers,
-        reduce: extra_points do
-      points -> Map.update(points, answer.student_id, question.points, &(&1 + question.points))
-    end
-  end
-
   @doc """
   Creates a lesson.
 
@@ -148,35 +136,15 @@ defmodule Clickr.Lessons do
   def transition_lesson(%Lesson{state: :active} = lesson, :ended = new_state, _),
     do: Repo.update(Lesson.changeset(lesson, %{state: new_state}))
 
-  alias Clickr.Grades
-
   def transition_lesson(%Lesson{state: old_state} = lesson, :graded, attrs)
       when old_state in [:ended, :graded] do
-    lesson = Repo.preload(lesson, [:lesson_students, :grades])
-    attrs = put_params_attr(attrs, :state, :graded)
-    points = get_lesson_points(lesson)
-
-    %{min: min, max: max} = change_lesson(lesson, attrs) |> Ecto.Changeset.get_field(:grade)
-
-    calc_grade = fn sid ->
-      Grades.calculate_linear_grade(%{min: min, max: max, value: points[sid]})
-    end
-
-    grades =
-      for %{student_id: sid} <- lesson.lesson_students,
-          do: %{student_id: sid, percent: calc_grade.(sid)}
-
-    changeset =
+    res =
       lesson
-      |> Lesson.changeset(attrs)
-      |> Lesson.changeset(%{grades: grades})
+      |> Lesson.changeset(put_params_attr(attrs, :state, :graded))
+      |> Repo.update()
 
-    with {:ok, _} = res <- Repo.update(changeset) do
-      suid = lesson.subject_id
-
-      for ls <- lesson.lesson_students,
-          do: Grades.calculate_and_save_grade(%{subject_id: suid, student_id: ls.student_id})
-
+    with {:ok, lesson} <- res do
+      calculate_and_save_lesson_grades(lesson)
       res
     end
   end
@@ -209,7 +177,8 @@ defmodule Clickr.Lessons do
       suid = lesson.subject_id
 
       for ls <- lesson.lesson_students,
-          do: Grades.calculate_and_save_grade(%{subject_id: suid, student_id: ls.student_id})
+          do:
+            Clickr.Grades.calculate_and_save_grade(%{subject_id: suid, student_id: ls.student_id})
 
       res
     end
@@ -283,24 +252,6 @@ defmodule Clickr.Lessons do
   end
 
   @doc """
-  Updates a question.
-
-  ## Examples
-
-      iex> update_question(question, %{field: new_value})
-      {:ok, %Question{}}
-
-      iex> update_question(question, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_question(%Question{} = question, attrs) do
-    question
-    |> Question.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
   Deletes a question.
 
   ## Examples
@@ -313,7 +264,12 @@ defmodule Clickr.Lessons do
 
   """
   def delete_question(%Question{} = question) do
-    Repo.delete(question)
+    with {:ok, _} = res <- Repo.delete(question) do
+      question = Repo.preload(question, :lesson)
+      calculate_and_save_lesson_grades(question.lesson)
+
+      res
+    end
   end
 
   @doc """
@@ -388,53 +344,6 @@ defmodule Clickr.Lessons do
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a question_answer.
-
-  ## Examples
-
-      iex> update_question_answer(question_answer, %{field: new_value})
-      {:ok, %QuestionAnswer{}}
-
-      iex> update_question_answer(question_answer, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_question_answer(%QuestionAnswer{} = question_answer, attrs) do
-    question_answer
-    |> QuestionAnswer.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a question_answer.
-
-  ## Examples
-
-      iex> delete_question_answer(question_answer)
-      {:ok, %QuestionAnswer{}}
-
-      iex> delete_question_answer(question_answer)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_question_answer(%QuestionAnswer{} = question_answer) do
-    Repo.delete(question_answer)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking question_answer changes.
-
-  ## Examples
-
-      iex> change_question_answer(question_answer)
-      %Ecto.Changeset{data: %QuestionAnswer{}}
-
-  """
-  def change_question_answer(%QuestionAnswer{} = question_answer, attrs \\ %{}) do
-    QuestionAnswer.changeset(question_answer, attrs)
-  end
-
   alias Clickr.Lessons.LessonStudent
 
   @doc """
@@ -486,27 +395,9 @@ defmodule Clickr.Lessons do
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a lesson_student.
-
-  ## Examples
-
-      iex> update_lesson_student(lesson_student, %{field: new_value})
-      {:ok, %LessonStudent{}}
-
-      iex> update_lesson_student(lesson_student, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_lesson_student(%LessonStudent{} = lesson_student, attrs) do
-    lesson_student
-    |> LessonStudent.changeset(attrs)
-    |> Repo.update()
-  end
-
-  def add_extra_points(%{lesson_id: lid, student_id: sid}, delta) do
+  def add_extra_points(%Lesson{state: :active} = lesson, %{student_id: sid}, delta) do
     {1, _} =
-      from(ls in LessonStudent, where: ls.lesson_id == ^lid and ls.student_id == ^sid)
+      from(ls in LessonStudent, where: ls.lesson_id == ^lesson.id and ls.student_id == ^sid)
       |> Repo.update_all(inc: [extra_points: delta])
 
     {:ok, nil}
@@ -538,22 +429,49 @@ defmodule Clickr.Lessons do
       |> Repo.transaction()
 
     with {:ok, %{lesson_student: lesson_student}} <- res do
+      calculate_and_save_lesson_grades(get_lesson!(ls.lesson_id))
       {:ok, lesson_student}
     end
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking lesson_student changes.
+  def get_lesson_points(%Lesson{} = lesson) do
+    lesson = Repo.preload(lesson, [:lesson_students, questions: :answers])
+    extra_points = Map.new(lesson.lesson_students, &{&1.student_id, &1.extra_points})
 
-  ## Examples
-
-      iex> change_lesson_student(lesson_student)
-      %Ecto.Changeset{data: %LessonStudent{}}
-
-  """
-  def change_lesson_student(%LessonStudent{} = lesson_student, attrs \\ %{}) do
-    LessonStudent.changeset(lesson_student, attrs)
+    for question <- lesson.questions,
+        question.state == :ended,
+        answer <- question.answers,
+        reduce: extra_points do
+      points -> Map.update(points, answer.student_id, question.points, &(&1 + question.points))
+    end
   end
+
+  def calculate_and_save_lesson_grades(%Lesson{state: :graded} = lesson) do
+    lesson = Repo.preload(lesson, [:lesson_students, :grades])
+    points = get_lesson_points(lesson)
+    %{min: min, max: max} = lesson.grade
+
+    grades =
+      for %{student_id: sid} <- lesson.lesson_students do
+        percent = Clickr.Grades.calculate_linear_grade(%{min: min, max: max, value: points[sid]})
+        %{student_id: sid, percent: percent}
+      end
+
+    res =
+      lesson
+      |> Lesson.changeset(%{grades: grades})
+      |> Repo.update()
+
+    with {:ok, _} <- res do
+      suid = lesson.subject_id
+
+      for ls <- lesson.lesson_students do
+        Clickr.Grades.calculate_and_save_grade(%{subject_id: suid, student_id: ls.student_id})
+      end
+    end
+  end
+
+  def calculate_and_save_lesson_grades(%Lesson{} = lesson), do: {:noop, lesson}
 
   defp where_user_id(query, nil), do: query
   defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)

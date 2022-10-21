@@ -179,21 +179,6 @@ defmodule Clickr.LessonsTest do
       assert {:error, %Ecto.Changeset{}} = Lessons.create_question(@invalid_attrs)
     end
 
-    test "update_question/2 with valid data updates the question" do
-      question = question_fixture()
-      update_attrs = %{name: "some updated name", points: 43}
-
-      assert {:ok, %Question{} = question} = Lessons.update_question(question, update_attrs)
-      assert question.name == "some updated name"
-      assert question.points == 43
-    end
-
-    test "update_question/2 with invalid data returns error changeset" do
-      question = question_fixture()
-      assert {:error, %Ecto.Changeset{}} = Lessons.update_question(question, @invalid_attrs)
-      assert question == Lessons.get_question!(question.id)
-    end
-
     test "delete_question/1 deletes the question" do
       question = question_fixture()
       assert {:ok, %Question{}} = Lessons.delete_question(question)
@@ -238,34 +223,6 @@ defmodule Clickr.LessonsTest do
     test "create_question_answer/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Lessons.create_question_answer(@invalid_attrs)
     end
-
-    test "update_question_answer/2 with valid data updates the question_answer" do
-      question_answer = question_answer_fixture()
-      update_attrs = %{}
-
-      assert {:ok, %QuestionAnswer{} = _question_answer} =
-               Lessons.update_question_answer(question_answer, update_attrs)
-    end
-
-    test "update_question_answer/2 with invalid data returns error changeset" do
-      question_answer = question_answer_fixture()
-
-      assert {:error, %Ecto.Changeset{}} =
-               Lessons.update_question_answer(question_answer, @invalid_attrs)
-
-      assert question_answer == Lessons.get_question_answer!(question_answer.id)
-    end
-
-    test "delete_question_answer/1 deletes the question_answer" do
-      question_answer = question_answer_fixture()
-      assert {:ok, %QuestionAnswer{}} = Lessons.delete_question_answer(question_answer)
-      assert_raise Ecto.NoResultsError, fn -> Lessons.get_question_answer!(question_answer.id) end
-    end
-
-    test "change_question_answer/1 returns a question_answer changeset" do
-      question_answer = question_answer_fixture()
-      assert %Ecto.Changeset{} = Lessons.change_question_answer(question_answer)
-    end
   end
 
   describe "lesson_students" do
@@ -300,37 +257,11 @@ defmodule Clickr.LessonsTest do
       assert {:error, %Ecto.Changeset{}} = Lessons.create_lesson_student(@invalid_attrs)
     end
 
-    test "update_lesson_student/2 with valid data updates the lesson_student" do
-      lesson_student = lesson_student_fixture()
-      update_attrs = %{extra_points: 43}
-
-      assert {:ok, %LessonStudent{} = lesson_student} =
-               Lessons.update_lesson_student(lesson_student, update_attrs)
-
-      assert lesson_student.extra_points == 43
-    end
-
-    test "update_lesson_student/2 with invalid data returns error changeset" do
-      lesson_student = lesson_student_fixture()
-
-      assert {:error, %Ecto.Changeset{}} =
-               Lessons.update_lesson_student(lesson_student, @invalid_attrs)
-
-      assert lesson_student == Lessons.get_lesson_student!(lesson_student.id)
-    end
-
-    test "delete_lesson_student/1 deletes the lesson_student and question_answers" do
-      lesson_student = lesson_student_fixture()
-      question = question_fixture(lesson_id: lesson_student.lesson_id)
-      question_answer_fixture(question_id: question.id, student_id: lesson_student.student_id)
-      assert {:ok, %LessonStudent{}} = Lessons.delete_lesson_student(lesson_student)
-      assert_raise Ecto.NoResultsError, fn -> Lessons.get_lesson_student!(lesson_student.id) end
-      assert [] = Lessons.list_question_answers()
-    end
-
-    test "change_lesson_student/1 returns a lesson_student changeset" do
-      lesson_student = lesson_student_fixture()
-      assert %Ecto.Changeset{} = Lessons.change_lesson_student(lesson_student)
+    test "add_extra_points/3 adds extra points" do
+      lesson = lesson_fixture(state: :active)
+      lesson_student = lesson_student_fixture(lesson_id: lesson.id, extra_points: 0)
+      assert {:ok, _} = Lessons.add_extra_points(lesson, lesson_student, 5)
+      assert [%{extra_points: 5}] = Lessons.list_lesson_students()
     end
   end
 
@@ -338,7 +269,7 @@ defmodule Clickr.LessonsTest do
     import Clickr.{LessonsFixtures, StudentsFixtures}
 
     defp create_lesson(_) do
-      %{lesson: lesson_fixture()}
+      %{lesson: lesson_fixture(state: :active)}
     end
 
     defp create_students_in_lesson(%{lesson: lesson}) do
@@ -354,8 +285,8 @@ defmodule Clickr.LessonsTest do
     setup [:create_lesson, :create_students_in_lesson]
 
     test "uses extra points", %{lesson: l, student_1: %{id: s1id}, student_2: %{id: s2id}} do
-      Lessons.add_extra_points(%{lesson_id: l.id, student_id: s1id}, 5)
-      Lessons.add_extra_points(%{lesson_id: l.id, student_id: s2id}, 10)
+      Lessons.add_extra_points(l, %{lesson_id: l.id, student_id: s1id}, 5)
+      Lessons.add_extra_points(l, %{lesson_id: l.id, student_id: s2id}, 10)
 
       assert %{^s1id => 5, ^s2id => 10} = Lessons.get_lesson_points(l)
     end
@@ -371,7 +302,7 @@ defmodule Clickr.LessonsTest do
     end
 
     test "sums up extra points and question answers", %{lesson: l, student_1: %{id: s1id}} do
-      Lessons.add_extra_points(%{lesson_id: l.id, student_id: s1id}, 5)
+      Lessons.add_extra_points(l, %{lesson_id: l.id, student_id: s1id}, 5)
       q = question_fixture(lesson_id: l.id, points: 3, state: :ended)
       question_answer_fixture(question_id: q.id, student_id: s1id)
 

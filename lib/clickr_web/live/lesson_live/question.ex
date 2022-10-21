@@ -201,13 +201,13 @@ defmodule ClickrWeb.LessonLive.Question do
 
   def handle_event("add_point", %{"student_id" => student_id}, socket) do
     lesson = socket.assigns.lesson
-    {:ok, _} = Lessons.add_extra_points(%{lesson_id: lesson.id, student_id: student_id}, 1)
+    {:ok, _} = Lessons.add_extra_points(lesson, %{student_id: student_id}, 1)
     {:noreply, assign_lesson_and_related(socket)}
   end
 
   def handle_event("subtract_point", %{"student_id" => student_id}, socket) do
     lesson = socket.assigns.lesson
-    {:ok, _} = Lessons.add_extra_points(%{lesson_id: lesson.id, student_id: student_id}, -1)
+    {:ok, _} = Lessons.add_extra_points(lesson, %{student_id: student_id}, -1)
     {:noreply, assign_lesson_and_related(socket)}
   end
 

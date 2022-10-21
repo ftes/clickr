@@ -30,106 +30,6 @@ defmodule Clickr.Grades do
     Repo.all(LessonGrade)
   end
 
-  @doc """
-  Gets a single lesson_grade.
-
-  Raises `Ecto.NoResultsError` if the Lesson grade does not exist.
-
-  ## Examples
-
-      iex> get_lesson_grade!(123)
-      %LessonGrade{}
-
-      iex> get_lesson_grade!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_lesson_grade!(id), do: Repo.get!(LessonGrade, id)
-
-  @doc """
-  Creates a lesson_grade.
-
-  ## Examples
-
-      iex> create_lesson_grade(%{field: value})
-      {:ok, %LessonGrade{}}
-
-      iex> create_lesson_grade(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_lesson_grade(attrs \\ %{}) do
-    res =
-      %LessonGrade{}
-      |> LessonGrade.changeset(attrs)
-      |> Repo.insert()
-
-    with {:ok, lg} <- res do
-      lg = Repo.preload(lg, :lesson)
-      calculate_and_save_grade(%{student_id: lg.student_id, subject_id: lg.lesson.subject_id})
-      res
-    end
-  end
-
-  @doc """
-  Updates a lesson_grade.
-
-  ## Examples
-
-      iex> update_lesson_grade(lesson_grade, %{field: new_value})
-      {:ok, %LessonGrade{}}
-
-      iex> update_lesson_grade(lesson_grade, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_lesson_grade(%LessonGrade{} = lesson_grade, attrs) do
-    res =
-      lesson_grade
-      |> LessonGrade.changeset(attrs)
-      |> Repo.update()
-
-    with {:ok, lg} <- res do
-      lg = Repo.preload(lg, :lesson)
-      calculate_and_save_grade(%{student_id: lg.student_id, subject_id: lg.lesson.subject_id})
-      res
-    end
-  end
-
-  @doc """
-  Deletes a lesson_grade.
-
-  ## Examples
-
-      iex> delete_lesson_grade(lesson_grade)
-      {:ok, %LessonGrade{}}
-
-      iex> delete_lesson_grade(lesson_grade)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_lesson_grade(%LessonGrade{} = lesson_grade) do
-    lg = Repo.preload(lesson_grade, :lesson)
-
-    with {:ok, _} = res <- Repo.delete(lg) do
-      calculate_and_save_grade(%{student_id: lg.student_id, subject_id: lg.lesson.subject_id})
-      res
-    end
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking lesson_grade changes.
-
-  ## Examples
-
-      iex> change_lesson_grade(lesson_grade)
-      %Ecto.Changeset{data: %LessonGrade{}}
-
-  """
-  def change_lesson_grade(%LessonGrade{} = lesson_grade, attrs \\ %{}) do
-    LessonGrade.changeset(lesson_grade, attrs)
-  end
-
   alias Clickr.Grades.Grade
 
   @doc """
@@ -166,71 +66,6 @@ defmodule Clickr.Grades do
   """
   def get_grade!(%{student_id: _, subject_id: _} = args), do: Repo.get_by!(Grade, args)
   def get_grade!(id), do: Repo.get!(Grade, id)
-
-  @doc """
-  Creates a grade.
-
-  ## Examples
-
-      iex> create_grade(%{field: value})
-      {:ok, %Grade{}}
-
-      iex> create_grade(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_grade(attrs \\ %{}) do
-    %Grade{}
-    |> Grade.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a grade.
-
-  ## Examples
-
-      iex> update_grade(grade, %{field: new_value})
-      {:ok, %Grade{}}
-
-      iex> update_grade(grade, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_grade(%Grade{} = grade, attrs) do
-    grade
-    |> Grade.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a grade.
-
-  ## Examples
-
-      iex> delete_grade(grade)
-      {:ok, %Grade{}}
-
-      iex> delete_grade(grade)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_grade(%Grade{} = grade) do
-    Repo.delete(grade)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking grade changes.
-
-  ## Examples
-
-      iex> change_grade(grade)
-      %Ecto.Changeset{data: %Grade{}}
-
-  """
-  def change_grade(%Grade{} = grade, attrs \\ %{}) do
-    Grade.changeset(grade, attrs)
-  end
 
   defp where_student_id(query, nil), do: query
   defp where_student_id(query, id), do: where(query, [x], x.student_id == ^id)
@@ -302,30 +137,6 @@ defmodule Clickr.Grades do
       %BonusGrade{}
       |> BonusGrade.changeset(attrs)
       |> Repo.insert()
-
-    with {:ok, bg} <- res do
-      calculate_and_save_grade(%{student_id: bg.student_id, subject_id: bg.subject_id})
-      res
-    end
-  end
-
-  @doc """
-  Updates a bonus_grade.
-
-  ## Examples
-
-      iex> update_bonus_grade(bonus_grade, %{field: new_value})
-      {:ok, %BonusGrade{}}
-
-      iex> update_bonus_grade(bonus_grade, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_bonus_grade(%BonusGrade{} = bonus_grade, attrs) do
-    res =
-      bonus_grade
-      |> BonusGrade.changeset(attrs)
-      |> Repo.update()
 
     with {:ok, bg} <- res do
       calculate_and_save_grade(%{student_id: bg.student_id, subject_id: bg.subject_id})
