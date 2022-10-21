@@ -73,7 +73,7 @@ defmodule ClickrWeb.Menu do
             class={"h-8 w-8 rounded-full text-xl text-white flex items-center justify-center font-bold #{user_bg(@current_user)}"}
             alt={@current_user.email}
           >
-            <%= user_initial(@current_user) %>
+            <%= user_initial(@current_user) |> String.upcase() %>
           </div>
         </button>
       </div>
@@ -145,7 +145,7 @@ defmodule ClickrWeb.Menu do
         {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
       )
 
-  @user_bgs ["bg-red-500", "bg-yellow-500", "bg-green-5000", "bg-blue-5000", "bg-fuchsia-5000"]
+  @user_bgs ["bg-red-500", "bg-yellow-500", "bg-green-500", "bg-blue-500", "bg-fuchsia-500"]
   defp user_bg(%{email: email}) do
     index = :erlang.phash2(email, length(@user_bgs))
     Enum.at(@user_bgs, index)
