@@ -209,11 +209,13 @@ defmodule ClickrWeb.LessonLiveTest do
 
     setup [:create_lesson_roll_call, :seat_student_with_button]
 
+    @tag :inspect
     test "highlights student that answered", %{conn: conn, lesson: lesson, student: student} do
       {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/roll_call")
       refute render(live) =~ "x-answered"
 
-      Clickr.Lessons.ActiveQuestion.answer(lesson, student.id)
+      Clickr.Lessons.create_lesson_student(%{lesson_id: lesson.id, student_id: student.id})
+      send(live.pid, {:new_lesson_student, %{}})
       assert render(live) =~ "x-answered"
     end
   end
@@ -249,7 +251,6 @@ defmodule ClickrWeb.LessonLiveTest do
       assert render(live) =~ "47"
     end
 
-    @tag :inspect
     test "creates bonus grade", %{conn: conn, lesson: l, student: s} do
       lesson_student_fixture(lesson_id: l.id, student_id: s.id, extra_points: 42)
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
@@ -291,16 +292,20 @@ defmodule ClickrWeb.LessonLiveTest do
 
   describe "question" do
     defp create_lesson_question(%{user: user}) do
-      %{lesson: lesson_fixture(user_id: user.id, state: :question)}
+      lesson = lesson_fixture(user_id: user.id, state: :question)
+      question = question_fixture(lesson_id: lesson.id, state: :started)
+      %{lesson: lesson, question: question}
     end
 
     setup [:create_lesson_question, :seat_student_with_button, :attend_student]
 
-    test "highlights student that answered", %{conn: conn, lesson: lesson, student: student} do
-      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/question")
+    @tag :inspect
+    test "highlights student that answered", %{conn: conn, lesson: l, student: s, question: q} do
+      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/question")
       refute render(live) =~ "x-answered"
 
-      Clickr.Lessons.ActiveQuestion.answer(lesson, student.id)
+      Clickr.Lessons.create_question_answer(%{question_id: q.id, student_id: s.id})
+      send(live.pid, {:new_question_answer, %{}})
       assert render(live) =~ "x-answered"
     end
   end

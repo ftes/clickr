@@ -17,8 +17,8 @@ msgstr ""
 msgid "Add point"
 msgstr "Punkt hinzufügen"
 
-#: lib/clickr_web/live/lesson_live/question.ex:93
-#: lib/clickr_web/live/lesson_live/question.ex:97
+#: lib/clickr_web/live/lesson_live/question.ex:96
+#: lib/clickr_web/live/lesson_live/question.ex:100
 #, elixir-autogen, elixir-format
 msgid "Add student"
 msgstr "Schüler hinzufügen"
@@ -78,8 +78,8 @@ msgstr "Durchführen"
 msgid "Subtract point"
 msgstr "Punkt abziehen"
 
-#: lib/clickr_web/live/lesson_live/question.ex:83
 #: lib/clickr_web/live/lesson_live/question.ex:86
+#: lib/clickr_web/live/lesson_live/question.ex:89
 #, elixir-autogen, elixir-format
 msgid "Add bonus grade"
 msgstr "Bonusnote"

@@ -1,4 +1,4 @@
-defmodule Clickr.Lessons.ActiveQuestionRegistry do
+defmodule Clickr.Lessons.ActiveRegistry do
   def start_link, do: Registry.start_link(keys: :unique, name: __MODULE__)
   def via_tuple(key), do: {:via, Registry, {__MODULE__, key}}
 

@@ -37,13 +37,6 @@ defmodule Clickr.Lessons.Lesson do
   def states(), do: @states
 
   @doc false
-  def changeset(%{state: :roll_call} = lesson, %{state: :active} = attrs) do
-    lesson
-    |> cast(attrs, [:state])
-    |> validate_required([:state])
-    |> cast_assoc(:lesson_students)
-  end
-
   def changeset(lesson, %{"state" => "graded"} = attrs), do: changeset_graded(lesson, attrs)
   def changeset(lesson, %{"state" => :graded} = attrs), do: changeset_graded(lesson, attrs)
   def changeset(lesson, %{state: :graded} = attrs), do: changeset_graded(lesson, attrs)

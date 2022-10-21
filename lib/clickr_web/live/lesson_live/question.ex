@@ -78,7 +78,10 @@ defmodule ClickrWeb.LessonLive.Question do
             <span class="sr-only"><%= dgettext("lessons.actions", "Subtract point") %></span>
             <Heroicons.minus class="w-8 h-8" />
           </button>
-          <.link navigate={~p"/lessons/#{@lesson}/active/new_bonus_grade/#{seat.student_id}"}>
+          <.link
+            class="flex-1 flex items-stretch"
+            navigate={~p"/lessons/#{@lesson}/active/new_bonus_grade/#{seat.student_id}"}
+          >
             <button
               title={dgettext("lessons.actions", "Add bonus grade")}
               class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
@@ -140,11 +143,11 @@ defmodule ClickrWeb.LessonLive.Question do
   @impl true
   def handle_params(%{"id" => id} = params, _, socket) do
     if lesson = socket.assigns[:lesson] do
-      old_topic = Clickr.Lessons.active_question_topic(%{lesson_id: lesson.id})
+      old_topic = Clickr.Lessons.lesson_topic(%{lesson_id: lesson.id})
       Clickr.PubSub.unsubscribe(old_topic)
     end
 
-    topic = Clickr.Lessons.active_question_topic(%{lesson_id: id})
+    topic = Clickr.Lessons.lesson_topic(%{lesson_id: id})
     Clickr.PubSub.subscribe(topic)
 
     {:noreply,
@@ -193,7 +196,7 @@ defmodule ClickrWeb.LessonLive.Question do
   end
 
   @impl true
-  def handle_info({:active_question_answered, _}, socket) do
+  def handle_info({:new_question_answer, _}, socket) do
     {:noreply, load_answers(socket)}
   end
 
@@ -216,7 +219,12 @@ defmodule ClickrWeb.LessonLive.Question do
   end
 
   defp load_answers(%{assigns: %{lesson: %{state: :question} = lesson}} = socket) do
-    student_ids = Clickr.Lessons.ActiveQuestion.get(lesson)
+    question = Lessons.get_started_question!(lesson)
+    Lessons.ActiveQuestion.start(question)
+
+    student_ids =
+      Lessons.list_question_answers(question_id: question.id) |> Enum.map(& &1.student_id)
+
     assign(socket, :answers, MapSet.new(student_ids))
   end
 

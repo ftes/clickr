@@ -17,7 +17,6 @@ defmodule Clickr.Lessons.Question do
   def changeset(%{state: :started} = question, %{state: :ended} = attrs) do
     question
     |> cast(attrs, [:state])
-    |> cast_assoc(:answers)
   end
 
   def changeset(question, attrs) do

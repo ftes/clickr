@@ -51,11 +51,11 @@ defmodule ClickrWeb.LessonLive.RollCall do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     if lesson = socket.assigns[:lesson] do
-      old_topic = Clickr.Lessons.active_question_topic(%{lesson_id: lesson.id})
+      old_topic = Clickr.Lessons.lesson_topic(%{lesson_id: lesson.id})
       Clickr.PubSub.unsubscribe(old_topic)
     end
 
-    topic = Clickr.Lessons.active_question_topic(%{lesson_id: id})
+    topic = Clickr.Lessons.lesson_topic(%{lesson_id: id})
     Clickr.PubSub.subscribe(topic)
 
     {:noreply,
@@ -75,7 +75,7 @@ defmodule ClickrWeb.LessonLive.RollCall do
   end
 
   @impl true
-  def handle_info({:active_question_answered, _}, socket) do
+  def handle_info({:new_lesson_student, _}, socket) do
     {:noreply, load_answers(socket)}
   end
 
@@ -88,7 +88,8 @@ defmodule ClickrWeb.LessonLive.RollCall do
   end
 
   defp load_answers(%{assigns: %{lesson: %{state: :roll_call} = lesson}} = socket) do
-    student_ids = Clickr.Lessons.ActiveQuestion.get(lesson)
+    Lessons.ActiveRollCall.start(lesson)
+    student_ids = Lessons.list_lesson_students(lesson_id: lesson.id) |> Enum.map(& &1.student_id)
     assign(socket, :answers, MapSet.new(student_ids))
   end
 

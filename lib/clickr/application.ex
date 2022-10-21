@@ -19,8 +19,8 @@ defmodule Clickr.Application do
       ClickrWeb.Endpoint,
       # Start a worker by calling: Clickr.Worker.start_link(arg)
       # {Clickr.Worker, arg}
-      Clickr.Lessons.ActiveQuestionRegistry,
-      Clickr.Lessons.ActiveQuestionSupervisor
+      Clickr.Lessons.ActiveRegistry,
+      Clickr.Lessons.ActiveSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

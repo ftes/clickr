@@ -6,12 +6,9 @@ defmodule Clickr.Lessons do
   import Ecto.Query, warn: false
   alias Clickr.Repo
 
-  alias Clickr.Lessons.{ActiveQuestion, Lesson, Question}
+  alias Clickr.Lessons.{ActiveQuestion, ActiveRollCall, Lesson, Question}
 
   def get_button_mapping(%Lesson{} = lesson), do: Clickr.Lessons.ButtonMapping.get_mapping(lesson)
-
-  def get_button_mapping_whitelist(%Lesson{} = lesson),
-    do: Clickr.Lessons.ButtonMapping.get_whitelist(lesson)
 
   @doc """
   Returns the list of lessons.
@@ -59,7 +56,10 @@ defmodule Clickr.Lessons do
     lesson = Repo.preload(lesson, [:lesson_students, questions: :answers])
     extra_points = Map.new(lesson.lesson_students, &{&1.student_id, &1.extra_points})
 
-    for question <- lesson.questions, answer <- question.answers, reduce: extra_points do
+    for question <- lesson.questions,
+        question.state == :ended,
+        answer <- question.answers,
+        reduce: extra_points do
       points -> Map.update(points, answer.student_id, question.points, &(&1 + question.points))
     end
   end
@@ -104,18 +104,17 @@ defmodule Clickr.Lessons do
 
   def transition_lesson(%Lesson{state: :started} = lesson, :roll_call = new_state, _) do
     with {:ok, lesson} = res <- Repo.update(Lesson.changeset(lesson, %{state: new_state})) do
-      ActiveQuestion.start(lesson)
+      ActiveRollCall.start(lesson)
       res
     end
   end
 
   def transition_lesson(%Lesson{state: :roll_call} = lesson, :active = new_state, _) do
-    student_ids = ActiveQuestion.get(lesson)
-    ActiveQuestion.stop(lesson)
-    lesson_students = Enum.map(student_ids, &%{student_id: &1})
-    lesson = Repo.preload(lesson, :lesson_students)
-    changeset = Lesson.changeset(lesson, %{state: new_state, lesson_students: lesson_students})
-    Repo.update(changeset)
+    Task.start(fn -> ActiveRollCall.stop(lesson) end)
+
+    lesson
+    |> Lesson.changeset(%{state: new_state})
+    |> Repo.update()
   end
 
   def transition_lesson(%Lesson{state: :active} = lesson, :question, attrs) do
@@ -126,29 +125,20 @@ defmodule Clickr.Lessons do
       |> Ecto.Multi.update(:lesson, Lesson.changeset(lesson, %{state: :question}))
       |> Ecto.Multi.insert(:question, Question.changeset(%Question{}, question_params))
 
-    with {:ok, %{lesson: lesson}} <- Repo.transaction(multi) do
-      ActiveQuestion.start(lesson)
+    with {:ok, %{lesson: lesson, question: question}} <- Repo.transaction(multi) do
+      ActiveQuestion.start(question)
       {:ok, lesson}
     end
   end
 
   def transition_lesson(%Lesson{state: :question} = lesson, :active, _) do
-    question =
-      Repo.get_by!(Question, lesson_id: lesson.id, state: :started) |> Repo.preload(:answers)
-
-    answers = ActiveQuestion.get(lesson)
-    lesson = Repo.preload(lesson, :lesson_students)
-    attending = Enum.map(lesson.lesson_students, & &1.student_id)
-    ActiveQuestion.stop(lesson)
-    answers = for sid <- answers, sid in attending, do: %{student_id: sid}
+    question = Repo.get_by!(Question, lesson_id: lesson.id, state: :started)
+    Task.start(fn -> ActiveQuestion.stop(question) end)
 
     multi =
       Ecto.Multi.new()
       |> Ecto.Multi.update(:lesson, Lesson.changeset(lesson, %{state: :active}))
-      |> Ecto.Multi.update(
-        :question,
-        Question.changeset(question, %{state: :ended, answers: answers})
-      )
+      |> Ecto.Multi.update(:question, Question.changeset(question, %{state: :ended}))
 
     with {:ok, %{lesson: lesson}} <- Repo.transaction(multi) do
       {:ok, lesson}
@@ -271,6 +261,9 @@ defmodule Clickr.Lessons do
   """
   def get_question!(id), do: Repo.get!(Question, id)
 
+  def get_started_question!(%Lesson{} = lesson),
+    do: Repo.get_by!(Question, lesson_id: lesson.id, state: :started)
+
   @doc """
   Creates a question.
 
@@ -336,10 +329,13 @@ defmodule Clickr.Lessons do
     Question.changeset(question, attrs)
   end
 
-  def active_question_topic(%{lesson_id: lid}), do: "lessons.active_question/lesson:#{lid}"
+  def lesson_topic(%{lesson_id: lid}), do: "lesson:#{lid}"
 
-  def broadcast_active_question_answer(%{lesson_id: _, student_id: _} = attrs),
-    do: Clickr.PubSub.broadcast(active_question_topic(attrs), {:active_question_answered, attrs})
+  def broadcast_new_lesson_student(%{lesson_id: _, student_id: _} = attrs),
+    do: Clickr.PubSub.broadcast(lesson_topic(attrs), {:new_lesson_student, attrs})
+
+  def broadcast_new_question_answer(%{lesson_id: _, question_id: _, student_id: _} = attrs),
+    do: Clickr.PubSub.broadcast(lesson_topic(attrs), {:new_question_answer, attrs})
 
   alias Clickr.Lessons.QuestionAnswer
 
@@ -352,8 +348,10 @@ defmodule Clickr.Lessons do
       [%QuestionAnswer{}, ...]
 
   """
-  def list_question_answers do
-    Repo.all(QuestionAnswer)
+  def list_question_answers(opts \\ []) do
+    QuestionAnswer
+    |> where_question_id(opts[:question_id])
+    |> Repo.all()
   end
 
   @doc """
@@ -548,4 +546,7 @@ defmodule Clickr.Lessons do
 
   defp where_lesson_id(query, nil), do: query
   defp where_lesson_id(query, id), do: where(query, [x], x.lesson_id == ^id)
+
+  defp where_question_id(query, nil), do: query
+  defp where_question_id(query, id), do: where(query, [x], x.question_id == ^id)
 end
