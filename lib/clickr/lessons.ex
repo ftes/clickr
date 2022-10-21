@@ -524,8 +524,22 @@ defmodule Clickr.Lessons do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_lesson_student(%LessonStudent{} = lesson_student) do
-    Repo.delete(lesson_student)
+  def delete_lesson_student(%LessonStudent{} = ls) do
+    res =
+      Ecto.Multi.new()
+      |> Ecto.Multi.delete(:lesson_student, ls)
+      |> Ecto.Multi.delete_all(
+        :question_answers,
+        from(qa in QuestionAnswer,
+          join: q in assoc(qa, :question),
+          where: qa.student_id == ^ls.student_id and q.lesson_id == ^ls.lesson_id
+        )
+      )
+      |> Repo.transaction()
+
+    with {:ok, %{lesson_student: lesson_student}} <- res do
+      {:ok, lesson_student}
+    end
   end
 
   @doc """

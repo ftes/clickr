@@ -19,6 +19,7 @@ msgstr ""
 #: lib/clickr_web/live/grade_live/show.html.heex:55
 #: lib/clickr_web/live/lesson_live/ended.ex:18
 #: lib/clickr_web/live/lesson_live/index.html.heex:29
+#: lib/clickr_web/live/lesson_live/question.ex:68
 #: lib/clickr_web/live/room_live/index.html.heex:21
 #: lib/clickr_web/live/seating_plan_live/index.html.heex:27
 #: lib/clickr_web/live/student_live/index.html.heex:24

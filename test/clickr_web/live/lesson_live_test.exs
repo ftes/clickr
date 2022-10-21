@@ -209,7 +209,6 @@ defmodule ClickrWeb.LessonLiveTest do
 
     setup [:create_lesson_roll_call, :seat_student_with_button]
 
-    @tag :inspect
     test "highlights student that answered", %{conn: conn, lesson: lesson, student: student} do
       {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/roll_call")
       refute render(live) =~ "x-answered"
@@ -299,7 +298,6 @@ defmodule ClickrWeb.LessonLiveTest do
 
     setup [:create_lesson_question, :seat_student_with_button, :attend_student]
 
-    @tag :inspect
     test "highlights student that answered", %{conn: conn, lesson: l, student: s, question: q} do
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/question")
       refute render(live) =~ "x-answered"

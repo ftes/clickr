@@ -103,7 +103,6 @@ defmodule Clickr.LessonsTest do
       {:ok, _lesson} = Lessons.transition_lesson(lesson, :graded, %{grade: %{min: 3.0, max: 4.0}})
     end
 
-    @tag :inspect
     test "transition_lesson active -> question saves question points and name" do
       lesson = lesson_fixture(state: :active)
       attrs = %{question: %{points: 42, name: "q"}}
@@ -112,7 +111,6 @@ defmodule Clickr.LessonsTest do
       assert [%{points: 42, name: "q", state: :started}] = Lessons.list_questions()
     end
 
-    @tag :inspect
     test "transition_lesson ended -> graded stores grade, lesson grades and updates grade" do
       %{id: lid} = lesson = lesson_fixture(state: :ended)
       %{student: %{id: sid} = student} = seat_student(%{lesson: lesson})
@@ -321,10 +319,13 @@ defmodule Clickr.LessonsTest do
       assert lesson_student == Lessons.get_lesson_student!(lesson_student.id)
     end
 
-    test "delete_lesson_student/1 deletes the lesson_student" do
+    test "delete_lesson_student/1 deletes the lesson_student and question_answers" do
       lesson_student = lesson_student_fixture()
+      question = question_fixture(lesson_id: lesson_student.lesson_id)
+      question_answer_fixture(question_id: question.id, student_id: lesson_student.student_id)
       assert {:ok, %LessonStudent{}} = Lessons.delete_lesson_student(lesson_student)
       assert_raise Ecto.NoResultsError, fn -> Lessons.get_lesson_student!(lesson_student.id) end
+      assert [] = Lessons.list_question_answers()
     end
 
     test "change_lesson_student/1 returns a lesson_student changeset" do
@@ -369,7 +370,6 @@ defmodule Clickr.LessonsTest do
       assert %{^s1id => 8, ^s2id => 5} = Lessons.get_lesson_points(l)
     end
 
-    @tag :inspect
     test "sums up extra points and question answers", %{lesson: l, student_1: %{id: s1id}} do
       Lessons.add_extra_points(%{lesson_id: l.id, student_id: s1id}, 5)
       q = question_fixture(lesson_id: l.id, points: 3, state: :ended)
@@ -378,7 +378,6 @@ defmodule Clickr.LessonsTest do
       assert %{^s1id => 8} = Lessons.get_lesson_points(l)
     end
 
-    @tag :inspect
     test "ignores non-ended question answers", %{lesson: l, student_1: %{id: s1id}} do
       q = question_fixture(lesson_id: l.id, points: 3, state: :started)
       question_answer_fixture(question_id: q.id, student_id: s1id)

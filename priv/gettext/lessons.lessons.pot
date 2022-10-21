@@ -25,7 +25,7 @@ msgstr ""
 #: lib/clickr_web/live/lesson_live/ended.ex:11
 #: lib/clickr_web/live/lesson_live/ended.ex:89
 #: lib/clickr_web/live/lesson_live/question.ex:16
-#: lib/clickr_web/live/lesson_live/question.ex:155
+#: lib/clickr_web/live/lesson_live/question.ex:156
 #: lib/clickr_web/live/lesson_live/roll_call.ex:16
 #: lib/clickr_web/live/lesson_live/roll_call.ex:63
 #: lib/clickr_web/live/lesson_live/show.html.heex:2

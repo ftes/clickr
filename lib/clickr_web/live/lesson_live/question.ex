@@ -65,6 +65,7 @@ defmodule ClickrWeb.LessonLive.Question do
           <button
             title={dgettext("lessons.actions", "Remove student")}
             phx-click={JS.push("remove_student", value: %{student_id: seat.student_id})}
+            data-confirm={gettext("Are you sure?")}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
             <span class="sr-only"><%= dgettext("lessons.actions", "Remove student") %></span>
