@@ -7,7 +7,7 @@
   </:actions>
 </.header>
 
-<.table id="classes" rows={@classes} row_click={&JS.navigate(~p"/classes/#{&1}")}>
+<.table id="classes" class="mt-11" rows={@classes} row_click={&JS.navigate(~p"/classes/#{&1}")}>
   <:col :let={class} label={dgettext("classes.classes", "Name")}><%= class.name %></:col>
   <:action :let={class}>
     <div class="sr-only">

@@ -434,6 +434,7 @@ defmodule ClickrWeb.Components do
   attr :row_click, JS, default: nil
   attr :rows, :list, required: true
   attr :compact, :boolean, default: false
+  attr :class, :string, default: ""
 
   slot :col, required: true do
     attr :label, :string
@@ -443,8 +444,8 @@ defmodule ClickrWeb.Components do
 
   def table(assigns) do
     ~H"""
-    <div id={@id} class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class="mt-11 w-[40rem] sm:w-full">
+    <div id={@id} class={["overflow-y-auto px-4 sm:overflow-visible sm:px-0", @class]}>
+      <table class="w-[40rem] sm:w-full">
         <thead class="text-left text-[0.8125rem] leading-6 text-zinc-500">
           <tr>
             <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal"><%= col[:label] %></th>
@@ -497,13 +498,15 @@ defmodule ClickrWeb.Components do
         <:item title={dgettext("posts", "Views")}><%= @post.views %></:item>
       </.list>
   """
+  attr :class, :string, required: false, default: ""
+
   slot :item, required: true do
     attr :title, :string, required: true
   end
 
   def list(assigns) do
     ~H"""
-    <div class="mt-14">
+    <div class={["mt-14", @class]}>
       <dl class="-my-4 divide-y divide-zinc-200">
         <div :for={item <- @item} class="flex gap-4 py-4 sm:gap-8">
           <dt class="w-1/4 flex-none text-[0.8125rem] leading-6 text-zinc-500"><%= item.title %></dt>

@@ -7,7 +7,12 @@
   </:actions>
 </.header>
 
-<.table id="lessons" rows={@lessons} row_click={&JS.navigate(~p"/lessons/#{&1}/router")}>
+<.table
+  id="lessons"
+  class="mt-11"
+  rows={@lessons}
+  row_click={&JS.navigate(~p"/lessons/#{&1}/router")}
+>
   <:col :let={lesson} label={dgettext("lessons.lessons", "Name")}><%= lesson.name %></:col>
   <:col :let={lesson} label={dgettext("lessons.lessons", "State")}>
     <%= translate_lesson_state(lesson) %>

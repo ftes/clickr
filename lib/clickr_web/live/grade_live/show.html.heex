@@ -2,62 +2,69 @@
   <%= dgettext("grades.grades", "Grade") %> <%= @grade.student.name %> <%= @grade.subject.name %>
 </.header>
 
-<.list>
-  <:item title={dgettext("grades.grades", "Student")}><%= @grade.student.name %></:item>
-  <:item title={dgettext("grades.grades", "Subject")}><%= @grade.subject.name %></:item>
-  <:item title={dgettext("grades.grades", "Grade")}>
-    <%= Clickr.Grades.format(:german, @grade.percent) %>
-  </:item>
-  <:item title={dgettext("grades.grades", "Percent")}>
-    <%= Clickr.Grades.format(:percent, @grade.percent) %>
-  </:item>
-</.list>
+<div class="divide-y divide-zinc-200">
+  <.list class="py-4">
+    <:item title={dgettext("grades.grades", "Student")}><%= @grade.student.name %></:item>
+    <:item title={dgettext("grades.grades", "Subject")}><%= @grade.subject.name %></:item>
+    <:item title={dgettext("grades.grades", "Grade")}>
+      <%= Clickr.Grades.format(:german, @grade.percent) %>
+    </:item>
+    <:item title={dgettext("grades.grades", "Percent")}>
+      <%= Clickr.Grades.format(:percent, @grade.percent) %>
+    </:item>
+  </.list>
 
-<.table
-  id="lesson-grades"
-  compact
-  rows={@grade.lesson_grades}
-  row_click={&JS.navigate(~p"/lessons/#{&1.lesson_id}/router")}
->
-  <:col :let={lg} label={dgettext("grades.lesson_grades", "Lesson")}><%= lg.lesson.name %></:col>
-  <:col :let={lg} label={dgettext("grades.lesson_grades", "Date")}>
-    <%= Timex.format!(lg.lesson.inserted_at, "{D}.{M}.") %>
-  </:col>
-  <:col :let={lg} label={dgettext("grades.lesson_grades", "Percent")}>
-    <%= Clickr.Grades.format(:percent, lg.percent) %>
-  </:col>
-  <:action :let={lg}>
-    <div class="sr-only">
-      <.link navigate={~p"/lessons/#{lg.lesson_id}/router"}><%= gettext("Show") %></.link>
+  <.table
+    id="lesson-grades"
+    class="py-4"
+    compact
+    rows={@grade.lesson_grades}
+    row_click={&JS.navigate(~p"/lessons/#{&1.lesson_id}/router")}
+  >
+    <:col :let={lg} label={dgettext("grades.lesson_grades", "Lesson grade")}>
+      <%= lg.lesson.name %>
+    </:col>
+    <:col :let={lg} label={dgettext("grades.lesson_grades", "Date")}>
+      <%= Timex.format!(lg.lesson.inserted_at, "{D}.{M}.") %>
+    </:col>
+    <:col :let={lg} label={dgettext("grades.lesson_grades", "Percent")}>
+      <%= Clickr.Grades.format(:percent, lg.percent) %>
+    </:col>
+    <:action :let={lg}>
+      <div class="sr-only">
+        <.link navigate={~p"/lessons/#{lg.lesson_id}/router"}><%= gettext("Show") %></.link>
+      </div>
+    </:action>
+  </.table>
+
+  <div class="py-4">
+    <div class="flex justify-end">
+      <.link navigate={~p"/grades/#{@grade}/new_bonus_grade"}>
+        <.button>
+          <%= dgettext("grades.bonus_grades", "New bonus grade") %>
+        </.button>
+      </.link>
     </div>
-  </:action>
-</.table>
 
-<div class="flex justify-end mt-10">
-  <.link navigate={~p"/grades/#{@grade}/new_bonus_grade"}>
-    <.button>
-      <%= dgettext("grades.bonus_grades", "New bonus grade") %>
-    </.button>
-  </.link>
+    <.table id="bonus-grades" compact rows={@grade.bonus_grades}>
+      <:col :let={bg} label={dgettext("grades.bonus_grades", "Bonus grade")}><%= bg.name %></:col>
+      <:col :let={bg} label={dgettext("grades.bonus_grades", "Date")}>
+        <%= Timex.format!(bg.inserted_at, "{D}.{M}.") %>
+      </:col>
+      <:col :let={bg} label={dgettext("grades.bonus_grades", "Percent")}>
+        <%= Clickr.Grades.format(:percent, bg.percent) %>
+      </:col>
+      <:action :let={bg}>
+        <.link
+          phx-click={JS.push("delete_bonus_grade", value: %{id: bg.id})}
+          data-confirm={gettext("Are you sure?")}
+        >
+          <%= gettext("Delete") %>
+        </.link>
+      </:action>
+    </.table>
+  </div>
 </div>
-
-<.table id="bonus-grades" compact rows={@grade.bonus_grades}>
-  <:col :let={bg} label={dgettext("grades.bonus_grades", "Name")}><%= bg.name %></:col>
-  <:col :let={bg} label={dgettext("grades.bonus_grades", "Date")}>
-    <%= Timex.format!(bg.inserted_at, "{D}.{M}.") %>
-  </:col>
-  <:col :let={bg} label={dgettext("grades.bonus_grades", "Percent")}>
-    <%= Clickr.Grades.format(:percent, bg.percent) %>
-  </:col>
-  <:action :let={bg}>
-    <.link
-      phx-click={JS.push("delete_bonus_grade", value: %{id: bg.id})}
-      data-confirm={gettext("Are you sure?")}
-    >
-      <%= gettext("Delete") %>
-    </.link>
-  </:action>
-</.table>
 
 <.back navigate={~p"/grades"}><%= gettext("Back") %></.back>
 

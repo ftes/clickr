@@ -11,17 +11,17 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2\n"
 
-#: lib/clickr_web/live/grade_live/show.html.heex:23
+#: lib/clickr_web/live/grade_live/show.html.heex:27
 #, elixir-autogen, elixir-format
 msgid "Date"
 msgstr "Datum"
 
-#: lib/clickr_web/live/grade_live/show.html.heex:22
-#, elixir-autogen, elixir-format
-msgid "Lesson"
-msgstr "Stunde"
-
-#: lib/clickr_web/live/grade_live/show.html.heex:26
+#: lib/clickr_web/live/grade_live/show.html.heex:30
 #, elixir-autogen, elixir-format
 msgid "Percent"
 msgstr "Prozent"
+
+#: lib/clickr_web/live/grade_live/show.html.heex:24
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Lesson grade"
+msgstr "Stundennote"

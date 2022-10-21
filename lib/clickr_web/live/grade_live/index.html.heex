@@ -2,7 +2,7 @@
   <%= dgettext("grades.grades", "Listing Grades") %>
 </.header>
 
-<.table id="grades" rows={@grades} row_click={&JS.navigate(~p"/grades/#{&1}")}>
+<.table id="grades" class="mt-11" rows={@grades} row_click={&JS.navigate(~p"/grades/#{&1}")}>
   <:col :let={grade} label={dgettext("grades.grades", "Student")}><%= grade.student.name %></:col>
   <:col :let={grade} label={dgettext("grades.grades", "Subject")}><%= grade.subject.name %></:col>
   <:col :let={grade} label={dgettext("grades.grades", "Grade")}>

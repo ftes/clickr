@@ -7,49 +7,60 @@
   </:actions>
 </.header>
 
-<.list>
-  <:item title={dgettext("classes.classes", "Name")}><%= @class.name %></:item>
-</.list>
+<div class="divide-y divide-zinc-200">
+  <.list class="py-4">
+    <:item title={dgettext("classes.classes", "Name")}><%= @class.name %></:item>
+  </.list>
 
-<.table id="students" compact rows={@class.students} row_click={&JS.navigate(~p"/students/#{&1}")}>
-  <:col :let={student} label={dgettext("students.students", "Student")}><%= student.name %></:col>
-  <:action :let={student}>
-    <div class="sr-only">
-      <.link navigate={~p"/students/#{student}"}><%= gettext("Show") %></.link>
-    </div>
-    <.link navigate={~p"/students/#{student}/show/edit"}><%= gettext("Edit") %></.link>
-  </:action>
-  <:action :let={student}>
-    <.link
-      phx-click={JS.push("student_delete", value: %{id: student.id})}
-      data-confirm={gettext("Are you sure?")}
+  <div class="py-4">
+    <.table
+      id="students"
+      compact
+      rows={@class.students}
+      row_click={&JS.navigate(~p"/students/#{&1}")}
     >
-      <%= gettext("Delete") %>
-    </.link>
-  </:action>
-</.table>
+      <:col :let={student} label={dgettext("students.students", "Student")}>
+        <%= student.name %>
+      </:col>
+      <:action :let={student}>
+        <div class="sr-only">
+          <.link navigate={~p"/students/#{student}"}><%= gettext("Show") %></.link>
+        </div>
+        <.link navigate={~p"/students/#{student}/show/edit"}><%= gettext("Edit") %></.link>
+      </:action>
+      <:action :let={student}>
+        <.link
+          phx-click={JS.push("student_delete", value: %{id: student.id})}
+          data-confirm={gettext("Are you sure?")}
+        >
+          <%= gettext("Delete") %>
+        </.link>
+      </:action>
+    </.table>
 
-<.simple_form
-  :let={f}
-  for={:students}
-  id="students-form"
-  phx-change="students_validate"
-  phx-submit="students_create"
->
-  <.input
-    field={{f, :names}}
-    type="textarea"
-    label={dgettext("classes.classes", "Names (one per line)")}
-  />
-  <div class="text-sm text-zinc-500">
-    <%= @students_create_count %> students
+    <.simple_form
+      :let={f}
+      for={:students}
+      id="students-form"
+      phx-change="students_validate"
+      phx-submit="students_create"
+    >
+      <.input
+        field={{f, :names}}
+        type="textarea"
+        label={dgettext("classes.classes", "Names (one per line)")}
+      />
+      <div class="text-sm text-zinc-500">
+        <%= @students_create_count %> students
+      </div>
+      <:actions>
+        <.button phx-disable-with={dgettext("classes.classes", "Adding students...")}>
+          <%= dgettext("classes.classes", "Add students") %>
+        </.button>
+      </:actions>
+    </.simple_form>
   </div>
-  <:actions>
-    <.button phx-disable-with={dgettext("classes.classes", "Adding students...")}>
-      <%= dgettext("classes.classes", "Add students") %>
-    </.button>
-  </:actions>
-</.simple_form>
+</div>
 
 <.back navigate={~p"/classes"}><%= gettext("Back") %></.back>
 

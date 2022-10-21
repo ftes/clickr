@@ -12,8 +12,8 @@ msgstr ""
 
 #: lib/clickr_web/live/grade_live/index.html.heex:8
 #: lib/clickr_web/live/grade_live/show.html.heex:2
-#: lib/clickr_web/live/grade_live/show.html.heex:8
-#: lib/clickr_web/live/student_live/show.html.heex:17
+#: lib/clickr_web/live/grade_live/show.html.heex:9
+#: lib/clickr_web/live/student_live/show.html.heex:23
 #, elixir-autogen, elixir-format
 msgid "Grade"
 msgstr ""
@@ -24,7 +24,7 @@ msgstr ""
 msgid "Listing Grades"
 msgstr ""
 
-#: lib/clickr_web/live/grade_live/show.html.heex:11
+#: lib/clickr_web/live/grade_live/show.html.heex:12
 #, elixir-autogen, elixir-format
 msgid "Percent"
 msgstr ""
@@ -36,14 +36,14 @@ msgid "Show Grade"
 msgstr ""
 
 #: lib/clickr_web/live/grade_live/index.html.heex:6
-#: lib/clickr_web/live/grade_live/show.html.heex:6
+#: lib/clickr_web/live/grade_live/show.html.heex:7
 #, elixir-autogen, elixir-format
 msgid "Student"
 msgstr ""
 
 #: lib/clickr_web/live/grade_live/index.html.heex:7
-#: lib/clickr_web/live/grade_live/show.html.heex:7
-#: lib/clickr_web/live/student_live/show.html.heex:16
+#: lib/clickr_web/live/grade_live/show.html.heex:8
+#: lib/clickr_web/live/student_live/show.html.heex:22
 #, elixir-autogen, elixir-format
 msgid "Subject"
 msgstr ""

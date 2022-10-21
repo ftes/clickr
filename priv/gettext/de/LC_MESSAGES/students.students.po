@@ -49,7 +49,7 @@ msgstr "Neuer Schüler"
 msgid "Show Student"
 msgstr "Schüler anzeigen"
 
-#: lib/clickr_web/live/class_live/show.html.heex:15
+#: lib/clickr_web/live/class_live/show.html.heex:22
 #: lib/clickr_web/live/student_live/show.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Student"

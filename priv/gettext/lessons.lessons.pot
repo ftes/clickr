@@ -65,7 +65,7 @@ msgid "Minimum"
 msgstr ""
 
 #: lib/clickr_web/live/lesson_live/form_component.ex:65
-#: lib/clickr_web/live/lesson_live/index.html.heex:11
+#: lib/clickr_web/live/lesson_live/index.html.heex:16
 #: lib/clickr_web/live/lesson_live/show.html.heex:14
 #, elixir-autogen, elixir-format
 msgid "Name"
@@ -94,7 +94,7 @@ msgstr ""
 msgid "Show Lesson"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/index.html.heex:12
+#: lib/clickr_web/live/lesson_live/index.html.heex:17
 #: lib/clickr_web/live/lesson_live/show.html.heex:15
 #, elixir-autogen, elixir-format
 msgid "State"
