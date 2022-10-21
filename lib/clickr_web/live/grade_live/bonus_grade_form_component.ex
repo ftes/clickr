@@ -19,8 +19,8 @@ defmodule ClickrWeb.GradeLive.BonusGradeFormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :student_id}} type="hidden" value={@grade.student_id} />
-        <.input field={{f, :subject_id}} type="hidden" value={@grade.subject_id} />
+        <.input field={{f, :student_id}} type="hidden" />
+        <.input field={{f, :subject_id}} type="hidden" />
         <.input field={{f, :name}} type="text" label={dgettext("grades.bonus_grades", "Name")} />
         <.input
           field={{f, :percent}}
@@ -39,9 +39,8 @@ defmodule ClickrWeb.GradeLive.BonusGradeFormComponent do
   end
 
   @impl true
-  def update(assigns, socket) do
-    date = Timex.format!(DateTime.utc_now(), "{D}.{M}.")
-    changeset = Grades.change_bonus_grade(%Grades.BonusGrade{name: date, percent: 1.0})
+  def update(%{bonus_grade: bonus_grade} = assigns, socket) do
+    changeset = Grades.change_bonus_grade(bonus_grade, %{})
 
     {:ok,
      socket

@@ -47,11 +47,15 @@ defmodule ClickrWeb.GradeLiveTest do
       refute live |> element("#bonus-grades a", "Delete") |> render_click() =~ "28%"
     end
 
+    @tag :inspect
     test "creates bonus grade", %{conn: conn, grade: grade} do
       {:ok, live, _html} = live(conn, ~p"/grades/#{grade}")
 
-      assert live |> element("button", "New bonus grade") |> render_click() =~
-               "id=\"bonus-grade-form\""
+      {:ok, live, _} =
+        live
+        |> element("a", "New bonus grade")
+        |> render_click()
+        |> follow_redirect(conn, ~p"/grades/#{grade}/new_bonus_grade")
 
       {:ok, _, html} =
         live

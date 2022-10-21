@@ -254,8 +254,11 @@ defmodule ClickrWeb.LessonLiveTest do
       lesson_student_fixture(lesson_id: l.id, student_id: s.id, extra_points: 42)
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
 
-      assert live |> element("#student-#{s.id} button", "Add bonus grade") |> render_click() =~
-               "id=\"bonus-grade-form\""
+      {:ok, live, _} =
+        live
+        |> element("#student-#{s.id} a", "Add bonus grade")
+        |> render_click()
+        |> follow_redirect(conn, ~p"/lessons/#{l}/active/new_bonus_grade/#{s.id}")
 
       {:ok, _, html} =
         live
@@ -271,24 +274,18 @@ defmodule ClickrWeb.LessonLiveTest do
 
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
 
-      live |> element("button", "Question options") |> render_click() =~
-        "id=\"question-form\""
+      {:ok, live, _} =
+        live
+        |> element("a", "Question options")
+        |> render_click()
+        |> follow_redirect(conn, ~p"/lessons/#{l}/active/question_options")
 
       live
       |> form("#question-form", %{question: %{points: 42, name: "this question"}})
-      |> render_submit() =~
-        "End Question"
+      |> render_submit()
 
       assert_redirect(live, ~p"/lessons/#{l}/question")
-      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/question")
-
-      {:ok, _, html} =
-        live
-        |> element("button", "End Question")
-        |> render_click()
-        |> follow_redirect(conn, ~p"/lessons/#{l}/active")
-
-      assert html =~ "42"
+      assert [%{name: "this question", points: 42}] = Clickr.Lessons.list_questions()
     end
   end
 

@@ -5,7 +5,6 @@
   - create button in task
 - [ ] Grade show: add dividiers before lesson/bonus grade tables
 - [ ] Refactor transition_lesson: extract / domain specific
-- [ ] show modals based on route: lesson add bonus grade, lesson questoin options, grade add bonus grade
 
 - [ ] Move edit room/seating_plan into form component (save button)
 - [ ] Search (global and lists)

@@ -23,10 +23,10 @@ defmodule ClickrWeb.LessonLive.Router do
     push_navigate(socket, to: path(lesson), replace: true)
   end
 
-  def maybe_navigate(socket) do
+  def maybe_navigate(socket, aliases \\ []) do
     lesson = socket.assigns.lesson
 
-    if lesson.state == socket.assigns.live_action do
+    if socket.assigns.live_action in [lesson.state | aliases] do
       socket
     else
       push_navigate(socket, to: path(lesson), replace: true)
@@ -39,11 +39,12 @@ defmodule ClickrWeb.LessonLive.Router do
   def transitions(%{state: :roll_call}),
     do: [{dgettext("lessons.actions", "Note Attendance"), :active}]
 
-  def transitions(%{state: :active}),
-    do: [
-      {dgettext("lessons.actions", "End Lesson"), :ended},
-      {dgettext("lessons.actions", "Ask Question"), :question}
-    ]
+  def transitions(%{state: state})
+      when state in [:active, :active_new_bonus_grade, :active_question_options],
+      do: [
+        {dgettext("lessons.actions", "End Lesson"), :ended},
+        {dgettext("lessons.actions", "Ask Question"), :question}
+      ]
 
   def transitions(%{state: :question}),
     do: [{dgettext("lessons.actions", "End Question"), :active}]

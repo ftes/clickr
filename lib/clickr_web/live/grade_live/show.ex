@@ -12,16 +12,14 @@ defmodule ClickrWeb.GradeLive.Show do
   def handle_params(%{"id" => id}, _, socket) do
     {:noreply,
      socket
-     |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:show_bonus_grade_form_component?, false)
+     |> assign(:page_title, dgettext("grades.grades", "Show Grade"))
      |> assign_grade(Grades.get_grade!(id))}
   end
 
   def handle_params(%{"student_id" => student_id, "subject_id" => subject_id}, _, socket) do
     {:noreply,
      socket
-     |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:show_bonus_grade_form_component?, false)
+     |> assign(:page_title, dgettext("grades.grades", "Show Grade"))
      |> assign_grade(Grades.get_grade!(%{student_id: student_id, subject_id: subject_id}))}
   end
 
@@ -35,14 +33,6 @@ defmodule ClickrWeb.GradeLive.Show do
      |> put_flash(:info, dgettext("grades.grades", "Bonus grade was deleted!"))
      |> assign_grade(Grades.get_grade!(socket.assigns.grade.id))}
   end
-
-  def handle_event("show_bonus_grade_form_component", _, socket),
-    do: {:noreply, assign(socket, :show_bonus_grade_form_component?, true)}
-
-  def handle_event("hide_bonus_grade_form_component", _, socket),
-    do: {:noreply, assign(socket, :show_bonus_grade_form_component?, false)}
-
-  defp page_title(:show), do: dgettext("grades.grades", "Show Grade")
 
   defp assign_grade(socket, grade) do
     grade =

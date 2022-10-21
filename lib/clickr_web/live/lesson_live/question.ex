@@ -24,14 +24,15 @@ defmodule ClickrWeb.LessonLive.Question do
         >
           <%= label %>
         </.button>
-        <.button
+        <.link
           :if={@lesson.state == :active}
-          phx-click="show_question_modal"
-          class="-ml-3 bg-zinc-500"
+          navigate={~p"/lessons/#{@lesson}/active/question_options"}
         >
-          <span class="sr-only"><%= dgettext("lessons.lessons", "Question options") %></span>
-          <Heroicons.cog_6_tooth class="h-6 w-6 text-white" />
-        </.button>
+          <.button class="-ml-3 bg-zinc-500">
+            <span class="sr-only"><%= dgettext("lessons.lessons", "Question options") %></span>
+            <Heroicons.cog_6_tooth class="h-6 w-6 text-white" />
+          </.button>
+        </.link>
       </:actions>
     </.header>
 
@@ -50,12 +51,12 @@ defmodule ClickrWeb.LessonLive.Question do
         </div>
 
         <div
-          :if={@lesson.state != :question and MapSet.member?(@student_ids, seat.student.id)}
+          :if={@lesson.state != :question and MapSet.member?(@student_ids, seat.student_id)}
           class="absolute inset-0 hidden group-hover:flex items-stretch justify-between bg-white/80 rounded-lg"
         >
           <button
             title={dgettext("lessons.actions", "Add point")}
-            phx-click={JS.push("add_point", value: %{student_id: seat.student.id})}
+            phx-click={JS.push("add_point", value: %{student_id: seat.student_id})}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
             <span class="sr-only"><%= dgettext("lessons.actions", "Add point") %></span>
@@ -63,7 +64,7 @@ defmodule ClickrWeb.LessonLive.Question do
           </button>
           <button
             title={dgettext("lessons.actions", "Remove student")}
-            phx-click={JS.push("remove_student", value: %{student_id: seat.student.id})}
+            phx-click={JS.push("remove_student", value: %{student_id: seat.student_id})}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
             <span class="sr-only"><%= dgettext("lessons.actions", "Remove student") %></span>
@@ -71,27 +72,26 @@ defmodule ClickrWeb.LessonLive.Question do
           </button>
           <button
             title={dgettext("lessons.actions", "Subtract point")}
-            phx-click={JS.push("subtract_point", value: %{student_id: seat.student.id})}
+            phx-click={JS.push("subtract_point", value: %{student_id: seat.student_id})}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
             <span class="sr-only"><%= dgettext("lessons.actions", "Subtract point") %></span>
             <Heroicons.minus class="w-8 h-8" />
           </button>
-          <button
-            title={dgettext("lessons.actions", "Add bonus grade")}
-            phx-click={
-              JS.push("show_bonus_grade_form_component", value: %{student_id: seat.student.id})
-            }
-            class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
-          >
-            <span class="sr-only"><%= dgettext("lessons.actions", "Add bonus grade") %></span>
-            <Heroicons.sparkles class="w-8 h-8" />
-          </button>
+          <.link navigate={~p"/lessons/#{@lesson}/active/new_bonus_grade/#{seat.student_id}"}>
+            <button
+              title={dgettext("lessons.actions", "Add bonus grade")}
+              class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
+            >
+              <span class="sr-only"><%= dgettext("lessons.actions", "Add bonus grade") %></span>
+              <Heroicons.sparkles class="w-8 h-8" />
+            </button>
+          </.link>
         </div>
         <button
-          :if={@lesson.state != :question and not MapSet.member?(@student_ids, seat.student.id)}
+          :if={@lesson.state != :question and not MapSet.member?(@student_ids, seat.student_id)}
           title={dgettext("lessons.actions", "Add student")}
-          phx-click={JS.push("add_student", value: %{student_id: seat.student.id})}
+          phx-click={JS.push("add_student", value: %{student_id: seat.student_id})}
           class="absolute w-full inset-0 hidden group-hover:flex bg-green-400/80 items-center justify-center rounded-lg"
         >
           <span class="sr-only"><%= dgettext("lessons.actions", "Add student") %></span>
@@ -101,25 +101,32 @@ defmodule ClickrWeb.LessonLive.Question do
     </div>
 
     <.modal
-      :if={@show_question_modal?}
+      :if={@live_action == :active_question_options}
       id="question-modal"
       show
-      on_cancel={JS.push("hide_question_modal")}
+      on_cancel={JS.navigate(~p"/lessons/#{@lesson}/active")}
     >
       <.live_component module={ClickrWeb.LessonLive.QuestionModal} id={@lesson.id} />
     </.modal>
 
     <.modal
-      :if={@show_bonus_grade_form_component?}
+      :if={@live_action == :active_new_bonus_grade}
       id="bonus-grade-modal"
       show
-      on_cancel={JS.push("hide_bonus_grade_form_component")}
+      on_cancel={JS.navigate(~p"/lessons/#{@lesson}/active")}
     >
       <.live_component
         module={ClickrWeb.GradeLive.BonusGradeFormComponent}
         id={"#{@lesson.id}-bonus-grade"}
         navigate={~p"/lessons/#{@lesson}/active"}
-        grade={@grade}
+        bonus_grade={
+          %Clickr.Grades.BonusGrade{
+            student_id: @student_id,
+            subject_id: @lesson.subject_id,
+            percent: 1.0,
+            name: @lesson.name
+          }
+        }
       />
     </.modal>
     """
@@ -131,7 +138,7 @@ defmodule ClickrWeb.LessonLive.Question do
   end
 
   @impl true
-  def handle_params(%{"id" => id}, _, socket) do
+  def handle_params(%{"id" => id} = params, _, socket) do
     if lesson = socket.assigns[:lesson] do
       old_topic = Clickr.Lessons.active_question_topic(%{lesson_id: lesson.id})
       Clickr.PubSub.unsubscribe(old_topic)
@@ -143,11 +150,13 @@ defmodule ClickrWeb.LessonLive.Question do
     {:noreply,
      socket
      |> assign(:page_title, dgettext("lessons.lessons", "Lesson"))
-     |> assign(:show_question_modal?, false)
-     |> assign(:show_bonus_grade_form_component?, false)
+     |> assign(:student_id, params["student_id"])
      |> assign_lesson_and_related(id)
      |> load_answers()
-     |> ClickrWeb.LessonLive.Router.maybe_navigate()}
+     |> ClickrWeb.LessonLive.Router.maybe_navigate([
+       :active_new_bonus_grade,
+       :active_question_options
+     ])}
   end
 
   @impl true
@@ -157,24 +166,6 @@ defmodule ClickrWeb.LessonLive.Question do
 
     {:noreply, ClickrWeb.LessonLive.Router.navigate(socket, lesson)}
   end
-
-  def handle_event("show_question_modal", _, socket),
-    do: {:noreply, assign(socket, :show_question_modal?, true)}
-
-  def handle_event("hide_question_modal", _, socket),
-    do: {:noreply, assign(socket, :show_question_modal?, false)}
-
-  def handle_event("show_bonus_grade_form_component", %{"student_id" => student_id}, socket) do
-    grade = %{student_id: student_id, subject_id: socket.assigns.lesson.subject_id}
-
-    {:noreply,
-     socket
-     |> assign(:grade, grade)
-     |> assign(:show_bonus_grade_form_component?, true)}
-  end
-
-  def handle_event("hide_bonus_grade_form_component", _, socket),
-    do: {:noreply, assign(socket, :show_bonus_grade_form_component?, false)}
 
   def handle_event("add_student", %{"student_id" => student_id}, socket) do
     {:ok, _} =

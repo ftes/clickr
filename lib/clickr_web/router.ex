@@ -136,6 +136,12 @@ defmodule ClickrWeb.Router do
       live "/lessons/:id/started", LessonLive.RollCall, :started
       live "/lessons/:id/roll_call", LessonLive.RollCall, :roll_call
       live "/lessons/:id/active", LessonLive.Question, :active
+      live "/lessons/:id/active/question_options", LessonLive.Question, :active_question_options
+
+      live "/lessons/:id/active/new_bonus_grade/:student_id",
+           LessonLive.Question,
+           :active_new_bonus_grade
+
       live "/lessons/:id/question", LessonLive.Question, :question
       live "/lessons/:id/ended", LessonLive.Ended, :ended
       live "/lessons/:id/graded", LessonLive.Ended, :graded
@@ -143,6 +149,7 @@ defmodule ClickrWeb.Router do
       live "/grades", GradeLive.Index, :index
       live "/grades/student/:student_id/subject/:subject_id", GradeLive.Show, :show
       live "/grades/:id", GradeLive.Show, :show
+      live "/grades/:id/new_bonus_grade", GradeLive.Show, :new_bonus_grade
     end
   end
 
