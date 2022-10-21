@@ -127,8 +127,11 @@ defmodule ClickrWeb.LessonLive.Ended do
     grades = Clickr.Grades.list_grades(subject_id: lesson.subject_id, student_ids: student_ids)
     points = Lessons.get_lesson_points(lesson)
 
-    max_points =
-      points |> Enum.map(fn {_student_id, points} -> points end) |> Enum.max(&>=/2, fn -> 0 end)
+    max_student_points =
+      Enum.map(points, fn {_student_id, points} -> points end) |> Enum.max(&>=/2, fn -> 0 end)
+
+    number_of_questions = length(lesson.questions)
+    max_points = Enum.max([max_student_points, number_of_questions])
 
     socket
     |> assign(:lesson, lesson)
