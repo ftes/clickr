@@ -11,30 +11,30 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2\n"
 
-#: lib/clickr_web/live/grade_live/bonus_grade_form_component.ex:66
+#: lib/clickr_web/live/grade_live/bonus_grade_form_component.ex:65
 #, elixir-autogen, elixir-format
 msgid "Bonus grade created successfully"
 msgstr "Bonusnote erstellt"
 
-#: lib/clickr_web/live/grade_live/show.html.heex:44
+#: lib/clickr_web/live/grade_live/show.html.heex:46
 #, elixir-autogen, elixir-format
 msgid "Date"
 msgstr "Datum"
 
 #: lib/clickr_web/live/grade_live/bonus_grade_form_component.ex:24
-#: lib/clickr_web/live/grade_live/show.html.heex:43
+#: lib/clickr_web/live/grade_live/show.html.heex:45
 #, elixir-autogen, elixir-format
 msgid "Name"
 msgstr "Name"
 
 #: lib/clickr_web/live/grade_live/bonus_grade_form_component.ex:11
-#: lib/clickr_web/live/grade_live/show.html.heex:38
+#: lib/clickr_web/live/grade_live/show.html.heex:39
 #, elixir-autogen, elixir-format
 msgid "New bonus grade"
 msgstr "Neue Bonusnote"
 
 #: lib/clickr_web/live/grade_live/bonus_grade_form_component.ex:31
-#: lib/clickr_web/live/grade_live/show.html.heex:47
+#: lib/clickr_web/live/grade_live/show.html.heex:49
 #, elixir-autogen, elixir-format
 msgid "Percent"
 msgstr "Prozent"
