@@ -25,5 +25,6 @@ defmodule Clickr.Lessons.Question do
     |> cast(attrs, [:name, :points, :lesson_id])
     |> validate_required([:name, :points])
     |> foreign_key_constraint(:lesson_id)
+    |> unique_constraint([:lesson_id, :state], name: :questions_unique_lesson_started_index)
   end
 end

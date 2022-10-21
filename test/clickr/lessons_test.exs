@@ -382,9 +382,9 @@ defmodule Clickr.LessonsTest do
     end
 
     test "uses question answers", %{lesson: l, student_1: %{id: s1id}, student_2: %{id: s2id}} do
-      q = question_fixture(lesson_id: l.id, points: 3)
+      q = question_fixture(lesson_id: l.id, points: 3, state: :ended)
       question_answer_fixture(question_id: q.id, student_id: s1id)
-      q = question_fixture(lesson_id: l.id, points: 5)
+      q = question_fixture(lesson_id: l.id, points: 5, state: :ended)
       question_answer_fixture(question_id: q.id, student_id: s1id)
       question_answer_fixture(question_id: q.id, student_id: s2id)
 

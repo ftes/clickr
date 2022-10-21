@@ -1,5 +1,9 @@
 # Todo
 
+- [ ] Remove active question 
+  - save answers right away (task)
+  - create button in task
+- [ ] Grade show: add dividiers before lesson/bonus grade tables
 - [ ] Refactor transition_lesson: extract / domain specific
 - [ ] show modals based on route: lesson add bonus grade, lesson questoin options, grade add bonus grade
 
