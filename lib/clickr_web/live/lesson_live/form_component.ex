@@ -152,7 +152,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
   defp load_seating_plans(socket), do: assign(socket, :seating_plans, [])
 
   defp load_rooms(%{assigns: %{changeset: _}} = socket) do
-    rooms = Clickr.Rooms.list_rooms(user_id: socket.assigns.current_user.id)
+    rooms = Clickr.Rooms.list_rooms(socket.assigns.current_user)
     assign(socket, :rooms, rooms)
   end
 

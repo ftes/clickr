@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 
 #: lib/clickr_web/live/room_live/index.ex:21
-#: lib/clickr_web/live/room_live/show.ex:67
+#: lib/clickr_web/live/room_live/show.ex:77
 #: lib/clickr_web/live/room_live/show.html.heex:11
 #, elixir-autogen, elixir-format
 msgid "Edit Room"
@@ -47,17 +47,17 @@ msgstr ""
 msgid "Room"
 msgstr ""
 
-#: lib/clickr_web/live/room_live/form_component.ex:77
+#: lib/clickr_web/live/room_live/form_component.ex:75
 #, elixir-autogen, elixir-format
 msgid "Room created successfully"
 msgstr ""
 
-#: lib/clickr_web/live/room_live/form_component.ex:64
+#: lib/clickr_web/live/room_live/form_component.ex:62
 #, elixir-autogen, elixir-format
 msgid "Room updated successfully"
 msgstr ""
 
-#: lib/clickr_web/live/room_live/show.ex:66
+#: lib/clickr_web/live/room_live/show.ex:76
 #, elixir-autogen, elixir-format
 msgid "Show Room"
 msgstr ""

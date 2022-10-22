@@ -55,9 +55,7 @@ defmodule ClickrWeb.RoomLive.FormComponent do
   end
 
   defp save_room(socket, :edit, room_params) do
-    # TODO Check permission
-
-    case Rooms.update_room(socket.assigns.room, set_user_id(socket, room_params)) do
+    case Rooms.update_room(socket.assigns.current_user, socket.assigns.room, room_params) do
       {:ok, _room} ->
         {:noreply,
          socket
@@ -70,7 +68,7 @@ defmodule ClickrWeb.RoomLive.FormComponent do
   end
 
   defp save_room(socket, :new, room_params) do
-    case Rooms.create_room(set_user_id(socket, room_params)) do
+    case Rooms.create_room(socket.assigns.current_user, room_params) do
       {:ok, _room} ->
         {:noreply,
          socket
@@ -81,6 +79,4 @@ defmodule ClickrWeb.RoomLive.FormComponent do
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
-
-  defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 end

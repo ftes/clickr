@@ -19,7 +19,7 @@ defmodule ClickrWeb.RoomLive.Index do
 
     socket
     |> assign(:page_title, dgettext("rooms.rooms", "Edit Room"))
-    |> assign(:room, Rooms.get_room!(id))
+    |> assign(:room, Rooms.get_room!(socket.assigns.current_user, id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -36,15 +36,12 @@ defmodule ClickrWeb.RoomLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    # TODO Check permission
-
-    room = Rooms.get_room!(id)
-    {:ok, _} = Rooms.delete_room(room)
-
+    room = Rooms.get_room!(socket.assigns.current_user, id)
+    {:ok, _} = Rooms.delete_room(socket.assigns.current_user, room)
     {:noreply, load_rooms(socket)}
   end
 
   defp load_rooms(socket) do
-    assign(socket, :rooms, Rooms.list_rooms(user_id: socket.assigns.current_user.id))
+    assign(socket, :rooms, Rooms.list_rooms(socket.assigns.current_user))
   end
 end

@@ -26,14 +26,19 @@ defmodule ClickrWeb.RoomLive.Show do
 
   @impl true
   def handle_event("assign_seat", %{"x" => x, "y" => y, "button_id" => bid}, socket) do
-    {:ok, _} = Rooms.assign_room_seat(socket.assigns.room, %{x: x, y: y, button_id: bid})
+    {:ok, _} =
+      Rooms.assign_room_seat(socket.assigns.current_user, socket.assigns.room, %{
+        x: x,
+        y: y,
+        button_id: bid
+      })
 
     {:noreply, load_room(socket, socket.assigns.room.id)}
   end
 
   def handle_event("delete_seat", %{"id" => id}, socket) do
     seat = Enum.find(socket.assigns.room.seats, &(&1.id == id))
-    {:ok, _} = Rooms.delete_room_seat(seat)
+    {:ok, _} = Rooms.delete_room_seat(socket.assigns.current_user, seat)
     {:noreply, load_room(socket, socket.assigns.room.id)}
   end
 
@@ -46,7 +51,12 @@ defmodule ClickrWeb.RoomLive.Show do
         {:button_clicked, %{button_id: bid}},
         %{assigns: %{awaiting_click: {x, y}}} = socket
       ) do
-    {:ok, _} = Rooms.assign_room_seat(socket.assigns.room, %{x: x, y: y, button_id: bid})
+    {:ok, _} =
+      Rooms.assign_room_seat(socket.assigns.current_user, socket.assigns.room, %{
+        x: x,
+        y: y,
+        button_id: bid
+      })
 
     {:noreply,
      socket
@@ -68,7 +78,7 @@ defmodule ClickrWeb.RoomLive.Show do
 
   defp load_room(socket, id) do
     room =
-      Rooms.get_room!(id)
+      Rooms.get_room!(socket.assigns.current_user, id)
       |> Clickr.Repo.preload(seats: :button)
 
     seated_xy = for s <- room.seats, into: MapSet.new(), do: {s.x, s.y}
