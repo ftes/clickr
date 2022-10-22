@@ -19,6 +19,5 @@ defmodule Clickr.Classes.Class do
     |> cast(attrs, [:name])
     |> validate_required([:name])
     |> foreign_key_constraint(:user_id)
-    |> cast_assoc(:students)
   end
 end

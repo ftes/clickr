@@ -1,109 +1,49 @@
 defmodule Clickr.Students do
-  @moduledoc """
-  The Students context.
-  """
+  defdelegate authorize(action, user, params), to: Clickr.Students.Policy
 
   import Ecto.Query, warn: false
   alias Clickr.Repo
-
+  alias Clickr.Accounts.User
   alias Clickr.Students.Student
 
-  @doc """
-  Returns the list of students.
-
-  ## Examples
-
-      iex> list_students()
-      [%Student{}, ...]
-
-  """
-  def list_students(opts \\ []) do
+  def list_students(%User{} = user) do
     Student
-    |> where_user_id(opts[:user_id])
+    |> Bodyguard.scope(user)
     |> Repo.all()
   end
 
-  @doc """
-  Gets a single student.
-
-  Raises `Ecto.NoResultsError` if the Student does not exist.
-
-  ## Examples
-
-      iex> get_student!(123)
-      %Student{}
-
-      iex> get_student!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_student!(id), do: Repo.get!(Student, id)
-
-  @doc """
-  Creates a student.
-
-  ## Examples
-
-      iex> create_student(%{field: value})
-      {:ok, %Student{}}
-
-      iex> create_student(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_student(attrs \\ %{}) do
-    %Student{}
-    |> Student.changeset(attrs)
-    |> Repo.insert()
+  def get_student!(%User{} = user, id) do
+    Student
+    |> Bodyguard.scope(user)
+    |> Repo.get!(id)
   end
 
-  @doc """
-  Updates a student.
-
-  ## Examples
-
-      iex> update_student(student, %{field: new_value})
-      {:ok, %Student{}}
-
-      iex> update_student(student, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_student(%Student{} = student, attrs) do
-    student
-    |> Student.changeset(attrs)
-    |> Repo.update()
+  def create_student(%User{} = user, attrs \\ %{}) do
+    with :ok <- permit(:create_student, user) do
+      %Student{user_id: user.id}
+      |> Student.changeset(attrs)
+      |> Repo.insert()
+    end
   end
 
-  @doc """
-  Deletes a student.
-
-  ## Examples
-
-      iex> delete_student(student)
-      {:ok, %Student{}}
-
-      iex> delete_student(student)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_student(%Student{} = student) do
-    Repo.delete(student)
+  def update_student(%User{} = user, %Student{} = student, attrs) do
+    with :ok <- permit(:update_student, user, student) do
+      student
+      |> Student.changeset(attrs)
+      |> Repo.update()
+    end
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking student changes.
+  def delete_student(%User{} = user, %Student{} = student) do
+    with :ok <- permit(:delete_student, user, student) do
+      Repo.delete(student)
+    end
+  end
 
-  ## Examples
-
-      iex> change_student(student)
-      %Ecto.Changeset{data: %Student{}}
-
-  """
   def change_student(%Student{} = student, attrs \\ %{}) do
     Student.changeset(student, attrs)
   end
 
-  defp where_user_id(query, nil), do: query
-  defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
+  defp permit(action, user, params \\ []),
+    do: Bodyguard.permit(__MODULE__, action, user, params)
 end

@@ -15,11 +15,9 @@ defmodule ClickrWeb.SubjectLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    # TODO Check permission
-
     socket
     |> assign(:page_title, dgettext("subjects.subjects", "Edit Subject"))
-    |> assign(:subject, Subjects.get_subject!(id))
+    |> assign(:subject, Subjects.get_subject!(socket.assigns.current_user, id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -36,15 +34,12 @@ defmodule ClickrWeb.SubjectLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    # TODO Check permission
-
-    subject = Subjects.get_subject!(id)
-    {:ok, _} = Subjects.delete_subject(subject)
-
+    subject = Subjects.get_subject!(socket.assigns.current_user, id)
+    {:ok, _} = Subjects.delete_subject(socket.assigns.current_user, subject)
     {:noreply, load_subjects(socket)}
   end
 
   defp load_subjects(socket) do
-    assign(socket, :subjects, Subjects.list_subjects(user_id: socket.assigns.current_user.id))
+    assign(socket, :subjects, Subjects.list_subjects(socket.assigns.current_user))
   end
 end

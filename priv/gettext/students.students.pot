@@ -17,14 +17,14 @@ msgstr ""
 msgid "Class"
 msgstr ""
 
-#: lib/clickr_web/live/student_live/index.ex:21
-#: lib/clickr_web/live/student_live/show.ex:23
+#: lib/clickr_web/live/student_live/index.ex:19
+#: lib/clickr_web/live/student_live/show.ex:24
 #: lib/clickr_web/live/student_live/show.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "Edit Student"
 msgstr ""
 
-#: lib/clickr_web/live/student_live/index.ex:33
+#: lib/clickr_web/live/student_live/index.ex:31
 #: lib/clickr_web/live/student_live/index.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Listing Students"
@@ -37,13 +37,13 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: lib/clickr_web/live/student_live/index.ex:27
+#: lib/clickr_web/live/student_live/index.ex:25
 #: lib/clickr_web/live/student_live/index.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "New Student"
 msgstr ""
 
-#: lib/clickr_web/live/student_live/show.ex:22
+#: lib/clickr_web/live/student_live/show.ex:23
 #, elixir-autogen, elixir-format
 msgid "Show Student"
 msgstr ""
@@ -54,12 +54,12 @@ msgstr ""
 msgid "Student"
 msgstr ""
 
-#: lib/clickr_web/live/student_live/form_component.ex:82
+#: lib/clickr_web/live/student_live/form_component.ex:84
 #, elixir-autogen, elixir-format
 msgid "Student created successfully"
 msgstr ""
 
-#: lib/clickr_web/live/student_live/form_component.ex:69
+#: lib/clickr_web/live/student_live/form_component.ex:71
 #, elixir-autogen, elixir-format
 msgid "Student updated successfully"
 msgstr ""

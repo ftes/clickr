@@ -137,8 +137,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
   end
 
   defp load_subjects(socket) do
-    user_id = socket.assigns.current_user.id
-    assign(socket, :subjects, Clickr.Subjects.list_subjects(user_id: user_id))
+    assign(socket, :subjects, Clickr.Subjects.list_subjects(socket.assigns.current_user))
   end
 
   defp load_seating_plans(%{assigns: %{changeset: _}} = socket) do

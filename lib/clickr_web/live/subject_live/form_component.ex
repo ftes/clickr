@@ -53,9 +53,11 @@ defmodule ClickrWeb.SubjectLive.FormComponent do
   end
 
   defp save_subject(socket, :edit, subject_params) do
-    # TODO Check permission
-
-    case Subjects.update_subject(socket.assigns.subject, set_user_id(socket, subject_params)) do
+    case Subjects.update_subject(
+           socket.assigns.current_user,
+           socket.assigns.subject,
+           subject_params
+         ) do
       {:ok, _subject} ->
         {:noreply,
          socket
@@ -68,7 +70,7 @@ defmodule ClickrWeb.SubjectLive.FormComponent do
   end
 
   defp save_subject(socket, :new, subject_params) do
-    case Subjects.create_subject(set_user_id(socket, subject_params)) do
+    case Subjects.create_subject(socket.assigns.current_user, subject_params) do
       {:ok, _subject} ->
         {:noreply,
          socket
@@ -79,6 +81,4 @@ defmodule ClickrWeb.SubjectLive.FormComponent do
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
-
-  defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 end

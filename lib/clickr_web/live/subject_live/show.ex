@@ -10,12 +10,10 @@ defmodule ClickrWeb.SubjectLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    # TODO Check permission
-
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:subject, Subjects.get_subject!(id))}
+     |> assign(:subject, Subjects.get_subject!(socket.assigns.current_user, id))}
   end
 
   defp page_title(:show), do: dgettext("subjects.subjects", "Show Subject")

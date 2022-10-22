@@ -15,8 +15,6 @@ defmodule ClickrWeb.RoomLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    # TODO Check permission
-
     socket
     |> assign(:page_title, dgettext("rooms.rooms", "Edit Room"))
     |> assign(:room, Rooms.get_room!(socket.assigns.current_user, id))

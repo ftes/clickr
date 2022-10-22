@@ -29,12 +29,12 @@ msgstr "Gateway bearbeiten"
 msgid "Gateway"
 msgstr "Gateway"
 
-#: lib/clickr_web/live/gateway_live/form_component.ex:80
+#: lib/clickr_web/live/gateway_live/form_component.ex:78
 #, elixir-autogen, elixir-format
 msgid "Gateway created successfully"
 msgstr "Gateway angelegt"
 
-#: lib/clickr_web/live/gateway_live/form_component.ex:67
+#: lib/clickr_web/live/gateway_live/form_component.ex:65
 #, elixir-autogen, elixir-format
 msgid "Gateway updated successfully"
 msgstr "Gateway bearbeitet"

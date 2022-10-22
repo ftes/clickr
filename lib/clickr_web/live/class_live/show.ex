@@ -25,14 +25,17 @@ defmodule ClickrWeb.ClassLive.Show do
 
   def handle_event("students_create", %{"students" => params}, socket) do
     class = Map.put(socket.assigns.class, :students, [])
-    params = %{students: student_params(params, socket)}
-    {:ok, _} = Classes.update_class(socket.assigns.current_user, class, params)
+
+    for params <- student_params(params, socket) do
+      Clickr.Students.create_student(socket.assigns.current_user, params)
+    end
+
     {:noreply, load_class(socket, class.id)}
   end
 
   def handle_event("student_delete", %{"id" => id}, socket) do
-    # TODO Check permission
-    {:ok, _} = id |> Clickr.Students.get_student!() |> Clickr.Students.delete_student()
+    student = Clickr.Students.get_student!(socket.assigns.current_user, id)
+    {:ok, _} = Clickr.Students.delete_student(socket.assigns.current_user, student)
     {:noreply, load_class(socket, socket.assigns.class.id)}
   end
 
@@ -46,7 +49,7 @@ defmodule ClickrWeb.ClassLive.Show do
     |> String.split("\n")
     |> Enum.map(&String.trim/1)
     |> Enum.filter(&(&1 != ""))
-    |> Enum.map(&%{name: &1, user_id: a.current_user.id, class_id: a.class.id})
+    |> Enum.map(&%{name: &1, class_id: a.class.id})
   end
 
   defp load_class(socket, id) do

@@ -60,9 +60,11 @@ defmodule ClickrWeb.StudentLive.FormComponent do
   end
 
   defp save_student(socket, :edit, student_params) do
-    # TODO Check permission
-
-    case Students.update_student(socket.assigns.student, set_user_id(socket, student_params)) do
+    case Students.update_student(
+           socket.assigns.current_user,
+           socket.assigns.student,
+           student_params
+         ) do
       {:ok, _student} ->
         {:noreply,
          socket
@@ -75,7 +77,7 @@ defmodule ClickrWeb.StudentLive.FormComponent do
   end
 
   defp save_student(socket, :new, student_params) do
-    case Students.create_student(set_user_id(socket, student_params)) do
+    case Students.create_student(socket.assigns.current_user, student_params) do
       {:ok, _student} ->
         {:noreply,
          socket
@@ -86,8 +88,6 @@ defmodule ClickrWeb.StudentLive.FormComponent do
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
-
-  defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 
   defp load_classes(socket) do
     assign(socket, :classes, Clickr.Classes.list_classes(socket.assigns.current_user))

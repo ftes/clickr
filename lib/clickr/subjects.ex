@@ -1,109 +1,49 @@
 defmodule Clickr.Subjects do
-  @moduledoc """
-  The Subjects context.
-  """
+  defdelegate authorize(action, user, params), to: Clickr.Subjects.Policy
 
   import Ecto.Query, warn: false
   alias Clickr.Repo
-
+  alias Clickr.Accounts.User
   alias Clickr.Subjects.Subject
 
-  @doc """
-  Returns the list of subjects.
-
-  ## Examples
-
-      iex> list_subjects()
-      [%Subject{}, ...]
-
-  """
-  def list_subjects(opts \\ []) do
+  def list_subjects(%User{} = user) do
     Subject
-    |> where_user_id(opts[:user_id])
+    |> Bodyguard.scope(user)
     |> Repo.all()
   end
 
-  @doc """
-  Gets a single subject.
-
-  Raises `Ecto.NoResultsError` if the Subject does not exist.
-
-  ## Examples
-
-      iex> get_subject!(123)
-      %Subject{}
-
-      iex> get_subject!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_subject!(id), do: Repo.get!(Subject, id)
-
-  @doc """
-  Creates a subject.
-
-  ## Examples
-
-      iex> create_subject(%{field: value})
-      {:ok, %Subject{}}
-
-      iex> create_subject(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_subject(attrs \\ %{}) do
-    %Subject{}
-    |> Subject.changeset(attrs)
-    |> Repo.insert()
+  def get_subject!(%User{} = user, id) do
+    Subject
+    |> Bodyguard.scope(user)
+    |> Repo.get!(id)
   end
 
-  @doc """
-  Updates a subject.
-
-  ## Examples
-
-      iex> update_subject(subject, %{field: new_value})
-      {:ok, %Subject{}}
-
-      iex> update_subject(subject, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_subject(%Subject{} = subject, attrs) do
-    subject
-    |> Subject.changeset(attrs)
-    |> Repo.update()
+  def create_subject(%User{} = user, attrs \\ %{}) do
+    with :ok <- permit(:create_subject, user) do
+      %Subject{user_id: user.id}
+      |> Subject.changeset(attrs)
+      |> Repo.insert()
+    end
   end
 
-  @doc """
-  Deletes a subject.
-
-  ## Examples
-
-      iex> delete_subject(subject)
-      {:ok, %Subject{}}
-
-      iex> delete_subject(subject)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_subject(%Subject{} = subject) do
-    Repo.delete(subject)
+  def update_subject(%User{} = user, %Subject{} = subject, attrs) do
+    with :ok <- permit(:update_subject, user, subject) do
+      subject
+      |> Subject.changeset(attrs)
+      |> Repo.update()
+    end
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking subject changes.
+  def delete_subject(%User{} = user, %Subject{} = subject) do
+    with :ok <- permit(:delete_subject, user, subject) do
+      Repo.delete(subject)
+    end
+  end
 
-  ## Examples
-
-      iex> change_subject(subject)
-      %Ecto.Changeset{data: %Subject{}}
-
-  """
   def change_subject(%Subject{} = subject, attrs \\ %{}) do
     Subject.changeset(subject, attrs)
   end
 
-  defp where_user_id(query, nil), do: query
-  defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
+  defp permit(action, user, params \\ []),
+    do: Bodyguard.permit(__MODULE__, action, user, params)
 end

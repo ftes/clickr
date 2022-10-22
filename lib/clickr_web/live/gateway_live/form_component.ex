@@ -54,8 +54,6 @@ defmodule ClickrWeb.GatewayLive.FormComponent do
   end
 
   defp save_gateway(socket, :edit, gateway_params) do
-    # TODO Check permission
-
     case Devices.update_gateway(
            socket.assigns.current_user,
            socket.assigns.gateway,

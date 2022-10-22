@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 
-#: lib/clickr_web/live/room_live/index.ex:21
-#: lib/clickr_web/live/room_live/show.ex:77
+#: lib/clickr_web/live/room_live/index.ex:19
+#: lib/clickr_web/live/room_live/show.ex:75
 #: lib/clickr_web/live/room_live/show.html.heex:11
 #, elixir-autogen, elixir-format
 msgid "Edit Room"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "Height"
 msgstr ""
 
-#: lib/clickr_web/live/room_live/index.ex:33
+#: lib/clickr_web/live/room_live/index.ex:31
 #: lib/clickr_web/live/room_live/index.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Listing Rooms"
@@ -36,7 +36,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: lib/clickr_web/live/room_live/index.ex:27
+#: lib/clickr_web/live/room_live/index.ex:25
 #: lib/clickr_web/live/room_live/index.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "New Room"
@@ -57,7 +57,7 @@ msgstr ""
 msgid "Room updated successfully"
 msgstr ""
 
-#: lib/clickr_web/live/room_live/show.ex:76
+#: lib/clickr_web/live/room_live/show.ex:74
 #, elixir-autogen, elixir-format
 msgid "Show Room"
 msgstr ""

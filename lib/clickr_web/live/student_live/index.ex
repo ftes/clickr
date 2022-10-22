@@ -15,11 +15,9 @@ defmodule ClickrWeb.StudentLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    # TODO Check permission
-
     socket
     |> assign(:page_title, dgettext("students.students", "Edit Student"))
-    |> assign(:student, Students.get_student!(id))
+    |> assign(:student, Students.get_student!(socket.assigns.current_user, id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -36,17 +34,14 @@ defmodule ClickrWeb.StudentLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    # TODO Check permission
-
-    student = Students.get_student!(id)
-    {:ok, _} = Students.delete_student(student)
-
+    student = Students.get_student!(socket.assigns.current_user, id)
+    {:ok, _} = Students.delete_student(socket.assigns.current_user, student)
     {:noreply, load_students(socket)}
   end
 
   defp load_students(socket) do
     students =
-      Students.list_students(user_id: socket.assigns.current_user.id)
+      Students.list_students(socket.assigns.current_user)
       |> Clickr.Repo.preload(:class)
 
     assign(socket, :students, students)
