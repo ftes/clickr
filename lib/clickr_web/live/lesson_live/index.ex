@@ -16,16 +16,15 @@ defmodule ClickrWeb.LessonLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    lesson = Lessons.get_lesson!(id)
-    {:ok, _} = Lessons.delete_lesson(lesson)
-
+    lesson = Lessons.get_lesson!(socket.assigns.current_user, id)
+    {:ok, _} = Lessons.delete_lesson(socket.assigns.current_user, lesson)
     {:noreply, load_lessons(socket)}
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, dgettext("lessons.lessons", "Edit Lesson"))
-    |> assign(:lesson, Lessons.get_lesson!(id))
+    |> assign(:lesson, Lessons.get_lesson!(socket.assigns.current_user, id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -41,6 +40,6 @@ defmodule ClickrWeb.LessonLive.Index do
   end
 
   defp load_lessons(socket) do
-    assign(socket, :lessons, Lessons.list_lessons(user_id: socket.assigns.current_user.id))
+    assign(socket, :lessons, Lessons.list_lessons(socket.assigns.current_user))
   end
 end

@@ -75,7 +75,11 @@ defmodule ClickrWeb.LessonLive.RollCall do
   @impl true
   def handle_event("transition", %{"state" => state}, socket) do
     {:ok, lesson} =
-      Lessons.transition_lesson(socket.assigns.lesson, String.to_existing_atom(state))
+      Lessons.transition_lesson(
+        socket.assigns.current_user,
+        socket.assigns.lesson,
+        String.to_existing_atom(state)
+      )
 
     {:noreply, ClickrWeb.LessonLive.Router.navigate(socket, lesson)}
   end
@@ -87,7 +91,7 @@ defmodule ClickrWeb.LessonLive.RollCall do
 
   defp assign_lesson(socket, id) do
     lesson =
-      Lessons.get_lesson!(id)
+      Lessons.get_lesson!(socket.assigns.current_user, id)
       |> Clickr.Repo.preload([:lesson_students, seating_plan: [seats: :student]])
 
     assign(socket, :lesson, lesson)
@@ -95,7 +99,11 @@ defmodule ClickrWeb.LessonLive.RollCall do
 
   defp load_answers(%{assigns: %{lesson: %{state: :roll_call} = lesson}} = socket) do
     Lessons.ActiveRollCall.start(lesson)
-    student_ids = Lessons.list_lesson_students(lesson_id: lesson.id) |> Enum.map(& &1.student_id)
+
+    student_ids =
+      Lessons.list_lesson_students(socket.assigns.current_user, lesson_id: lesson.id)
+      |> Enum.map(& &1.student_id)
+
     assign(socket, :answers, MapSet.new(student_ids))
   end
 

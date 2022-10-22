@@ -10,15 +10,12 @@ defmodule Clickr.StudentsFixtures do
   Generate a student.
   """
   def student_fixture(attrs \\ %{}) do
-    {:ok, student} =
-      attrs
-      |> Enum.into(%{
-        name: "some student name"
-      })
-      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
-      |> put_with_user(:class_id, fn uid -> class_fixture(user_id: uid).id end)
-      |> Clickr.Students.create_student()
-
-    student
+    attrs
+    |> Enum.into(%{
+      name: "some student name"
+    })
+    |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+    |> put_with_user(:class_id, fn uid -> class_fixture(user_id: uid).id end)
+    |> create(Clickr.Students.Student)
   end
 end

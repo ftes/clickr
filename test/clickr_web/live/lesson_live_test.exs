@@ -96,14 +96,14 @@ defmodule ClickrWeb.LessonLiveTest do
       assert index_live |> has_element?("#lesson-form_name[value='#{expected_name}']")
     end
 
-    test "creates lesson using recent combination", %{conn: conn, lesson: old_lesson} do
+    test "creates lesson using recent combination", %{conn: conn, user: user, lesson: old_lesson} do
       {:ok, index_live, _html} = live(conn, ~p"/lessons/new")
       index_live |> element("button.x-create") |> render_click()
 
       assert {<<"/lessons/", lesson_id::binary-size(36), "/started">>,
               %{"info" => "Lesson created successfully"}} = assert_redirect(index_live)
 
-      lesson = Clickr.Lessons.get_lesson!(lesson_id)
+      lesson = Clickr.Lessons.get_lesson!(user, lesson_id)
       assert lesson.subject_id == old_lesson.subject_id
       assert lesson.seating_plan_id == old_lesson.seating_plan_id
       assert lesson.room_id == old_lesson.room_id
@@ -209,11 +209,16 @@ defmodule ClickrWeb.LessonLiveTest do
 
     setup [:create_lesson_roll_call, :seat_student_with_button]
 
-    test "highlights student that answered", %{conn: conn, lesson: lesson, student: student} do
+    test "highlights student that answered", %{
+      conn: conn,
+      user: user,
+      lesson: lesson,
+      student: student
+    } do
       {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/roll_call")
       refute render(live) =~ "x-answered"
 
-      Clickr.Lessons.create_lesson_student(%{lesson_id: lesson.id, student_id: student.id})
+      Clickr.Lessons.create_lesson_student(user, %{lesson_id: lesson.id, student_id: student.id})
       send(live.pid, {:new_lesson_student, %{}})
       assert render(live) =~ "x-answered"
     end
@@ -285,7 +290,7 @@ defmodule ClickrWeb.LessonLiveTest do
       |> render_submit()
 
       assert_redirect(live, ~p"/lessons/#{l}/question")
-      assert [%{name: "this question", points: 42}] = Clickr.Lessons.list_questions()
+      assert [%{name: "this question", points: 42}] = Clickr.Repo.all(Clickr.Lessons.Question)
     end
   end
 
@@ -298,11 +303,17 @@ defmodule ClickrWeb.LessonLiveTest do
 
     setup [:create_lesson_question, :seat_student_with_button, :attend_student]
 
-    test "highlights student that answered", %{conn: conn, lesson: l, student: s, question: q} do
+    test "highlights student that answered", %{
+      conn: conn,
+      user: u,
+      lesson: l,
+      student: s,
+      question: q
+    } do
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/question")
       refute render(live) =~ "x-answered"
 
-      Clickr.Lessons.create_question_answer(%{question_id: q.id, student_id: s.id})
+      Clickr.Lessons.create_question_answer(u, %{question_id: q.id, student_id: s.id})
       send(live.pid, {:new_question_answer, %{}})
       assert render(live) =~ "x-answered"
     end

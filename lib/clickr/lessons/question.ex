@@ -13,6 +13,12 @@ defmodule Clickr.Lessons.Question do
     timestamps(type: :utc_datetime)
   end
 
+  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+    from x in query,
+      join: l in assoc(x, :lesson),
+      where: l.user_id == ^user_id
+  end
+
   @doc false
   def changeset(%{state: :started} = question, %{state: :ended} = attrs) do
     question

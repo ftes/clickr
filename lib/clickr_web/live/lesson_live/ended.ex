@@ -105,7 +105,13 @@ defmodule ClickrWeb.LessonLive.Ended do
 
   @impl true
   def handle_event("submit", %{"lesson" => lesson_params}, socket) do
-    {:ok, lesson} = Lessons.transition_lesson(socket.assigns.lesson, :graded, lesson_params)
+    {:ok, lesson} =
+      Lessons.transition_lesson(
+        socket.assigns.current_user,
+        socket.assigns.lesson,
+        :graded,
+        lesson_params
+      )
 
     {:noreply,
      socket
@@ -127,7 +133,7 @@ defmodule ClickrWeb.LessonLive.Ended do
 
   defp assign_lesson_and_related(socket, id) do
     lesson =
-      Lessons.get_lesson!(id)
+      Lessons.get_lesson!(socket.assigns.current_user, id)
       |> Clickr.Repo.preload([
         :lesson_students,
         :questions,

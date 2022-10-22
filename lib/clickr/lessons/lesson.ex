@@ -18,6 +18,10 @@ defmodule Clickr.Lessons.Lesson do
     timestamps(type: :utc_datetime)
   end
 
+  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+    from x in query, where: x.user_id == ^user_id
+  end
+
   defmodule Grade do
     use Ecto.Schema
 
@@ -60,7 +64,6 @@ defmodule Clickr.Lessons.Lesson do
     lesson
     |> cast(attrs, [
       :name,
-      :user_id,
       :subject_id,
       :room_id,
       :seating_plan_id
@@ -68,7 +71,6 @@ defmodule Clickr.Lessons.Lesson do
     |> validate_required([
       :name,
       :state,
-      :user_id,
       :subject_id,
       :room_id,
       :seating_plan_id

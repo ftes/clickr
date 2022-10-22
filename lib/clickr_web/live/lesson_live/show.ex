@@ -15,7 +15,7 @@ defmodule ClickrWeb.LessonLive.Show do
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(
        :lesson,
-       Lessons.get_lesson!(id)
+       Lessons.get_lesson!(socket.assigns.current_user, id)
        |> Clickr.Repo.preload([:subject, :room, seating_plan: :class])
      )}
   end

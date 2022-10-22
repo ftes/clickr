@@ -15,7 +15,7 @@ defmodule ClickrWeb.LessonLive.Router do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    lesson = Clickr.Lessons.get_lesson!(id)
+    lesson = Clickr.Lessons.get_lesson!(socket.assigns.current_user, id)
     {:noreply, push_navigate(socket, to: path(lesson), replace: false)}
   end
 

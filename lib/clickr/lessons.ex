@@ -1,151 +1,140 @@
 defmodule Clickr.Lessons do
-  @moduledoc """
-  The Lessons context.
-  """
+  defdelegate authorize(action, user, params), to: Clickr.Lessons.Policy
 
   import Ecto.Query, warn: false
   alias Clickr.Repo
+  alias Clickr.Accounts.User
 
-  alias Clickr.Lessons.{ActiveQuestion, ActiveRollCall, Lesson, Question}
+  alias Clickr.Lessons.{
+    ActiveQuestion,
+    ActiveRollCall,
+    Lesson,
+    LessonStudent,
+    Question,
+    QuestionAnswer
+  }
 
   def get_button_mapping(%Lesson{} = lesson), do: Clickr.Lessons.ButtonMapping.get_mapping(lesson)
 
-  @doc """
-  Returns the list of lessons.
-
-  ## Examples
-
-      iex> list_lessons()
-      [%Lesson{}, ...]
-
-  """
-  def list_lessons(opts \\ []) do
+  def list_lessons(%User{} = user) do
     Lesson
-    |> where_user_id(opts[:user_id])
+    |> Bodyguard.scope(user)
     |> Repo.all()
   end
 
-  def list_lesson_combinations(opts \\ []) do
+  def list_lesson_combinations(%User{} = user, opts \\ []) do
     from(l in Lesson,
       distinct: [l.subject_id, l.seating_plan_id, l.room_id],
       limit: ^opts[:limit]
     )
-    |> where_user_id(opts[:user_id])
+    |> Bodyguard.scope(user)
     |> Repo.all()
     # order_by in query doesn't work
     |> Enum.sort_by(& &1.inserted_at, :desc)
   end
 
-  @doc """
-  Gets a single lesson.
-
-  Raises `Ecto.NoResultsError` if the Lesson does not exist.
-
-  ## Examples
-
-      iex> get_lesson!(123)
-      %Lesson{}
-
-      iex> get_lesson!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_lesson!(id), do: Repo.get!(Lesson, id)
-
-  @doc """
-  Creates a lesson.
-
-  ## Examples
-
-      iex> create_lesson(%{field: value})
-      {:ok, %Lesson{}}
-
-      iex> create_lesson(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_lesson(attrs \\ %{}) do
-    %Lesson{state: :started}
-    |> Lesson.changeset(attrs)
-    |> Repo.insert()
+  def get_lesson!(%User{} = user, id) do
+    Lesson
+    |> Bodyguard.scope(user)
+    |> Repo.get!(id)
   end
 
-  @doc """
-  Updates a lesson.
-
-  ## Examples
-
-      iex> update_lesson(lesson, %{field: new_value})
-      {:ok, %Lesson{}}
-
-      iex> update_lesson(lesson, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_lesson(%Lesson{} = lesson, attrs) do
-    lesson
-    |> Lesson.changeset(attrs)
-    |> Repo.update()
+  def create_lesson(%User{} = user, attrs \\ %{}) do
+    with :ok <- permit(:create_lesson, user) do
+      %Lesson{user_id: user.id, state: :started}
+      |> Lesson.changeset(attrs)
+      |> Repo.insert()
+    end
   end
 
-  def transition_lesson(lesson, new_state, attrs \\ %{})
+  def update_lesson(%User{} = user, %Lesson{} = lesson, attrs) do
+    with :ok <- permit(:update_lesson, user, lesson) do
+      lesson
+      |> Lesson.changeset(attrs)
+      |> Repo.update()
+    end
+  end
 
-  def transition_lesson(%Lesson{state: :started} = lesson, :roll_call = new_state, _) do
-    with {:ok, lesson} = res <- Repo.update(Lesson.changeset(lesson, %{state: new_state})) do
+  def transition_lesson(user, lesson, new_state, attrs \\ %{})
+
+  def transition_lesson(
+        %User{} = user,
+        %Lesson{state: :started} = lesson,
+        :roll_call = new_state,
+        _
+      ) do
+    with :ok <- permit(:update_lesson, user, lesson),
+         {:ok, lesson} = res <- Repo.update(Lesson.changeset(lesson, %{state: new_state})) do
       ActiveRollCall.start(lesson)
       res
     end
   end
 
-  def transition_lesson(%Lesson{state: :roll_call} = lesson, :active = new_state, _) do
-    Task.start(fn -> ActiveRollCall.stop(lesson) end)
+  def transition_lesson(
+        %User{} = user,
+        %Lesson{state: :roll_call} = lesson,
+        :active = new_state,
+        _
+      ) do
+    with :ok <- permit(:update_lesson, user, lesson) do
+      Task.start(fn -> ActiveRollCall.stop(lesson) end)
 
-    lesson
-    |> Lesson.changeset(%{state: new_state})
-    |> Repo.update()
-  end
-
-  def transition_lesson(%Lesson{state: :active} = lesson, :question, attrs) do
-    question_params = put_params_attr(attrs[:question] || %{}, :lesson_id, lesson.id)
-
-    multi =
-      Ecto.Multi.new()
-      |> Ecto.Multi.update(:lesson, Lesson.changeset(lesson, %{state: :question}))
-      |> Ecto.Multi.insert(:question, Question.changeset(%Question{}, question_params))
-
-    with {:ok, %{lesson: lesson, question: question}} <- Repo.transaction(multi) do
-      ActiveQuestion.start(question)
-      {:ok, lesson}
-    end
-  end
-
-  def transition_lesson(%Lesson{state: :question} = lesson, :active, _) do
-    question = Repo.get_by!(Question, lesson_id: lesson.id, state: :started)
-    Task.start(fn -> ActiveQuestion.stop(question) end)
-
-    multi =
-      Ecto.Multi.new()
-      |> Ecto.Multi.update(:lesson, Lesson.changeset(lesson, %{state: :active}))
-      |> Ecto.Multi.update(:question, Question.changeset(question, %{state: :ended}))
-
-    with {:ok, %{lesson: lesson}} <- Repo.transaction(multi) do
-      {:ok, lesson}
-    end
-  end
-
-  def transition_lesson(%Lesson{state: :active} = lesson, :ended = new_state, _),
-    do: Repo.update(Lesson.changeset(lesson, %{state: new_state}))
-
-  def transition_lesson(%Lesson{state: old_state} = lesson, :graded, attrs)
-      when old_state in [:ended, :graded] do
-    res =
       lesson
-      |> Lesson.changeset(put_params_attr(attrs, :state, :graded))
+      |> Lesson.changeset(%{state: new_state})
       |> Repo.update()
+    end
+  end
 
-    with {:ok, lesson} <- res do
-      calculate_and_save_lesson_grades(lesson)
-      res
+  def transition_lesson(%User{} = user, %Lesson{state: :active} = lesson, :question, attrs) do
+    with :ok <- permit(:update_lesson, user, lesson) do
+      question_params = put_params_attr(attrs[:question] || %{}, :lesson_id, lesson.id)
+
+      multi =
+        Ecto.Multi.new()
+        |> Ecto.Multi.update(:lesson, Lesson.changeset(lesson, %{state: :question}))
+        |> Ecto.Multi.insert(:question, Question.changeset(%Question{}, question_params))
+
+      with {:ok, %{lesson: lesson, question: question}} <- Repo.transaction(multi) do
+        ActiveQuestion.start(question)
+        {:ok, lesson}
+      end
+    end
+  end
+
+  def transition_lesson(%User{} = user, %Lesson{state: :question} = lesson, :active, _) do
+    with :ok <- permit(:update_lesson, user, lesson) do
+      question = Repo.get_by!(Question, lesson_id: lesson.id, state: :started)
+      Task.start(fn -> ActiveQuestion.stop(question) end)
+
+      multi =
+        Ecto.Multi.new()
+        |> Ecto.Multi.update(:lesson, Lesson.changeset(lesson, %{state: :active}))
+        |> Ecto.Multi.update(:question, Question.changeset(question, %{state: :ended}))
+
+      with {:ok, %{lesson: lesson}} <- Repo.transaction(multi) do
+        {:ok, lesson}
+      end
+    end
+  end
+
+  def transition_lesson(%User{} = user, %Lesson{state: :active} = lesson, :ended = new_state, _) do
+    with :ok <- permit(:update_lesson, user, lesson) do
+      Repo.update(Lesson.changeset(lesson, %{state: new_state}))
+    end
+  end
+
+  def transition_lesson(%User{} = user, %Lesson{state: old_state} = lesson, :graded, attrs)
+      when old_state in [:ended, :graded] do
+    with :ok <- permit(:update_lesson, user, lesson) do
+      res =
+        lesson
+        |> Lesson.changeset(put_params_attr(attrs, :state, :graded))
+        |> Repo.update()
+
+      with {:ok, lesson} <- res do
+        calculate_and_save_lesson_grades(user, lesson)
+        res
+      end
     end
   end
 
@@ -158,25 +147,11 @@ defmodule Clickr.Lessons do
   defp put_params_attr(attrs, key, value, _),
     do: Map.put(attrs, Atom.to_string(key), value)
 
-  @doc """
-  Deletes a lesson.
-
-  ## Examples
-
-      iex> delete_lesson(lesson)
-      {:ok, %Lesson{}}
-
-      iex> delete_lesson(lesson)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_lesson(%Lesson{} = lesson) do
+  def delete_lesson(%User{} = user, %Lesson{} = lesson) do
     lesson = Repo.preload(lesson, :lesson_students)
 
-    with {:ok, _} = res <- Repo.delete(lesson) do
+    with :ok <- permit(:delete_lesson, user, lesson), {:ok, _} = res <- Repo.delete(lesson) do
       suid = lesson.subject_id
-      # TODO Use param
-      user = Repo.preload(lesson, :user).user
 
       for ls <- lesson.lesson_students,
           do:
@@ -189,103 +164,27 @@ defmodule Clickr.Lessons do
     end
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking lesson changes.
-
-  ## Examples
-
-      iex> change_lesson(lesson)
-      %Ecto.Changeset{data: %Lesson{}}
-
-  """
   def change_lesson(%Lesson{} = lesson, attrs \\ %{}) do
     Lesson.changeset(lesson, attrs)
   end
 
-  alias Clickr.Lessons.Question
-
-  @doc """
-  Returns the list of questions.
-
-  ## Examples
-
-      iex> list_questions()
-      [%Question{}, ...]
-
-  """
-  def list_questions(opts \\ []) do
+  def get_started_question!(%User{} = user, %Lesson{} = lesson) do
     Question
-    |> where_lesson_id(opts[:lesson_id])
-    |> Repo.all()
+    |> Bodyguard.scope(user)
+    |> Repo.get_by!(lesson_id: lesson.id, state: :started)
   end
 
-  @doc """
-  Gets a single question.
+  def delete_question(%User{} = user, %Question{} = question) do
+    question = Repo.preload(question, :lesson)
 
-  Raises `Ecto.NoResultsError` if the Question does not exist.
-
-  ## Examples
-
-      iex> get_question!(123)
-      %Question{}
-
-      iex> get_question!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_question!(id), do: Repo.get!(Question, id)
-
-  def get_started_question!(%Lesson{} = lesson),
-    do: Repo.get_by!(Question, lesson_id: lesson.id, state: :started)
-
-  @doc """
-  Creates a question.
-
-  ## Examples
-
-      iex> create_question(%{field: value})
-      {:ok, %Question{}}
-
-      iex> create_question(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_question(attrs \\ %{}) do
-    %Question{}
-    |> Question.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Deletes a question.
-
-  ## Examples
-
-      iex> delete_question(question)
-      {:ok, %Question{}}
-
-      iex> delete_question(question)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_question(%Question{} = question) do
-    with {:ok, _} = res <- Repo.delete(question) do
-      question = Repo.preload(question, :lesson)
-      calculate_and_save_lesson_grades(question.lesson)
+    with :ok <- permit(:delete_question, user, question),
+         {:ok, _} = res <- Repo.delete(question) do
+      calculate_and_save_lesson_grades(user, question.lesson)
 
       res
     end
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking question changes.
-
-  ## Examples
-
-      iex> change_question(question)
-      %Ecto.Changeset{data: %Question{}}
-
-  """
   def change_question(%Question{} = question, attrs \\ %{}) do
     Question.changeset(question, attrs)
   end
@@ -298,144 +197,72 @@ defmodule Clickr.Lessons do
   def broadcast_new_question_answer(%{lesson_id: _, question_id: _, student_id: _} = attrs),
     do: Clickr.PubSub.broadcast(lesson_topic(attrs), {:new_question_answer, attrs})
 
-  alias Clickr.Lessons.QuestionAnswer
-
-  @doc """
-  Returns the list of question_answers.
-
-  ## Examples
-
-      iex> list_question_answers()
-      [%QuestionAnswer{}, ...]
-
-  """
-  def list_question_answers(opts \\ []) do
+  def list_question_answers(%User{} = user, opts \\ []) do
     QuestionAnswer
+    |> Bodyguard.scope(user)
     |> where_question_id(opts[:question_id])
     |> Repo.all()
   end
 
-  @doc """
-  Gets a single question_answer.
+  def create_question_answer(%User{} = user, attrs \\ %{}) do
+    changeset = QuestionAnswer.changeset(%QuestionAnswer{}, attrs)
+    question_id = Ecto.Changeset.get_field(changeset, :question_id)
 
-  Raises `Ecto.NoResultsError` if the Question answer does not exist.
-
-  ## Examples
-
-      iex> get_question_answer!(123)
-      %QuestionAnswer{}
-
-      iex> get_question_answer!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_question_answer!(id), do: Repo.get!(QuestionAnswer, id)
-
-  @doc """
-  Creates a question_answer.
-
-  ## Examples
-
-      iex> create_question_answer(%{field: value})
-      {:ok, %QuestionAnswer{}}
-
-      iex> create_question_answer(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_question_answer(attrs \\ %{}) do
-    %QuestionAnswer{}
-    |> QuestionAnswer.changeset(attrs)
-    |> Repo.insert()
+    with :ok <- permit(:create_question_answer, user, %{question_id: question_id}) do
+      Repo.insert(changeset)
+    end
   end
 
-  alias Clickr.Lessons.LessonStudent
-
-  @doc """
-  Returns the list of lesson_students.
-
-  ## Examples
-
-      iex> list_lesson_students()
-      [%LessonStudent{}, ...]
-
-  """
-  def list_lesson_students(opts \\ []) do
+  def list_lesson_students(%User{} = user, opts \\ []) do
     LessonStudent
+    |> Bodyguard.scope(user)
     |> where_lesson_id(opts[:lesson_id])
     |> Repo.all()
   end
 
-  @doc """
-  Gets a single lesson_student.
+  def create_lesson_student(%User{} = user, attrs \\ %{}) do
+    changeset = LessonStudent.changeset(%LessonStudent{}, attrs)
+    lesson_id = Ecto.Changeset.get_field(changeset, :lesson_id)
 
-  Raises `Ecto.NoResultsError` if the Lesson student does not exist.
-
-  ## Examples
-
-      iex> get_lesson_student!(123)
-      %LessonStudent{}
-
-      iex> get_lesson_student!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_lesson_student!(id), do: Repo.get!(LessonStudent, id)
-
-  @doc """
-  Creates a lesson_student.
-
-  ## Examples
-
-      iex> create_lesson_student(%{field: value})
-      {:ok, %LessonStudent{}}
-
-      iex> create_lesson_student(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_lesson_student(attrs \\ %{}) do
-    %LessonStudent{}
-    |> LessonStudent.changeset(attrs)
-    |> Repo.insert()
+    with :ok <- permit(:create_lesson_student, user, %{lesson_id: lesson_id}) do
+      Repo.insert(changeset)
+    end
   end
 
-  def add_extra_points(%Lesson{state: :active} = lesson, %{student_id: sid}, delta) do
+  def add_extra_points(
+        %User{} = user,
+        %Lesson{state: :active} = lesson,
+        %{student_id: sid},
+        delta
+      ) do
     {1, _} =
       from(ls in LessonStudent, where: ls.lesson_id == ^lesson.id and ls.student_id == ^sid)
+      |> Bodyguard.scope(user)
       |> Repo.update_all(inc: [extra_points: delta])
 
     {:ok, nil}
   end
 
-  @doc """
-  Deletes a lesson_student.
+  def delete_lesson_student(%User{} = user, %LessonStudent{} = ls) do
+    ls = Repo.preload(ls, :lesson)
 
-  ## Examples
-
-      iex> delete_lesson_student(lesson_student)
-      {:ok, %LessonStudent{}}
-
-      iex> delete_lesson_student(lesson_student)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_lesson_student(%LessonStudent{} = ls) do
-    res =
-      Ecto.Multi.new()
-      |> Ecto.Multi.delete(:lesson_student, ls)
-      |> Ecto.Multi.delete_all(
-        :question_answers,
-        from(qa in QuestionAnswer,
-          join: q in assoc(qa, :question),
-          where: qa.student_id == ^ls.student_id and q.lesson_id == ^ls.lesson_id
+    with :ok <- permit(:delete_lesson_student, user, ls) do
+      res =
+        Ecto.Multi.new()
+        |> Ecto.Multi.delete(:lesson_student, ls)
+        |> Ecto.Multi.delete_all(
+          :question_answers,
+          from(qa in QuestionAnswer,
+            join: q in assoc(qa, :question),
+            where: qa.student_id == ^ls.student_id and q.lesson_id == ^ls.lesson_id
+          )
         )
-      )
-      |> Repo.transaction()
+        |> Repo.transaction()
 
-    with {:ok, %{lesson_student: lesson_student}} <- res do
-      calculate_and_save_lesson_grades(get_lesson!(ls.lesson_id))
-      {:ok, lesson_student}
+      with {:ok, %{lesson_student: lesson_student}} <- res do
+        calculate_and_save_lesson_grades(user, get_lesson!(user, ls.lesson_id))
+        {:ok, lesson_student}
+      end
     end
   end
 
@@ -451,44 +278,46 @@ defmodule Clickr.Lessons do
     end
   end
 
-  def calculate_and_save_lesson_grades(%Lesson{state: :graded} = lesson) do
-    lesson = Repo.preload(lesson, [:lesson_students, :grades])
-    points = get_lesson_points(lesson)
-    %{min: min, max: max} = lesson.grade
+  def calculate_and_save_lesson_grades(%User{} = user, %Lesson{state: :graded} = lesson) do
+    with :ok <- permit(:update_lesson, user, lesson) do
+      lesson = Repo.preload(lesson, [:lesson_students, :grades])
+      points = get_lesson_points(lesson)
+      %{min: min, max: max} = lesson.grade
 
-    grades =
-      for %{student_id: sid} <- lesson.lesson_students do
-        percent = Clickr.Grades.calculate_linear_grade(%{min: min, max: max, value: points[sid]})
-        %{student_id: sid, percent: percent}
-      end
+      grades =
+        for %{student_id: sid} <- lesson.lesson_students do
+          percent =
+            Clickr.Grades.calculate_linear_grade(%{min: min, max: max, value: points[sid]})
 
-    res =
-      lesson
-      |> Lesson.changeset(%{grades: grades})
-      |> Repo.update()
+          %{student_id: sid, percent: percent}
+        end
 
-    with {:ok, _} <- res do
-      suid = lesson.subject_id
-      # TODO Use param
-      user = Repo.preload(lesson, :user).user
+      res =
+        lesson
+        |> Lesson.changeset(%{grades: grades})
+        |> Repo.update()
 
-      for ls <- lesson.lesson_students do
-        Clickr.Grades.calculate_and_save_grade(user, %{
-          subject_id: suid,
-          student_id: ls.student_id
-        })
+      with {:ok, _} <- res do
+        suid = lesson.subject_id
+
+        for ls <- lesson.lesson_students do
+          Clickr.Grades.calculate_and_save_grade(user, %{
+            subject_id: suid,
+            student_id: ls.student_id
+          })
+        end
       end
     end
   end
 
-  def calculate_and_save_lesson_grades(%Lesson{} = lesson), do: {:noop, lesson}
-
-  defp where_user_id(query, nil), do: query
-  defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
+  def calculate_and_save_lesson_grades(%User{}, %Lesson{} = lesson), do: {:noop, lesson}
 
   defp where_lesson_id(query, nil), do: query
   defp where_lesson_id(query, id), do: where(query, [x], x.lesson_id == ^id)
 
   defp where_question_id(query, nil), do: query
   defp where_question_id(query, id), do: where(query, [x], x.question_id == ^id)
+
+  defp permit(action, user, params \\ []),
+    do: Bodyguard.permit(__MODULE__, action, user, params)
 end

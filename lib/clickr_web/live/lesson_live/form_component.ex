@@ -111,7 +111,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
   end
 
   defp save_lesson(socket, :edit, lesson_params) do
-    case Lessons.update_lesson(socket.assigns.lesson, set_user_id(lesson_params, socket)) do
+    case Lessons.update_lesson(socket.assigns.current_user, socket.assigns.lesson, lesson_params) do
       {:ok, lesson} ->
         {:noreply,
          socket
@@ -124,7 +124,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
   end
 
   defp save_lesson(socket, :new, lesson_params) do
-    case Lessons.create_lesson(set_user_id(lesson_params, socket)) do
+    case Lessons.create_lesson(socket.assigns.current_user, lesson_params) do
       {:ok, lesson} ->
         {:noreply,
          socket
@@ -135,8 +135,6 @@ defmodule ClickrWeb.LessonLive.FormComponent do
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
-
-  defp set_user_id(params, socket), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 
   defp load_subjects(socket) do
     user_id = socket.assigns.current_user.id
@@ -161,10 +159,8 @@ defmodule ClickrWeb.LessonLive.FormComponent do
   defp load_rooms(socket), do: assign(socket, :rooms, [])
 
   defp load_combinations(socket) do
-    user_id = socket.assigns.current_user.id
-
     combinations =
-      Clickr.Lessons.list_lesson_combinations(user_id: user_id, limit: 12)
+      Clickr.Lessons.list_lesson_combinations(socket.assigns.current_user, limit: 12)
       |> Clickr.Repo.preload([:subject, :seating_plan, :room])
 
     assign(socket, :combinations, combinations)
