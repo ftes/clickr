@@ -54,11 +54,11 @@ defmodule ClickrWeb.ClassLive.FormComponent do
 
   defp save_class(socket, :edit, class_params) do
     case Classes.update_class(socket.assigns.current_user, socket.assigns.class, class_params) do
-      {:ok, _class} ->
+      {:ok, class} ->
         {:noreply,
          socket
          |> put_flash(:info, dgettext("classes.classes", "Class updated successfully"))
-         |> push_navigate(to: socket.assigns.navigate)}
+         |> push_navigate(to: socket.assigns[:navigate] || ~p"/classes/#{class}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
@@ -67,11 +67,11 @@ defmodule ClickrWeb.ClassLive.FormComponent do
 
   defp save_class(socket, :new, class_params) do
     case Classes.create_class(socket.assigns.current_user, class_params) do
-      {:ok, _class} ->
+      {:ok, class} ->
         {:noreply,
          socket
          |> put_flash(:info, dgettext("classes.classes", "Class created successfully"))
-         |> push_navigate(to: socket.assigns.navigate)}
+         |> push_navigate(to: socket.assigns[:navigate] || ~p"/classes/#{class}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

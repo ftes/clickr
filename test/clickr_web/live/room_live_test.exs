@@ -37,14 +37,11 @@ defmodule ClickrWeb.RoomLiveTest do
              |> form("#room-form", room: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      {:ok, _, html} =
-        index_live
-        |> form("#room-form", room: @create_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/rooms")
+      index_live
+      |> form("#room-form", room: @create_attrs)
+      |> render_submit()
 
-      assert html =~ "Room created successfully"
-      assert html =~ "some name"
+      assert {_, %{"info" => "Room created successfully"}} = assert_redirect(index_live)
     end
 
     test "updates room in listing", %{conn: conn, room: room} do
@@ -63,7 +60,7 @@ defmodule ClickrWeb.RoomLiveTest do
         index_live
         |> form("#room-form", room: @update_attrs)
         |> render_submit()
-        |> follow_redirect(conn, ~p"/rooms")
+        |> follow_redirect(conn, ~p"/rooms/#{room}")
 
       assert html =~ "Room updated successfully"
       assert html =~ "some updated name"

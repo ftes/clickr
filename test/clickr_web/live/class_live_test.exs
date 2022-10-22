@@ -37,14 +37,11 @@ defmodule ClickrWeb.ClassLiveTest do
              |> form("#class-form", class: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      {:ok, _, html} =
-        index_live
-        |> form("#class-form", class: @create_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/classes")
+      index_live
+      |> form("#class-form", class: @create_attrs)
+      |> render_submit()
 
-      assert html =~ "Class created successfully"
-      assert html =~ "some name"
+      assert {_, %{"info" => "Class created successfully"}} = assert_redirect(index_live)
     end
 
     test "updates class in listing", %{conn: conn, class: class} do
@@ -63,7 +60,7 @@ defmodule ClickrWeb.ClassLiveTest do
         index_live
         |> form("#class-form", class: @update_attrs)
         |> render_submit()
-        |> follow_redirect(conn, ~p"/classes")
+        |> follow_redirect(conn, ~p"/classes/#{class}")
 
       assert html =~ "Class updated successfully"
       assert html =~ "some updated name"

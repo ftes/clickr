@@ -56,11 +56,11 @@ defmodule ClickrWeb.RoomLive.FormComponent do
 
   defp save_room(socket, :edit, room_params) do
     case Rooms.update_room(socket.assigns.current_user, socket.assigns.room, room_params) do
-      {:ok, _room} ->
+      {:ok, room} ->
         {:noreply,
          socket
          |> put_flash(:info, dgettext("rooms.rooms", "Room updated successfully"))
-         |> push_navigate(to: socket.assigns.navigate)}
+         |> push_navigate(to: socket.assigns[:navigate] || ~p"/rooms/#{room}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
@@ -69,11 +69,11 @@ defmodule ClickrWeb.RoomLive.FormComponent do
 
   defp save_room(socket, :new, room_params) do
     case Rooms.create_room(socket.assigns.current_user, room_params) do
-      {:ok, _room} ->
+      {:ok, room} ->
         {:noreply,
          socket
          |> put_flash(:info, dgettext("rooms.rooms", "Room created successfully"))
-         |> push_navigate(to: socket.assigns.navigate)}
+         |> push_navigate(to: socket.assigns[:navigate] || ~p"/rooms/#{room}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
