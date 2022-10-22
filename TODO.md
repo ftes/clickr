@@ -1,7 +1,5 @@
 # Todo
 
-- [ ] Permissions
-  - user as first (second?) arg to all context functions
 - [ ] Filter and sort lists
 - [ ] List and delete lesson questions
 - [ ] Store device.battery
