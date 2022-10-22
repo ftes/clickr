@@ -10,8 +10,6 @@ defmodule ClickrWeb.ClassLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    # TODO Check permission
-
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
@@ -27,7 +25,8 @@ defmodule ClickrWeb.ClassLive.Show do
 
   def handle_event("students_create", %{"students" => params}, socket) do
     class = Map.put(socket.assigns.class, :students, [])
-    {:ok, _} = Classes.update_class(class, %{students: student_params(params, socket)})
+    params = %{students: student_params(params, socket)}
+    {:ok, _} = Classes.update_class(socket.assigns.current_user, class, params)
     {:noreply, load_class(socket, class.id)}
   end
 
@@ -51,6 +50,10 @@ defmodule ClickrWeb.ClassLive.Show do
   end
 
   defp load_class(socket, id) do
-    assign(socket, :class, Classes.get_class!(id) |> Clickr.Repo.preload(:students))
+    assign(
+      socket,
+      :class,
+      Classes.get_class!(socket.assigns.current_user, id) |> Clickr.Repo.preload(:students)
+    )
   end
 end

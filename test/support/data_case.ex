@@ -55,4 +55,9 @@ defmodule Clickr.DataCase do
       end)
     end)
   end
+
+  def create_user(_) do
+    user = Clickr.AccountsFixtures.user_fixture()
+    %{user: user}
+  end
 end

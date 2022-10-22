@@ -3,6 +3,8 @@ defmodule Clickr.ClassesTest do
 
   alias Clickr.Classes
 
+  setup :create_user
+
   describe "classes" do
     alias Clickr.Classes.Class
 
@@ -10,50 +12,49 @@ defmodule Clickr.ClassesTest do
 
     @invalid_attrs %{name: nil}
 
-    test "list_classes/0 returns all classes" do
-      class = class_fixture()
-      assert Classes.list_classes() == [class]
+    test "list_classes/0 returns all classes", %{user: user} do
+      class = class_fixture(user_id: user.id)
+      assert Classes.list_classes(user) == [class]
     end
 
-    test "get_class!/1 returns the class with given id" do
-      class = class_fixture()
-      assert Classes.get_class!(class.id) == class
+    test "get_class!/1 returns the class with given id", %{user: user} do
+      class = class_fixture(user_id: user.id)
+      assert Classes.get_class!(user, class.id) == class
     end
 
-    test "create_class/1 with valid data creates a class" do
-      user = user_fixture()
+    test "create_class/1 with valid data creates a class", %{user: user} do
       valid_attrs = %{name: "some name", user_id: user.id}
 
-      assert {:ok, %Class{} = class} = Classes.create_class(valid_attrs)
+      assert {:ok, %Class{} = class} = Classes.create_class(user, valid_attrs)
       assert class.name == "some name"
     end
 
-    test "create_class/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Classes.create_class(@invalid_attrs)
+    test "create_class/1 with invalid data returns error changeset", %{user: user} do
+      assert {:error, %Ecto.Changeset{}} = Classes.create_class(user, @invalid_attrs)
     end
 
-    test "update_class/2 with valid data updates the class" do
-      class = class_fixture()
+    test "update_class/2 with valid data updates the class", %{user: user} do
+      class = class_fixture(user_id: user.id)
       update_attrs = %{name: "some updated name"}
 
-      assert {:ok, %Class{} = class} = Classes.update_class(class, update_attrs)
+      assert {:ok, %Class{} = class} = Classes.update_class(user, class, update_attrs)
       assert class.name == "some updated name"
     end
 
-    test "update_class/2 with invalid data returns error changeset" do
-      class = class_fixture()
-      assert {:error, %Ecto.Changeset{}} = Classes.update_class(class, @invalid_attrs)
-      assert class == Classes.get_class!(class.id)
+    test "update_class/2 with invalid data returns error changeset", %{user: user} do
+      class = class_fixture(user_id: user.id)
+      assert {:error, %Ecto.Changeset{}} = Classes.update_class(user, class, @invalid_attrs)
+      assert class == Classes.get_class!(user, class.id)
     end
 
-    test "delete_class/1 deletes the class" do
-      class = class_fixture()
-      assert {:ok, %Class{}} = Classes.delete_class(class)
-      assert_raise Ecto.NoResultsError, fn -> Classes.get_class!(class.id) end
+    test "delete_class/1 deletes the class", %{user: user} do
+      class = class_fixture(user_id: user.id)
+      assert {:ok, %Class{}} = Classes.delete_class(user, class)
+      assert_raise Ecto.NoResultsError, fn -> Classes.get_class!(user, class.id) end
     end
 
-    test "change_class/1 returns a class changeset" do
-      class = class_fixture()
+    test "change_class/1 returns a class changeset", %{user: user} do
+      class = class_fixture(user_id: user.id)
       assert %Ecto.Changeset{} = Classes.change_class(class)
     end
   end

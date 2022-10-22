@@ -1,11 +1,13 @@
 defmodule Clickr.Classes do
+  defdelegate authorize(action, user, params), to: Clickr.Classes.Policy
+
   @moduledoc """
   The Classes context.
   """
 
   import Ecto.Query, warn: false
   alias Clickr.Repo
-
+  alias Clickr.Accounts.User
   alias Clickr.Classes.Class
 
   @doc """
@@ -17,9 +19,9 @@ defmodule Clickr.Classes do
       [%Class{}, ...]
 
   """
-  def list_classes(opts \\ []) do
+  def list_classes(%User{} = user) do
     Class
-    |> where_user_id(opts[:user_id])
+    |> Bodyguard.scope(user)
     |> Repo.all()
   end
 
@@ -37,7 +39,11 @@ defmodule Clickr.Classes do
       ** (Ecto.NoResultsError)
 
   """
-  def get_class!(id), do: Repo.get!(Class, id)
+  def get_class!(%User{} = user, id) do
+    Class
+    |> Bodyguard.scope(user)
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a class.
@@ -51,10 +57,12 @@ defmodule Clickr.Classes do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_class(attrs \\ %{}) do
-    %Class{}
-    |> Class.changeset(attrs)
-    |> Repo.insert()
+  def create_class(%User{} = user, attrs \\ %{}) do
+    with :ok <- permit(:create_class, user) do
+      %Class{user_id: user.id}
+      |> Class.changeset(attrs)
+      |> Repo.insert()
+    end
   end
 
   @doc """
@@ -69,10 +77,12 @@ defmodule Clickr.Classes do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_class(%Class{} = class, attrs) do
-    class
-    |> Class.changeset(attrs)
-    |> Repo.update()
+  def update_class(%User{} = user, %Class{} = class, attrs) do
+    with :ok <- permit(:update_class, user, class) do
+      class
+      |> Class.changeset(attrs)
+      |> Repo.update()
+    end
   end
 
   @doc """
@@ -87,8 +97,11 @@ defmodule Clickr.Classes do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_class(%Class{} = class) do
-    Repo.delete(class)
+  def delete_class(%User{} = user, %Class{} = class) do
+    with :ok <- permit(:delete_class, user, class) do
+      class
+      |> Repo.delete()
+    end
   end
 
   @doc """
@@ -318,4 +331,7 @@ defmodule Clickr.Classes do
 
   defp where_seating_plan_id(query, nil), do: query
   defp where_seating_plan_id(query, id), do: where(query, [x], x.seating_plan_id == ^id)
+
+  defp permit(action, user, params \\ []),
+    do: Bodyguard.permit(__MODULE__, action, user, params)
 end

@@ -9,11 +9,15 @@ defmodule Clickr.Classes.Class do
     timestamps(type: :utc_datetime)
   end
 
+  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+    from x in query, where: x.user_id == ^user_id
+  end
+
   @doc false
   def changeset(class, attrs) do
     class
-    |> cast(attrs, [:name, :user_id])
-    |> validate_required([:name, :user_id])
+    |> cast(attrs, [:name])
+    |> validate_required([:name])
     |> foreign_key_constraint(:user_id)
     |> cast_assoc(:students)
   end

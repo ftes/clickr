@@ -10,15 +10,12 @@ defmodule Clickr.ClassesFixtures do
   Generate a class.
   """
   def class_fixture(attrs \\ %{}) do
-    {:ok, class} =
-      attrs
-      |> Enum.into(%{
-        name: "some class name"
-      })
-      |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
-      |> Clickr.Classes.create_class()
-
-    class
+    attrs
+    |> Enum.into(%{
+      name: "some class name"
+    })
+    |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
+    |> create(Clickr.Classes.Class)
   end
 
   @doc """

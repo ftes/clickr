@@ -17,7 +17,7 @@ defmodule ClickrWeb.ClassLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, dgettext("classes.classes", "Edit Class"))
-    |> assign(:class, Classes.get_class!(id))
+    |> assign(:class, Classes.get_class!(socket.assigns.current_user, id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -34,15 +34,12 @@ defmodule ClickrWeb.ClassLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    # TODO Check permission
-
-    class = Classes.get_class!(id)
-    {:ok, _} = Classes.delete_class(class)
-
+    class = Classes.get_class!(socket.assigns.current_user, id)
+    {:ok, _} = Classes.delete_class(socket.assigns.current_user, class)
     {:noreply, load_classes(socket)}
   end
 
   defp load_classes(socket) do
-    assign(socket, :classes, Classes.list_classes(user_id: socket.assigns.current_user.id))
+    assign(socket, :classes, Classes.list_classes(socket.assigns.current_user))
   end
 end

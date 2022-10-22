@@ -90,6 +90,6 @@ defmodule ClickrWeb.StudentLive.FormComponent do
   defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 
   defp load_classes(socket) do
-    assign(socket, :classes, Clickr.Classes.list_classes(user_id: socket.assigns.current_user.id))
+    assign(socket, :classes, Clickr.Classes.list_classes(socket.assigns.current_user))
   end
 end

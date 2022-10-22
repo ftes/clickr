@@ -53,9 +53,7 @@ defmodule ClickrWeb.ClassLive.FormComponent do
   end
 
   defp save_class(socket, :edit, class_params) do
-    # TODO Check permission
-
-    case Classes.update_class(socket.assigns.class, set_user_id(socket, class_params)) do
+    case Classes.update_class(socket.assigns.current_user, socket.assigns.class, class_params) do
       {:ok, _class} ->
         {:noreply,
          socket
@@ -68,7 +66,7 @@ defmodule ClickrWeb.ClassLive.FormComponent do
   end
 
   defp save_class(socket, :new, class_params) do
-    case Classes.create_class(set_user_id(socket, class_params)) do
+    case Classes.create_class(socket.assigns.current_user, class_params) do
       {:ok, _class} ->
         {:noreply,
          socket
@@ -79,6 +77,4 @@ defmodule ClickrWeb.ClassLive.FormComponent do
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
-
-  defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 end
