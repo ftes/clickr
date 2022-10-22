@@ -34,9 +34,9 @@ defmodule ClickrWeb.KeyboardDevice do
     %{current_user: user, gateway: gateway} = socket.assigns
 
     if String.length(key) == 1 do
-      other_attrs = %{user_id: user.id, gateway_id: gateway.id}
+      other_attrs = %{gateway_id: gateway.id}
       {:ok, attrs} = Clickr.Devices.Keyboard.parse_event(%{user_id: user.id, key: key})
-      Clickr.Devices.broadcast_button_click(Map.merge(other_attrs, attrs))
+      Clickr.Devices.broadcast_button_click(user, Map.merge(other_attrs, attrs))
       {:noreply, socket}
     else
       {:noreply, socket}

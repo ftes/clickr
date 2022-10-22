@@ -10,12 +10,14 @@ defmodule ClickrWeb.ButtonLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    # TODO Check permission
-
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:button, Devices.get_button!(id) |> Clickr.Repo.preload(device: :gateway))}
+     |> assign(
+       :button,
+       Devices.get_button!(socket.assigns.current_user, id)
+       |> Clickr.Repo.preload(device: :gateway)
+     )}
   end
 
   defp page_title(:show), do: dgettext("devices.buttons", "Show Button")

@@ -114,8 +114,7 @@ defmodule ClickrWeb.RoomLiveTest do
       {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
       show_live |> element("#empty-seat-1-1") |> render_click()
 
-      Clickr.Devices.broadcast_button_click(%{
-        user_id: user.id,
+      Clickr.Devices.broadcast_button_click(user, %{
         gateway_id: button.device.gateway_id,
         device_id: button.device_id,
         button_id: bid
@@ -149,12 +148,14 @@ defmodule ClickrWeb.RoomLiveTest do
       {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
       refute show_live |> has_element?("#button-#{bid}.x-active")
 
-      Clickr.Devices.broadcast_button_click(%{
-        user_id: user.id,
-        gateway_id: button.device.gateway_id,
-        device_id: button.device_id,
-        button_id: bid
-      })
+      Clickr.Devices.broadcast_button_click(
+        user,
+        %{
+          gateway_id: button.device.gateway_id,
+          device_id: button.device_id,
+          button_id: bid
+        }
+      )
 
       assert show_live |> has_element?("#button-#{bid}.x-active")
     end
@@ -164,7 +165,7 @@ defmodule ClickrWeb.RoomLiveTest do
       {:ok, show_live, _html} = live(conn, ~p"/rooms/#{room}")
 
       show_live |> element("#keyboard-device") |> render_keyup(%{"key" => "x"})
-      assert [%{name: "Keyboard/x"}] = Clickr.Devices.list_buttons()
+      assert [%{name: "Keyboard/x"}] = Clickr.Devices.list_buttons(user)
     end
   end
 end

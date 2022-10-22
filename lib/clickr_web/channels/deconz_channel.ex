@@ -23,14 +23,11 @@ defmodule ClickrWeb.DeconzChannel do
         %{assigns: %{sensors: sensors}} = socket
       )
       when is_map_key(sensors, id) do
-    other_attrs = %{
-      gateway_id: socket.assigns.current_gateway.id,
-      user_id: socket.assigns.current_user.id
-    }
+    other_attrs = %{gateway_id: socket.assigns.current_gateway.id}
 
     case Devices.Deconz.parse_event(sensors[id], msg) do
       {:ok, attrs} ->
-        Devices.broadcast_button_click(Map.merge(other_attrs, attrs))
+        Devices.broadcast_button_click(socket.assigns.current_user, Map.merge(other_attrs, attrs))
 
       err ->
         details = %{sensor: sensors[id], message: msg}

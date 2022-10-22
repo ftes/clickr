@@ -60,9 +60,7 @@ defmodule ClickrWeb.DeviceLive.FormComponent do
   end
 
   defp save_device(socket, :edit, device_params) do
-    # TODO Check permission
-
-    case Devices.update_device(socket.assigns.device, set_user_id(socket, device_params)) do
+    case Devices.update_device(socket.assigns.current_user, socket.assigns.device, device_params) do
       {:ok, _device} ->
         {:noreply,
          socket
@@ -75,7 +73,7 @@ defmodule ClickrWeb.DeviceLive.FormComponent do
   end
 
   defp save_device(socket, :new, device_params) do
-    case Devices.create_device(set_user_id(socket, device_params)) do
+    case Devices.create_device(socket.assigns.current_user, device_params) do
       {:ok, _device} ->
         {:noreply,
          socket
@@ -87,9 +85,7 @@ defmodule ClickrWeb.DeviceLive.FormComponent do
     end
   end
 
-  defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
-
   defp load_gateways(socket) do
-    assign(socket, :gateways, Devices.list_gateways(user_id: socket.assigns.current_user.id))
+    assign(socket, :gateways, Devices.list_gateways(socket.assigns.current_user))
   end
 end

@@ -56,7 +56,11 @@ defmodule ClickrWeb.GatewayLive.FormComponent do
   defp save_gateway(socket, :edit, gateway_params) do
     # TODO Check permission
 
-    case Devices.update_gateway(socket.assigns.gateway, set_user_id(socket, gateway_params)) do
+    case Devices.update_gateway(
+           socket.assigns.current_user,
+           socket.assigns.gateway,
+           gateway_params
+         ) do
       {:ok, _gateway} ->
         {:noreply,
          socket
@@ -69,7 +73,7 @@ defmodule ClickrWeb.GatewayLive.FormComponent do
   end
 
   defp save_gateway(socket, :new, gateway_params) do
-    case Devices.create_gateway(set_user_id(socket, gateway_params)) do
+    case Devices.create_gateway(socket.assigns.current_user, gateway_params) do
       {:ok, _gateway} ->
         {:noreply,
          socket
@@ -80,6 +84,4 @@ defmodule ClickrWeb.GatewayLive.FormComponent do
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
-
-  defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 end

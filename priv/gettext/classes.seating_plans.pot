@@ -17,7 +17,7 @@ msgid "Class"
 msgstr ""
 
 #: lib/clickr_web/live/seating_plan_live/index.ex:19
-#: lib/clickr_web/live/seating_plan_live/show.ex:36
+#: lib/clickr_web/live/seating_plan_live/show.ex:38
 #: lib/clickr_web/live/seating_plan_live/show.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "Edit Seating Plan"
@@ -62,7 +62,7 @@ msgstr ""
 msgid "Seating plan updated successfully"
 msgstr ""
 
-#: lib/clickr_web/live/seating_plan_live/show.ex:35
+#: lib/clickr_web/live/seating_plan_live/show.ex:37
 #, elixir-autogen, elixir-format
 msgid "Show Seating plan"
 msgstr ""

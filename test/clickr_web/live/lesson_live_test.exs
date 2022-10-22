@@ -48,7 +48,7 @@ defmodule ClickrWeb.LessonLiveTest do
     end
 
     test "shows gateway presence", %{conn: conn, user: user} do
-      gateway = Clickr.DevicesFixtures.gateway_fixture()
+      gateway = Clickr.DevicesFixtures.gateway_fixture(user_id: user.id)
       Clickr.Presence.track_gateway(%{user_id: user.id, gateway_id: gateway.id})
       {:ok, _index_live, html} = live(conn, ~p"/lessons")
 

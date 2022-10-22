@@ -60,9 +60,7 @@ defmodule ClickrWeb.ButtonLive.FormComponent do
   end
 
   defp save_button(socket, :edit, button_params) do
-    # TODO Check permission
-
-    case Devices.update_button(socket.assigns.button, set_user_id(socket, button_params)) do
+    case Devices.update_button(socket.assigns.current_user, socket.assigns.button, button_params) do
       {:ok, _button} ->
         {:noreply,
          socket
@@ -75,7 +73,7 @@ defmodule ClickrWeb.ButtonLive.FormComponent do
   end
 
   defp save_button(socket, :new, button_params) do
-    case Devices.create_button(set_user_id(socket, button_params)) do
+    case Devices.create_button(socket.assigns.current_user, button_params) do
       {:ok, _button} ->
         {:noreply,
          socket
@@ -87,9 +85,7 @@ defmodule ClickrWeb.ButtonLive.FormComponent do
     end
   end
 
-  defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
-
   defp load_devices(socket) do
-    assign(socket, :devices, Devices.list_devices(user_id: socket.assigns.current_user.id))
+    assign(socket, :devices, Devices.list_devices(socket.assigns.current_user))
   end
 end

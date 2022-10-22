@@ -66,6 +66,6 @@ if Mix.env() != :test do
     x = rem(i, 8) + 1
 
     {:ok, _} =
-      Classes.create_seating_plan_seat(%{seating_plan_id: spid, student_id: s.id, x: x, y: y})
+      Classes.create_seating_plan_seat(u, %{seating_plan_id: spid, student_id: s.id, x: x, y: y})
   end
 end

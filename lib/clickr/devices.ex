@@ -1,304 +1,127 @@
 defmodule Clickr.Devices do
-  @moduledoc """
-  The Devices context.
-  """
+  defdelegate authorize(action, user, params), to: Clickr.Devices.Policy
 
   import Ecto.Query, warn: false
   alias Clickr.Repo
+  alias Clickr.Accounts.User
+  alias Clickr.Devices.{Gateway, Device, Button}
 
-  alias Clickr.Devices.Gateway
-
-  @doc """
-  Returns the list of gateways.
-
-  ## Examples
-
-      iex> list_gateways()
-      [%Gateway{}, ...]
-
-  """
-  def list_gateways(opts \\ []) do
+  def list_gateways(%User{} = user, opts \\ []) do
     Gateway
+    |> Bodyguard.scope(user)
     |> where_ids(opts[:ids])
-    |> where_user_id(opts[:user_id])
     |> Repo.all()
   end
 
-  @doc """
-  Gets a single gateway.
-
-  Raises `Ecto.NoResultsError` if the Gateway does not exist.
-
-  ## Examples
-
-      iex> get_gateway!(123)
-      %Gateway{}
-
-      iex> get_gateway!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_gateway!(id), do: Repo.get!(Gateway, id)
-
-  def get_gateway_by(opts), do: Repo.get_by(Gateway, opts)
-
-  @doc """
-  Creates a gateway.
-
-  ## Examples
-
-      iex> create_gateway(%{field: value})
-      {:ok, %Gateway{}}
-
-      iex> create_gateway(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_gateway(attrs \\ %{}) do
-    %Gateway{}
-    |> Gateway.changeset(attrs)
-    |> Repo.insert()
+  def get_gateway!(%User{} = user, id) do
+    Gateway
+    |> Bodyguard.scope(user)
+    |> Repo.get!(id)
   end
 
-  @doc """
-  Updates a gateway.
-
-  ## Examples
-
-      iex> update_gateway(gateway, %{field: new_value})
-      {:ok, %Gateway{}}
-
-      iex> update_gateway(gateway, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_gateway(%Gateway{} = gateway, attrs) do
-    gateway
-    |> Gateway.changeset(attrs)
-    |> Repo.update()
+  def get_gateway_without_user_scope_by(opts) do
+    Gateway
+    |> Repo.get_by(opts)
   end
 
-  @doc """
-  Deletes a gateway.
-
-  ## Examples
-
-      iex> delete_gateway(gateway)
-      {:ok, %Gateway{}}
-
-      iex> delete_gateway(gateway)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_gateway(%Gateway{} = gateway) do
-    Repo.delete(gateway)
+  def create_gateway(%User{} = user, attrs \\ %{}) do
+    with :ok <- permit(:create_gateway, user) do
+      %Gateway{user_id: user.id}
+      |> Gateway.changeset(attrs)
+      |> Repo.insert()
+    end
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking gateway changes.
+  def update_gateway(%User{} = user, %Gateway{} = gateway, attrs) do
+    with :ok <- permit(:update_gateway, user, gateway) do
+      gateway
+      |> Gateway.changeset(attrs)
+      |> Repo.update()
+    end
+  end
 
-  ## Examples
+  def delete_gateway(%User{} = user, %Gateway{} = gateway) do
+    with :ok <- permit(:delete_gateway, user, gateway) do
+      Repo.delete(gateway)
+    end
+  end
 
-      iex> change_gateway(gateway)
-      %Ecto.Changeset{data: %Gateway{}}
-
-  """
   def change_gateway(%Gateway{} = gateway, attrs \\ %{}) do
     Gateway.changeset(gateway, attrs)
   end
 
-  alias Clickr.Devices.Device
-
-  @doc """
-  Returns the list of devices.
-
-  ## Examples
-
-      iex> list_devices()
-      [%Device{}, ...]
-
-  """
-  def list_devices(opts \\ []) do
+  def list_devices(%User{} = user) do
     Device
-    |> where_user_id(opts[:user_id])
+    |> Bodyguard.scope(user)
     |> Repo.all()
   end
 
-  @doc """
-  Gets a single device.
-
-  Raises `Ecto.NoResultsError` if the Device does not exist.
-
-  ## Examples
-
-      iex> get_device!(123)
-      %Device{}
-
-      iex> get_device!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_device!(id), do: Repo.get!(Device, id)
-
-  @doc """
-  Creates a device.
-
-  ## Examples
-
-      iex> create_device(%{field: value})
-      {:ok, %Device{}}
-
-      iex> create_device(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_device(attrs \\ %{}) do
-    %Device{}
-    |> Device.changeset(attrs)
-    |> Repo.insert()
+  def get_device!(%User{} = user, id) do
+    Device
+    |> Bodyguard.scope(user)
+    |> Repo.get!(id)
   end
 
-  @doc """
-  Updates a device.
-
-  ## Examples
-
-      iex> update_device(device, %{field: new_value})
-      {:ok, %Device{}}
-
-      iex> update_device(device, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_device(%Device{} = device, attrs) do
-    device
-    |> Device.changeset(attrs)
-    |> Repo.update()
+  def create_device(%User{} = user, attrs \\ %{}) do
+    with :ok <- permit(:create_device, user) do
+      %Device{user_id: user.id}
+      |> Device.changeset(attrs)
+      |> Repo.insert()
+    end
   end
 
-  @doc """
-  Deletes a device.
-
-  ## Examples
-
-      iex> delete_device(device)
-      {:ok, %Device{}}
-
-      iex> delete_device(device)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_device(%Device{} = device) do
-    Repo.delete(device)
+  def update_device(%User{} = user, %Device{} = device, attrs) do
+    with :ok <- permit(:update_device, user, device) do
+      device
+      |> Device.changeset(attrs)
+      |> Repo.update()
+    end
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking device changes.
+  def delete_device(%User{} = user, %Device{} = device) do
+    with :ok <- permit(:delete_device, user, device) do
+      Repo.delete(device)
+    end
+  end
 
-  ## Examples
-
-      iex> change_device(device)
-      %Ecto.Changeset{data: %Device{}}
-
-  """
   def change_device(%Device{} = device, attrs \\ %{}) do
     Device.changeset(device, attrs)
   end
 
-  alias Clickr.Devices.Button
-
-  @doc """
-  Returns the list of buttons.
-
-  ## Examples
-
-      iex> list_buttons()
-      [%Button{}, ...]
-
-  """
-  def list_buttons(opts \\ []) do
+  def list_buttons(%User{} = user) do
     Button
-    |> where_user_id(opts[:user_id])
+    |> Bodyguard.scope(user)
     |> Repo.all()
   end
 
-  @doc """
-  Gets a single button.
-
-  Raises `Ecto.NoResultsError` if the Button does not exist.
-
-  ## Examples
-
-      iex> get_button!(123)
-      %Button{}
-
-      iex> get_button!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_button!(id), do: Repo.get!(Button, id)
-
-  @doc """
-  Creates a button.
-
-  ## Examples
-
-      iex> create_button(%{field: value})
-      {:ok, %Button{}}
-
-      iex> create_button(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_button(attrs \\ %{}) do
-    %Button{}
-    |> Button.changeset(attrs)
-    |> Repo.insert()
+  def get_button!(%User{} = user, id) do
+    Button
+    |> Bodyguard.scope(user)
+    |> Repo.get!(id)
   end
 
-  @doc """
-  Updates a button.
-
-  ## Examples
-
-      iex> update_button(button, %{field: new_value})
-      {:ok, %Button{}}
-
-      iex> update_button(button, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_button(%Button{} = button, attrs) do
-    button
-    |> Button.changeset(attrs)
-    |> Repo.update()
+  def create_button(%User{} = user, attrs \\ %{}) do
+    with :ok <- permit(:create_button, user) do
+      %Button{user_id: user.id}
+      |> Button.changeset(attrs)
+      |> Repo.insert()
+    end
   end
 
-  @doc """
-  Deletes a button.
-
-  ## Examples
-
-      iex> delete_button(button)
-      {:ok, %Button{}}
-
-      iex> delete_button(button)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_button(%Button{} = button) do
-    Repo.delete(button)
+  def update_button(%User{} = user, %Button{} = button, attrs) do
+    with :ok <- permit(:update_button, user, button) do
+      button
+      |> Button.changeset(attrs)
+      |> Repo.update()
+    end
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking button changes.
+  def delete_button(%User{} = user, %Button{} = button) do
+    with :ok <- permit(:delete_button, user, button) do
+      Repo.delete(button)
+    end
+  end
 
-  ## Examples
-
-      iex> change_button(button)
-      %Ecto.Changeset{data: %Button{}}
-
-  """
   def change_button(%Button{} = button, attrs \\ %{}) do
     Button.changeset(button, attrs)
   end
@@ -306,8 +129,11 @@ defmodule Clickr.Devices do
   def button_click_topic(%{user_id: uid}), do: "devices.button_click/user:#{uid}"
 
   def broadcast_button_click(
-        %{button_id: bid, device_id: did, gateway_id: gid, user_id: uid} = attrs
+        %User{id: uid},
+        %{button_id: bid, device_id: did, gateway_id: gid} = attrs
       ) do
+    attrs = Map.put(attrs, :user_id, uid)
+
     device = %Device{
       id: did,
       gateway_id: gid,
@@ -343,6 +169,6 @@ defmodule Clickr.Devices do
   defp where_ids(query, nil), do: query
   defp where_ids(query, ids), do: where(query, [x], x.id in ^ids)
 
-  defp where_user_id(query, nil), do: query
-  defp where_user_id(query, id), do: where(query, [x], x.user_id == ^id)
+  defp permit(action, user, params \\ []),
+    do: Bodyguard.permit(__MODULE__, action, user, params)
 end

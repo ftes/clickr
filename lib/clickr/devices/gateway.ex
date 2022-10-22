@@ -9,11 +9,15 @@ defmodule Clickr.Devices.Gateway do
     timestamps(type: :utc_datetime)
   end
 
+  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+    from x in query, where: x.user_id == ^user_id
+  end
+
   @doc false
   def changeset(gateway, attrs) do
     gateway
-    |> cast(attrs, [:name, :api_token, :user_id])
-    |> validate_required([:name, :api_token, :user_id])
+    |> cast(attrs, [:name, :api_token])
+    |> validate_required([:name, :api_token])
     |> foreign_key_constraint(:user_id)
     |> unique_constraint(:api_token)
   end

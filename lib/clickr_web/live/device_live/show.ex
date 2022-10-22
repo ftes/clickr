@@ -10,12 +10,13 @@ defmodule ClickrWeb.DeviceLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    # TODO Check permission
-
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:device, Devices.get_device!(id) |> Clickr.Repo.preload(:gateway))}
+     |> assign(
+       :device,
+       Devices.get_device!(socket.assigns.current_user, id) |> Clickr.Repo.preload(:gateway)
+     )}
   end
 
   defp page_title(:show), do: dgettext("devices.devices", "Show Device")

@@ -10,12 +10,10 @@ defmodule ClickrWeb.GatewayLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    # TODO Check permission
-
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:gateway, Devices.get_gateway!(id))}
+     |> assign(:gateway, Devices.get_gateway!(socket.assigns.current_user, id))}
   end
 
   defp page_title(:show), do: dgettext("devices.gateways", "Show Gateway")

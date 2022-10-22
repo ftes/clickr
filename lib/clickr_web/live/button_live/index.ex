@@ -15,11 +15,9 @@ defmodule ClickrWeb.ButtonLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    # TODO Check permission
-
     socket
     |> assign(:page_title, dgettext("devices.buttons", "Edit Button"))
-    |> assign(:button, Devices.get_button!(id))
+    |> assign(:button, Devices.get_button!(socket.assigns.current_user, id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -36,15 +34,12 @@ defmodule ClickrWeb.ButtonLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    # TODO Check permission
-
-    button = Devices.get_button!(id)
-    {:ok, _} = Devices.delete_button(button)
-
+    button = Devices.get_button!(socket.assigns.current_user, id)
+    {:ok, _} = Devices.delete_button(socket.assigns.current_user, button)
     {:noreply, load_buttons(socket)}
   end
 
   defp load_buttons(socket) do
-    assign(socket, :buttons, Devices.list_buttons(user_id: socket.assigns.current_user.id))
+    assign(socket, :buttons, Devices.list_buttons(socket.assigns.current_user))
   end
 end

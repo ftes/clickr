@@ -15,12 +15,12 @@ msgstr ""
 msgid "Button"
 msgstr ""
 
-#: lib/clickr_web/live/button_live/form_component.ex:82
+#: lib/clickr_web/live/button_live/form_component.ex:80
 #, elixir-autogen, elixir-format
 msgid "Button created successfully"
 msgstr ""
 
-#: lib/clickr_web/live/button_live/form_component.ex:69
+#: lib/clickr_web/live/button_live/form_component.ex:67
 #, elixir-autogen, elixir-format
 msgid "Button updated successfully"
 msgstr ""
@@ -31,8 +31,8 @@ msgstr ""
 msgid "Device"
 msgstr ""
 
-#: lib/clickr_web/live/button_live/index.ex:21
-#: lib/clickr_web/live/button_live/show.ex:22
+#: lib/clickr_web/live/button_live/index.ex:19
+#: lib/clickr_web/live/button_live/show.ex:24
 #: lib/clickr_web/live/button_live/show.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "Edit Button"
@@ -43,7 +43,7 @@ msgstr ""
 msgid "Gateway"
 msgstr ""
 
-#: lib/clickr_web/live/button_live/index.ex:33
+#: lib/clickr_web/live/button_live/index.ex:31
 #: lib/clickr_web/live/button_live/index.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Listing Buttons"
@@ -56,13 +56,13 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: lib/clickr_web/live/button_live/index.ex:27
+#: lib/clickr_web/live/button_live/index.ex:25
 #: lib/clickr_web/live/button_live/index.html.heex:6
 #, elixir-autogen, elixir-format
 msgid "New Button"
 msgstr ""
 
-#: lib/clickr_web/live/button_live/show.ex:21
+#: lib/clickr_web/live/button_live/show.ex:23
 #, elixir-autogen, elixir-format
 msgid "Show Button"
 msgstr ""

@@ -16,18 +16,18 @@ msgstr ""
 msgid "Device"
 msgstr "Gerät"
 
-#: lib/clickr_web/live/device_live/form_component.ex:82
+#: lib/clickr_web/live/device_live/form_component.ex:80
 #, elixir-autogen, elixir-format
 msgid "Device created successfully"
 msgstr "Gerät angelegt"
 
-#: lib/clickr_web/live/device_live/form_component.ex:69
+#: lib/clickr_web/live/device_live/form_component.ex:67
 #, elixir-autogen, elixir-format
 msgid "Device updated successfully"
 msgstr "Gerät bearbeitet"
 
-#: lib/clickr_web/live/device_live/index.ex:21
-#: lib/clickr_web/live/device_live/show.ex:22
+#: lib/clickr_web/live/device_live/index.ex:19
+#: lib/clickr_web/live/device_live/show.ex:23
 #: lib/clickr_web/live/device_live/show.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "Edit Device"
@@ -39,7 +39,7 @@ msgstr "Gerät bearbeiten"
 msgid "Gateway"
 msgstr "Gateway"
 
-#: lib/clickr_web/live/device_live/index.ex:33
+#: lib/clickr_web/live/device_live/index.ex:31
 #: lib/clickr_web/live/device_live/index.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Listing Devices"
@@ -52,13 +52,13 @@ msgstr "Geräte"
 msgid "Name"
 msgstr "Name"
 
-#: lib/clickr_web/live/device_live/index.ex:27
+#: lib/clickr_web/live/device_live/index.ex:25
 #: lib/clickr_web/live/device_live/index.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "New Device"
 msgstr "Neues Gerät"
 
-#: lib/clickr_web/live/device_live/show.ex:21
+#: lib/clickr_web/live/device_live/show.ex:22
 #, elixir-autogen, elixir-format
 msgid "Show Device"
 msgstr "Gerät anzeigen"

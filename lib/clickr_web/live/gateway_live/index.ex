@@ -15,11 +15,9 @@ defmodule ClickrWeb.GatewayLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    # TODO Check permission
-
     socket
     |> assign(:page_title, dgettext("devices.gateways", "Edit Gateway"))
-    |> assign(:gateway, Devices.get_gateway!(id))
+    |> assign(:gateway, Devices.get_gateway!(socket.assigns.current_user, id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -36,15 +34,12 @@ defmodule ClickrWeb.GatewayLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    # TODO Check permission
-
-    gateway = Devices.get_gateway!(id)
-    {:ok, _} = Devices.delete_gateway(gateway)
-
+    gateway = Devices.get_gateway!(socket.assigns.current_user, id)
+    {:ok, _} = Devices.delete_gateway(socket.assigns.current_user, gateway)
     {:noreply, load_gateways(socket)}
   end
 
   defp load_gateways(socket) do
-    assign(socket, :gateways, Devices.list_gateways(user_id: socket.assigns.current_user.id))
+    assign(socket, :gateways, Devices.list_gateways(socket.assigns.current_user))
   end
 end

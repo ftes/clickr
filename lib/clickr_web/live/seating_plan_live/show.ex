@@ -10,8 +10,6 @@ defmodule ClickrWeb.SeatingPlanLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    # TODO Check permission
-
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
@@ -21,14 +19,18 @@ defmodule ClickrWeb.SeatingPlanLive.Show do
   @impl true
   def handle_event("assign_seat", %{"x" => x, "y" => y, "student_id" => sid}, socket) do
     {:ok, _} =
-      Classes.assign_seating_plan_seat(socket.assigns.seating_plan, %{x: x, y: y, student_id: sid})
+      Classes.assign_seating_plan_seat(
+        socket.assigns.current_user,
+        socket.assigns.seating_plan,
+        %{x: x, y: y, student_id: sid}
+      )
 
     {:noreply, load_seating_plan(socket, socket.assigns.seating_plan.id)}
   end
 
   def handle_event("delete_seat", %{"id" => id}, socket) do
     seat = Enum.find(socket.assigns.seating_plan.seats, &(&1.id == id))
-    {:ok, _} = Classes.delete_seating_plan_seat(seat)
+    {:ok, _} = Classes.delete_seating_plan_seat(socket.assigns.current_user, seat)
     {:noreply, load_seating_plan(socket, socket.assigns.seating_plan.id)}
   end
 

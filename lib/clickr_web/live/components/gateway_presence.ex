@@ -38,7 +38,10 @@ defmodule ClickrWeb.GatewayPresence do
 
   defp load_present_gateways(socket) do
     ids = Clickr.Presence.list(presence_topic(socket)) |> Map.keys()
-    gateways = Map.new(Clickr.Devices.list_gateways(ids: ids), &{&1.id, &1})
+
+    gateways =
+      Map.new(Clickr.Devices.list_gateways(socket.assigns.current_user, ids: ids), &{&1.id, &1})
+
     Phoenix.Component.assign(socket, :present_gateways, gateways)
   end
 

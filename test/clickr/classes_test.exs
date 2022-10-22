@@ -2,14 +2,12 @@ defmodule Clickr.ClassesTest do
   use Clickr.DataCase, async: true
 
   alias Clickr.Classes
+  import Clickr.{ClassesFixtures, StudentsFixtures}
+  alias Clickr.Classes.{Class, SeatingPlan, SeatingPlanSeat}
 
   setup :create_user
 
   describe "classes" do
-    alias Clickr.Classes.Class
-
-    import Clickr.{AccountsFixtures, ClassesFixtures}
-
     @invalid_attrs %{name: nil}
 
     test "list_classes/0 returns all classes", %{user: user} do
@@ -60,10 +58,6 @@ defmodule Clickr.ClassesTest do
   end
 
   describe "seating_plans" do
-    alias Clickr.Classes.SeatingPlan
-
-    import Clickr.{AccountsFixtures, ClassesFixtures}
-
     @invalid_attrs %{name: nil, width: nil, height: nil}
 
     test "list_seating_plans/0 returns all seating_plans", %{user: user} do
@@ -130,103 +124,43 @@ defmodule Clickr.ClassesTest do
   end
 
   describe "seating_plan_seats" do
-    alias Clickr.Classes.SeatingPlanSeat
-
-    import Clickr.{ClassesFixtures, StudentsFixtures}
-
-    @invalid_attrs %{x: nil, y: nil}
-
-    test "list_seating_plan_seats/0 returns all seating_plan_seats" do
-      seating_plan_seat = seating_plan_seat_fixture()
-      assert Classes.list_seating_plan_seats() == [seating_plan_seat]
-    end
-
-    test "get_seating_plan_seat!/1 returns the seating_plan_seat with given id" do
-      seating_plan_seat = seating_plan_seat_fixture()
-      assert Classes.get_seating_plan_seat!(seating_plan_seat.id) == seating_plan_seat
-    end
-
-    test "create_seating_plan_seat/1 with valid data creates a seating_plan_seat" do
-      seating_plan = seating_plan_fixture()
-      student = student_fixture()
-      valid_attrs = %{x: 42, y: 42, seating_plan_id: seating_plan.id, student_id: student.id}
-
-      assert {:ok, %SeatingPlanSeat{} = seating_plan_seat} =
-               Classes.create_seating_plan_seat(valid_attrs)
-
-      assert seating_plan_seat.x == 42
-      assert seating_plan_seat.y == 42
-    end
-
-    test "create_seating_plan_seat/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Classes.create_seating_plan_seat(@invalid_attrs)
-    end
-
-    test "update_seating_plan_seat/2 with valid data updates the seating_plan_seat" do
-      seating_plan_seat = seating_plan_seat_fixture()
-      update_attrs = %{x: 43, y: 43}
-
-      assert {:ok, %SeatingPlanSeat{} = seating_plan_seat} =
-               Classes.update_seating_plan_seat(seating_plan_seat, update_attrs)
-
-      assert seating_plan_seat.x == 43
-      assert seating_plan_seat.y == 43
-    end
-
-    test "update_seating_plan_seat/2 with invalid data returns error changeset" do
-      seating_plan_seat = seating_plan_seat_fixture()
-
-      assert {:error, %Ecto.Changeset{}} =
-               Classes.update_seating_plan_seat(seating_plan_seat, @invalid_attrs)
-
-      assert seating_plan_seat == Classes.get_seating_plan_seat!(seating_plan_seat.id)
-    end
-
-    test "delete_seating_plan_seat/1 deletes the seating_plan_seat" do
-      seating_plan_seat = seating_plan_seat_fixture()
-      assert {:ok, %SeatingPlanSeat{}} = Classes.delete_seating_plan_seat(seating_plan_seat)
+    test "delete_seating_plan_seat/1 deletes the seating_plan_seat", %{user: user} do
+      seating_plan_seat = seating_plan_seat_fixture(user_id: user.id)
+      assert {:ok, %SeatingPlanSeat{}} = Classes.delete_seating_plan_seat(user, seating_plan_seat)
 
       assert_raise Ecto.NoResultsError, fn ->
-        Classes.get_seating_plan_seat!(seating_plan_seat.id)
+        Clickr.Repo.get!(SeatingPlanSeat, seating_plan_seat.id)
       end
     end
 
-    test "change_seating_plan_seat/1 returns a seating_plan_seat changeset" do
-      seating_plan_seat = seating_plan_seat_fixture()
-      assert %Ecto.Changeset{} = Classes.change_seating_plan_seat(seating_plan_seat)
-    end
-
-    test "assign_seating_plan_seat/2 seats previously unseated student" do
-      %{id: spid} = seating_plan = seating_plan_fixture()
-      %{id: sid} = student_fixture()
+    test "assign_seating_plan_seat/2 seats previously unseated student", %{user: user} do
+      seating_plan = seating_plan_fixture(user_id: user.id)
+      %{id: sid} = student_fixture(user_id: user.id)
 
       assert {:ok, _} =
-               Classes.assign_seating_plan_seat(seating_plan, %{x: 1, y: 1, student_id: sid})
+               Classes.assign_seating_plan_seat(user, seating_plan, %{x: 1, y: 1, student_id: sid})
 
-      assert [%{x: 1, y: 1, student_id: ^sid}] =
-               Classes.list_seating_plan_seats(seating_plan_id: spid)
+      assert [%{x: 1, y: 1, student_id: ^sid}] = Clickr.Repo.all(SeatingPlanSeat)
     end
 
-    test "assign_seating_plan_seat/2 seats changes student seat" do
-      %{id: spid} = seating_plan = seating_plan_fixture()
-      %{id: sid} = student_fixture()
-
+    test "assign_seating_plan_seat/2 seats changes student seat", %{user: user} do
+      %{id: spid} = seating_plan = seating_plan_fixture(user_id: user.id)
+      %{id: sid} = student_fixture(user_id: user.id)
       seating_plan_seat_fixture(seating_plan_id: spid, student_id: sid, x: 1, y: 1)
 
       assert {:ok, _} =
-               Classes.assign_seating_plan_seat(seating_plan, %{x: 2, y: 2, student_id: sid})
+               Classes.assign_seating_plan_seat(user, seating_plan, %{x: 2, y: 2, student_id: sid})
 
-      assert [%{x: 2, y: 2, student_id: ^sid}] =
-               Classes.list_seating_plan_seats(seating_plan_id: spid)
+      assert [%{x: 2, y: 2, student_id: ^sid}] = Clickr.Repo.all(SeatingPlanSeat)
     end
 
-    test "assign_seating_plan_seat/2 seats returns error for occupied seat" do
-      %{id: spid} = seating_plan = seating_plan_fixture()
+    test "assign_seating_plan_seat/2 seats returns error for occupied seat", %{user: user} do
+      %{id: spid} = seating_plan = seating_plan_fixture(user_id: user.id)
+      %{id: sid} = student_fixture(user_id: user.id)
       seating_plan_seat_fixture(seating_plan_id: spid, x: 1, y: 1)
-      %{id: sid} = student_fixture()
 
       assert {:error, :seat_occupied} =
-               Classes.assign_seating_plan_seat(seating_plan, %{x: 1, y: 1, student_id: sid})
+               Classes.assign_seating_plan_seat(user, seating_plan, %{x: 1, y: 1, student_id: sid})
     end
   end
 end

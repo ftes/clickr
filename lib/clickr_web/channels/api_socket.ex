@@ -23,7 +23,7 @@ defmodule ClickrWeb.ApiSocket do
   # performing token verification on connect.
   @impl true
   def connect(%{"api_token" => api_token}, socket, _connect_info) do
-    case Clickr.Devices.get_gateway_by(api_token: api_token) do
+    case Clickr.Devices.get_gateway_without_user_scope_by(api_token: api_token) do
       nil ->
         {:error, :invalid_api_token}
 

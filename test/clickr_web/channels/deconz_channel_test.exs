@@ -12,12 +12,13 @@ defmodule ClickrWeb.DeconzChannelTest do
     %{user: user, gateway: gateway, socket: socket}
   end
 
-  test "server requests get_sensors on join", %{socket: _socket} do
+  test "server requests get_sensors on join" do
     assert_push "get_sensors", %{}
   end
 
   test "tradfri remote: server uses initial sensor data to create device and button upon click event",
        %{
+         user: user,
          socket: socket
        } do
     assert_push "get_sensors", %{}
@@ -43,12 +44,13 @@ defmodule ClickrWeb.DeconzChannelTest do
 
     assert_reply ref, :ok
 
-    assert [%{name: "some device"}] = Clickr.Devices.list_devices()
-    assert [%{name: "some device/left"}] = Clickr.Devices.list_buttons()
+    assert [%{name: "some device"}] = Clickr.Devices.list_devices(user)
+    assert [%{name: "some device/left"}] = Clickr.Devices.list_buttons(user)
   end
 
   test "styrbar remote: server uses initial sensor data to create device and button upon click event",
        %{
+         user: user,
          socket: socket
        } do
     assert_push "get_sensors", %{}
@@ -74,7 +76,7 @@ defmodule ClickrWeb.DeconzChannelTest do
 
     assert_reply ref, :ok
 
-    assert [%{name: "some device"}] = Clickr.Devices.list_devices()
-    assert [%{name: "some device/left"}] = Clickr.Devices.list_buttons()
+    assert [%{name: "some device"}] = Clickr.Devices.list_devices(user)
+    assert [%{name: "some device/left"}] = Clickr.Devices.list_buttons(user)
   end
 end
