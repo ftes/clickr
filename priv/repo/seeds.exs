@@ -16,10 +16,9 @@ if Mix.env() != :test do
   {:ok, %{id: uid} = u} =
     Accounts.register_user(%{email: "f@ftes.de", password: "passwordpassword"})
 
-  {:ok, %{id: rid}} = Rooms.create_room(%{user_id: uid, name: "R42", width: 8, height: 4})
+  {:ok, %{id: rid}} = Rooms.create_room(u, %{name: "R42", width: 8, height: 4})
 
-  {:ok, %{id: gid}} =
-    Devices.create_gateway(%{user_id: uid, name: "Keyboard", api_token: "keyboard"})
+  {:ok, %{id: gid}} = Devices.create_gateway(u, %{name: "Keyboard", api_token: "keyboard"})
 
   {:ok, %{id: did}} =
     Repo.insert(%Devices.Device{
@@ -39,15 +38,15 @@ if Mix.env() != :test do
         name: "Keyboard/#{key}"
       })
 
-    {:ok, _} = Rooms.create_room_seat(%{room_id: rid, button_id: bid, x: x + 1, y: y + 1})
+    {:ok, _} = Repo.insert(%Rooms.RoomSeat{room_id: rid, button_id: bid, x: x + 1, y: y + 1})
   end
 
-  {:ok, _} = Subjects.create_subject(%{user_id: uid, name: "Chemie"})
+  {:ok, _} = Subjects.create_subject(u, %{name: "Chemie"})
   {:ok, %{id: cid}} = Classes.create_class(u, %{user_id: uid, name: "6a"})
 
   students =
     for i <- 1..30 do
-      {:ok, s} = Students.create_student(%{user_id: uid, class_id: cid, name: "Student #{i}"})
+      {:ok, s} = Students.create_student(u, %{class_id: cid, name: "Student #{i}"})
       s
     end
 
@@ -66,6 +65,6 @@ if Mix.env() != :test do
     x = rem(i, 8) + 1
 
     {:ok, _} =
-      Classes.create_seating_plan_seat(u, %{seating_plan_id: spid, student_id: s.id, x: x, y: y})
+      Repo.insert(%Classes.SeatingPlanSeat{seating_plan_id: spid, student_id: s.id, x: x, y: y})
   end
 end
