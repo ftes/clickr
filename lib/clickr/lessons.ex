@@ -175,10 +175,15 @@ defmodule Clickr.Lessons do
 
     with {:ok, _} = res <- Repo.delete(lesson) do
       suid = lesson.subject_id
+      # TODO Use param
+      user = Repo.preload(lesson, :user).user
 
       for ls <- lesson.lesson_students,
           do:
-            Clickr.Grades.calculate_and_save_grade(%{subject_id: suid, student_id: ls.student_id})
+            Clickr.Grades.calculate_and_save_grade(user, %{
+              subject_id: suid,
+              student_id: ls.student_id
+            })
 
       res
     end
@@ -464,9 +469,14 @@ defmodule Clickr.Lessons do
 
     with {:ok, _} <- res do
       suid = lesson.subject_id
+      # TODO Use param
+      user = Repo.preload(lesson, :user).user
 
       for ls <- lesson.lesson_students do
-        Clickr.Grades.calculate_and_save_grade(%{subject_id: suid, student_id: ls.student_id})
+        Clickr.Grades.calculate_and_save_grade(user, %{
+          subject_id: suid,
+          student_id: ls.student_id
+        })
       end
     end
   end

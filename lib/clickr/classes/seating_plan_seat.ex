@@ -1,5 +1,5 @@
 defmodule Clickr.Classes.SeatingPlanSeat do
-  use Clickr.Schema
+  use Clickr.Schema, bodyguard: false
 
   schema "seating_plan_seats" do
     field :x, :integer
@@ -8,10 +8,6 @@ defmodule Clickr.Classes.SeatingPlanSeat do
     belongs_to :student, Clickr.Students.Student
 
     timestamps(type: :utc_datetime)
-  end
-
-  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
-    from x in query, join: sp in assoc(x, :seating_plan), where: sp.user_id == ^user_id
   end
 
   @doc false

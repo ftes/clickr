@@ -1,5 +1,5 @@
 defmodule Clickr.Accounts.UserToken do
-  use Clickr.Schema
+  use Clickr.Schema, bodyguard: false
   import Ecto.Query
   alias Clickr.Accounts.UserToken
 

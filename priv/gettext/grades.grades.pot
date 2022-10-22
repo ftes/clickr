@@ -53,7 +53,7 @@ msgstr ""
 msgid "Grades"
 msgstr ""
 
-#: lib/clickr_web/live/grade_live/show.ex:33
+#: lib/clickr_web/live/grade_live/show.ex:38
 #, elixir-autogen, elixir-format
 msgid "Bonus grade was deleted!"
 msgstr ""

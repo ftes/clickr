@@ -128,9 +128,9 @@ defmodule Clickr.LessonsTest do
                Lessons.transition_lesson(lesson, :graded, %{grade: %{min: 10.0, max: 20.0}})
 
       assert [%{lesson_id: ^lid, student_id: ^sid, percent: 0.6}] =
-               Clickr.Grades.list_lesson_grades()
+               Clickr.Repo.all(Clickr.Grades.LessonGrade)
 
-      assert [%{student_id: ^sid, percent: 0.6}] = Clickr.Grades.list_grades()
+      assert [%{student_id: ^sid, percent: 0.6}] = Clickr.Grades.list_grades(user)
     end
 
     test "delete_lesson/1 deletes the lesson, lesson_grade and recalculates grades", %{user: user} do
@@ -141,12 +141,12 @@ defmodule Clickr.LessonsTest do
       assert {:ok, _} =
                Lessons.transition_lesson(lesson, :graded, %{grade: %{min: 0.0, max: 10.0}})
 
-      assert [_] = Clickr.Grades.list_lesson_grades()
-      assert [%{percent: 0.5}] = Clickr.Grades.list_grades()
+      assert [_] = Clickr.Repo.all(Clickr.Grades.LessonGrade)
+      assert [%{percent: 0.5}] = Clickr.Grades.list_grades(user)
 
       assert {:ok, %Lesson{}} = Lessons.delete_lesson(lesson)
-      assert [] = Clickr.Grades.list_lesson_grades()
-      assert [%{percent: 0.0}] = Clickr.Grades.list_grades()
+      assert [] = Clickr.Repo.all(Clickr.Grades.LessonGrade)
+      assert [%{percent: 0.0}] = Clickr.Grades.list_grades(user)
       assert_raise Ecto.NoResultsError, fn -> Lessons.get_lesson!(lesson.id) end
     end
 

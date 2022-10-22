@@ -78,6 +78,7 @@
     module={ClickrWeb.GradeLive.BonusGradeFormComponent}
     id={"#{@grade.id}-bonus-grade"}
     navigate={~p"/grades/#{@grade}"}
+    current_user={@current_user}
     bonus_grade={
       %Clickr.Grades.BonusGrade{
         student_id: @grade.student_id,

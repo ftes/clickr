@@ -136,7 +136,13 @@ defmodule ClickrWeb.LessonLive.Ended do
       ])
 
     student_ids = Enum.map(lesson.lesson_students, & &1.student_id)
-    grades = Clickr.Grades.list_grades(subject_id: lesson.subject_id, student_ids: student_ids)
+
+    grades =
+      Clickr.Grades.list_grades(socket.assigns.current_user,
+        subject_id: lesson.subject_id,
+        student_ids: student_ids
+      )
+
     points = Lessons.get_lesson_points(lesson)
 
     max_student_points =

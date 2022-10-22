@@ -358,11 +358,11 @@ defmodule ClickrWeb.LessonLiveTest do
              |> render_change() =~ "100%"
     end
 
-    test "shows overall grade", %{conn: conn, lesson: l, student: s} do
+    test "shows overall grade", %{user: user, conn: conn, lesson: l, student: s} do
       lesson_grade_fixture(lesson_id: l.id, student_id: s.id, percent: 0.42)
       l2 = lesson_fixture(subject_id: l.subject_id)
       lesson_grade_fixture(lesson_id: l2.id, student_id: s.id, percent: 0.20)
-      Clickr.Grades.calculate_and_save_grade(%{student_id: s.id, subject_id: l.subject_id})
+      Clickr.Grades.calculate_and_save_grade(user, %{student_id: s.id, subject_id: l.subject_id})
 
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/graded")
       assert render(live) =~ "31%"

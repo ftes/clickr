@@ -1,5 +1,5 @@
 defmodule Clickr.Accounts.User do
-  use Clickr.Schema
+  use Clickr.Schema, bodyguard: false
 
   schema "users" do
     field :email, :string

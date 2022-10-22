@@ -2,53 +2,46 @@ defmodule Clickr.GradesTest do
   use Clickr.DataCase, async: true
 
   alias Clickr.Grades
+  alias Clickr.Grades.BonusGrade
+  import Clickr.{GradesFixtures, LessonsFixtures, SubjectsFixtures, StudentsFixtures}
 
-  describe "lesson_grades" do
-    import Clickr.GradesFixtures
+  setup [:create_user, :create_subject]
 
-    @invalid_attrs %{percent: nil}
-
-    test "list_lesson_grades/0 returns all lesson_grades" do
-      lesson_grade = lesson_grade_fixture()
-      assert Grades.list_lesson_grades() == [lesson_grade]
-    end
+  defp create_subject(%{user: user}) do
+    %{subject: subject_fixture(user_id: user.id)}
   end
 
   describe "grades" do
-    import Clickr.{GradesFixtures, StudentsFixtures}
-
     @invalid_attrs %{percent: nil}
 
-    test "list_grades/0 returns all grades" do
-      grade = grade_fixture()
-      assert Grades.list_grades() == [grade]
+    test "list_grades/0 returns all grades", %{user: user, subject: subject} do
+      grade = grade_fixture(subject_id: subject.id)
+      assert Grades.list_grades(user) == [grade]
     end
 
-    test "list_grades/1 filters by student.user_id" do
-      student_1 = student_fixture()
-      student_2 = student_fixture()
-      grade_fixture(student_id: student_1.id)
+    test "list_grades/1 filters by subject.user_id", %{user: user, subject: subject} do
+      student_1 = student_fixture(user_id: user.id)
+      student_2 = student_fixture(user_id: user.id)
+      grade_fixture(subject_id: subject.id, student_id: student_1.id)
       grade_fixture(student_id: student_2.id)
 
-      assert [_] = Grades.list_grades(user_id: student_1.user_id)
+      assert [_] = Grades.list_grades(user)
     end
 
-    test "get_grade!/1 returns the grade with given id" do
-      grade = grade_fixture()
-      assert Grades.get_grade!(grade.id) == grade
+    test "get_grade!/1 returns the grade with given id", %{user: user, subject: subject} do
+      grade = grade_fixture(subject_id: subject.id)
+      assert Grades.get_grade!(user, grade.id) == grade
     end
   end
 
   describe "calculate_grade" do
-    import Clickr.{GradesFixtures, LessonsFixtures, StudentsFixtures, SubjectsFixtures}
-
-    defp create_subject_and_student(_) do
-      %{subject: subject_fixture(), student: student_fixture()}
+    defp create_student(%{user: user}) do
+      %{student: student_fixture(user_id: user.id)}
     end
 
-    defp create_lesson_grades(%{subject: subject, student: student}) do
-      lesson_1 = lesson_fixture(subject_id: subject.id)
-      lesson_2 = lesson_fixture(subject_id: subject.id)
+    defp create_lesson_grades(%{user: user, subject: subject, student: student}) do
+      lesson_1 = lesson_fixture(user_id: user.id, subject_id: subject.id)
+      lesson_2 = lesson_fixture(user_id: user.id, subject_id: subject.id)
       lesson_grade_fixture(lesson_id: lesson_1.id, student_id: student.id, percent: 0.1)
       lesson_grade_fixture(lesson_id: lesson_2.id, student_id: student.id, percent: 0.3)
       %{}
@@ -60,74 +53,69 @@ defmodule Clickr.GradesTest do
       %{}
     end
 
-    setup [:create_subject_and_student, :create_lesson_grades, :create_bonus_grades]
+    setup [:create_student, :create_lesson_grades, :create_bonus_grades]
 
-    test "calculate_grade/1 returns average lesson/bonus_grade", %{
-      student: %{id: stid},
-      subject: %{id: suid}
-    } do
-      assert 0.25 == Grades.calculate_grade(%{student_id: stid, subject_id: suid})
+    test "calculate_grade/1 returns average lesson/bonus_grade", %{student: st, subject: su} do
+      assert 0.25 == Grades.calculate_grade(%{student_id: st.id, subject_id: su.id})
     end
 
     test "creates new grade and sets grade_id on lesson/bonus_grade", %{
+      user: user,
       student: %{id: stid},
       subject: %{id: suid}
     } do
-      assert {:ok, grade} = Grades.calculate_and_save_grade(%{student_id: stid, subject_id: suid})
+      assert {:ok, grade} =
+               Grades.calculate_and_save_grade(user, %{student_id: stid, subject_id: suid})
 
-      assert [%{subject_id: ^suid, student_id: ^stid, percent: 0.25}] = Grades.list_grades()
+      assert [%{subject_id: ^suid, student_id: ^stid, percent: 0.25}] = Grades.list_grades(user)
       assert [_, _] = Clickr.Repo.preload(grade, :lesson_grades).lesson_grades
       assert [_, _] = Clickr.Repo.preload(grade, :bonus_grades).bonus_grades
     end
 
-    test "updates existing grade", %{student: %{id: stid}, subject: %{id: suid}} do
+    test "updates existing grade", %{user: user, student: %{id: stid}, subject: %{id: suid}} do
       grade_fixture(student_id: stid, subject_id: suid, percent: 0.42)
-      assert {:ok, grade} = Grades.calculate_and_save_grade(%{student_id: stid, subject_id: suid})
 
-      assert [%{subject_id: ^suid, student_id: ^stid, percent: 0.25}] = Grades.list_grades()
+      assert {:ok, grade} =
+               Grades.calculate_and_save_grade(user, %{student_id: stid, subject_id: suid})
+
+      assert [%{subject_id: ^suid, student_id: ^stid, percent: 0.25}] = Grades.list_grades(user)
       assert [_, _] = Clickr.Repo.preload(grade, :lesson_grades).lesson_grades
     end
   end
 
   describe "bonus_grades" do
-    alias Clickr.Grades.BonusGrade
-
-    import Clickr.GradesFixtures
-
     @invalid_attrs %{name: nil, percent: nil}
 
-    test "list_bonus_grades/0 returns all bonus_grades" do
-      bonus_grade = bonus_grade_fixture()
-      assert Grades.list_bonus_grades() == [bonus_grade]
+    test "list_bonus_grades/0 returns all bonus_grades", %{subject: subject} do
+      bonus_grade = bonus_grade_fixture(subject_id: subject.id)
+      assert Clickr.Repo.all(BonusGrade) == [bonus_grade]
     end
 
-    test "get_bonus_grade!/1 returns the bonus_grade with given id" do
-      bonus_grade = bonus_grade_fixture()
-      assert Grades.get_bonus_grade!(bonus_grade.id) == bonus_grade
-    end
-
-    test "create_bonus_grade/1 with valid data creates a bonus_grade" do
-      st = Clickr.StudentsFixtures.student_fixture()
-      su = Clickr.SubjectsFixtures.subject_fixture()
+    test "create_bonus_grade/1 with valid data creates a bonus_grade", %{user: user, subject: su} do
+      st = Clickr.StudentsFixtures.student_fixture(user_id: user.id)
       valid_attrs = %{name: "some name", percent: 0.25, student_id: st.id, subject_id: su.id}
 
-      assert {:ok, %BonusGrade{} = bonus_grade} = Grades.create_bonus_grade(valid_attrs)
+      assert {:ok, %BonusGrade{} = bonus_grade} = Grades.create_bonus_grade(user, valid_attrs)
       assert bonus_grade.name == "some name"
       assert bonus_grade.percent == 0.25
     end
 
-    test "create_bonus_grade/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Grades.create_bonus_grade(@invalid_attrs)
+    test "create_bonus_grade/1 with invalid data returns error changeset", %{
+      user: user,
+      subject: subject
+    } do
+      invalid_attrs = Map.merge(@invalid_attrs, %{subject_id: subject.id})
+      assert {:error, %Ecto.Changeset{}} = Grades.create_bonus_grade(user, invalid_attrs)
     end
 
-    test "delete_bonus_grade/1 deletes the bonus_grade" do
-      bonus_grade = bonus_grade_fixture()
-      assert {:ok, %BonusGrade{}} = Grades.delete_bonus_grade(bonus_grade)
-      assert_raise Ecto.NoResultsError, fn -> Grades.get_bonus_grade!(bonus_grade.id) end
+    test "delete_bonus_grade/1 deletes the bonus_grade", %{user: user, subject: subject} do
+      bonus_grade = bonus_grade_fixture(subject_id: subject.id)
+      assert {:ok, %BonusGrade{}} = Grades.delete_bonus_grade(user, bonus_grade)
+      assert_raise Ecto.NoResultsError, fn -> Clickr.Repo.get!(BonusGrade, bonus_grade.id) end
     end
 
-    test "change_bonus_grade/1 returns a bonus_grade changeset" do
-      bonus_grade = bonus_grade_fixture()
+    test "change_bonus_grade/1 returns a bonus_grade changeset", %{subject: subject} do
+      bonus_grade = bonus_grade_fixture(subject_id: subject.id)
       assert %Ecto.Changeset{} = Grades.change_bonus_grade(bonus_grade)
     end
   end

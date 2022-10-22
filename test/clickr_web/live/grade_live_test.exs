@@ -2,12 +2,13 @@ defmodule ClickrWeb.GradeLiveTest do
   use ClickrWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Clickr.{GradesFixtures, StudentsFixtures}
+  import Clickr.{GradesFixtures, StudentsFixtures, SubjectsFixtures}
 
   defp create_grade(%{user: user}) do
     student = student_fixture(user_id: user.id)
-    grade = grade_fixture(student_id: student.id, percent: 0.42)
-    %{grade: grade}
+    subject = subject_fixture(user_id: user.id)
+    grade = grade_fixture(student_id: student.id, subject_id: subject.id, percent: 0.42)
+    %{student: student, subject: subject, grade: grade}
   end
 
   setup :register_and_log_in_user
@@ -39,8 +40,8 @@ defmodule ClickrWeb.GradeLiveTest do
       assert html =~ "28%"
     end
 
-    test "deletes bonus grade", %{conn: conn, grade: grade} do
-      bonus_grade_fixture(grade_id: grade.id, percent: 0.28)
+    test "deletes bonus grade", %{conn: conn, grade: grade, subject: subject} do
+      bonus_grade_fixture(grade_id: grade.id, subject_id: subject.id, percent: 0.28)
       {:ok, live, html} = live(conn, ~p"/grades/#{grade}")
       assert html =~ "28%"
 

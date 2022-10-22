@@ -1,5 +1,5 @@
 defmodule Clickr.Grades.BonusGrade do
-  use Clickr.Schema
+  use Clickr.Schema, bodyguard: false
 
   schema "bonus_grades" do
     field :name, :string, default: "Bonus Grade"

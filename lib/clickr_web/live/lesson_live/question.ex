@@ -138,6 +138,7 @@ defmodule ClickrWeb.LessonLive.Question do
         module={ClickrWeb.GradeLive.BonusGradeFormComponent}
         id={"#{@lesson.id}-bonus-grade"}
         navigate={~p"/lessons/#{@lesson}/active"}
+        current_user={@current_user}
         bonus_grade={
           %Clickr.Grades.BonusGrade{
             student_id: @student_id,

@@ -58,7 +58,7 @@ defmodule ClickrWeb.GradeLive.BonusGradeFormComponent do
   end
 
   def handle_event("save", %{"bonus_grade" => bonus_grade_params}, socket) do
-    case Grades.create_bonus_grade(bonus_grade_params) do
+    case Grades.create_bonus_grade(socket.assigns.current_user, bonus_grade_params) do
       {:ok, _} ->
         {:noreply,
          socket

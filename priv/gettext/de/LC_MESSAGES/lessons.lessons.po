@@ -26,7 +26,7 @@ msgstr "Benote..."
 #: lib/clickr_web/live/lesson_live/ended.ex:11
 #: lib/clickr_web/live/lesson_live/ended.ex:101
 #: lib/clickr_web/live/lesson_live/question.ex:16
-#: lib/clickr_web/live/lesson_live/question.ex:171
+#: lib/clickr_web/live/lesson_live/question.ex:172
 #: lib/clickr_web/live/lesson_live/roll_call.ex:16
 #: lib/clickr_web/live/lesson_live/roll_call.ex:69
 #: lib/clickr_web/live/lesson_live/show.html.heex:2

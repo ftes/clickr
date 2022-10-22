@@ -1,5 +1,5 @@
 defmodule Clickr.Grades.LessonGrade do
-  use Clickr.Schema
+  use Clickr.Schema, bodyguard: false
 
   schema "lesson_grades" do
     field :percent, :float
