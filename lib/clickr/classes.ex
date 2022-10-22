@@ -1,62 +1,23 @@
 defmodule Clickr.Classes do
   defdelegate authorize(action, user, params), to: Clickr.Classes.Policy
 
-  @moduledoc """
-  The Classes context.
-  """
-
   import Ecto.Query, warn: false
   alias Clickr.Repo
   alias Clickr.Accounts.User
-  alias Clickr.Classes.Class
+  alias Clickr.Classes.{Class, SeatingPlan, SeatingPlanSeat}
 
-  @doc """
-  Returns the list of classes.
-
-  ## Examples
-
-      iex> list_classes()
-      [%Class{}, ...]
-
-  """
   def list_classes(%User{} = user) do
     Class
     |> Bodyguard.scope(user)
     |> Repo.all()
   end
 
-  @doc """
-  Gets a single class.
-
-  Raises `Ecto.NoResultsError` if the Class does not exist.
-
-  ## Examples
-
-      iex> get_class!(123)
-      %Class{}
-
-      iex> get_class!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_class!(%User{} = user, id) do
     Class
     |> Bodyguard.scope(user)
     |> Repo.get!(id)
   end
 
-  @doc """
-  Creates a class.
-
-  ## Examples
-
-      iex> create_class(%{field: value})
-      {:ok, %Class{}}
-
-      iex> create_class(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_class(%User{} = user, attrs \\ %{}) do
     with :ok <- permit(:create_class, user) do
       %Class{user_id: user.id}
@@ -65,18 +26,6 @@ defmodule Clickr.Classes do
     end
   end
 
-  @doc """
-  Updates a class.
-
-  ## Examples
-
-      iex> update_class(class, %{field: new_value})
-      {:ok, %Class{}}
-
-      iex> update_class(class, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def update_class(%User{} = user, %Class{} = class, attrs) do
     with :ok <- permit(:update_class, user, class) do
       class
@@ -85,18 +34,6 @@ defmodule Clickr.Classes do
     end
   end
 
-  @doc """
-  Deletes a class.
-
-  ## Examples
-
-      iex> delete_class(class)
-      {:ok, %Class{}}
-
-      iex> delete_class(class)
-      {:error, %Ecto.Changeset{}}
-
-  """
   def delete_class(%User{} = user, %Class{} = class) do
     with :ok <- permit(:delete_class, user, class) do
       class
@@ -104,86 +41,36 @@ defmodule Clickr.Classes do
     end
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking class changes.
-
-  ## Examples
-
-      iex> change_class(class)
-      %Ecto.Changeset{data: %Class{}}
-
-  """
   def change_class(%Class{} = class, attrs \\ %{}) do
     Class.changeset(class, attrs)
   end
 
-  alias Clickr.Classes.SeatingPlan
-
-  @doc """
-  Returns the list of seating_plans.
-
-  ## Examples
-
-      iex> list_seating_plans()
-      [%SeatingPlan{}, ...]
-
-  """
-  def list_seating_plans(opts \\ []) do
+  def list_seating_plans(%User{} = user) do
     SeatingPlan
-    |> where_user_id(opts[:user_id])
+    |> Bodyguard.scope(user)
     |> Repo.all()
   end
 
-  @doc """
-  Gets a single seating_plan.
-
-  Raises `Ecto.NoResultsError` if the Seating plan does not exist.
-
-  ## Examples
-
-      iex> get_seating_plan!(123)
-      %SeatingPlan{}
-
-      iex> get_seating_plan!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_seating_plan!(id), do: Repo.get!(SeatingPlan, id)
-
-  @doc """
-  Creates a seating_plan.
-
-  ## Examples
-
-      iex> create_seating_plan(%{field: value})
-      {:ok, %SeatingPlan{}}
-
-      iex> create_seating_plan(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_seating_plan(attrs \\ %{}) do
-    %SeatingPlan{}
-    |> SeatingPlan.changeset(attrs)
-    |> Repo.insert()
+  def get_seating_plan!(%User{} = user, id) do
+    SeatingPlan
+    |> Bodyguard.scope(user)
+    |> Repo.get!(id)
   end
 
-  @doc """
-  Updates a seating_plan.
+  def create_seating_plan(%User{} = user, attrs \\ %{}) do
+    with :ok <- permit(:create_seating_plan, user) do
+      %SeatingPlan{user_id: user.id}
+      |> SeatingPlan.changeset(attrs)
+      |> Repo.insert()
+    end
+  end
 
-  ## Examples
-
-      iex> update_seating_plan(seating_plan, %{field: new_value})
-      {:ok, %SeatingPlan{}}
-
-      iex> update_seating_plan(seating_plan, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_seating_plan(%SeatingPlan{} = seating_plan, attrs) do
-    seating_plan
-    |> SeatingPlan.changeset(attrs)
-    |> Repo.update()
+  def update_seating_plan(%User{} = user, %SeatingPlan{} = seating_plan, attrs) do
+    with :ok <- permit(:update_seating_plan, user, seating_plan) do
+      seating_plan
+      |> SeatingPlan.changeset(attrs)
+      |> Repo.update()
+    end
   end
 
   @doc """
@@ -198,8 +85,10 @@ defmodule Clickr.Classes do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_seating_plan(%SeatingPlan{} = seating_plan) do
-    Repo.delete(seating_plan)
+  def delete_seating_plan(%User{} = user, %SeatingPlan{} = seating_plan) do
+    with :ok <- permit(:delete_seating_plan, user, seating_plan) do
+      Repo.delete(seating_plan)
+    end
   end
 
   @doc """
@@ -214,8 +103,6 @@ defmodule Clickr.Classes do
   def change_seating_plan(%SeatingPlan{} = seating_plan, attrs \\ %{}) do
     SeatingPlan.changeset(seating_plan, attrs)
   end
-
-  alias Clickr.Classes.SeatingPlanSeat
 
   @doc """
   Returns the list of seating_plan_seats.

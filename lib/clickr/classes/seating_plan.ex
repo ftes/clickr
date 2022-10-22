@@ -12,11 +12,15 @@ defmodule Clickr.Classes.SeatingPlan do
     timestamps(type: :utc_datetime)
   end
 
+  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+    from x in query, where: x.user_id == ^user_id
+  end
+
   @doc false
   def changeset(seating_plan, attrs) do
     seating_plan
-    |> cast(attrs, [:name, :width, :height, :user_id, :class_id])
-    |> validate_required([:name, :width, :height, :user_id, :class_id])
+    |> cast(attrs, [:name, :width, :height, :class_id])
+    |> validate_required([:name, :width, :height, :class_id])
     |> validate_number(:width, greater_than: 0)
     |> validate_number(:height, greater_than: 0)
     |> foreign_key_constraint(:user_id)

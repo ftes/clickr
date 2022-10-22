@@ -21,9 +21,9 @@ defmodule ClickrWeb.LessonLiveTest do
     %{lesson: lesson}
   end
 
-  defp seat_student_with_button(%{lesson: lesson}) do
+  defp seat_student_with_button(%{user: user, lesson: lesson}) do
     %{seating_plan_id: spid, room_id: rid} = lesson
-    seating_plan = Clickr.Classes.get_seating_plan!(spid)
+    seating_plan = Clickr.Classes.get_seating_plan!(user, spid)
     student = student_fixture(class_id: seating_plan.class_id)
     seating_plan_seat_fixture(%{seating_plan_id: spid, student_id: student.id, x: 1, y: 1})
     room_seat_fixture(room_id: rid, x: 1, y: 1)

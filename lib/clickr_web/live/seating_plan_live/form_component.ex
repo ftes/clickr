@@ -65,15 +65,14 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
   end
 
   def handle_event("save", %{"seating_plan" => seating_plan_params}, socket) do
-    save_seating_plan(socket, socket.assigns.action, set_user_id(socket, seating_plan_params))
+    save_seating_plan(socket, socket.assigns.action, seating_plan_params)
   end
 
   defp save_seating_plan(socket, :edit, seating_plan_params) do
-    # TODO Check permission
-
     case Classes.update_seating_plan(
+           socket.assigns.current_user,
            socket.assigns.seating_plan,
-           set_user_id(socket, seating_plan_params)
+           seating_plan_params
          ) do
       {:ok, seating_plan} ->
         {:noreply,
@@ -90,7 +89,7 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
   end
 
   defp save_seating_plan(socket, :new, seating_plan_params) do
-    case Classes.create_seating_plan(seating_plan_params) do
+    case Classes.create_seating_plan(socket.assigns.current_user, seating_plan_params) do
       {:ok, seating_plan} ->
         {:noreply,
          socket
@@ -104,8 +103,6 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
-
-  defp set_user_id(socket, params), do: Map.put(params, "user_id", socket.assigns.current_user.id)
 
   defp load_classes(socket) do
     assign(socket, :classes, Classes.list_classes(socket.assigns.current_user))

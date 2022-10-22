@@ -23,7 +23,7 @@ defmodule Clickr.ClassesTest do
     end
 
     test "create_class/1 with valid data creates a class", %{user: user} do
-      valid_attrs = %{name: "some name", user_id: user.id}
+      valid_attrs = %{name: "some name"}
 
       assert {:ok, %Class{} = class} = Classes.create_class(user, valid_attrs)
       assert class.name == "some name"
@@ -66,67 +66,65 @@ defmodule Clickr.ClassesTest do
 
     @invalid_attrs %{name: nil, width: nil, height: nil}
 
-    test "list_seating_plans/0 returns all seating_plans" do
-      seating_plan = seating_plan_fixture()
-      assert Classes.list_seating_plans() == [seating_plan]
+    test "list_seating_plans/0 returns all seating_plans", %{user: user} do
+      seating_plan = seating_plan_fixture(user_id: user.id)
+      assert Classes.list_seating_plans(user) == [seating_plan]
     end
 
-    test "get_seating_plan!/1 returns the seating_plan with given id" do
-      seating_plan = seating_plan_fixture()
-      assert Classes.get_seating_plan!(seating_plan.id) == seating_plan
+    test "get_seating_plan!/1 returns the seating_plan with given id", %{user: user} do
+      seating_plan = seating_plan_fixture(user_id: user.id)
+      assert Classes.get_seating_plan!(user, seating_plan.id) == seating_plan
     end
 
-    test "create_seating_plan/1 with valid data creates a seating_plan" do
-      user = user_fixture()
-      class = class_fixture()
+    test "create_seating_plan/1 with valid data creates a seating_plan", %{user: user} do
+      class = class_fixture(user_id: user.id)
 
       valid_attrs = %{
         name: "some name",
         width: 8,
         height: 4,
-        user_id: user.id,
         class_id: class.id
       }
 
-      assert {:ok, %SeatingPlan{} = seating_plan} = Classes.create_seating_plan(valid_attrs)
+      assert {:ok, %SeatingPlan{} = seating_plan} = Classes.create_seating_plan(user, valid_attrs)
       assert seating_plan.name == "some name"
       assert seating_plan.width == 8
       assert seating_plan.height == 4
     end
 
-    test "create_seating_plan/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Classes.create_seating_plan(@invalid_attrs)
+    test "create_seating_plan/1 with invalid data returns error changeset", %{user: user} do
+      assert {:error, %Ecto.Changeset{}} = Classes.create_seating_plan(user, @invalid_attrs)
     end
 
-    test "update_seating_plan/2 with valid data updates the seating_plan" do
-      seating_plan = seating_plan_fixture()
+    test "update_seating_plan/2 with valid data updates the seating_plan", %{user: user} do
+      seating_plan = seating_plan_fixture(user_id: user.id)
       update_attrs = %{name: "some updated name", width: 18, height: 14}
 
       assert {:ok, %SeatingPlan{} = seating_plan} =
-               Classes.update_seating_plan(seating_plan, update_attrs)
+               Classes.update_seating_plan(user, seating_plan, update_attrs)
 
       assert seating_plan.name == "some updated name"
       assert seating_plan.width == 18
       assert seating_plan.height == 14
     end
 
-    test "update_seating_plan/2 with invalid data returns error changeset" do
-      seating_plan = seating_plan_fixture()
+    test "update_seating_plan/2 with invalid data returns error changeset", %{user: user} do
+      seating_plan = seating_plan_fixture(user_id: user.id)
 
       assert {:error, %Ecto.Changeset{}} =
-               Classes.update_seating_plan(seating_plan, @invalid_attrs)
+               Classes.update_seating_plan(user, seating_plan, @invalid_attrs)
 
-      assert seating_plan == Classes.get_seating_plan!(seating_plan.id)
+      assert seating_plan == Classes.get_seating_plan!(user, seating_plan.id)
     end
 
-    test "delete_seating_plan/1 deletes the seating_plan" do
-      seating_plan = seating_plan_fixture()
-      assert {:ok, %SeatingPlan{}} = Classes.delete_seating_plan(seating_plan)
-      assert_raise Ecto.NoResultsError, fn -> Classes.get_seating_plan!(seating_plan.id) end
+    test "delete_seating_plan/1 deletes the seating_plan", %{user: user} do
+      seating_plan = seating_plan_fixture(user_id: user.id)
+      assert {:ok, %SeatingPlan{}} = Classes.delete_seating_plan(user, seating_plan)
+      assert_raise Ecto.NoResultsError, fn -> Classes.get_seating_plan!(user, seating_plan.id) end
     end
 
-    test "change_seating_plan/1 returns a seating_plan changeset" do
-      seating_plan = seating_plan_fixture()
+    test "change_seating_plan/1 returns a seating_plan changeset", %{user: user} do
+      seating_plan = seating_plan_fixture(user_id: user.id)
       assert %Ecto.Changeset{} = Classes.change_seating_plan(seating_plan)
     end
   end
@@ -134,7 +132,7 @@ defmodule Clickr.ClassesTest do
   describe "seating_plan_seats" do
     alias Clickr.Classes.SeatingPlanSeat
 
-    import Clickr.{AccountsFixtures, ClassesFixtures, StudentsFixtures}
+    import Clickr.{ClassesFixtures, StudentsFixtures}
 
     @invalid_attrs %{x: nil, y: nil}
 

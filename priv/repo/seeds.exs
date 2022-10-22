@@ -13,7 +13,8 @@
 alias Clickr.{Accounts, Classes, Devices, Repo, Rooms, Students, Subjects}
 
 if Mix.env() != :test do
-  {:ok, %{id: uid}} = Accounts.register_user(%{email: "f@ftes.de", password: "passwordpassword"})
+  {:ok, %{id: uid} = u} =
+    Accounts.register_user(%{email: "f@ftes.de", password: "passwordpassword"})
 
   {:ok, %{id: rid}} = Rooms.create_room(%{user_id: uid, name: "R42", width: 8, height: 4})
 
@@ -42,7 +43,7 @@ if Mix.env() != :test do
   end
 
   {:ok, _} = Subjects.create_subject(%{user_id: uid, name: "Chemie"})
-  {:ok, %{id: cid}} = Classes.create_class(%{user_id: uid, name: "6a"})
+  {:ok, %{id: cid}} = Classes.create_class(u, %{user_id: uid, name: "6a"})
 
   students =
     for i <- 1..30 do
@@ -51,7 +52,7 @@ if Mix.env() != :test do
     end
 
   {:ok, %{id: spid}} =
-    Classes.create_seating_plan(%{
+    Classes.create_seating_plan(u, %{
       user_id: uid,
       class_id: cid,
       room_id: rid,

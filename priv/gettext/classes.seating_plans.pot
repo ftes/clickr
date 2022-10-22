@@ -16,7 +16,7 @@ msgstr ""
 msgid "Class"
 msgstr ""
 
-#: lib/clickr_web/live/seating_plan_live/index.ex:21
+#: lib/clickr_web/live/seating_plan_live/index.ex:19
 #: lib/clickr_web/live/seating_plan_live/show.ex:36
 #: lib/clickr_web/live/seating_plan_live/show.html.heex:5
 #, elixir-autogen, elixir-format
@@ -28,7 +28,7 @@ msgstr ""
 msgid "Empty seat"
 msgstr ""
 
-#: lib/clickr_web/live/seating_plan_live/index.ex:33
+#: lib/clickr_web/live/seating_plan_live/index.ex:31
 #: lib/clickr_web/live/seating_plan_live/index.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Listing Seating plans"
@@ -41,7 +41,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: lib/clickr_web/live/seating_plan_live/index.ex:27
+#: lib/clickr_web/live/seating_plan_live/index.ex:25
 #: lib/clickr_web/live/seating_plan_live/index.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "New Seating plan"
@@ -52,12 +52,12 @@ msgstr ""
 msgid "Seating plan"
 msgstr ""
 
-#: lib/clickr_web/live/seating_plan_live/form_component.ex:99
+#: lib/clickr_web/live/seating_plan_live/form_component.ex:98
 #, elixir-autogen, elixir-format
 msgid "Seating plan created successfully"
 msgstr ""
 
-#: lib/clickr_web/live/seating_plan_live/form_component.ex:83
+#: lib/clickr_web/live/seating_plan_live/form_component.ex:82
 #, elixir-autogen, elixir-format
 msgid "Seating plan updated successfully"
 msgstr ""

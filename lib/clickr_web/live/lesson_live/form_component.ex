@@ -145,7 +145,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
 
   defp load_seating_plans(%{assigns: %{changeset: _}} = socket) do
     seating_plans =
-      Clickr.Classes.list_seating_plans(user_id: socket.assigns.current_user.id)
+      Clickr.Classes.list_seating_plans(socket.assigns.current_user)
       |> Clickr.Repo.preload(:class)
 
     assign(socket, :seating_plans, seating_plans)

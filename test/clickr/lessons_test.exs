@@ -3,6 +3,8 @@ defmodule Clickr.LessonsTest do
 
   alias Clickr.Lessons
 
+  setup :create_user
+
   describe "lessons" do
     alias Clickr.Lessons.Lesson
 
@@ -17,30 +19,30 @@ defmodule Clickr.LessonsTest do
 
     @invalid_attrs %{name: nil, state: nil}
 
-    test "list_lessons/0 returns all lessons" do
-      lesson = lesson_fixture()
+    test "list_lessons/0 returns all lessons", %{user: user} do
+      lesson = lesson_fixture(user_id: user.id)
       assert Lessons.list_lessons() == [lesson]
     end
 
-    test "list_lesson_combinations/0 returns most recent unique combinations" do
+    test "list_lesson_combinations/0 returns most recent unique combinations", %{user: user} do
       at = fn x -> DateTime.from_unix!(x) end
-      lesson_fixture(name: "l1", inserted_at: at.(1))
-      lesson_fixture(name: "l2", inserted_at: at.(2))
-      l3 = lesson_fixture(name: "l3", inserted_at: at.(3))
+      lesson_fixture(user_id: user.id, name: "l1", inserted_at: at.(1))
+      lesson_fixture(user_id: user.id, name: "l2", inserted_at: at.(2))
+      l3 = lesson_fixture(user_id: user.id, name: "l3", inserted_at: at.(3))
       l3_dup = Map.take(l3, [:subject_id, :seating_plan_id, :room_id])
-      lesson_fixture(Map.merge(%{name: "l4", inserted_at: at.(4)}, l3_dup))
+      lesson_fixture(Map.merge(%{usr_id: user.id, name: "l4", inserted_at: at.(4)}, l3_dup))
 
       assert ["l3", "l2", "l1"] = Lessons.list_lesson_combinations() |> Enum.map(& &1.name)
     end
 
-    test "get_lesson!/1 returns the lesson with given id" do
-      lesson = lesson_fixture()
+    test "get_lesson!/1 returns the lesson with given id", %{user: user} do
+      lesson = lesson_fixture(user_id: user.id)
       assert Lessons.get_lesson!(lesson.id) == lesson
     end
 
-    test "create_lesson/1 with valid data creates a lesson" do
-      r = room_fixture()
-      sp = seating_plan_fixture()
+    test "create_lesson/1 with valid data creates a lesson", %{user: user} do
+      r = room_fixture(user_id: user.id)
+      sp = seating_plan_fixture(user_id: user.id)
 
       valid_attrs = %{
         name: "some name",
@@ -59,23 +61,23 @@ defmodule Clickr.LessonsTest do
       assert {:error, %Ecto.Changeset{}} = Lessons.create_lesson(@invalid_attrs)
     end
 
-    test "update_lesson/2 with valid data updates the lesson" do
-      lesson = lesson_fixture()
+    test "update_lesson/2 with valid data updates the lesson", %{user: user} do
+      lesson = lesson_fixture(user_id: user.id)
       update_attrs = %{name: "some updated name"}
 
       assert {:ok, %Lesson{} = lesson} = Lessons.update_lesson(lesson, update_attrs)
       assert lesson.name == "some updated name"
     end
 
-    test "update_lesson/2 with invalid data returns error changeset" do
-      lesson = lesson_fixture()
+    test "update_lesson/2 with invalid data returns error changeset", %{user: user} do
+      lesson = lesson_fixture(user_id: user.id)
       assert {:error, %Ecto.Changeset{}} = Lessons.update_lesson(lesson, @invalid_attrs)
       assert lesson == Lessons.get_lesson!(lesson.id)
     end
 
-    defp seat_student(%{lesson: lesson}) do
+    defp seat_student(%{user: user, lesson: lesson}) do
       %{seating_plan_id: spid, room_id: rid} = lesson
-      seating_plan = Clickr.Classes.get_seating_plan!(spid)
+      seating_plan = Clickr.Classes.get_seating_plan!(user, spid)
       %{id: sid} = student = student_fixture(class_id: seating_plan.class_id)
       seating_plan_seat_fixture(seating_plan_id: spid, student_id: sid, x: 1, y: 1)
       room_seat_fixture(room_id: rid, x: 1, y: 1)
@@ -92,8 +94,10 @@ defmodule Clickr.LessonsTest do
       %{}
     end
 
-    test "transition_lesson/2 with valid data moves lesson through entire lifecycle" do
-      lesson = lesson_fixture()
+    test "transition_lesson/2 with valid data moves lesson through entire lifecycle", %{
+      user: user
+    } do
+      lesson = lesson_fixture(user_id: user.id)
       {:ok, lesson} = Lessons.transition_lesson(lesson, :roll_call)
       {:ok, lesson} = Lessons.transition_lesson(lesson, :active)
       {:ok, lesson} = Lessons.transition_lesson(lesson, :question)
@@ -103,17 +107,19 @@ defmodule Clickr.LessonsTest do
       {:ok, _lesson} = Lessons.transition_lesson(lesson, :graded, %{grade: %{min: 3.0, max: 4.0}})
     end
 
-    test "transition_lesson active -> question saves question points and name" do
-      lesson = lesson_fixture(state: :active)
+    test "transition_lesson active -> question saves question points and name", %{user: user} do
+      lesson = lesson_fixture(user_id: user.id, state: :active)
       attrs = %{question: %{points: 42, name: "q"}}
       {:ok, _} = Lessons.transition_lesson(lesson, :question, attrs)
 
       assert [%{points: 42, name: "q", state: :started}] = Lessons.list_questions()
     end
 
-    test "transition_lesson ended -> graded stores grade, lesson grades and updates grade" do
-      %{id: lid} = lesson = lesson_fixture(state: :ended)
-      %{student: %{id: sid} = student} = seat_student(%{lesson: lesson})
+    test "transition_lesson ended -> graded stores grade, lesson grades and updates grade", %{
+      user: user
+    } do
+      %{id: lid} = lesson = lesson_fixture(user_id: user.id, state: :ended)
+      %{student: %{id: sid} = student} = seat_student(%{user: user, lesson: lesson})
       attend_student(%{lesson: lesson, student: student, extra_points: 15})
       question = question_fixture(lesson_id: lesson.id, state: :ended)
       question_answer_fixture(question_id: question.id, student_id: sid)
@@ -127,9 +133,9 @@ defmodule Clickr.LessonsTest do
       assert [%{student_id: ^sid, percent: 0.6}] = Clickr.Grades.list_grades()
     end
 
-    test "delete_lesson/1 deletes the lesson, lesson_grade and recalculates grades" do
-      lesson = lesson_fixture(state: :ended)
-      %{student: student} = seat_student(%{lesson: lesson})
+    test "delete_lesson/1 deletes the lesson, lesson_grade and recalculates grades", %{user: user} do
+      lesson = lesson_fixture(user_id: user.id, state: :ended)
+      %{student: student} = seat_student(%{user: user, lesson: lesson})
       attend_student(%{lesson: lesson, student: student, extra_points: 5})
 
       assert {:ok, _} =
@@ -268,12 +274,13 @@ defmodule Clickr.LessonsTest do
   describe "get_lesson_points/1" do
     import Clickr.{LessonsFixtures, StudentsFixtures}
 
-    defp create_lesson(_) do
-      %{lesson: lesson_fixture(state: :active)}
+    defp create_lesson(%{user: user}) do
+      %{lesson: lesson_fixture(user_id: user.id, state: :active)}
     end
 
-    defp create_students_in_lesson(%{lesson: lesson}) do
-      seating_plan = Clickr.Classes.get_seating_plan!(lesson.seating_plan_id)
+    defp create_students_in_lesson(%{user: user, lesson: lesson}) do
+      Clickr.Repo.all(Clickr.Classes.SeatingPlan)
+      seating_plan = Clickr.Classes.get_seating_plan!(user, lesson.seating_plan_id)
       student_1 = student_fixture(class_id: seating_plan.class_id)
       student_2 = student_fixture(class_id: seating_plan.class_id)
       lesson_student_fixture(lesson_id: lesson.id, student_id: student_1.id)
