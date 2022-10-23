@@ -90,7 +90,7 @@ defmodule ClickrWeb.Menu do
         aria-labelledby="user-menu-button"
         tabindex="-1"
       >
-        <div class="ml-7 py-2 px-4 text-sm text-gray-500">
+        <div class="ml-7 py-2 px-4 text-sm text-gray-500 overflow-hidden text-ellipsis">
           <%= @current_user.email %>
         </div>
         <.link
