@@ -1,5 +1,5 @@
 defmodule ClickrWeb.UserSessionControllerTest do
-  use ClickrWeb.ConnCase, async: true
+  use ClickrWebTest.ConnCase, async: true
 
   import Clickr.AccountsFixtures
 

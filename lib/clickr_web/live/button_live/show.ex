@@ -15,8 +15,7 @@ defmodule ClickrWeb.ButtonLive.Show do
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(
        :button,
-       Devices.get_button!(socket.assigns.current_user, id)
-       |> Clickr.Repo.preload(device: :gateway)
+       Devices.get_button!(socket.assigns.current_user, id, preload: [device: :gateway])
      )}
   end
 

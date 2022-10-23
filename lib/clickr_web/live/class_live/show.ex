@@ -56,7 +56,7 @@ defmodule ClickrWeb.ClassLive.Show do
     assign(
       socket,
       :class,
-      Classes.get_class!(socket.assigns.current_user, id) |> Clickr.Repo.preload(:students)
+      Classes.get_class!(socket.assigns.current_user, id, preload: :students)
     )
   end
 end

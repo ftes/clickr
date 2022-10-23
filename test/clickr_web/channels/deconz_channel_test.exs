@@ -1,5 +1,5 @@
 defmodule ClickrWeb.DeconzChannelTest do
-  use ClickrWeb.ChannelCase
+  use ClickrWebTest.ChannelCase
   import Clickr.{AccountsFixtures, DevicesFixtures}
 
   setup do

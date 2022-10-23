@@ -142,8 +142,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
 
   defp load_seating_plans(%{assigns: %{changeset: _}} = socket) do
     seating_plans =
-      Clickr.Classes.list_seating_plans(socket.assigns.current_user)
-      |> Clickr.Repo.preload(:class)
+      Clickr.Classes.list_seating_plans(socket.assigns.current_user, preload: :class)
 
     assign(socket, :seating_plans, seating_plans)
   end
@@ -159,8 +158,10 @@ defmodule ClickrWeb.LessonLive.FormComponent do
 
   defp load_combinations(socket) do
     combinations =
-      Clickr.Lessons.list_lesson_combinations(socket.assigns.current_user, limit: 12)
-      |> Clickr.Repo.preload([:subject, :seating_plan, :room])
+      Clickr.Lessons.list_lesson_combinations(socket.assigns.current_user,
+        limit: 12,
+        preload: [:subject, :seating_plan, :room]
+      )
 
     assign(socket, :combinations, combinations)
   end

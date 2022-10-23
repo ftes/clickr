@@ -1,4 +1,8 @@
 defmodule Clickr.Lessons do
+  use Boundary,
+    exports: [Lesson, LessonStudent, Question, QuestionAnswer],
+    deps: [Clickr, Clickr.{Accounts, Repo}]
+
   defdelegate authorize(action, user, params), to: Clickr.Lessons.Policy
 
   import Ecto.Query, warn: false
@@ -16,10 +20,11 @@ defmodule Clickr.Lessons do
 
   def get_button_mapping(%Lesson{} = lesson), do: Clickr.Lessons.ButtonMapping.get_mapping(lesson)
 
-  def list_lessons(%User{} = user) do
+  def list_lessons(%User{} = user, opts \\ []) do
     Lesson
     |> Bodyguard.scope(user)
     |> Repo.all()
+    |> _preload(opts[:preload])
   end
 
   def list_lesson_combinations(%User{} = user, opts \\ []) do
@@ -31,12 +36,14 @@ defmodule Clickr.Lessons do
     |> Repo.all()
     # order_by in query doesn't work
     |> Enum.sort_by(& &1.inserted_at, :desc)
+    |> _preload(opts[:preload])
   end
 
-  def get_lesson!(%User{} = user, id) do
+  def get_lesson!(%User{} = user, id, opts \\ []) do
     Lesson
     |> Bodyguard.scope(user)
     |> Repo.get!(id)
+    |> _preload(opts[:preload])
   end
 
   def create_lesson(%User{} = user, attrs \\ %{}) do
@@ -168,10 +175,11 @@ defmodule Clickr.Lessons do
     Lesson.changeset(lesson, attrs)
   end
 
-  def get_started_question!(%User{} = user, %Lesson{} = lesson) do
+  def get_started_question!(%User{} = user, %Lesson{} = lesson, opts \\ []) do
     Question
     |> Bodyguard.scope(user)
     |> Repo.get_by!(lesson_id: lesson.id, state: :started)
+    |> _preload(opts[:preload])
   end
 
   def delete_question(%User{} = user, %Question{} = question) do
@@ -202,6 +210,7 @@ defmodule Clickr.Lessons do
     |> Bodyguard.scope(user)
     |> where_question_id(opts[:question_id])
     |> Repo.all()
+    |> _preload(opts[:preload])
   end
 
   def create_question_answer(%User{} = user, attrs \\ %{}) do
@@ -218,6 +227,7 @@ defmodule Clickr.Lessons do
     |> Bodyguard.scope(user)
     |> where_lesson_id(opts[:lesson_id])
     |> Repo.all()
+    |> _preload(opts[:preload])
   end
 
   def create_lesson_student(%User{} = user, attrs \\ %{}) do
@@ -312,6 +322,14 @@ defmodule Clickr.Lessons do
 
   def calculate_and_save_lesson_grades(%User{}, %Lesson{} = lesson), do: {:noop, lesson}
 
+  def active_roll_call_start(%Lesson{} = lesson), do: ActiveRollCall.start(lesson)
+
+  def active_roll_call_stop(%Lesson{} = lesson), do: ActiveRollCall.stop(lesson)
+
+  def active_question_start(%Question{} = question), do: ActiveQuestion.start(question)
+
+  def active_question_stop(%Question{} = question), do: ActiveQuestion.stop(question)
+
   defp where_lesson_id(query, nil), do: query
   defp where_lesson_id(query, id), do: where(query, [x], x.lesson_id == ^id)
 
@@ -320,4 +338,7 @@ defmodule Clickr.Lessons do
 
   defp permit(action, user, params \\ []),
     do: Bodyguard.permit(__MODULE__, action, user, params)
+
+  defp _preload(input, nil), do: input
+  defp _preload(input, args), do: Repo.preload(input, args)
 end

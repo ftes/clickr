@@ -1,5 +1,5 @@
 defmodule ClickrWeb.ClassLiveTest do
-  use ClickrWeb.ConnCase
+  use ClickrWebTest.ConnCase
 
   import Phoenix.LiveViewTest
   import Clickr.{ClassesFixtures, StudentsFixtures}

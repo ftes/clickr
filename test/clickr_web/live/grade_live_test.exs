@@ -1,5 +1,5 @@
 defmodule ClickrWeb.GradeLiveTest do
-  use ClickrWeb.ConnCase
+  use ClickrWebTest.ConnCase
 
   import Phoenix.LiveViewTest
   import Clickr.{GradesFixtures, StudentsFixtures, SubjectsFixtures}

@@ -1,5 +1,5 @@
 defmodule Clickr.LessonsTest do
-  use Clickr.DataCase
+  use ClickrTest.DataCase
 
   alias Clickr.Lessons
   alias Clickr.Lessons.{Lesson, LessonStudent, Question, QuestionAnswer}

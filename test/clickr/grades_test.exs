@@ -1,5 +1,5 @@
 defmodule Clickr.GradesTest do
-  use Clickr.DataCase, async: true
+  use ClickrTest.DataCase, async: true
 
   alias Clickr.Grades
   alias Clickr.Grades.BonusGrade

@@ -91,14 +91,15 @@ defmodule ClickrWeb.LessonLive.RollCall do
 
   defp assign_lesson(socket, id) do
     lesson =
-      Lessons.get_lesson!(socket.assigns.current_user, id)
-      |> Clickr.Repo.preload([:lesson_students, seating_plan: [seats: :student]])
+      Lessons.get_lesson!(socket.assigns.current_user, id,
+        preload: [:lesson_students, seating_plan: [seats: :student]]
+      )
 
     assign(socket, :lesson, lesson)
   end
 
   defp load_answers(%{assigns: %{lesson: %{state: :roll_call} = lesson}} = socket) do
-    Lessons.ActiveRollCall.start(lesson)
+    Lessons.active_roll_call_start(lesson)
 
     student_ids =
       Lessons.list_lesson_students(socket.assigns.current_user, lesson_id: lesson.id)

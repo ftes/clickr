@@ -1,5 +1,5 @@
 defmodule ClickrWeb.LessonLiveTest do
-  use ClickrWeb.ConnCase
+  use ClickrWebTest.ConnCase
 
   import Phoenix.LiveViewTest
 

@@ -1,5 +1,5 @@
 defmodule ClickrWeb.ApiSocketTest do
-  use ClickrWeb.ChannelCase
+  use ClickrWebTest.ChannelCase
   import Clickr.{AccountsFixtures, DevicesFixtures}
 
   test "authenticates with gateway api token" do

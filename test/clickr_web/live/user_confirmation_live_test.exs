@@ -1,5 +1,5 @@
 defmodule ClickrWeb.UserConfirmationLiveTest do
-  use ClickrWeb.ConnCase
+  use ClickrWebTest.ConnCase
 
   import Phoenix.LiveViewTest
   import Clickr.AccountsFixtures

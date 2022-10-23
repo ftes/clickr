@@ -1,13 +1,21 @@
 # Todo
 
-- [ ] Filter and sort lists
-- [ ] List and delete lesson questions
-- [ ] Store device.battery
+- [ ] enforce boundary for other apps (mix.exs config)
+- [ ] add user to all context functions
+  - forbid deep calls to non-context functions (boundary)
+- [ ] delete lesson edit
+  - [ ] delete Lessons.update_lesson
+- [ ] delete lesson show
+- [ ] Add user.system? transient flag
+  - use in side-effect calls
 - [ ] Remove _id from changesets
   - separate create and edit changesets
   - set only initially, prevent any further change
   - remove from edit forms
   - remove other things from changesets
+- [ ] Filter and sort lists
+- [ ] List and delete lesson questions
+- [ ] Store device.battery
 - [ ] Soft delete stale devices
   - only list non-deleted devices and buttons
   - mark deleted buttons in button plan

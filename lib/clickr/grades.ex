@@ -1,4 +1,6 @@
 defmodule Clickr.Grades do
+  use Boundary, exports: [BonusGrade, Grade, LessonGrade], deps: [Clickr, Clickr.{Accounts, Repo}]
+
   defdelegate authorize(action, user, params), to: Clickr.Grades.Policy
 
   import Ecto.Query, warn: false
@@ -20,18 +22,23 @@ defmodule Clickr.Grades do
     |> where_student_id(opts[:student_id])
     |> where_student_ids(opts[:student_ids])
     |> Repo.all()
+    |> _preload(opts[:preload])
   end
 
-  def get_grade!(%User{} = user, %{student_id: _, subject_id: _} = args) do
+  def get_grade!(user, args, opts \\ [])
+
+  def get_grade!(%User{} = user, %{student_id: _, subject_id: _} = args, opts) do
     Grade
     |> Bodyguard.scope(user)
     |> Repo.get_by!(args)
+    |> _preload(opts[:preload])
   end
 
-  def get_grade!(%User{} = user, id) do
+  def get_grade!(%User{} = user, id, opts) do
     Grade
     |> Bodyguard.scope(user)
     |> Repo.get!(id)
+    |> _preload(opts[:preload])
   end
 
   def create_bonus_grade(%User{} = user, attrs \\ %{}) do
@@ -118,4 +125,7 @@ defmodule Clickr.Grades do
 
   defp permit(action, user, params),
     do: Bodyguard.permit(__MODULE__, action, user, params)
+
+  defp _preload(input, nil), do: input
+  defp _preload(input, args), do: Repo.preload(input, args)
 end

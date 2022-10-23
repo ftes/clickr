@@ -21,6 +21,7 @@ format:
   stage: test
   script:
     - mix format --check-formatted
+    - mix compile --warnings-as-errors
 
 i18n:
   stage: test

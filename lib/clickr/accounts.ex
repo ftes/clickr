@@ -1,4 +1,6 @@
 defmodule Clickr.Accounts do
+  use Boundary, exports: [User], deps: [Clickr, Clickr.Mailer, Clickr.Repo]
+
   @moduledoc """
   The Accounts context.
   """

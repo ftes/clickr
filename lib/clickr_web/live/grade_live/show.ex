@@ -13,19 +13,17 @@ defmodule ClickrWeb.GradeLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, dgettext("grades.grades", "Show Grade"))
-     |> assign_grade(Grades.get_grade!(socket.assigns.current_user, id))}
+     |> load_grade(id)}
   end
 
   def handle_params(%{"student_id" => student_id, "subject_id" => subject_id}, _, socket) do
     {:noreply,
      socket
      |> assign(:page_title, dgettext("grades.grades", "Show Grade"))
-     |> assign_grade(
-       Grades.get_grade!(socket.assigns.current_user, %{
-         student_id: student_id,
-         subject_id: subject_id
-       })
-     )}
+     |> load_grade(%{
+       student_id: student_id,
+       subject_id: subject_id
+     })}
   end
 
   @impl true
@@ -36,12 +34,14 @@ defmodule ClickrWeb.GradeLive.Show do
     {:noreply,
      socket
      |> put_flash(:info, dgettext("grades.grades", "Bonus grade was deleted!"))
-     |> assign_grade(Grades.get_grade!(socket.assigns.current_user, socket.assigns.grade.id))}
+     |> load_grade(socket.assigns.grade.id)}
   end
 
-  defp assign_grade(socket, grade) do
+  defp load_grade(socket, id) do
     grade =
-      Clickr.Repo.preload(grade, [:student, :subject, :bonus_grades, lesson_grades: :lesson])
+      Grades.get_grade!(socket.assigns.current_user, id,
+        preload: [:student, :subject, :bonus_grades, lesson_grades: :lesson]
+      )
 
     assign(socket, :grade, grade)
   end

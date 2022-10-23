@@ -1,4 +1,6 @@
 defmodule Clickr.Subjects do
+  use Boundary, exports: [Subject], deps: [Clickr, Clickr.{Accounts, Repo}]
+
   defdelegate authorize(action, user, params), to: Clickr.Subjects.Policy
 
   import Ecto.Query, warn: false

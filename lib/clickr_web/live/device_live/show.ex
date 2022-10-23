@@ -15,7 +15,7 @@ defmodule ClickrWeb.DeviceLive.Show do
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(
        :device,
-       Devices.get_device!(socket.assigns.current_user, id) |> Clickr.Repo.preload(:gateway)
+       Devices.get_device!(socket.assigns.current_user, id, preload: :gateway)
      )}
   end
 

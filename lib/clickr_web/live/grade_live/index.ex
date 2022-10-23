@@ -20,10 +20,7 @@ defmodule ClickrWeb.GradeLive.Index do
   end
 
   defp load_grades(socket) do
-    grades =
-      Grades.list_grades(socket.assigns.current_user)
-      |> Clickr.Repo.preload([:student, :subject])
-
+    grades = Grades.list_grades(socket.assigns.current_user, preload: [:student, :subject])
     assign(socket, :grades, grades)
   end
 end

@@ -33,7 +33,7 @@ msgid "Device"
 msgstr "Gerät"
 
 #: lib/clickr_web/live/button_live/index.ex:19
-#: lib/clickr_web/live/button_live/show.ex:24
+#: lib/clickr_web/live/button_live/show.ex:23
 #: lib/clickr_web/live/button_live/show.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "Edit Button"
@@ -63,7 +63,7 @@ msgstr "Name"
 msgid "New Button"
 msgstr "Neuer Knopf"
 
-#: lib/clickr_web/live/button_live/show.ex:23
+#: lib/clickr_web/live/button_live/show.ex:22
 #, elixir-autogen, elixir-format
 msgid "Show Button"
 msgstr "Knopf anzeigen"

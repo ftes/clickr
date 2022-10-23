@@ -1,5 +1,5 @@
 defmodule Clickr.DevicesTest do
-  use Clickr.DataCase, async: true
+  use ClickrTest.DataCase, async: true
 
   alias Clickr.Devices
   alias Clickr.Devices.{Gateway, Device, Button}

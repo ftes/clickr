@@ -1,5 +1,5 @@
 defmodule ClickrWeb.UserSettingsLiveTest do
-  use ClickrWeb.ConnCase
+  use ClickrWebTest.ConnCase
 
   alias Clickr.Accounts
   import Phoenix.LiveViewTest

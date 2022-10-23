@@ -1,4 +1,6 @@
-defmodule ClickrWeb.ChannelCase do
+defmodule ClickrWebTest.ChannelCase do
+  use Boundary, check: [out: false]
+
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -11,7 +13,7 @@ defmodule ClickrWeb.ChannelCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use ClickrWeb.ChannelCase, async: true`, although
+  by setting `use ClickrWebTest.ChannelCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -21,7 +23,7 @@ defmodule ClickrWeb.ChannelCase do
     quote do
       # Import conveniences for testing with channels
       import Phoenix.ChannelTest
-      import ClickrWeb.ChannelCase
+      import ClickrWebTest.ChannelCase
 
       # The default endpoint for testing
       @endpoint ClickrWeb.Endpoint
@@ -29,7 +31,7 @@ defmodule ClickrWeb.ChannelCase do
   end
 
   setup tags do
-    Clickr.DataCase.setup_sandbox(tags)
+    ClickrTest.DataCase.setup_sandbox(tags)
     :ok
   end
 end

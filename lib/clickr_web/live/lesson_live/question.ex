@@ -241,8 +241,9 @@ defmodule ClickrWeb.LessonLive.Question do
 
   defp assign_lesson_and_related(socket, id \\ nil) do
     lesson =
-      Lessons.get_lesson!(socket.assigns.current_user, id || socket.assigns.lesson.id)
-      |> Clickr.Repo.preload([:lesson_students, seating_plan: [seats: :student]])
+      Lessons.get_lesson!(socket.assigns.current_user, id || socket.assigns.lesson.id,
+        preload: [:lesson_students, seating_plan: [seats: :student]]
+      )
 
     socket
     |> assign(:lesson, lesson)
@@ -252,7 +253,7 @@ defmodule ClickrWeb.LessonLive.Question do
 
   defp load_answers(%{assigns: %{lesson: %{state: :question} = lesson}} = socket) do
     question = Lessons.get_started_question!(socket.assigns.current_user, lesson)
-    Lessons.ActiveQuestion.start(question)
+    Lessons.active_question_start(question)
 
     student_ids =
       Lessons.list_question_answers(socket.assigns.current_user, question_id: question.id)

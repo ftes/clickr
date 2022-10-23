@@ -1,4 +1,8 @@
 defmodule Clickr.Classes do
+  use Boundary,
+    exports: [Class, SeatingPlan, SeatingPlanSeat],
+    deps: [Clickr, Clickr.{Accounts, Repo}]
+
   defdelegate authorize(action, user, params), to: Clickr.Classes.Policy
 
   import Ecto.Query, warn: false
@@ -6,16 +10,18 @@ defmodule Clickr.Classes do
   alias Clickr.Accounts.User
   alias Clickr.Classes.{Class, SeatingPlan, SeatingPlanSeat}
 
-  def list_classes(%User{} = user) do
+  def list_classes(%User{} = user, opts \\ []) do
     Class
     |> Bodyguard.scope(user)
     |> Repo.all()
+    |> _preload(opts[:preload])
   end
 
-  def get_class!(%User{} = user, id) do
+  def get_class!(%User{} = user, id, opts \\ []) do
     Class
     |> Bodyguard.scope(user)
     |> Repo.get!(id)
+    |> _preload(opts[:preload])
   end
 
   def create_class(%User{} = user, attrs \\ %{}) do
@@ -45,16 +51,18 @@ defmodule Clickr.Classes do
     Class.changeset(class, attrs)
   end
 
-  def list_seating_plans(%User{} = user) do
+  def list_seating_plans(%User{} = user, opts \\ []) do
     SeatingPlan
     |> Bodyguard.scope(user)
     |> Repo.all()
+    |> _preload(opts[:preload])
   end
 
-  def get_seating_plan!(%User{} = user, id) do
+  def get_seating_plan!(%User{} = user, id, opts \\ []) do
     SeatingPlan
     |> Bodyguard.scope(user)
     |> Repo.get!(id)
+    |> _preload(opts[:preload])
   end
 
   def create_seating_plan(%User{} = user, attrs \\ %{}) do
@@ -111,4 +119,7 @@ defmodule Clickr.Classes do
 
   defp permit(action, user, params \\ []),
     do: Bodyguard.permit(__MODULE__, action, user, params)
+
+  defp _preload(input, nil), do: input
+  defp _preload(input, args), do: Repo.preload(input, args)
 end

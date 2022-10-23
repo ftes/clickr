@@ -39,8 +39,9 @@ defmodule ClickrWeb.SeatingPlanLive.Show do
 
   defp load_seating_plan(socket, id) do
     sp =
-      Classes.get_seating_plan!(socket.assigns.current_user, id)
-      |> Clickr.Repo.preload(class: :students, seats: :student)
+      Classes.get_seating_plan!(socket.assigns.current_user, id,
+        preload: [class: :students, seats: :student]
+      )
 
     seated_ids = for s <- sp.seats, into: MapSet.new(), do: s.student.id
     seated_xy = for s <- sp.seats, into: MapSet.new(), do: {s.x, s.y}

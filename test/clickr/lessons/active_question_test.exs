@@ -1,5 +1,5 @@
 defmodule Clickr.Lessons.ActiveQuestionTest do
-  use Clickr.DataCase
+  use ClickrTest.DataCase
   alias Clickr.Lessons.ActiveQuestion
 
   defp create_students_and_mapping(%{user: user}) do

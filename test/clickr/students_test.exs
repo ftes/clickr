@@ -1,5 +1,5 @@
 defmodule Clickr.StudentsTest do
-  use Clickr.DataCase, async: true
+  use ClickrTest.DataCase, async: true
 
   alias Clickr.Students
   alias Clickr.Students.Student

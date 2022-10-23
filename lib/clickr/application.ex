@@ -1,4 +1,6 @@
 defmodule Clickr.Application do
+  use Boundary, top_level?: true, deps: [Clickr, ClickrWeb]
+
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false

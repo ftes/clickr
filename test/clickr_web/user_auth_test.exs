@@ -1,5 +1,5 @@
 defmodule ClickrWeb.UserAuthTest do
-  use ClickrWeb.ConnCase, async: true
+  use ClickrWebTest.ConnCase, async: true
 
   alias Phoenix.LiveView
   alias Clickr.Accounts

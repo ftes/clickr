@@ -7,9 +7,20 @@ defmodule Clickr.MixProject do
       version: "0.1.0",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
+      elixirc_options: [
+        warnings_as_errors: true
+      ],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      compilers: [:boundary] ++ Mix.compilers()
+      # boundary: [
+      #   default: [
+      #     check: [
+      #       apps: [:phoenix, :ecto, {:mix, :runtime}]
+      #     ]
+      #   ]
+      # ]
     ]
   end
 
@@ -54,7 +65,8 @@ defmodule Clickr.MixProject do
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:uuid, "~> 1.1"},
       {:timex, "~> 3.7"},
-      {:bodyguard, "~> 2.4"}
+      {:bodyguard, "~> 2.4"},
+      {:boundary, "~> 0.9.4", runtime: false}
     ]
   end
 

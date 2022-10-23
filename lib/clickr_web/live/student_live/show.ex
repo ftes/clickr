@@ -11,8 +11,7 @@ defmodule ClickrWeb.StudentLive.Show do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     student =
-      Students.get_student!(socket.assigns.current_user, id)
-      |> Clickr.Repo.preload([:class, grades: :subject])
+      Students.get_student!(socket.assigns.current_user, id, preload: [:class, grades: :subject])
 
     {:noreply,
      socket

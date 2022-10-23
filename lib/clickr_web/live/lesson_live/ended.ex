@@ -133,13 +133,14 @@ defmodule ClickrWeb.LessonLive.Ended do
 
   defp assign_lesson_and_related(socket, id) do
     lesson =
-      Lessons.get_lesson!(socket.assigns.current_user, id)
-      |> Clickr.Repo.preload([
-        :lesson_students,
-        :questions,
-        :grades,
-        seating_plan: [seats: :student]
-      ])
+      Lessons.get_lesson!(socket.assigns.current_user, id,
+        preload: [
+          :lesson_students,
+          :questions,
+          :grades,
+          seating_plan: [seats: :student]
+        ]
+      )
 
     student_ids = Enum.map(lesson.lesson_students, & &1.student_id)
 

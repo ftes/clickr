@@ -1,5 +1,5 @@
 defmodule Clickr.RoomsTest do
-  use Clickr.DataCase, async: true
+  use ClickrTest.DataCase, async: true
 
   alias Clickr.Rooms
   alias Clickr.Rooms.{Room, RoomSeat}

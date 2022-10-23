@@ -1,4 +1,6 @@
-defmodule Clickr.DataCase do
+defmodule ClickrTest.DataCase do
+  use Boundary, check: [out: false]
+
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -10,7 +12,7 @@ defmodule Clickr.DataCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use Clickr.DataCase, async: true`, although
+  by setting `use ClickrTest.DataCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -23,12 +25,12 @@ defmodule Clickr.DataCase do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Clickr.DataCase
+      import ClickrTest.DataCase
     end
   end
 
   setup tags do
-    Clickr.DataCase.setup_sandbox(tags)
+    ClickrTest.DataCase.setup_sandbox(tags)
     :ok
   end
 

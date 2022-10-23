@@ -1,4 +1,6 @@
 defmodule ClickrWeb do
+  use Boundary, deps: [Clickr, Ecto.Changeset], exports: [Endpoint]
+
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, views, channels and so on.

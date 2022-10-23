@@ -40,10 +40,7 @@ defmodule ClickrWeb.StudentLive.Index do
   end
 
   defp load_students(socket) do
-    students =
-      Students.list_students(socket.assigns.current_user)
-      |> Clickr.Repo.preload(:class)
-
+    students = Students.list_students(socket.assigns.current_user, preload: :class)
     assign(socket, :students, students)
   end
 end
