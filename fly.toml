@@ -15,7 +15,6 @@ allowed_public_ports = []
 auto_rollback = true
 
 [[services]]
-http_checks = []
 internal_port = 8080
 processes = ["app"]
 protocol = "tcp"
@@ -34,8 +33,9 @@ port = 80
 handlers = ["tls", "http"]
 port = 443
 
-[[services.tcp_checks]]
-grace_period = "1s"
-interval = "15s"
+[[services.http_checks]]
+grace_period = "5s"
+interval = "10s"
+path = "/users/log_in"
 restart_limit = 0
 timeout = "2s"
