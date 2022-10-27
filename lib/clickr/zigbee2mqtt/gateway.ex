@@ -14,6 +14,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     case DynamicSupervisor.start_child(@supervisor, {__MODULE__, gateway_id}) do
       {:ok, pid} -> pid
       {:error, {:already_started, pid}} -> pid
+      err -> Logger.info("Failed to start gateway #{gateway_id} #{inspect(err)}")
     end
   end
 
@@ -71,6 +72,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
 
   def handle_cast({:message, topic, payload}, state) do
     Logger.info("Unknown message #{state.gateway.id} #{inspect(topic)} #{inspect(payload)}")
+
     {:noreply, state}
   end
 
@@ -82,13 +84,13 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
 
   defp via_tuple(gateway_id), do: {:via, Registry, {@registry, gateway_id}}
 
-  defp device_id(ieee_address) when is_binary(ieee_address),
+  def device_id(ieee_address) when is_binary(ieee_address),
     do: UUID.uuid5(@device_type_id, ieee_address)
 
-  defp device_id(%{"ieee_address" => ieee_address}), do: device_id(ieee_address)
+  def device_id(%{"ieee_address" => ieee_address}), do: device_id(ieee_address)
 
-  defp device_id(%{"device" => %{"ieeeAddr" => ieee_address}}), do: device_id(ieee_address)
+  def device_id(%{"device" => %{"ieeeAddr" => ieee_address}}), do: device_id(ieee_address)
 
-  defp button_id(%{"device" => _, "action" => action} = payload),
+  def button_id(%{"device" => _, "action" => action} = payload),
     do: UUID.uuid5(device_id(payload), action)
 end

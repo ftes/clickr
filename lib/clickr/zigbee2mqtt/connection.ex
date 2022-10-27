@@ -30,15 +30,6 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
     )
   end
 
-  def publish(pid, topic, payload) do
-    GenServer.cast(pid, {:publish, topic, payload})
-  end
-
-  def handle_cast({:public, topic, payload}, state) do
-    :ok = Tortoise311.publish(state.client_id, topic, payload)
-    {:noreply, state}
-  end
-
   @impl true
   def init([%{client_id: cid}]) do
     Logger.debug("Init")
