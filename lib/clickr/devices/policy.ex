@@ -21,5 +21,7 @@ defmodule Clickr.Devices.Policy do
       when action in [:update_button, :delete_button],
       do: true
 
+  def authorize(:upsert_devices, %User{id: user_id}, %Gateway{user_id: user_id}), do: true
+
   def authorize(_, _, _), do: false
 end

@@ -5,8 +5,6 @@ defmodule Clickr.Devices.Button do
     field :name, :string
     belongs_to :user, Clickr.Accounts.User
     belongs_to :device, Clickr.Devices.Device
-
-    timestamps(type: :utc_datetime)
   end
 
   def scope(query, %Clickr.Accounts.User{id: user_id}, _) do

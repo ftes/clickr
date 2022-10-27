@@ -3,6 +3,7 @@ defmodule Clickr.Devices.Device do
 
   schema "devices" do
     field :name, :string
+    field :deleted, :boolean, default: false
     belongs_to :user, Clickr.Accounts.User
     belongs_to :gateway, Clickr.Devices.Gateway
 

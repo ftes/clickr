@@ -90,6 +90,31 @@ defmodule Clickr.Devices do
     end
   end
 
+  def upsert_devices(%User{id: uid} = user, %Gateway{id: gid} = gateway, attrs) do
+    with :ok <- permit(:upsert_devices, user, gateway) do
+      delete_query = from(d in Device, where: d.gateway_id == ^gateway.id)
+      now = DateTime.utc_now() |> DateTime.truncate(:second)
+
+      default_attrs = %{
+        deleted: false,
+        user_id: uid,
+        gateway_id: gid,
+        inserted_at: now,
+        updated_at: now
+      }
+
+      attrs = Enum.map(attrs, &Map.merge(&1, default_attrs))
+
+      Ecto.Multi.new()
+      |> Ecto.Multi.update_all(:soft_delete, delete_query, set: [deleted: true])
+      |> Ecto.Multi.insert_all(:insert, Device, attrs,
+        on_conflict: {:replace, [:updated_at, :name, :deleted]},
+        conflict_target: [:id]
+      )
+      |> Repo.transaction()
+    end
+  end
+
   def change_device(%Device{} = device, attrs \\ %{}) do
     Device.changeset(device, attrs)
   end
@@ -138,7 +163,8 @@ defmodule Clickr.Devices do
 
   def broadcast_button_click(
         %User{id: uid},
-        %{button_id: bid, device_id: did, gateway_id: gid} = attrs
+        %{button_id: bid, device_id: did, gateway_id: gid} = attrs,
+        opts \\ []
       ) do
     attrs = Map.put(attrs, :user_id, uid)
 
@@ -158,10 +184,7 @@ defmodule Clickr.Devices do
 
     res =
       Ecto.Multi.new()
-      |> Ecto.Multi.insert(:device, device,
-        conflict_target: [:id],
-        on_conflict: {:replace, [:name]}
-      )
+      |> add_upsert_device_to_multi(opts[:upsert_device], device)
       |> Ecto.Multi.insert(:button, button,
         conflict_target: [:id],
         on_conflict: {:replace, [:name]}
@@ -173,6 +196,15 @@ defmodule Clickr.Devices do
       res
     end
   end
+
+  defp add_upsert_device_to_multi(multi, true, device) do
+    Ecto.Multi.insert(multi, :device, device,
+      conflict_target: [:id],
+      on_conflict: {:replace, [:name]}
+    )
+  end
+
+  defp add_upsert_device_to_multi(multi, _, _), do: multi
 
   def deconz_parse_event(sensor, event), do: Deconz.parse_event(sensor, event)
 

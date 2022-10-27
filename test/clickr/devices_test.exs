@@ -107,6 +107,30 @@ defmodule Clickr.DevicesTest do
       device = device_fixture(user_id: user.id)
       assert %Ecto.Changeset{} = Devices.change_device(device)
     end
+
+    test "upsert_devices/3 adds new device", %{user: user} do
+      gateway = gateway_fixture(user_id: user.id)
+      did = "ed65c2c6-55c5-11ed-938f-5bfc1aa48502"
+      Devices.upsert_devices(user, gateway, [%{id: did, name: "device"}])
+      assert [%{id: ^did, deleted: false}] = Devices.list_devices(user)
+    end
+
+    test "upsert_devices/3 soft deletes old device of same gateway", %{user: user} do
+      gateway = gateway_fixture(user_id: user.id)
+      %{id: did1} = device_fixture(user_id: user.id, gateway_id: gateway.id)
+      %{id: did2} = device_fixture(user_id: user.id)
+      Devices.upsert_devices(user, gateway, [])
+
+      assert [%{id: ^did2, deleted: false}, %{id: ^did1, deleted: true}] =
+               Devices.list_devices(user)
+    end
+
+    test "upsert_devices/3 updates device name", %{user: user} do
+      gateway = gateway_fixture(user_id: user.id)
+      %{id: did} = device_fixture(user_id: user.id, gateway_id: gateway.id, name: "old")
+      Devices.upsert_devices(user, gateway, [%{id: did, name: "new"}])
+      assert [%{id: ^did, name: "new"}] = Devices.list_devices(user)
+    end
   end
 
   describe "buttons" do
@@ -167,13 +191,37 @@ defmodule Clickr.DevicesTest do
       bid = "de5a61a6-489b-11ed-a744-9b189177012f"
 
       assert {:ok, _} =
-               Devices.broadcast_button_click(user, %{
-                 gateway_id: gid,
-                 device_id: did,
-                 button_id: bid
-               })
+               Devices.broadcast_button_click(
+                 user,
+                 %{
+                   gateway_id: gid,
+                   device_id: did,
+                   button_id: bid
+                 },
+                 upsert_device: true
+               )
 
       assert [%{id: ^did}] = Devices.list_devices(user)
+      assert [%{id: ^bid}] = Devices.list_buttons(user)
+    end
+
+    test "broadcast_button_click/1 creates button but does not upsert device", %{user: user} do
+      %{id: gid} = gateway_fixture(user_id: user.id)
+      %{id: did} = device_fixture(user_id: user.id, gateway_id: gid, name: "old name")
+      bid = "de5a61a6-489b-11ed-a744-9b189177012f"
+
+      assert {:ok, _} =
+               Devices.broadcast_button_click(
+                 user,
+                 %{
+                   gateway_id: gid,
+                   device_id: did,
+                   button_id: bid,
+                   device_name: "new name ignored"
+                 }
+               )
+
+      assert [%{id: ^did, name: "old name"}] = Devices.list_devices(user)
       assert [%{id: ^bid}] = Devices.list_buttons(user)
     end
 
@@ -184,13 +232,17 @@ defmodule Clickr.DevicesTest do
       %{id: bid} = button_fixture(user_id: user.id, device_id: did, name: "old button")
 
       assert {:ok, _} =
-               Devices.broadcast_button_click(user, %{
-                 gateway_id: gid,
-                 device_id: did,
-                 device_name: "new device",
-                 button_id: bid,
-                 button_name: "new button"
-               })
+               Devices.broadcast_button_click(
+                 user,
+                 %{
+                   gateway_id: gid,
+                   device_id: did,
+                   device_name: "new device",
+                   button_id: bid,
+                   button_name: "new button"
+                 },
+                 upsert_device: true
+               )
 
       assert [%{id: ^did, name: "new device"}] = Devices.list_devices(user)
       assert [%{id: ^bid, name: "new button"}] = Devices.list_buttons(user)
