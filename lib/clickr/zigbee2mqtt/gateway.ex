@@ -20,8 +20,8 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
 
   def stop(gateway_id), do: GenServer.stop(via_tuple(gateway_id))
 
-  def handle_message(gateway_id, topic, payload) when is_list(topic) do
-    GenServer.cast(start!(gateway_id), {:message, topic, payload})
+  def handle_message(gateway_id, topic, payload, opts) when is_list(topic) do
+    GenServer.cast(start!(gateway_id), {:message, topic, payload, opts})
   end
 
   # Private
@@ -43,19 +43,26 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   end
 
   @impl true
-  def handle_cast({:message, ["bridge", "devices"], payload}, state) when is_list(payload) do
+  def handle_cast({:message, ["bridge", "devices"], payload, opts}, state)
+      when is_list(payload) do
     attrs =
-      for %{"type" => "EndDevice"} = device <- payload,
-          do: %{
-            id: device_id(device),
-            name: device["friendly_name"] || device_id(device)
-          }
+      for %{"type" => "EndDevice"} = device <- payload do
+        name = device["friendly_name"] || device["ieee_address"]
+
+        if String.contains?(name, "/") do
+          payload = Jason.encode!(%{from: name, to: String.replace(name, "/", "_")})
+          topic = "clickr/gateways/#{state.gateway.id}/bridge/request/device/rename"
+          Clickr.Zigbee2Mqtt.Publisher.publish(opts[:client_id], topic, payload)
+        end
+
+        %{id: device_id(device), name: name}
+      end
 
     Devices.upsert_devices(state.user, state.gateway, attrs)
     {:noreply, state}
   end
 
-  def handle_cast({:message, [_device_name], %{"action" => _} = payload}, state) do
+  def handle_cast({:message, [_device_name], %{"action" => _} = payload, _}, state) do
     gid = state.gateway.id
     did = device_id(payload)
     bid = button_id(payload)
@@ -64,13 +71,13 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     {:noreply, state}
   end
 
-  def handle_cast({:message, [_device_name], %{"battery" => _}}, state) do
+  def handle_cast({:message, [_device_name], %{"battery" => _}, _}, state) do
     # TODO Handle battery
     Logger.debug("Battery ignored")
     {:noreply, state}
   end
 
-  def handle_cast({:message, topic, payload}, state) do
+  def handle_cast({:message, topic, payload, _}, state) do
     Logger.info("Unknown message #{state.gateway.id} #{inspect(topic)} #{inspect(payload)}")
 
     {:noreply, state}

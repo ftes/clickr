@@ -67,7 +67,8 @@ defmodule Clickr.MixProject do
       {:timex, "~> 3.7"},
       {:bodyguard, "~> 2.4"},
       {:boundary, "~> 0.9.4", runtime: false},
-      {:tortoise311, "~> 0.11.5"}
+      {:tortoise311, "~> 0.11.5"},
+      {:mox, "~> 1.0"}
     ]
   end
 

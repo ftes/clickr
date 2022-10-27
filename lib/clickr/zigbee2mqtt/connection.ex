@@ -47,7 +47,7 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
   def handle_message(topic, payload, state) do
     Logger.debug("Handle #{inspect(topic)}")
 
-    case Jason.decode(payload) do
+    case Jason.decode(payload || "") do
       {:ok, json} -> handle_json(topic, json, state)
       _ -> handle_other(topic, payload, state)
     end
@@ -71,7 +71,7 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
   end
 
   defp handle_json(["clickr", "gateways", gid | topicRest], payload, state) do
-    Clickr.Zigbee2Mqtt.Gateway.handle_message(gid, topicRest, payload)
+    Clickr.Zigbee2Mqtt.Gateway.handle_message(gid, topicRest, payload, client_id: state.client_id)
     {:ok, state}
   end
 
