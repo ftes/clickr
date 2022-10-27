@@ -26,6 +26,7 @@ defmodule ClickrWeb.ButtonLiveTest do
       assert html =~ button.name
     end
 
+    @tag :inspect
     test "saves new button", %{conn: conn, device: device} do
       {:ok, index_live, _html} = live(conn, ~p"/buttons")
 

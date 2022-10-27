@@ -4,14 +4,13 @@ defmodule Clickr.Devices.Device do
   schema "devices" do
     field :name, :string
     field :deleted, :boolean, default: false
-    belongs_to :user, Clickr.Accounts.User
     belongs_to :gateway, Clickr.Devices.Gateway
 
     timestamps(type: :utc_datetime)
   end
 
   def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
-    from x in query, where: x.user_id == ^user_id
+    from x in query, join: g in assoc(x, :gateway), where: g.user_id == ^user_id
   end
 
   @doc false

@@ -26,6 +26,7 @@ defmodule ClickrWeb.DeviceLiveTest do
       assert html =~ device.name
     end
 
+    @tag :inspect
     test "saves new device", %{conn: conn, gateway: gateway} do
       {:ok, index_live, _html} = live(conn, ~p"/devices")
 

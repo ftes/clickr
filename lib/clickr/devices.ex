@@ -69,15 +69,14 @@ defmodule Clickr.Devices do
   end
 
   def create_device(%User{} = user, attrs \\ %{}) do
-    with :ok <- permit(:create_device, user) do
-      %Device{user_id: user.id}
-      |> Device.changeset(attrs)
-      |> Repo.insert()
+    changeset =    Device.changeset(%Device{}, attrs)
+    with :ok <- permit(:create_device, user, Ecto.Changeset.apply_changes(changeset)) do
+    Repo.insert(changeset)
     end
   end
 
   def update_device(%User{} = user, %Device{} = device, attrs) do
-    with :ok <- permit(:update_device, user, device) do
+    with :ok <- permit(:update_device, user, Repo.preload(device, :gateway)) do
       device
       |> Device.changeset(attrs)
       |> Repo.update()
@@ -85,19 +84,18 @@ defmodule Clickr.Devices do
   end
 
   def delete_device(%User{} = user, %Device{} = device) do
-    with :ok <- permit(:delete_device, user, device) do
+    with :ok <- permit(:delete_device, user, Repo.preload(device, :gateway)) do
       Repo.delete(device)
     end
   end
 
-  def upsert_devices(%User{id: uid} = user, %Gateway{id: gid} = gateway, attrs) do
+  def upsert_devices(%User{} = user, %Gateway{id: gid} = gateway, attrs) do
     with :ok <- permit(:upsert_devices, user, gateway) do
       delete_query = from(d in Device, where: d.gateway_id == ^gateway.id)
       now = DateTime.utc_now() |> DateTime.truncate(:second)
 
       default_attrs = %{
         deleted: false,
-        user_id: uid,
         gateway_id: gid,
         inserted_at: now,
         updated_at: now
@@ -134,15 +132,14 @@ defmodule Clickr.Devices do
   end
 
   def create_button(%User{} = user, attrs \\ %{}) do
-    with :ok <- permit(:create_button, user) do
-      %Button{user_id: user.id}
-      |> Button.changeset(attrs)
-      |> Repo.insert()
+    changeset = Button.changeset(%Button{}, attrs)
+    with :ok <- permit(:create_button, user, Ecto.Changeset.apply_changes(changeset)) do
+      Repo.insert(changeset)
     end
   end
 
   def update_button(%User{} = user, %Button{} = button, attrs) do
-    with :ok <- permit(:update_button, user, button) do
+    with :ok <- permit(:update_button, user, Repo.preload(button, device: :gateway)) do
       button
       |> Button.changeset(attrs)
       |> Repo.update()
@@ -150,7 +147,7 @@ defmodule Clickr.Devices do
   end
 
   def delete_button(%User{} = user, %Button{} = button) do
-    with :ok <- permit(:delete_button, user, button) do
+    with :ok <- permit(:delete_button, user, Repo.preload(button, device: :gateway)) do
       Repo.delete(button)
     end
   end
@@ -167,20 +164,10 @@ defmodule Clickr.Devices do
         opts \\ []
       ) do
     attrs = Map.put(attrs, :user_id, uid)
-
-    device = %Device{
-      id: did,
-      gateway_id: gid,
-      user_id: uid,
-      name: attrs[:device_name] || "Unknown"
-    }
-
-    button = %Button{
-      id: bid,
-      device_id: did,
-      user_id: uid,
-      name: attrs[:button_name] || "Unknown"
-    }
+    device_name = attrs[:device_name] || "Unknown"
+    device = %Device{id: did,gateway_id: gid,name: device_name}
+    button_name = attrs[:button_name] || "Unknown"
+    button = %Button{id: bid,device_id: did,name: button_name}
 
     multi =
       Ecto.Multi.new()

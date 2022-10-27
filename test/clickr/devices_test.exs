@@ -80,7 +80,9 @@ defmodule Clickr.DevicesTest do
     end
 
     test "create_device/1 with invalid data returns error changeset", %{user: user} do
-      assert {:error, %Ecto.Changeset{}} = Devices.create_device(user, @invalid_attrs)
+      g = gateway_fixture(user_id: user.id)
+      invalid_attrs = Map.merge(@invalid_attrs, %{gateway_id: g.id})
+      assert {:error, %Ecto.Changeset{}} = Devices.create_device(user, invalid_attrs)
     end
 
     test "update_device/2 with valid data updates the device", %{user: user} do
@@ -155,7 +157,9 @@ defmodule Clickr.DevicesTest do
     end
 
     test "create_button/1 with invalid data returns error changeset", %{user: user} do
-      assert {:error, %Ecto.Changeset{}} = Devices.create_button(user, @invalid_attrs)
+      d = device_fixture(user_id: user.id)
+      invalid_attrs = Map.merge(@invalid_attrs, %{device_id: d.id})
+      assert {:error, %Ecto.Changeset{}} = Devices.create_button(user, invalid_attrs)
     end
 
     test "update_button/2 with valid data updates the button", %{user: user} do

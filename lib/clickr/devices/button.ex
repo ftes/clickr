@@ -3,12 +3,11 @@ defmodule Clickr.Devices.Button do
 
   schema "buttons" do
     field :name, :string
-    belongs_to :user, Clickr.Accounts.User
     belongs_to :device, Clickr.Devices.Device
   end
 
   def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
-    from x in query, where: x.user_id == ^user_id
+    from x in query, join: d in assoc(x, :device), join: g in assoc(d, :gateway), where: g.user_id == ^user_id
   end
 
   @doc false
