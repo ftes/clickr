@@ -21,8 +21,8 @@ defmodule Clickr.Application do
       ClickrWeb.Endpoint,
       # Start a worker by calling: Clickr.Worker.start_link(arg)
       # {Clickr.Worker, arg}
-      Clickr.Lessons.ActiveRegistry,
-      Clickr.Lessons.ActiveSupervisor
+      Clickr.Lessons.Supervisor,
+      Clickr.Zigbee2Mqtt.Supervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

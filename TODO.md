@@ -1,8 +1,8 @@
 # Todo
 
+- [ ] fly.io check handler
 - [ ] enforce boundary for other apps (mix.exs config)
 - [ ] add user to all context functions
-  - forbid deep calls to non-context functions (boundary)
 - [ ] delete lesson edit
   - [ ] delete Lessons.update_lesson
 - [ ] delete lesson show

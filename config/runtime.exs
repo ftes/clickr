@@ -20,6 +20,10 @@ if System.get_env("PHX_SERVER") do
   config :clickr, ClickrWeb.Endpoint, server: true
 end
 
+if password = System.get_env("MQTT_PASSWORD") do
+  config :clickr, Clickr.Zigbee2Mqtt.Connection, password: password, disabled: false
+end
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

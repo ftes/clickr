@@ -6,6 +6,9 @@ defmodule Clickr.Lessons.ActiveQuestion do
 
   defstruct [:question_id, :lesson_id, :user_id, :mapping]
 
+  @registry __MODULE__.Registry
+  @supervisor __MODULE__.Supervisor
+
   # public API
   def start(%Question{} = question, mapping \\ nil) do
     lesson = Clickr.Repo.preload(question, :lesson).lesson
@@ -18,7 +21,7 @@ defmodule Clickr.Lessons.ActiveQuestion do
       mapping: mapping.button_to_student_ids
     }
 
-    Clickr.Lessons.ActiveSupervisor.start_child({__MODULE__, state})
+    DynamicSupervisor.start_child(@supervisor, {__MODULE__, state})
   end
 
   def stop(%Question{} = question), do: GenServer.stop(via_tuple(question))
@@ -53,6 +56,5 @@ defmodule Clickr.Lessons.ActiveQuestion do
 
   def handle_info({:button_clicked, _, _}, state), do: {:noreply, state}
 
-  defp via_tuple(%Question{} = question),
-    do: Clickr.Lessons.ActiveRegistry.via_tuple({__MODULE__, question.id})
+  defp via_tuple(%Question{} = question), do: {:via, Registry, {@registry, question.id}}
 end

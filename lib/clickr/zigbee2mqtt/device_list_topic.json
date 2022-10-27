@@ -1,0 +1,295 @@
+[
+  {
+    "definition": null,
+    "endpoints": {
+      "1": {
+        "bindings": [],
+        "clusters": {
+          "input": [],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "2": {
+        "bindings": [],
+        "clusters": {
+          "input": [],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "3": {
+        "bindings": [],
+        "clusters": {
+          "input": [],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "4": {
+        "bindings": [],
+        "clusters": {
+          "input": [],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "5": {
+        "bindings": [],
+        "clusters": {
+          "input": [],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "6": {
+        "bindings": [],
+        "clusters": {
+          "input": [],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "8": {
+        "bindings": [],
+        "clusters": {
+          "input": [],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "10": {
+        "bindings": [],
+        "clusters": {
+          "input": [],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "11": {
+        "bindings": [],
+        "clusters": {
+          "input": [
+            "ssIasAce",
+            "genTime"
+          ],
+          "output": [
+            "ssIasZone",
+            "ssIasWd"
+          ]
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "12": {
+        "bindings": [],
+        "clusters": {
+          "input": [],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "13": {
+        "bindings": [],
+        "clusters": {
+          "input": [
+            "genOta"
+          ],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "47": {
+        "bindings": [],
+        "clusters": {
+          "input": [],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "110": {
+        "bindings": [],
+        "clusters": {
+          "input": [],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      },
+      "242": {
+        "bindings": [],
+        "clusters": {
+          "input": [],
+          "output": []
+        },
+        "configured_reportings": [],
+        "scenes": []
+      }
+    },
+    "friendly_name": "Coordinator",
+    "ieee_address": "0x00124b00014d9226",
+    "interview_completed": true,
+    "interviewing": false,
+    "network_address": 0,
+    "supported": false,
+    "type": "Coordinator"
+  },
+  {
+    "date_code": "20200708",
+    "definition": {
+      "description": "STYRBAR remote control",
+      "exposes": [
+        {
+          "access": 1,
+          "description": "Remaining battery in %",
+          "name": "battery",
+          "property": "battery",
+          "type": "numeric",
+          "unit": "%",
+          "value_max": 100,
+          "value_min": 0
+        },
+        {
+          "access": 1,
+          "description": "Triggered action (e.g. a button click)",
+          "name": "action",
+          "property": "action",
+          "type": "enum",
+          "values": [
+            "on",
+            "off",
+            "brightness_move_up",
+            "brightness_move_down",
+            "brightness_stop",
+            "arrow_left_click",
+            "arrow_right_click",
+            "arrow_left_hold",
+            "arrow_right_hold",
+            "arrow_left_release",
+            "arrow_right_release"
+          ]
+        },
+        {
+          "access": 1,
+          "description": "Link quality (signal strength)",
+          "name": "linkquality",
+          "property": "linkquality",
+          "type": "numeric",
+          "unit": "lqi",
+          "value_max": 255,
+          "value_min": 0
+        }
+      ],
+      "model": "E2001/E2002",
+      "options": [
+        {
+          "description": "Simulate a brightness value. If this device provides a brightness_move_up or brightness_move_down action it is possible to specify the update interval and delta.",
+          "features": [
+            {
+              "access": 2,
+              "description": "Delta per interval, 20 by default",
+              "name": "delta",
+              "property": "delta",
+              "type": "numeric",
+              "value_min": 0
+            },
+            {
+              "access": 2,
+              "description": "Interval duration",
+              "name": "interval",
+              "property": "interval",
+              "type": "numeric",
+              "unit": "ms",
+              "value_min": 0
+            }
+          ],
+          "name": "simulated_brightness",
+          "property": "simulated_brightness",
+          "type": "composite"
+        },
+        {
+          "access": 2,
+          "description": "Set to false to disable the legacy integration (highly recommended), will change structure of the published payload (default true).",
+          "name": "legacy",
+          "property": "legacy",
+          "type": "binary",
+          "value_off": false,
+          "value_on": true
+        }
+      ],
+      "supports_ota": true,
+      "vendor": "IKEA"
+    },
+    "endpoints": {
+      "1": {
+        "bindings": [
+          {
+            "cluster": "genPollCtrl",
+            "target": {
+              "endpoint": 1,
+              "ieee_address": "0x00124b00014d9226",
+              "type": "endpoint"
+            }
+          },
+          {
+            "cluster": "genPowerCfg",
+            "target": {
+              "endpoint": 1,
+              "ieee_address": "0x00124b00014d9226",
+              "type": "endpoint"
+            }
+          }
+        ],
+        "clusters": {
+          "input": [
+            "genBasic",
+            "genPowerCfg",
+            "genIdentify",
+            "genPollCtrl",
+            "touchlink",
+            "64599"
+          ],
+          "output": [
+            "genIdentify",
+            "genOnOff",
+            "genLevelCtrl",
+            "genOta",
+            "touchlink"
+          ]
+        },
+        "configured_reportings": [
+          {
+            "attribute": "batteryPercentageRemaining",
+            "cluster": "genPowerCfg",
+            "maximum_report_interval": 62000,
+            "minimum_report_interval": 3600,
+            "reportable_change": 0
+          }
+        ],
+        "scenes": []
+      }
+    },
+    "friendly_name": "styrbar",
+    "ieee_address": "0x9035eafffed5192e",
+    "interview_completed": true,
+    "interviewing": false,
+    "manufacturer": "IKEA of Sweden",
+    "model_id": "Remote Control N2",
+    "network_address": 28954,
+    "power_source": "Battery",
+    "software_build_id": "1.0.024",
+    "supported": true,
+    "type": "EndDevice"
+  }
+]

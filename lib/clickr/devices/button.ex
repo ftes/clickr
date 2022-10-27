@@ -7,7 +7,10 @@ defmodule Clickr.Devices.Button do
   end
 
   def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
-    from x in query, join: d in assoc(x, :device), join: g in assoc(d, :gateway), where: g.user_id == ^user_id
+    from x in query,
+      join: d in assoc(x, :device),
+      join: g in assoc(d, :gateway),
+      where: g.user_id == ^user_id
   end
 
   @doc false

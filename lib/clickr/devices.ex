@@ -23,9 +23,10 @@ defmodule Clickr.Devices do
     |> _preload(opts[:preload])
   end
 
-  def get_gateway_without_user_scope_by(opts) do
+  def get_gateway_without_user_scope_by(args, opts \\ []) do
     Gateway
-    |> Repo.get_by(opts)
+    |> Repo.get_by(args)
+    |> _preload(opts[:preload])
   end
 
   def create_gateway(%User{} = user, attrs \\ %{}) do
@@ -69,9 +70,10 @@ defmodule Clickr.Devices do
   end
 
   def create_device(%User{} = user, attrs \\ %{}) do
-    changeset =    Device.changeset(%Device{}, attrs)
+    changeset = Device.changeset(%Device{}, attrs)
+
     with :ok <- permit(:create_device, user, Ecto.Changeset.apply_changes(changeset)) do
-    Repo.insert(changeset)
+      Repo.insert(changeset)
     end
   end
 
@@ -133,6 +135,7 @@ defmodule Clickr.Devices do
 
   def create_button(%User{} = user, attrs \\ %{}) do
     changeset = Button.changeset(%Button{}, attrs)
+
     with :ok <- permit(:create_button, user, Ecto.Changeset.apply_changes(changeset)) do
       Repo.insert(changeset)
     end
@@ -165,9 +168,9 @@ defmodule Clickr.Devices do
       ) do
     attrs = Map.put(attrs, :user_id, uid)
     device_name = attrs[:device_name] || "Unknown"
-    device = %Device{id: did,gateway_id: gid,name: device_name}
+    device = %Device{id: did, gateway_id: gid, name: device_name}
     button_name = attrs[:button_name] || "Unknown"
-    button = %Button{id: bid,device_id: did,name: button_name}
+    button = %Button{id: bid, device_id: did, name: button_name}
 
     multi =
       Ecto.Multi.new()
@@ -201,6 +204,7 @@ defmodule Clickr.Devices do
   defp permit(action, user, params \\ []),
     do: Bodyguard.permit(__MODULE__, action, user, params)
 
+  defp _preload(nil, _), do: nil
   defp _preload(input, nil), do: input
   defp _preload(input, args), do: Repo.preload(input, args)
 end

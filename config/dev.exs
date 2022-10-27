@@ -82,3 +82,5 @@ config :phoenix, :plug_init_mode, :runtime
 config :swoosh, :api_client, false
 
 config :gettext, :default_locale, "de"
+
+config :clickr, Clickr.Zigbee2Mqtt.Connection, disabled: true

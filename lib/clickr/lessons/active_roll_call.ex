@@ -1,28 +1,13 @@
 defmodule Clickr.Lessons.ActiveRollCall do
-  defmodule ThisSupervisor do
-    def start_link, do: DynamicSupervisor.start_link(name: __MODULE__, strategy: :one_for_one)
-
-    def start_child(args),
-      do: DynamicSupervisor.start_child(__MODULE__, args)
-
-    def child_spec(_),
-      do: %{id: __MODULE__, start: {__MODULE__, :start_link, []}, type: :supervisor}
-  end
-
-  defmodule ThisRegistry do
-    def start_link, do: Registry.start_link(keys: :unique, name: __MODULE__)
-    def via_tuple(key), do: {:via, Registry, {__MODULE__, key}}
-
-    def child_spec(_),
-      do: Supervisor.child_spec(Registry, id: __MODULE__, start: {__MODULE__, :start_link, []})
-  end
-
   use GenServer, restart: :transient
 
   alias Clickr.Lessons
   alias Clickr.Lessons.{ButtonMapping, Lesson}
 
   defstruct [:lesson_id, :user_id, :mapping]
+
+  @registry __MODULE__.Registry
+  @supervisor __MODULE__.Supervisor
 
   # public API
   def start(%Lesson{} = lesson, mapping \\ nil) do
@@ -34,7 +19,7 @@ defmodule Clickr.Lessons.ActiveRollCall do
       mapping: mapping.button_to_student_ids
     }
 
-    Clickr.Lessons.ActiveSupervisor.start_child({__MODULE__, state})
+    DynamicSupervisor.start_child(@supervisor, {__MODULE__, state})
   end
 
   def stop(%Lesson{} = lesson), do: GenServer.stop(via_tuple(lesson))
@@ -68,6 +53,5 @@ defmodule Clickr.Lessons.ActiveRollCall do
 
   def handle_info({:button_clicked, _, _}, state), do: {:noreply, state}
 
-  defp via_tuple(%Lesson{} = lesson),
-    do: Clickr.Lessons.ActiveRegistry.via_tuple({__MODULE__, lesson.id})
+  defp via_tuple(%Lesson{} = lesson), do: {:via, Registry, {@registry, lesson.id}}
 end

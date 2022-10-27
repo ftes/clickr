@@ -1,0 +1,105 @@
+{
+  "battery": 100,
+  "device": {
+    "applicationVersion": 10,
+    "friendlyName": "0x00158d0003d13374",
+    "ieeeAddr": "0x00158d0003d13374",
+    "manufacturerID": 4151,
+    "manufacturerName": "LUMI",
+    "model": "WXKG01LM",
+    "networkAddress": 7090,
+    "powerSource": "Battery",
+    "type": "EndDevice"
+  },
+  "linkquality": 171,
+  "power_outage_count": 184,
+  "voltage": 3012
+}
+
+{
+  "action": "arrow_left_click",
+  "battery": 100,
+  "device": {
+    "applicationVersion": 1,
+    "dateCode": "20200708",
+    "friendlyName": "styrbar",
+    "hardwareVersion": 1,
+    "ieeeAddr": "0x9035eafffed5192e",
+    "manufacturerID": 4476,
+    "manufacturerName": "IKEA of Sweden",
+    "model": "E2001/E2002",
+    "networkAddress": 28954,
+    "powerSource": "Battery",
+    "softwareBuildID": "1.0.024",
+    "stackVersion": 103,
+    "type": "EndDevice",
+    "zclVersion": 3
+  },
+  "linkquality": 90
+}
+
+{
+  "action": "arrow_right_click",
+  "battery": 100,
+  "device": {
+    "applicationVersion": 1,
+    "dateCode": "20200708",
+    "friendlyName": "styrbar",
+    "hardwareVersion": 1,
+    "ieeeAddr": "0x9035eafffed5192e",
+    "manufacturerID": 4476,
+    "manufacturerName": "IKEA of Sweden",
+    "model": "E2001/E2002",
+    "networkAddress": 28954,
+    "powerSource": "Battery",
+    "softwareBuildID": "1.0.024",
+    "stackVersion": 103,
+    "type": "EndDevice",
+    "zclVersion": 3
+  },
+  "linkquality": 96
+}
+
+{
+  "action": "on",
+  "battery": 100,
+  "device": {
+    "applicationVersion": 1,
+    "dateCode": "20200708",
+    "friendlyName": "styrbar",
+    "hardwareVersion": 1,
+    "ieeeAddr": "0x9035eafffed5192e",
+    "manufacturerID": 4476,
+    "manufacturerName": "IKEA of Sweden",
+    "model": "E2001/E2002",
+    "networkAddress": 28954,
+    "powerSource": "Battery",
+    "softwareBuildID": "1.0.024",
+    "stackVersion": 103,
+    "type": "EndDevice",
+    "zclVersion": 3
+  },
+  "linkquality": 99
+}
+
+{
+  "action": "off",
+  "battery": 100,
+  "device": {
+    "applicationVersion": 1,
+    "dateCode": "20200708",
+    "friendlyName": "styrbar",
+    "hardwareVersion": 1,
+    "ieeeAddr": "0x9035eafffed5192e",
+    "manufacturerID": 4476,
+    "manufacturerName": "IKEA of Sweden",
+    "model": "E2001/E2002",
+    "networkAddress": 28954,
+    "powerSource": "Battery",
+    "softwareBuildID": "1.0.024",
+    "stackVersion": 103,
+    "type": "EndDevice",
+    "zclVersion": 3
+  },
+  "linkquality": 117
+}

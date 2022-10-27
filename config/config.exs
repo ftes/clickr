@@ -65,6 +65,13 @@ config :bodyguard,
   # The second element of the {:error, reason} tuple returned on auth failure
   default_error: :unauthorized
 
+config :clickr, Clickr.Zigbee2Mqtt.Connection,
+  host: "d8a49c0682174333860981a8c709e3b4.s1.eu.hivemq.cloud",
+  user: "clickr_server",
+  password: "set $MQTT_PASSWORD env var",
+  port: 8883,
+  client_id: "clickr-server"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
