@@ -185,12 +185,19 @@ defmodule Clickr.DevicesTest do
   end
 
   describe "button_clicks" do
+    defp subscribe_to_button_clicks(%{user: user}) do
+      topic = Devices.button_click_topic(%{user_id: user.id})
+      Clickr.PubSub.subscribe(topic)
+    end
+
+    setup :subscribe_to_button_clicks
+
     test "broadcast_button_click/1 creates device and button", %{user: user} do
       %{id: gid} = gateway_fixture(user_id: user.id)
       did = "856b554e-c592-49b2-a328-08573883107a"
       bid = "de5a61a6-489b-11ed-a744-9b189177012f"
 
-      assert {:ok, _} =
+      assert :ok =
                Devices.broadcast_button_click(
                  user,
                  %{
@@ -201,6 +208,9 @@ defmodule Clickr.DevicesTest do
                  upsert_device: true
                )
 
+      assert_received {:button_clicked, multi, %{}}
+      Clickr.Repo.transaction(multi)
+
       assert [%{id: ^did}] = Devices.list_devices(user)
       assert [%{id: ^bid}] = Devices.list_buttons(user)
     end
@@ -210,7 +220,7 @@ defmodule Clickr.DevicesTest do
       %{id: did} = device_fixture(user_id: user.id, gateway_id: gid, name: "old name")
       bid = "de5a61a6-489b-11ed-a744-9b189177012f"
 
-      assert {:ok, _} =
+      assert :ok =
                Devices.broadcast_button_click(
                  user,
                  %{
@@ -220,6 +230,9 @@ defmodule Clickr.DevicesTest do
                    device_name: "new name ignored"
                  }
                )
+
+      assert_received {:button_clicked, multi, %{}}
+      Clickr.Repo.transaction(multi)
 
       assert [%{id: ^did, name: "old name"}] = Devices.list_devices(user)
       assert [%{id: ^bid}] = Devices.list_buttons(user)
@@ -231,7 +244,7 @@ defmodule Clickr.DevicesTest do
       %{id: did} = device_fixture(user_id: user.id, gateway_id: gid, name: "old device")
       %{id: bid} = button_fixture(user_id: user.id, device_id: did, name: "old button")
 
-      assert {:ok, _} =
+      assert :ok =
                Devices.broadcast_button_click(
                  user,
                  %{
@@ -243,6 +256,9 @@ defmodule Clickr.DevicesTest do
                  },
                  upsert_device: true
                )
+
+      assert_received {:button_clicked, multi, %{}}
+      Clickr.Repo.transaction(multi)
 
       assert [%{id: ^did, name: "new device"}] = Devices.list_devices(user)
       assert [%{id: ^bid, name: "new button"}] = Devices.list_buttons(user)

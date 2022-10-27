@@ -35,7 +35,10 @@ defmodule Clickr.Lessons.ActiveQuestion do
   end
 
   @impl true
-  def handle_info({:button_clicked, %{button_id: bid}}, %__MODULE__{mapping: mapping} = state)
+  def handle_info(
+        {:button_clicked, _create_button_multi, %{button_id: bid}},
+        %__MODULE__{mapping: mapping} = state
+      )
       when is_map_key(mapping, bid) do
     args = %{question_id: state.question_id, student_id: mapping[bid]}
     broadcast_args = Map.put(args, :lesson_id, state.lesson_id)
@@ -48,7 +51,7 @@ defmodule Clickr.Lessons.ActiveQuestion do
     {:noreply, state}
   end
 
-  def handle_info({:button_clicked, _}, state), do: {:noreply, state}
+  def handle_info({:button_clicked, _, _}, state), do: {:noreply, state}
 
   defp via_tuple(%Question{} = question),
     do: Clickr.Lessons.ActiveRegistry.via_tuple({__MODULE__, question.id})

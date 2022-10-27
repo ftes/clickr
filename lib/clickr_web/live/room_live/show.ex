@@ -46,15 +46,20 @@ defmodule ClickrWeb.RoomLive.Show do
 
   @impl true
   def handle_info(
-        {:button_clicked, %{button_id: bid}},
+        {:button_clicked, create_button_multi, %{button_id: bid}},
         %{assigns: %{awaiting_click: {x, y}}} = socket
       ) do
     {:ok, _} =
-      Rooms.assign_room_seat(socket.assigns.current_user, socket.assigns.room, %{
-        x: x,
-        y: y,
-        button_id: bid
-      })
+      Rooms.assign_room_seat(
+        socket.assigns.current_user,
+        socket.assigns.room,
+        %{
+          x: x,
+          y: y,
+          button_id: bid
+        },
+        multi: create_button_multi
+      )
 
     {:noreply,
      socket
@@ -62,7 +67,7 @@ defmodule ClickrWeb.RoomLive.Show do
      |> load_room(socket.assigns.room.id)}
   end
 
-  def handle_info({:button_clicked, %{button_id: bid}}, socket) do
+  def handle_info({:button_clicked, _create_button_multi, %{button_id: bid}}, socket) do
     Process.send_after(self(), {:delete_active, bid}, @active_for_200ms)
     {:noreply, assign(socket, :active, MapSet.put(socket.assigns.active, bid))}
   end

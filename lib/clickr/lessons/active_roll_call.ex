@@ -51,7 +51,10 @@ defmodule Clickr.Lessons.ActiveRollCall do
   end
 
   @impl true
-  def handle_info({:button_clicked, %{button_id: bid}}, %__MODULE__{mapping: mapping} = state)
+  def handle_info(
+        {:button_clicked, _create_button_multi, %{button_id: bid}},
+        %__MODULE__{mapping: mapping} = state
+      )
       when is_map_key(mapping, bid) do
     args = %{lesson_id: state.lesson_id, student_id: mapping[bid]}
 
@@ -63,7 +66,7 @@ defmodule Clickr.Lessons.ActiveRollCall do
     {:noreply, state}
   end
 
-  def handle_info({:button_clicked, _}, state), do: {:noreply, state}
+  def handle_info({:button_clicked, _, _}, state), do: {:noreply, state}
 
   defp via_tuple(%Lesson{} = lesson),
     do: Clickr.Lessons.ActiveRegistry.via_tuple({__MODULE__, lesson.id})

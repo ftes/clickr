@@ -120,6 +120,14 @@ defmodule ClickrWeb.RoomLiveTest do
       assert show_live |> has_element?("#button-#{bid}")
     end
 
+    test "assigns seat to keyboard button", %{conn: conn, user: user, room: r} do
+      gateway_fixture(user_id: user.id, name: "Keyboard")
+      {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
+      show_live |> element("#empty-seat-1-1") |> render_click()
+      show_live |> element("#keyboard-device") |> render_keyup(%{"key" => "x"})
+      assert show_live |> render =~ "Keyboard/x"
+    end
+
     test "changes button seat", %{conn: conn, room: r} do
       %{id: bid} = button_fixture()
       room_seat_fixture(room_id: r.id, button_id: bid, x: 1, y: 1)
@@ -155,14 +163,6 @@ defmodule ClickrWeb.RoomLiveTest do
       )
 
       assert show_live |> has_element?("#button-#{bid}.x-active")
-    end
-
-    test "registers keyboard button_click", %{conn: conn, user: user, room: room} do
-      gateway_fixture(user_id: user.id, name: "Keyboard")
-      {:ok, show_live, _html} = live(conn, ~p"/rooms/#{room}")
-
-      show_live |> element("#keyboard-device") |> render_keyup(%{"key" => "x"})
-      assert [%{name: "Keyboard/x"}] = Clickr.Devices.list_buttons(user)
     end
   end
 end

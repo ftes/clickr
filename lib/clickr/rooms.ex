@@ -54,17 +54,33 @@ defmodule Clickr.Rooms do
     end
   end
 
-  def assign_room_seat(%User{} = user, %Room{id: rid} = room, %{x: x, y: y, button_id: bid}) do
+  def assign_room_seat(
+        %User{} = user,
+        %Room{id: rid} = room,
+        %{x: x, y: y, button_id: bid},
+        opts \\ []
+      ) do
     with :ok <- permit(:assign_room_seat, user, room) do
+      multi = opts[:multi] || Ecto.Multi.new()
+
       cond do
         Repo.get_by(RoomSeat, room_id: rid, x: x, y: y) ->
           {:error, :seat_occupied}
 
         old_seat = Repo.get_by(RoomSeat, room_id: rid, button_id: bid) ->
-          Repo.update(RoomSeat.changeset(old_seat, %{x: x, y: y}))
+          multi
+          |> Ecto.Multi.update(:update_room_seat, RoomSeat.changeset(old_seat, %{x: x, y: y}))
+          |> Repo.transaction()
 
         true ->
-          Repo.insert(%RoomSeat{room_id: rid, button_id: bid, x: x, y: y})
+          multi
+          |> Ecto.Multi.insert(:insert_room_seat, %RoomSeat{
+            room_id: rid,
+            button_id: bid,
+            x: x,
+            y: y
+          })
+          |> Repo.transaction()
       end
     end
   end

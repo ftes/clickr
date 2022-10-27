@@ -22,15 +22,15 @@ defmodule Clickr.Lessons.ActiveRollCallTest do
   setup [:create_user, :create_students_and_mapping, :start_active_roll_call]
 
   test "creates question answers", %{user: user, active_roll_call: pid, lesson: lesson} do
-    send(pid, {:button_clicked, %{button_id: "button-1"}})
-    send(pid, {:button_clicked, %{button_id: "button-2"}})
+    send(pid, {:button_clicked, nil, %{button_id: "button-1"}})
+    send(pid, {:button_clicked, nil, %{button_id: "button-2"}})
     ActiveRollCall.stop(lesson)
     assert [_, _] = Clickr.Lessons.list_lesson_students(user)
   end
 
   test "ignores second click", %{user: user, active_roll_call: pid, lesson: lesson} do
-    send(pid, {:button_clicked, %{button_id: "button-1"}})
-    send(pid, {:button_clicked, %{button_id: "button-1"}})
+    send(pid, {:button_clicked, nil, %{button_id: "button-1"}})
+    send(pid, {:button_clicked, nil, %{button_id: "button-1"}})
     ActiveRollCall.stop(lesson)
     assert [_] = Clickr.Lessons.list_lesson_students(user)
   end
@@ -40,7 +40,7 @@ defmodule Clickr.Lessons.ActiveRollCallTest do
     active_roll_call: pid,
     lesson: lesson
   } do
-    send(pid, {:button_clicked, %{button_id: "button-3"}})
+    send(pid, {:button_clicked, nil, %{button_id: "button-3"}})
     ActiveRollCall.stop(lesson)
     assert [] = Clickr.Lessons.list_lesson_students(user)
   end

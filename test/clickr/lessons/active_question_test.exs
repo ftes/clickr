@@ -23,15 +23,15 @@ defmodule Clickr.Lessons.ActiveQuestionTest do
   setup [:create_user, :create_students_and_mapping, :start_active_question]
 
   test "creates question answers", %{user: user, active_question: pid, question: question} do
-    send(pid, {:button_clicked, %{button_id: "button-1"}})
-    send(pid, {:button_clicked, %{button_id: "button-2"}})
+    send(pid, {:button_clicked, nil, %{button_id: "button-1"}})
+    send(pid, {:button_clicked, nil, %{button_id: "button-2"}})
     ActiveQuestion.stop(question)
     assert [_, _] = Clickr.Lessons.list_question_answers(user)
   end
 
   test "ignores second click", %{user: user, active_question: pid, question: question} do
-    send(pid, {:button_clicked, %{button_id: "button-1"}})
-    send(pid, {:button_clicked, %{button_id: "button-1"}})
+    send(pid, {:button_clicked, nil, %{button_id: "button-1"}})
+    send(pid, {:button_clicked, nil, %{button_id: "button-1"}})
     ActiveQuestion.stop(question)
     assert [_] = Clickr.Lessons.list_question_answers(user)
   end
@@ -41,7 +41,7 @@ defmodule Clickr.Lessons.ActiveQuestionTest do
     active_question: pid,
     question: question
   } do
-    send(pid, {:button_clicked, %{button_id: "button-3"}})
+    send(pid, {:button_clicked, nil, %{button_id: "button-3"}})
     ActiveQuestion.stop(question)
     assert [] = Clickr.Lessons.list_question_answers(user)
   end

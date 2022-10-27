@@ -182,23 +182,19 @@ defmodule Clickr.Devices do
       name: attrs[:button_name] || "Unknown"
     }
 
-    res =
+    multi =
       Ecto.Multi.new()
       |> add_upsert_device_to_multi(opts[:upsert_device], device)
-      |> Ecto.Multi.insert(:button, button,
+      |> Ecto.Multi.insert(:upsert_button, button,
         conflict_target: [:id],
         on_conflict: {:replace, [:name]}
       )
-      |> Repo.transaction()
 
-    with {:ok, _} <- res do
-      Clickr.PubSub.broadcast(button_click_topic(attrs), {:button_clicked, attrs})
-      res
-    end
+    Clickr.PubSub.broadcast(button_click_topic(attrs), {:button_clicked, multi, attrs})
   end
 
   defp add_upsert_device_to_multi(multi, true, device) do
-    Ecto.Multi.insert(multi, :device, device,
+    Ecto.Multi.insert(multi, :upsert_device, device,
       conflict_target: [:id],
       on_conflict: {:replace, [:name]}
     )

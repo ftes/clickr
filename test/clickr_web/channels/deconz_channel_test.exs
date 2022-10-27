@@ -2,7 +2,7 @@ defmodule ClickrWeb.DeconzChannelTest do
   use ClickrWebTest.ChannelCase
   import Clickr.{AccountsFixtures, DevicesFixtures}
 
-  setup do
+  defp create_socket(_) do
     user = user_fixture()
     gateway = gateway_fixture(user_id: user.id, api_token: "xyz")
     socket = socket(ClickrWeb.ApiSocket)
@@ -11,6 +11,13 @@ defmodule ClickrWeb.DeconzChannelTest do
 
     %{user: user, gateway: gateway, socket: socket}
   end
+
+  defp subscribe_to_button_clicks(%{user: user}) do
+    topic = Clickr.Devices.button_click_topic(%{user_id: user.id})
+    Clickr.PubSub.subscribe(topic)
+  end
+
+  setup [:create_socket, :subscribe_to_button_clicks]
 
   test "server requests get_sensors on join" do
     assert_push "get_sensors", %{}
@@ -43,6 +50,8 @@ defmodule ClickrWeb.DeconzChannelTest do
       })
 
     assert_reply ref, :ok
+    assert_received {:button_clicked, multi, %{}}
+    Clickr.Repo.transaction(multi)
 
     assert [%{name: "some device"}] = Clickr.Devices.list_devices(user)
     assert [%{name: "some device/left"}] = Clickr.Devices.list_buttons(user)
@@ -75,6 +84,8 @@ defmodule ClickrWeb.DeconzChannelTest do
       })
 
     assert_reply ref, :ok
+    assert_received {:button_clicked, multi, %{}}
+    Clickr.Repo.transaction(multi)
 
     assert [%{name: "some device"}] = Clickr.Devices.list_devices(user)
     assert [%{name: "some device/left"}] = Clickr.Devices.list_buttons(user)
