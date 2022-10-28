@@ -22,7 +22,7 @@ defmodule Clickr.Devices.Deconz.IkeaStyrbarRemote do
        device_id: Deconz.device_id(event),
        device_name: sensor["name"],
        button_id: Deconz.button_id(event, button),
-       button_name: "#{sensor["name"]}/#{button}"
+       button_name: to_string(button)
      }}
   end
 end

@@ -11,7 +11,7 @@ defmodule Clickr.Devices.Keyboard do
        device_id: device_id(attrs),
        device_name: "Keyboard",
        button_id: button_id(attrs),
-       button_name: "Keyboard/#{key}"
+       button_name: key
      }}
   end
 

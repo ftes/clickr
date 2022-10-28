@@ -80,7 +80,7 @@ defmodule ClickrWeb.RoomLive.Show do
   defp page_title(:edit), do: dgettext("rooms.rooms", "Edit Room")
 
   defp load_room(socket, id) do
-    room = Rooms.get_room!(socket.assigns.current_user, id, preload: [seats: :button])
+    room = Rooms.get_room!(socket.assigns.current_user, id, preload: [seats: [button: :device]])
     seated_xy = for s <- room.seats, into: MapSet.new(), do: {s.x, s.y}
     %{width: w, height: h} = room
     empty = for x <- 1..w, y <- 1..h, not MapSet.member?(seated_xy, {x, y}), do: %{x: x, y: y}

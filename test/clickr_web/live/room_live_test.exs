@@ -120,6 +120,22 @@ defmodule ClickrWeb.RoomLiveTest do
       assert show_live |> has_element?("#button-#{bid}")
     end
 
+    test "assigns seat to not yet known button", %{conn: conn, user: user, room: r} do
+      device = device_fixture(user_id: user.id)
+      bid = "34d9e3f8-56a2-11ed-984e-a7e6c46cdfb4"
+      {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
+      show_live |> element("#empty-seat-1-1") |> render_click()
+
+      Clickr.Devices.broadcast_button_click(user, %{
+        gateway_id: device.gateway_id,
+        device_id: device.id,
+        button_id: bid,
+        button_name: "some button"
+      })
+
+      assert show_live |> has_element?("#button-#{bid}")
+    end
+
     test "assigns seat to keyboard button", %{conn: conn, user: user, room: r} do
       gateway_fixture(user_id: user.id, name: "Keyboard")
       {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")

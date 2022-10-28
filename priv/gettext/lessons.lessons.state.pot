@@ -7,20 +7,32 @@
 ## Run `mix gettext.extract` to bring this file up to
 ## date. Leave `msgstr`s empty as changing them here has no
 ## effect: edit them in PO (`.po`) files instead.
+#: lib/clickr_web/components.ex:629
+#, elixir-autogen
 msgid "started"
 msgstr ""
 
+#: lib/clickr_web/components.ex:629
+#, elixir-autogen
 msgid "roll_call"
 msgstr ""
 
+#: lib/clickr_web/components.ex:629
+#, elixir-autogen
 msgid "active"
 msgstr ""
 
+#: lib/clickr_web/components.ex:629
+#, elixir-autogen
 msgid "question"
 msgstr ""
 
+#: lib/clickr_web/components.ex:629
+#, elixir-autogen
 msgid "ended"
 msgstr ""
 
+#: lib/clickr_web/components.ex:629
+#, elixir-autogen
 msgid "graded"
 msgstr ""

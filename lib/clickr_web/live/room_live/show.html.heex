@@ -49,7 +49,7 @@
     x-on:dragend.self="dragging = false"
   >
     <p class="flex-1 overflow-hidden text-ellipsis text-sm font-medium text-center text-gray-900">
-      <%= seat.button.name %>
+      <%= seat.button.device.name %>/<%= translate_button_name(seat.button) %>
     </p>
     <button
       class="absolute right-3 top-1"
