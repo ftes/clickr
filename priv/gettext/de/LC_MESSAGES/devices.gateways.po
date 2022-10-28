@@ -29,12 +29,12 @@ msgstr "Gateway bearbeiten"
 msgid "Gateway"
 msgstr "Gateway"
 
-#: lib/clickr_web/live/gateway_live/form_component.ex:78
+#: lib/clickr_web/live/gateway_live/form_component.ex:79
 #, elixir-autogen, elixir-format
 msgid "Gateway created successfully"
 msgstr "Gateway angelegt"
 
-#: lib/clickr_web/live/gateway_live/form_component.ex:65
+#: lib/clickr_web/live/gateway_live/form_component.ex:66
 #, elixir-autogen, elixir-format
 msgid "Gateway updated successfully"
 msgstr "Gateway bearbeitet"
@@ -76,7 +76,13 @@ msgstr[0] "1 Gateway verbunden"
 msgstr[1] "%{count} Gateways verbunden"
 
 #: lib/clickr_web/live/gateway_live/index.html.heex:12
-#: lib/clickr_web/live/gateway_live/show.html.heex:13
+#: lib/clickr_web/live/gateway_live/show.html.heex:16
 #, elixir-autogen, elixir-format
 msgid "Connected"
 msgstr "Verbunden"
+
+#: lib/clickr_web/live/gateway_live/form_component.ex:24
+#: lib/clickr_web/live/gateway_live/show.html.heex:13
+#, elixir-autogen, elixir-format
+msgid "URL"
+msgstr "URL"

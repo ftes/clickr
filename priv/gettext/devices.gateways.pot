@@ -28,12 +28,12 @@ msgstr ""
 msgid "Gateway"
 msgstr ""
 
-#: lib/clickr_web/live/gateway_live/form_component.ex:78
+#: lib/clickr_web/live/gateway_live/form_component.ex:79
 #, elixir-autogen, elixir-format
 msgid "Gateway created successfully"
 msgstr ""
 
-#: lib/clickr_web/live/gateway_live/form_component.ex:65
+#: lib/clickr_web/live/gateway_live/form_component.ex:66
 #, elixir-autogen, elixir-format
 msgid "Gateway updated successfully"
 msgstr ""
@@ -75,7 +75,13 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: lib/clickr_web/live/gateway_live/index.html.heex:12
-#: lib/clickr_web/live/gateway_live/show.html.heex:13
+#: lib/clickr_web/live/gateway_live/show.html.heex:16
 #, elixir-autogen, elixir-format
 msgid "Connected"
+msgstr ""
+
+#: lib/clickr_web/live/gateway_live/form_component.ex:24
+#: lib/clickr_web/live/gateway_live/show.html.heex:13
+#, elixir-autogen, elixir-format
+msgid "URL"
 msgstr ""

@@ -8,7 +8,7 @@ defmodule Clickr.DevicesTest do
   setup :create_user
 
   describe "gateways" do
-    @invalid_attrs %{name: nil}
+    @invalid_attrs %{name: nil, api_token: nil, url: nil}
 
     test "list_gateways/0 returns all gateways", %{user: user} do
       gateway = gateway_fixture(user_id: user.id)
@@ -21,11 +21,12 @@ defmodule Clickr.DevicesTest do
     end
 
     test "create_gateway/1 with valid data creates a gateway", %{user: user} do
-      valid_attrs = %{name: "some name", api_token: "some token"}
+      valid_attrs = %{name: "some name", api_token: "some token", url: "url"}
 
       assert {:ok, %Gateway{} = gateway} = Devices.create_gateway(user, valid_attrs)
       assert gateway.name == "some name"
       assert gateway.api_token == "some token"
+      assert gateway.url == "url"
     end
 
     test "create_gateway/1 with invalid data returns error changeset", %{user: user} do
@@ -34,10 +35,17 @@ defmodule Clickr.DevicesTest do
 
     test "update_gateway/2 with valid data updates the gateway", %{user: user} do
       gateway = gateway_fixture(user_id: user.id)
-      update_attrs = %{name: "some updated name"}
+
+      update_attrs = %{
+        name: "some updated name",
+        api_token: "some updated api token",
+        url: "some updated url"
+      }
 
       assert {:ok, %Gateway{} = gateway} = Devices.update_gateway(user, gateway, update_attrs)
       assert gateway.name == "some updated name"
+      assert gateway.api_token == "some updated api token"
+      assert gateway.url == "some updated url"
     end
 
     test "update_gateway/2 with invalid data returns error changeset", %{user: user} do

@@ -21,6 +21,7 @@ defmodule ClickrWeb.GatewayLive.FormComponent do
       >
         <.input field={{f, :name}} type="text" label={dgettext("devices.gateways", "Name")} />
         <.input field={{f, :api_token}} type="text" label={dgettext("devices.gateways", "API Token")} />
+        <.input field={{f, :url}} type="text" label={dgettext("devices.gateways", "URL")} />
         <:actions>
           <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
         </:actions>

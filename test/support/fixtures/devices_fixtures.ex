@@ -13,7 +13,8 @@ defmodule Clickr.DevicesFixtures do
     attrs
     |> Enum.into(%{
       name: "some name",
-      api_token: "some token #{UUID.uuid4()}"
+      api_token: "some token #{UUID.uuid4()}",
+      url: "some url"
     })
     |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
     |> create(Clickr.Devices.Gateway)
