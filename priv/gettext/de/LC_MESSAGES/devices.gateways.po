@@ -85,4 +85,4 @@ msgstr "Verbunden"
 #: lib/clickr_web/live/gateway_live/show.html.heex:13
 #, elixir-autogen, elixir-format
 msgid "URL"
-msgstr "URL"
+msgstr "URL (Passwort 'clickr')"
