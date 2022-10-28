@@ -83,12 +83,6 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     {:noreply, state}
   end
 
-  @impl true
-  def terminate(reason, _state) do
-    Logger.debug("stopped #{inspect(reason)}")
-    :ignored
-  end
-
   defp via_tuple(gateway_id), do: {:via, Registry, {@registry, gateway_id}}
 
   def device_id(ieee_address) when is_binary(ieee_address),
