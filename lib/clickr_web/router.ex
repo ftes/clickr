@@ -103,12 +103,6 @@ defmodule ClickrWeb.Router do
       live "/devices/:id", DeviceLive.Show, :show
       live "/devices/:id/show/edit", DeviceLive.Show, :edit
 
-      live "/buttons", ButtonLive.Index, :index
-      live "/buttons/new", ButtonLive.Index, :new
-      live "/buttons/:id/edit", ButtonLive.Index, :edit
-      live "/buttons/:id", ButtonLive.Show, :show
-      live "/buttons/:id/show/edit", ButtonLive.Show, :edit
-
       live "/students", StudentLive.Index, :index
       live "/students/new", StudentLive.Index, :new
       live "/students/:id/edit", StudentLive.Index, :edit
