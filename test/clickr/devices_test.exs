@@ -119,12 +119,12 @@ defmodule Clickr.DevicesTest do
 
     test "upsert_devices/3 soft deletes old device of same gateway", %{user: user} do
       gateway = gateway_fixture(user_id: user.id)
-      %{id: did1} = device_fixture(user_id: user.id, gateway_id: gateway.id)
-      %{id: did2} = device_fixture(user_id: user.id)
+      device_fixture(user_id: user.id, gateway_id: gateway.id, name: "1 deleted")
+      device_fixture(user_id: user.id, name: "2 ignored")
       Devices.upsert_devices(user, gateway, [])
 
-      assert [%{id: ^did2, deleted: false}, %{id: ^did1, deleted: true}] =
-               Devices.list_devices(user)
+      assert [%{name: "1 deleted", deleted: true}, %{name: "2 ignored", deleted: false}] =
+               Devices.list_devices(user) |> Enum.sort_by(& &1.name)
     end
 
     test "upsert_devices/3 updates device name", %{user: user} do

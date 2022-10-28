@@ -50,11 +50,11 @@ defmodule Clickr.Zigbee2MqttTest do
     end
 
     test "upserts devices", %{user: u, gateway: g} do
-      device_fixture(user_id: u.id, name: "other")
-      device_fixture(gateway_id: g.id, name: "delete")
-      device_fixture(id: Gateway.device_id("123"), gateway_id: g.id, name: "rename")
+      device_fixture(user_id: u.id, name: "1 other")
+      device_fixture(gateway_id: g.id, name: "2 delete")
+      device_fixture(id: Gateway.device_id("123"), gateway_id: g.id, name: "3a rename")
       mqtt_topic = ["clickr", "gateways", g.id, "bridge", "devices"]
-      payload = [%{type: "EndDevice", ieee_address: "123", friendly_name: "renamed"}]
+      payload = [%{type: "EndDevice", ieee_address: "123", friendly_name: "3b renamed"}]
       json = Jason.encode!(payload)
 
       Connection.handle_message(mqtt_topic, json, @state)
@@ -62,10 +62,10 @@ defmodule Clickr.Zigbee2MqttTest do
       Gateway.stop(g.id)
 
       assert [
-               %{name: "other", deleted: false},
-               %{name: "delete", deleted: true},
-               %{name: "renamed", deleted: false}
-             ] = Clickr.Repo.all(Devices.Device)
+               %{name: "1 other", deleted: false},
+               %{name: "2 delete", deleted: true},
+               %{name: "3b renamed", deleted: false}
+             ] = Clickr.Repo.all(Devices.Device) |> Enum.sort_by(& &1.name)
     end
 
     test "renames device with slash in name", %{user: _u, gateway: g} do

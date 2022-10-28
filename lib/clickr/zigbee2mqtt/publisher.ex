@@ -5,7 +5,7 @@ defmodule Clickr.Zigbee2Mqtt.Publisher do
               | {:error, :unknown_connection}
               | {:error, :timeout}
   def publish(client_id, topic, payload),
-    do: (impl() |> IO.inspect()).publish(client_id, topic, payload)
+    do: impl().publish(client_id, topic, payload)
 
   defp impl, do: Application.get_env(:clickr, __MODULE__, __MODULE__.External)
 end
