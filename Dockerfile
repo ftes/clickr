@@ -49,9 +49,7 @@ COPY config/config.exs config/${MIX_ENV}.exs config/
 RUN mix deps.compile
 
 COPY priv priv
-
 COPY lib lib
-
 COPY assets assets
 
 # compile assets
@@ -79,6 +77,8 @@ RUN apk add libstdc++ openssl ncurses-libs
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+ENV ECTO_IPV6 true
+ENV ERL_AFLAGS "-proto_dist inet6_tcp"
 
 WORKDIR "/app"
 RUN chown nobody /app
@@ -92,10 +92,3 @@ COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/clickr ./
 USER nobody
 
 CMD ["/app/bin/server"]
-# Appended by flyctl
-ENV ECTO_IPV6 true
-ENV ERL_AFLAGS "-proto_dist inet6_tcp"
-
-# Appended by flyctl
-ENV ECTO_IPV6 true
-ENV ERL_AFLAGS "-proto_dist inet6_tcp"
