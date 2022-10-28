@@ -17,7 +17,7 @@ msgstr ""
 #: lib/clickr_web/live/gateway_live/index.html.heex:35
 #: lib/clickr_web/live/grade_live/show.html.heex:60
 #: lib/clickr_web/live/lesson_live/ended.ex:18
-#: lib/clickr_web/live/lesson_live/index.html.heex:34
+#: lib/clickr_web/live/lesson_live/index.html.heex:28
 #: lib/clickr_web/live/lesson_live/question.ex:83
 #: lib/clickr_web/live/room_live/index.html.heex:21
 #: lib/clickr_web/live/seating_plan_live/index.html.heex:28
@@ -32,7 +32,6 @@ msgstr ""
 #: lib/clickr_web/live/device_live/show.html.heex:15
 #: lib/clickr_web/live/gateway_live/show.html.heex:23
 #: lib/clickr_web/live/grade_live/show.html.heex:69
-#: lib/clickr_web/live/lesson_live/show.html.heex:27
 #: lib/clickr_web/live/room_live/show.html.heex:95
 #: lib/clickr_web/live/seating_plan_live/show.html.heex:106
 #: lib/clickr_web/live/student_live/show.html.heex:33
@@ -47,7 +46,7 @@ msgstr ""
 #: lib/clickr_web/live/device_live/index.html.heex:23
 #: lib/clickr_web/live/gateway_live/index.html.heex:37
 #: lib/clickr_web/live/grade_live/show.html.heex:62
-#: lib/clickr_web/live/lesson_live/index.html.heex:36
+#: lib/clickr_web/live/lesson_live/index.html.heex:30
 #: lib/clickr_web/live/room_live/index.html.heex:23
 #: lib/clickr_web/live/seating_plan_live/index.html.heex:30
 #: lib/clickr_web/live/student_live/index.html.heex:26
@@ -61,7 +60,6 @@ msgstr ""
 #: lib/clickr_web/live/class_live/show.html.heex:29
 #: lib/clickr_web/live/device_live/index.html.heex:16
 #: lib/clickr_web/live/gateway_live/index.html.heex:30
-#: lib/clickr_web/live/lesson_live/index.html.heex:29
 #: lib/clickr_web/live/room_live/index.html.heex:16
 #: lib/clickr_web/live/seating_plan_live/index.html.heex:23
 #: lib/clickr_web/live/student_live/index.html.heex:19
@@ -118,7 +116,6 @@ msgstr ""
 #: lib/clickr_web/live/gateway_live/index.html.heex:28
 #: lib/clickr_web/live/grade_live/index.html.heex:13
 #: lib/clickr_web/live/grade_live/show.html.heex:35
-#: lib/clickr_web/live/lesson_live/index.html.heex:26
 #: lib/clickr_web/live/room_live/index.html.heex:14
 #: lib/clickr_web/live/seating_plan_live/index.html.heex:21
 #: lib/clickr_web/live/student_live/index.html.heex:17

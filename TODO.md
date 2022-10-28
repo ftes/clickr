@@ -2,9 +2,6 @@
 
 - [ ] fly.io check handler
 - [ ] add user to all context functions
-- [ ] delete lesson edit
-  - [ ] delete Lessons.update_lesson
-- [ ] delete lesson show
 - [ ] Add user.system? transient flag
   - use in side-effect calls
 - [ ] Remove _id from changesets

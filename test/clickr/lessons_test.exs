@@ -58,20 +58,6 @@ defmodule Clickr.LessonsTest do
       assert {:error, %Ecto.Changeset{}} = Lessons.create_lesson(user, @invalid_attrs)
     end
 
-    test "update_lesson/2 with valid data updates the lesson", %{user: user} do
-      lesson = lesson_fixture(user_id: user.id)
-      update_attrs = %{name: "some updated name"}
-
-      assert {:ok, %Lesson{} = lesson} = Lessons.update_lesson(user, lesson, update_attrs)
-      assert lesson.name == "some updated name"
-    end
-
-    test "update_lesson/2 with invalid data returns error changeset", %{user: user} do
-      lesson = lesson_fixture(user_id: user.id)
-      assert {:error, %Ecto.Changeset{}} = Lessons.update_lesson(user, lesson, @invalid_attrs)
-      assert lesson == Lessons.get_lesson!(user, lesson.id)
-    end
-
     defp seat_student(%{user: user, lesson: lesson}) do
       %{seating_plan_id: spid, room_id: rid} = lesson
       seating_plan = Clickr.Classes.get_seating_plan!(user, spid)

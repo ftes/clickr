@@ -13,7 +13,6 @@ defmodule ClickrWeb.LessonLiveTest do
   }
 
   @create_attrs %{name: "some name"}
-  @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 
   defp create_lesson(%{user: user}) do
@@ -109,66 +108,11 @@ defmodule ClickrWeb.LessonLiveTest do
       assert lesson.room_id == old_lesson.room_id
     end
 
-    test "updates lesson in listing", %{conn: conn, lesson: lesson} do
-      {:ok, index_live, _html} = live(conn, ~p"/lessons")
-
-      assert index_live |> element("#lessons-#{lesson.id} a", "Edit") |> render_click() =~
-               "Edit Lesson"
-
-      assert_patch(index_live, ~p"/lessons/#{lesson}/edit")
-
-      assert index_live
-             |> form("#lesson-form", lesson: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      {:ok, _, html} =
-        index_live
-        |> form("#lesson-form", lesson: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/lessons/#{lesson}/started")
-
-      assert html =~ "Lesson updated successfully"
-      assert html =~ "some updated name"
-    end
-
     test "deletes lesson in listing", %{conn: conn, lesson: lesson} do
       {:ok, index_live, _html} = live(conn, ~p"/lessons")
 
       assert index_live |> element("#lessons-#{lesson.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#lesson-#{lesson.id}")
-    end
-  end
-
-  describe "Show" do
-    setup [:create_lesson]
-
-    test "displays lesson", %{conn: conn, lesson: lesson} do
-      {:ok, _show_live, html} = live(conn, ~p"/lessons/#{lesson}")
-
-      assert html =~ "Show Lesson"
-      assert html =~ lesson.name
-    end
-
-    test "updates lesson within modal", %{conn: conn, lesson: lesson} do
-      {:ok, show_live, _html} = live(conn, ~p"/lessons/#{lesson}")
-
-      assert show_live |> element("a", "Edit") |> render_click() =~
-               "Edit Lesson"
-
-      assert_patch(show_live, ~p"/lessons/#{lesson}/show/edit")
-
-      assert show_live
-             |> form("#lesson-form", lesson: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      {:ok, _, html} =
-        show_live
-        |> form("#lesson-form", lesson: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/lessons/#{lesson}/started")
-
-      assert html =~ "Lesson updated successfully"
-      assert html =~ "some updated name"
     end
   end
 

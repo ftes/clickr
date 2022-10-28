@@ -54,14 +54,6 @@ defmodule Clickr.Lessons do
     end
   end
 
-  def update_lesson(%User{} = user, %Lesson{} = lesson, attrs) do
-    with :ok <- permit(:update_lesson, user, lesson) do
-      lesson
-      |> Lesson.changeset(attrs)
-      |> Repo.update()
-    end
-  end
-
   def transition_lesson(user, lesson, new_state, attrs \\ %{})
 
   def transition_lesson(

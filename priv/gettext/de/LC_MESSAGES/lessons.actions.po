@@ -67,11 +67,6 @@ msgstr "Anwesenheit abfragen"
 msgid "Run"
 msgstr "Durchführen"
 
-#: lib/clickr_web/live/lesson_live/show.html.heex:5
-#, elixir-autogen, elixir-format
-msgid "Run lesson"
-msgstr "Durchführen"
-
 #: lib/clickr_web/live/lesson_live/question.ex:90
 #: lib/clickr_web/live/lesson_live/question.ex:94
 #, elixir-autogen, elixir-format
