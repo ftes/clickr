@@ -14,13 +14,6 @@ defmodule Clickr.MixProject do
       aliases: aliases(),
       deps: deps(),
       compilers: [:boundary] ++ Mix.compilers()
-      # boundary: [
-      #   default: [
-      #     check: [
-      #       apps: [:phoenix, :ecto, {:mix, :runtime}]
-      #     ]
-      #   ]
-      # ]
     ]
   end
 
