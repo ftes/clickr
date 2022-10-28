@@ -180,7 +180,7 @@ msgstr "Setze zurück..."
 msgid "Sending..."
 msgstr "Sende..."
 
-#: lib/clickr_web/live/components/menu.ex:31
+#: lib/clickr_web/live/components/menu.ex:28
 #, elixir-autogen, elixir-format
 msgid "Settings"
 msgstr "Einstellungen"
@@ -190,12 +190,12 @@ msgstr "Einstellungen"
 msgid "Sigining in..."
 msgstr "Melde an..."
 
-#: lib/clickr_web/live/components/menu.ex:25
+#: lib/clickr_web/live/components/menu.ex:22
 #, elixir-autogen, elixir-format
 msgid "Sign up"
 msgstr "Registrieren"
 
-#: lib/clickr_web/live/components/menu.ex:26
+#: lib/clickr_web/live/components/menu.ex:23
 #, elixir-autogen, elixir-format
 msgid "Sign in"
 msgstr "Anmelden"

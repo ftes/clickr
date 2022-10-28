@@ -1,5 +1,8 @@
 # Todo
 
+- [ ] teacher add student question answer
+- [ ] add lesson comment per student (mass assignment?)
+- [ ] add qualitative lesson grade
 - [ ] fly.io check handler
 - [ ] add user to all context functions
 - [ ] Add user.system? transient flag

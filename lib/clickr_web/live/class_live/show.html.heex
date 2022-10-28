@@ -13,20 +13,14 @@
   </.list>
 
   <div class="py-4">
-    <.table
-      id="students"
-      compact
-      rows={@class.students}
-      row_click={&JS.navigate(~p"/students/#{&1}")}
-    >
+    <.table id="students" compact rows={@class.students}>
       <:col :let={student} label={dgettext("students.students", "Student")}>
         <%= student.name %>
       </:col>
       <:action :let={student}>
-        <div class="sr-only">
-          <.link navigate={~p"/students/#{student}"}><%= gettext("Show") %></.link>
-        </div>
-        <.link navigate={~p"/students/#{student}/show/edit"}><%= gettext("Edit") %></.link>
+        <.link navigate={~p"/classes/#{@class}/show/edit_student/#{student}"}>
+          <%= gettext("Edit") %>
+        </.link>
       </:action>
       <:action :let={student}>
         <.link
@@ -64,15 +58,34 @@
 
 <.back navigate={~p"/classes"}><%= gettext("Back") %></.back>
 
-<%= if @live_action in [:edit] do %>
-  <.modal id="class-modal" show on_cancel={JS.patch(~p"/classes/#{@class}")}>
-    <.live_component
-      module={ClickrWeb.ClassLive.FormComponent}
-      current_user={@current_user}
-      id={@class.id}
-      title={@page_title}
-      action={@live_action}
-      class={@class}
-    />
-  </.modal>
-<% end %>
+<.modal
+  :if={@live_action in [:edit]}
+  id="class-modal"
+  show
+  on_cancel={JS.patch(~p"/classes/#{@class}")}
+>
+  <.live_component
+    module={ClickrWeb.ClassLive.FormComponent}
+    current_user={@current_user}
+    id={@class.id}
+    title={@page_title}
+    action={@live_action}
+    class={@class}
+  />
+</.modal>
+
+<.modal
+  :if={@live_action in [:edit_student]}
+  id="class-modal"
+  show
+  on_cancel={JS.patch(~p"/classes/#{@class}")}
+>
+  <.live_component
+    module={ClickrWeb.ClassLive.EditStudentFormComponent}
+    current_user={@current_user}
+    id={@class.id}
+    title={@page_title}
+    student={@student}
+    navigate={~p"/classes/#{@class}"}
+  />
+</.modal>

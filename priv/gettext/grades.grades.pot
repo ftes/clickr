@@ -13,7 +13,6 @@ msgstr ""
 #: lib/clickr_web/live/grade_live/index.html.heex:8
 #: lib/clickr_web/live/grade_live/show.html.heex:2
 #: lib/clickr_web/live/grade_live/show.html.heex:9
-#: lib/clickr_web/live/student_live/show.html.heex:23
 #, elixir-autogen, elixir-format
 msgid "Grade"
 msgstr ""
@@ -43,7 +42,6 @@ msgstr ""
 
 #: lib/clickr_web/live/grade_live/index.html.heex:7
 #: lib/clickr_web/live/grade_live/show.html.heex:8
-#: lib/clickr_web/live/student_live/show.html.heex:22
 #, elixir-autogen, elixir-format
 msgid "Subject"
 msgstr ""

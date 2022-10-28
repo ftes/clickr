@@ -120,6 +120,24 @@ defmodule ClickrWeb.ClassLiveTest do
       refute has_element?(show_live, "#students-#{student.id}")
     end
 
+    test "renames student", %{conn: conn, class: c, student: s} do
+      {:ok, live, _html} = live(conn, ~p"/classes/#{c}")
+
+      assert {:ok, live, _} =
+               live
+               |> element("#students-#{s.id} a", "Edit")
+               |> render_click()
+               |> follow_redirect(conn, ~p"/classes/#{c}/show/edit_student/#{s.id}")
+
+      assert {:ok, live, _} =
+               live
+               |> form("#student-form", student: %{name: "new student name"})
+               |> render_submit()
+               |> follow_redirect(conn, ~p"/classes/#{c}")
+
+      assert live |> render() =~ "new student name"
+    end
+
     test "adds students", %{conn: conn, class: class} do
       {:ok, show_live, _html} = live(conn, ~p"/classes/#{class}")
 

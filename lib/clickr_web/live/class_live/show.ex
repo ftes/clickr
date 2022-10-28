@@ -9,11 +9,12 @@ defmodule ClickrWeb.ClassLive.Show do
   end
 
   @impl true
-  def handle_params(%{"id" => id}, _, socket) do
+  def handle_params(%{"id" => id} = params, _, socket) do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> load_class(id)
+     |> load_student(params["student_id"])
      |> assign(:students_create_count, 0)}
   end
 
@@ -41,6 +42,7 @@ defmodule ClickrWeb.ClassLive.Show do
 
   defp page_title(:show), do: dgettext("classes.classes", "Show Class")
   defp page_title(:edit), do: dgettext("classes.classes", "Edit Class")
+  defp page_title(:edit_student), do: dgettext("classes.classes", "Edit Student")
 
   defp student_params(%{"names" => names}, socket) do
     a = socket.assigns
@@ -58,5 +60,11 @@ defmodule ClickrWeb.ClassLive.Show do
       :class,
       Classes.get_class!(socket.assigns.current_user, id, preload: :students)
     )
+  end
+
+  defp load_student(socket, nil), do: socket
+
+  defp load_student(socket, id) do
+    assign(socket, :student, Enum.find(socket.assigns.class.students, &(&1.id == id)))
   end
 end

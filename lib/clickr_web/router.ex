@@ -84,6 +84,7 @@ defmodule ClickrWeb.Router do
       live "/classes/:id/edit", ClassLive.Index, :edit
       live "/classes/:id", ClassLive.Show, :show
       live "/classes/:id/show/edit", ClassLive.Show, :edit
+      live "/classes/:id/show/edit_student/:student_id", ClassLive.Show, :edit_student
 
       live "/rooms", RoomLive.Index, :index
       live "/rooms/new", RoomLive.Index, :new
@@ -96,12 +97,6 @@ defmodule ClickrWeb.Router do
       live "/gateways/:id/edit", GatewayLive.Index, :edit
       live "/gateways/:id", GatewayLive.Show, :show
       live "/gateways/:id/show/edit", GatewayLive.Show, :edit
-
-      live "/students", StudentLive.Index, :index
-      live "/students/new", StudentLive.Index, :new
-      live "/students/:id/edit", StudentLive.Index, :edit
-      live "/students/:id", StudentLive.Show, :show
-      live "/students/:id/show/edit", StudentLive.Show, :edit
 
       live "/subjects", SubjectLive.Index, :index
       live "/subjects/new", SubjectLive.Index, :new

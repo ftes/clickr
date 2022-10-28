@@ -20,7 +20,7 @@ msgstr ""
 msgid "Open sidebar"
 msgstr ""
 
-#: lib/clickr_web/live/components/menu.ex:71
+#: lib/clickr_web/live/components/menu.ex:68
 #, elixir-autogen, elixir-format
 msgid "Open user menu"
 msgstr ""

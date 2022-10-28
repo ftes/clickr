@@ -49,7 +49,7 @@ msgstr "oben"
 #: lib/clickr_web/components.ex:638
 #, elixir-autogen, elixir-format
 msgid "right"
-msgstr ""
+msgstr "rechts"
 
 #: lib/clickr_web/components.ex:638
 #, elixir-autogen, elixir-format

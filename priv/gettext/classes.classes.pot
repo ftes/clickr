@@ -10,12 +10,12 @@
 msgid ""
 msgstr ""
 
-#: lib/clickr_web/live/class_live/show.html.heex:58
+#: lib/clickr_web/live/class_live/show.html.heex:52
 #, elixir-autogen, elixir-format
 msgid "Add students"
 msgstr ""
 
-#: lib/clickr_web/live/class_live/show.html.heex:57
+#: lib/clickr_web/live/class_live/show.html.heex:51
 #, elixir-autogen, elixir-format
 msgid "Adding students..."
 msgstr ""
@@ -36,7 +36,7 @@ msgid "Class updated successfully"
 msgstr ""
 
 #: lib/clickr_web/live/class_live/index.ex:19
-#: lib/clickr_web/live/class_live/show.ex:43
+#: lib/clickr_web/live/class_live/show.ex:44
 #: lib/clickr_web/live/class_live/show.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "Edit Class"
@@ -55,7 +55,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: lib/clickr_web/live/class_live/show.html.heex:51
+#: lib/clickr_web/live/class_live/show.html.heex:45
 #, elixir-autogen, elixir-format
 msgid "Names (one per line)"
 msgstr ""
@@ -66,7 +66,7 @@ msgstr ""
 msgid "New Class"
 msgstr ""
 
-#: lib/clickr_web/live/class_live/show.ex:42
+#: lib/clickr_web/live/class_live/show.ex:43
 #, elixir-autogen, elixir-format
 msgid "Show Class"
 msgstr ""
@@ -74,4 +74,9 @@ msgstr ""
 #: lib/clickr_web/live/components/menu.ex:10
 #, elixir-autogen, elixir-format
 msgid "Classes"
+msgstr ""
+
+#: lib/clickr_web/live/class_live/show.ex:45
+#, elixir-autogen, elixir-format
+msgid "Edit Student"
 msgstr ""
