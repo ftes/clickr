@@ -1,5 +1,5 @@
 defmodule Clickr.Students do
-  use Boundary, exports: [Student], deps: [Clickr, Clickr.{Accounts, Repo}]
+  use Boundary, exports: [Student], deps: [Clickr.{Accounts, Repo, Schema}]
 
   defdelegate authorize(action, user, params), to: Clickr.Students.Policy
 

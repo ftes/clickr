@@ -1,5 +1,7 @@
 defmodule Clickr.Devices do
-  use Boundary, exports: [Button, Device, Gateway], deps: [Clickr, Clickr.{Accounts, Repo}]
+  use Boundary,
+    exports: [Button, Device, Gateway],
+    deps: [Clickr.{Accounts, PubSub, Repo, Schema}]
 
   defdelegate authorize(action, user, params), to: Clickr.Devices.Policy
 
@@ -163,34 +165,12 @@ defmodule Clickr.Devices do
 
   def broadcast_button_click(
         %User{id: uid},
-        %{button_id: bid, device_id: did, gateway_id: gid} = attrs,
-        opts \\ []
+        %{button_id: _, device_id: _, gateway_id: _} = attrs,
+        %Ecto.Multi{} = upserts \\ Ecto.Multi.new()
       ) do
     attrs = Map.put(attrs, :user_id, uid)
-    device_name = attrs[:device_name] || "Unknown"
-    device = %Device{id: did, gateway_id: gid, name: device_name}
-    button_name = attrs[:button_name] || "Unknown"
-    button = %Button{id: bid, device_id: did, name: button_name}
-
-    multi =
-      Ecto.Multi.new()
-      |> add_upsert_device_to_multi(opts[:upsert_device], device)
-      |> Ecto.Multi.insert(:upsert_button, button,
-        conflict_target: [:id],
-        on_conflict: {:replace, [:name]}
-      )
-
-    Clickr.PubSub.broadcast(button_click_topic(attrs), {:button_clicked, multi, attrs})
+    Clickr.PubSub.broadcast(button_click_topic(attrs), {:button_clicked, upserts, attrs})
   end
-
-  defp add_upsert_device_to_multi(multi, true, device) do
-    Ecto.Multi.insert(multi, :upsert_device, device,
-      conflict_target: [:id],
-      on_conflict: {:replace, [:name]}
-    )
-  end
-
-  defp add_upsert_device_to_multi(multi, _, _), do: multi
 
   def deconz_parse_event(sensor, event), do: Deconz.parse_event(sensor, event)
 

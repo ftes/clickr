@@ -3,6 +3,8 @@ defmodule Clickr.Presence do
     otp_app: :clickr,
     pubsub_server: Clickr.PubSub
 
+  use Boundary, exports: [], deps: []
+
   def gateway_topic(%{user_id: uid}), do: "presence.gateway/user:#{uid}"
 
   def track_gateway(%{gateway_id: gid, user_id: _} = args) do

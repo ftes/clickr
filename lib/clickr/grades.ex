@@ -1,5 +1,5 @@
 defmodule Clickr.Grades do
-  use Boundary, exports: [BonusGrade, Grade, LessonGrade], deps: [Clickr, Clickr.{Accounts, Repo}]
+  use Boundary, exports: [BonusGrade, Grade, LessonGrade], deps: [Clickr.{Accounts, Repo, Schema}]
 
   defdelegate authorize(action, user, params), to: Clickr.Grades.Policy
 

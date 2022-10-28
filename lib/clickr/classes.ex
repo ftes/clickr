@@ -1,7 +1,7 @@
 defmodule Clickr.Classes do
   use Boundary,
     exports: [Class, SeatingPlan, SeatingPlanSeat],
-    deps: [Clickr, Clickr.{Accounts, Repo}]
+    deps: [Clickr.{Accounts, Repo, Schema}]
 
   defdelegate authorize(action, user, params), to: Clickr.Classes.Policy
 

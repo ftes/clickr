@@ -62,11 +62,19 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     {:noreply, state}
   end
 
-  def handle_cast({:message, [_device_name], %{"action" => _} = payload, _}, state) do
+  def handle_cast({:message, [_device_name], %{"action" => button_name} = payload, _}, state) do
     gid = state.gateway.id
     did = device_id(payload)
     bid = button_id(payload)
-    Devices.broadcast_button_click(state.user, %{gateway_id: gid, device_id: did, button_id: bid})
+    button = %Devices.Button{id: bid, device_id: did, name: button_name}
+    attrs = %{gateway_id: gid, device_id: did, button_id: bid}
+
+    upserts =
+      Ecto.Multi.new()
+      |> Ecto.Multi.insert(:btn, button, conflict_target: [:id], on_conflict: {:replace, [:name]})
+
+    Devices.broadcast_button_click(state.user, attrs, upserts)
+
     # TODO Handle battery
     {:noreply, state}
   end

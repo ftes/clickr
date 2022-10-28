@@ -196,10 +196,18 @@ defmodule Clickr.DevicesTest do
 
     setup :subscribe_to_button_clicks
 
-    test "broadcast_button_click/1 creates device and button", %{user: user} do
+    test "broadcast_button_click/1 publishes multi to upsert device", %{user: user} do
       %{id: gid} = gateway_fixture(user_id: user.id)
       did = "856b554e-c592-49b2-a328-08573883107a"
       bid = "de5a61a6-489b-11ed-a744-9b189177012f"
+      device = %Devices.Device{id: did, gateway_id: gid, name: "device"}
+
+      upserts =
+        Ecto.Multi.new()
+        |> Ecto.Multi.insert(:upsert_device, device,
+          conflict_target: [:id],
+          on_conflict: {:replace, [:name]}
+        )
 
       assert :ok =
                Devices.broadcast_button_click(
@@ -209,63 +217,13 @@ defmodule Clickr.DevicesTest do
                    device_id: did,
                    button_id: bid
                  },
-                 upsert_device: true
+                 upserts
                )
 
       assert_received {:button_clicked, multi, %{}}
       Clickr.Repo.transaction(multi)
 
       assert [%{id: ^did}] = Devices.list_devices(user)
-      assert [%{id: ^bid}] = Devices.list_buttons(user)
-    end
-
-    test "broadcast_button_click/1 creates button but does not upsert device", %{user: user} do
-      %{id: gid} = gateway_fixture(user_id: user.id)
-      %{id: did} = device_fixture(user_id: user.id, gateway_id: gid, name: "old name")
-      bid = "de5a61a6-489b-11ed-a744-9b189177012f"
-
-      assert :ok =
-               Devices.broadcast_button_click(
-                 user,
-                 %{
-                   gateway_id: gid,
-                   device_id: did,
-                   button_id: bid,
-                   device_name: "new name ignored"
-                 }
-               )
-
-      assert_received {:button_clicked, multi, %{}}
-      Clickr.Repo.transaction(multi)
-
-      assert [%{id: ^did, name: "old name"}] = Devices.list_devices(user)
-      assert [%{id: ^bid}] = Devices.list_buttons(user)
-    end
-
-    test "broadcast_button_click/1 references existing device and button and updates there names",
-         %{user: user} do
-      %{id: gid} = gateway_fixture(user_id: user.id)
-      %{id: did} = device_fixture(user_id: user.id, gateway_id: gid, name: "old device")
-      %{id: bid} = button_fixture(user_id: user.id, device_id: did, name: "old button")
-
-      assert :ok =
-               Devices.broadcast_button_click(
-                 user,
-                 %{
-                   gateway_id: gid,
-                   device_id: did,
-                   device_name: "new device",
-                   button_id: bid,
-                   button_name: "new button"
-                 },
-                 upsert_device: true
-               )
-
-      assert_received {:button_clicked, multi, %{}}
-      Clickr.Repo.transaction(multi)
-
-      assert [%{id: ^did, name: "new device"}] = Devices.list_devices(user)
-      assert [%{id: ^bid, name: "new button"}] = Devices.list_buttons(user)
     end
   end
 end

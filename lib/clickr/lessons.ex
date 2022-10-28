@@ -1,7 +1,7 @@
 defmodule Clickr.Lessons do
   use Boundary,
     exports: [Lesson, LessonStudent, Question, QuestionAnswer],
-    deps: [Clickr, Clickr.{Accounts, Repo}]
+    deps: [Clickr.{Accounts, Devices, Grades, PubSub, Repo, Schema}]
 
   defdelegate authorize(action, user, params), to: Clickr.Lessons.Policy
 

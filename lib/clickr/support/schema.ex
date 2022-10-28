@@ -1,4 +1,6 @@
 defmodule Clickr.Schema do
+  use Boundary, exports: [], deps: []
+
   defmacro __using__(opts \\ []) do
     unless opts[:bodyguard] == false do
       quote do

@@ -1,5 +1,6 @@
 defmodule ClickrWeb.KeyboardDevice do
   use ClickrWeb, :live_component
+  alias Clickr.Devices
 
   @impl true
   def render(assigns) do
@@ -36,10 +37,22 @@ defmodule ClickrWeb.KeyboardDevice do
     if String.length(key) == 1 do
       other_attrs = %{gateway_id: gateway.id}
       {:ok, attrs} = Clickr.Devices.keyboard_parse_event(%{user_id: user.id, key: key})
+      %{device_id: did, button_id: bid, device_name: dn, button_name: bn} = attrs
+      device = %Devices.Device{id: did, gateway_id: gateway.id, name: dn}
+      button = %Devices.Button{id: bid, device_id: did, name: bn}
 
-      Clickr.Devices.broadcast_button_click(user, Map.merge(other_attrs, attrs),
-        upsert_device: true
-      )
+      upserts =
+        Ecto.Multi.new()
+        |> Ecto.Multi.insert(:upsert_device, device,
+          conflict_target: [:id],
+          on_conflict: {:replace, [:name]}
+        )
+        |> Ecto.Multi.insert(:upsert_button, button,
+          conflict_target: [:id],
+          on_conflict: {:replace, [:name]}
+        )
+
+      Clickr.Devices.broadcast_button_click(user, Map.merge(other_attrs, attrs), upserts)
 
       {:noreply, socket}
     else

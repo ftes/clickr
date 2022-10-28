@@ -107,32 +107,30 @@ defmodule ClickrWeb.RoomLiveTest do
     end
 
     test "assigns seat to previously unseated button", %{conn: conn, user: user, room: r} do
-      %{id: bid} = button = button_fixture() |> Clickr.Repo.preload(:device)
+      %{id: did, gateway_id: gid} = device_fixture(user_id: user.id)
+      %{id: bid} = button_fixture(device_id: did)
+      attrs = %{gateway_id: gid, device_id: did, button_id: bid}
+
       {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
       show_live |> element("#empty-seat-1-1") |> render_click()
 
-      Clickr.Devices.broadcast_button_click(user, %{
-        gateway_id: button.device.gateway_id,
-        device_id: button.device_id,
-        button_id: bid
-      })
-
+      Clickr.Devices.broadcast_button_click(user, attrs)
       assert show_live |> has_element?("#button-#{bid}")
     end
 
     test "assigns seat to not yet known button", %{conn: conn, user: user, room: r} do
-      device = device_fixture(user_id: user.id)
+      d = device_fixture(user_id: user.id)
       bid = "34d9e3f8-56a2-11ed-984e-a7e6c46cdfb4"
+
+      upserts =
+        Ecto.Multi.new()
+        |> Ecto.Multi.insert(:btn, %Clickr.Devices.Button{id: bid, device_id: d.id, name: "btn"})
+
+      attrs = %{gateway_id: d.gateway_id, device_id: d.id, button_id: bid}
       {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
       show_live |> element("#empty-seat-1-1") |> render_click()
 
-      Clickr.Devices.broadcast_button_click(user, %{
-        gateway_id: device.gateway_id,
-        device_id: device.id,
-        button_id: bid,
-        button_name: "some button"
-      })
-
+      Clickr.Devices.broadcast_button_click(user, attrs, upserts)
       assert show_live |> has_element?("#button-#{bid}")
     end
 
@@ -164,20 +162,14 @@ defmodule ClickrWeb.RoomLiveTest do
     end
 
     test "highlights active button in button-plan", %{conn: conn, user: user, room: r} do
-      %{id: bid} = button = button_fixture() |> Clickr.Repo.preload(:device)
+      %{id: did, gateway_id: gid} = device_fixture(user_id: user.id)
+      %{id: bid} = button_fixture(device_id: did)
+      attrs = %{gateway_id: gid, device_id: did, button_id: bid}
       room_seat_fixture(room_id: r.id, button_id: bid, x: 1, y: 1)
       {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
       refute show_live |> has_element?("#button-#{bid}.x-active")
 
-      Clickr.Devices.broadcast_button_click(
-        user,
-        %{
-          gateway_id: button.device.gateway_id,
-          device_id: button.device_id,
-          button_id: bid
-        }
-      )
-
+      Clickr.Devices.broadcast_button_click(user, attrs)
       assert show_live |> has_element?("#button-#{bid}.x-active")
     end
   end

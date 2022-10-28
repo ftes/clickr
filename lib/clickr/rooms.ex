@@ -1,5 +1,5 @@
 defmodule Clickr.Rooms do
-  use Boundary, exports: [Room, RoomSeat], deps: [Clickr, Clickr.{Accounts, Repo}]
+  use Boundary, exports: [Room, RoomSeat], deps: [Clickr.{Accounts, Repo, Schema}]
 
   defdelegate authorize(action, user, params), to: Clickr.Rooms.Policy
 

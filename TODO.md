@@ -1,7 +1,6 @@
 # Todo
 
 - [ ] Add gateway.url
-- [ ] rename mqtt devices: no slash in name
 - [ ] fly.io check handler
 - [ ] enforce boundary for other apps (mix.exs config)
 - [ ] add user to all context functions

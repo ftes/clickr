@@ -1,4 +1,6 @@
 defmodule Clickr.PubSub do
+  use Boundary, exports: [], deps: []
+
   alias Phoenix.PubSub
 
   def broadcast(topic, msg) do

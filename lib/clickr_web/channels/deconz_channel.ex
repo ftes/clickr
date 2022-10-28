@@ -23,13 +23,23 @@ defmodule ClickrWeb.DeconzChannel do
         %{assigns: %{sensors: sensors}} = socket
       )
       when is_map_key(sensors, id) do
-    other_attrs = %{gateway_id: socket.assigns.current_gateway.id}
+    gid = socket.assigns.current_gateway.id
+    other_attrs = %{gateway_id: gid}
 
     case Devices.deconz_parse_event(sensors[id], msg) do
       {:ok, attrs} ->
-        Devices.broadcast_button_click(socket.assigns.current_user, Map.merge(other_attrs, attrs),
-          upsert_device: true
-        )
+        %{device_id: did, button_id: bid, device_name: dn, button_name: bn} = attrs
+        d = %Devices.Device{id: did, gateway_id: gid, name: dn}
+        b = %Devices.Button{id: bid, device_id: did, name: bn}
+
+        upserts =
+          Ecto.Multi.new()
+          |> Ecto.Multi.insert(:dev, d, conflict_target: [:id], on_conflict: {:replace, [:name]})
+          |> Ecto.Multi.insert(:btn, b, conflict_target: [:id], on_conflict: {:replace, [:name]})
+
+        attrs = Map.merge(other_attrs, attrs)
+        user = socket.assigns.current_user
+        Devices.broadcast_button_click(user, attrs, upserts)
 
       err ->
         details = %{sensor: sensors[id], message: msg}
