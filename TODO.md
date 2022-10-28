@@ -1,5 +1,7 @@
 # Todo
 
+- [ ] amanda account
+- [ ] pair and rename from room plan
 - [ ] teacher add student question answer
 - [ ] add lesson comment per student (mass assignment?)
 - [ ] add qualitative lesson grade
