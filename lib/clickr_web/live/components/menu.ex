@@ -15,8 +15,6 @@ defmodule ClickrWeb.Menu do
       {dgettext("subjects.subjects", "Subjects"), "/subjects", [], &Heroicons.folder/1},
       # {dgettext("students.students", "Students"), "/students", [], &Heroicons.user/1},
       {dgettext("devices.gateways", "Gateways"), "/gateways", [], &Heroicons.server/1}
-      # {dgettext("devices.devices", "Devices"), "/devices", [], &Heroicons.device_phone_mobile/1},
-      # {dgettext("devices.buttons", "Buttons"), "/buttons", [], &Heroicons.cursor_arrow_ripple/1}
     ]
   ]
 
