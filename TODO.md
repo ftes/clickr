@@ -1,8 +1,11 @@
 # Todo
 
-- [ ] amanda account
-- [ ] pair and rename from room plan
+- [ ] admin user sees everything
 - [ ] teacher add student question answer
+- [ ] soft deleted and non-available devices
+  - mark in room plan
+  - inidicator in top bar (link icon)
+- [ ] pair and rename from room plan
 - [ ] add lesson comment per student (mass assignment?)
 - [ ] add qualitative lesson grade
 - [ ] fly.io check handler
@@ -17,9 +20,6 @@
 - [ ] Filter and sort lists
 - [ ] List and delete lesson questions
 - [ ] Store device.battery
-- [ ] Soft delete stale devices
-  - only list non-deleted devices and buttons
-  - mark deleted buttons in button plan
 - [ ] Store button.last_click_at
   - mark stale buttons in button plans
 - [ ] Search (global and lists)

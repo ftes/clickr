@@ -4,8 +4,6 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
 
   @qos %{at_most_once: 0, at_least_once: 1, exactly_once: 2}
   @gateway_state_topics "clickr/gateways/+/bridge/state"
-  @device_list_topics "clickr/gateways/+/bridge/devices"
-  @device_event_topics "clickr/gateways/+/+"
 
   defstruct [:client_id]
 
@@ -22,11 +20,7 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
       user_name: config()[:user],
       password: config()[:password],
       handler: {__MODULE__, [%{client_id: client_id()}]},
-      subscriptions: [
-        {@gateway_state_topics, @qos.at_least_once},
-        {@device_list_topics, @qos.at_least_once},
-        {@device_event_topics, @qos.at_most_once}
-      ]
+      subscriptions: [{@gateway_state_topics, @qos.at_least_once}]
     )
   end
 
@@ -59,15 +53,35 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
   end
 
   defp handle_json(["clickr", "gateways", gid, "bridge", "state"], %{"state" => "online"}, state) do
-    Logger.debug("Start gateway #{gid}")
-    Clickr.Zigbee2Mqtt.Gateway.start!(gid)
-    {:ok, state}
+    Logger.info("Start gateway #{gid}")
+
+    case Clickr.Zigbee2Mqtt.Gateway.start(gid) do
+      {:ok, _} ->
+        {:ok, state,
+         [
+           {:subscribe, device_list_topic(gid), @qos.at_least_once,
+            Tortoise311.default_timeout()},
+           {:subscribe, device_availability_topic(gid), @qos.at_least_once,
+            Tortoise311.default_timeout()},
+           {:subscribe, device_event_topic(gid), @qos.at_most_once, Tortoise311.default_timeout()}
+         ]}
+
+      err ->
+        Logger.info("Failed to start gateway #{gid}: #{inspect(err)}")
+        {:ok, state}
+    end
   end
 
   defp handle_json(["clickr", "gateways", gid, "bridge", "state"], %{"state" => "offline"}, state) do
-    Logger.debug("Stop gateway #{gid}")
+    Logger.info("Stop gateway #{gid}")
     Clickr.Zigbee2Mqtt.Gateway.stop(gid)
-    {:ok, state}
+
+    {:ok, state,
+     [
+       {:unsubscribe, device_list_topic(gid)},
+       {:unsubscribe, device_availability_topic(gid)},
+       {:unsubscribe, device_event_topic(gid)}
+     ]}
   end
 
   defp handle_json(["clickr", "gateways", gid | topicRest], payload, state) do
@@ -95,4 +109,8 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
   def config, do: Application.get_env(:clickr, __MODULE__)
 
   defp client_id, do: config()[:client_id]
+
+  defp device_list_topic(gateway_id), do: "clickr/gateways/#{gateway_id}/bridge/devices"
+  defp device_event_topic(gateway_id), do: "clickr/gateways/#{gateway_id}/+"
+  defp device_availability_topic(gateway_id), do: "clickr/gateways/#{gateway_id}/+/availability"
 end

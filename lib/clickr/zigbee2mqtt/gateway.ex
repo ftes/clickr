@@ -10,18 +10,19 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   defstruct [:gateway, :user]
 
   # Public API
-  def start!(gateway_id) do
-    case DynamicSupervisor.start_child(@supervisor, {__MODULE__, gateway_id}) do
-      {:ok, pid} -> pid
-      {:error, {:already_started, pid}} -> pid
-      err -> Logger.info("Failed to start gateway #{gateway_id} #{inspect(err)}")
+  def start(gateway_id) do
+    DynamicSupervisor.start_child(@supervisor, {__MODULE__, gateway_id})
+  end
+
+  def stop(gateway_id) do
+    case Registry.lookup(@registry, gateway_id) do
+      [{pid, _}] -> {:ok, GenServer.stop(pid)}
+      [] -> {:error, :not_found}
     end
   end
 
-  def stop(gateway_id), do: GenServer.stop(via_tuple(gateway_id))
-
   def handle_message(gateway_id, topic, payload, opts) when is_list(topic) do
-    GenServer.cast(start!(gateway_id), {:message, topic, payload, opts})
+    GenServer.call(via_tuple(gateway_id), {:message, topic, payload, opts})
   end
 
   # Private
@@ -43,7 +44,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   end
 
   @impl true
-  def handle_cast({:message, ["bridge", "devices"], payload, opts}, state)
+  def handle_call({:message, ["bridge", "devices"], payload, opts}, _from, state)
       when is_list(payload) do
     attrs =
       for %{"type" => "EndDevice"} = device <- payload do
@@ -59,10 +60,14 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
       end
 
     Devices.upsert_devices(state.user, state.gateway, attrs)
-    {:noreply, state}
+    {:reply, :ignored, state}
   end
 
-  def handle_cast({:message, [_device_name], %{"action" => button_name} = payload, _}, state) do
+  def handle_call(
+        {:message, [_device_name], %{"action" => button_name} = payload, _},
+        _from,
+        state
+      ) do
     gid = state.gateway.id
     did = device_id(payload)
     bid = button_id(payload)
@@ -76,19 +81,26 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     Devices.broadcast_button_click(state.user, attrs, upserts)
 
     # TODO Handle battery
-    {:noreply, state}
+    {:reply, :ignored, state}
   end
 
-  def handle_cast({:message, [_device_name], %{"battery" => _}, _}, state) do
+  def handle_call({:message, [_device_name], %{"battery" => _}, _}, _from, state) do
     # TODO Handle battery
     Logger.debug("Battery ignored")
-    {:noreply, state}
+    {:reply, :ignored, state}
   end
 
-  def handle_cast({:message, topic, payload, _}, state) do
+  def handle_call({:message, [_device_name, "availability"], payload, _}, _from, state) do
+    # TODO Handle availability
+    IO.inspect(payload, label: :available)
+    Logger.debug("Availability ignored")
+    {:reply, :ignored, state}
+  end
+
+  def handle_call({:message, topic, payload, _}, _from, state) do
     Logger.info("Unknown message #{state.gateway.id} #{inspect(topic)} #{inspect(payload)}")
 
-    {:noreply, state}
+    {:reply, :ignored, state}
   end
 
   defp via_tuple(gateway_id), do: {:via, Registry, {@registry, gateway_id}}
