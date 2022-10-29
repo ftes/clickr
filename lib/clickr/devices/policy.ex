@@ -3,6 +3,8 @@ defmodule Clickr.Devices.Policy do
   alias Clickr.Accounts.User
   alias Clickr.Devices.{Button, Device, Gateway}
 
+  def authorize(_, %User{admin: true}, _), do: true
+
   def authorize(:create_gateway, _, _), do: true
 
   def authorize(action, %User{id: user_id}, %Gateway{user_id: user_id})

@@ -3,6 +3,8 @@ defmodule Clickr.Subjects.Policy do
   alias Clickr.Accounts.User
   alias Clickr.Subjects.Subject
 
+  def authorize(_, %User{admin: true}, _), do: true
+
   def authorize(:create_subject, _, _), do: true
 
   def authorize(action, %User{id: user_id}, %Subject{user_id: user_id})

@@ -15,12 +15,12 @@ defmodule Clickr.AccountsFixtures do
   end
 
   def user_fixture(attrs \\ %{}) do
-    {:ok, user} =
-      attrs
-      |> valid_user_attributes()
-      |> Clickr.Accounts.register_user()
+    attrs = valid_user_attributes(attrs)
 
-    user
+    %Clickr.Accounts.User{}
+    |> Clickr.Accounts.User.registration_changeset(attrs)
+    |> Clickr.Accounts.User.admin_changeset(attrs)
+    |> Clickr.Repo.insert!()
   end
 
   def extract_user_token(fun) do

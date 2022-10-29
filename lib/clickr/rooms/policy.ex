@@ -3,6 +3,8 @@ defmodule Clickr.Rooms.Policy do
   alias Clickr.Accounts.User
   alias Clickr.Rooms.{Room, RoomSeat}
 
+  def authorize(_, %User{admin: true}, _), do: true
+
   def authorize(:create_room, _, _), do: true
 
   def authorize(action, %User{id: user_id}, %Room{user_id: user_id})

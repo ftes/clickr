@@ -3,6 +3,8 @@ defmodule Clickr.Classes.Policy do
   alias Clickr.Accounts.User
   alias Clickr.Classes.{Class, SeatingPlan, SeatingPlanSeat}
 
+  def authorize(_, %User{admin: true}, _), do: true
+
   def authorize(:create_class, _, _), do: true
 
   def authorize(action, %User{id: user_id}, %Class{user_id: user_id})

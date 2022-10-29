@@ -11,6 +11,8 @@ defmodule Clickr.Grades.Grade do
     timestamps(type: :utc_datetime)
   end
 
+  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+
   def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
     from x in query, join: su in assoc(x, :subject), where: su.user_id == ^user_id
   end

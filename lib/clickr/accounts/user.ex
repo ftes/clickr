@@ -3,6 +3,7 @@ defmodule Clickr.Accounts.User do
 
   schema "users" do
     field :email, :string
+    field :admin, :boolean
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :utc_datetime
@@ -150,5 +151,10 @@ defmodule Clickr.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  def admin_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:admin])
   end
 end

@@ -3,6 +3,8 @@ defmodule Clickr.Grades.Policy do
   alias Clickr.Accounts.User
   alias Clickr.Grades.BonusGrade
 
+  def authorize(_, %User{admin: true}, _), do: true
+
   def authorize(:create_bonus_grade, %User{id: uid}, %{subject_id: suid}) when not is_nil(suid) do
     Clickr.Repo.get!(Clickr.Subjects.Subject, suid).user_id == uid
   end

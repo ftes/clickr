@@ -3,6 +3,8 @@ defmodule Clickr.Students.Policy do
   alias Clickr.Accounts.User
   alias Clickr.Students.Student
 
+  def authorize(_, %User{admin: true}, _), do: true
+
   def authorize(:create_student, _, _), do: true
 
   def authorize(action, %User{id: user_id}, %Student{user_id: user_id})

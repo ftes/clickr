@@ -6,6 +6,8 @@ defmodule Clickr.Devices.Button do
     belongs_to :device, Clickr.Devices.Device
   end
 
+  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+
   def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
     from x in query,
       join: d in assoc(x, :device),

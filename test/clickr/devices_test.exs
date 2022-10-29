@@ -10,9 +10,15 @@ defmodule Clickr.DevicesTest do
   describe "gateways" do
     @invalid_attrs %{name: nil, api_token: nil, url: nil}
 
-    test "list_gateways/0 returns all gateways", %{user: user} do
+    test "list_gateways/0 returns all user's own gateways", %{user: user} do
       gateway = gateway_fixture(user_id: user.id)
       assert Devices.list_gateways(user) == [gateway]
+    end
+
+    test "list_gateways/0 for admin returns all gateways", %{user: user} do
+      gateway = gateway_fixture(user_id: user.id)
+      admin = Clickr.AccountsFixtures.user_fixture(admin: true)
+      assert Devices.list_gateways(admin) == [gateway]
     end
 
     test "get_gateway!/1 returns the gateway with given id", %{user: user} do
@@ -46,6 +52,17 @@ defmodule Clickr.DevicesTest do
       assert gateway.name == "some updated name"
       assert gateway.api_token == "some updated api token"
       assert gateway.url == "some updated url"
+    end
+
+    test "update_gateway/2 for admin with valid data updates another user's gateway", %{
+      user: user
+    } do
+      gateway = gateway_fixture(user_id: user.id)
+      admin = Clickr.AccountsFixtures.user_fixture(admin: true)
+
+      update_attrs = %{name: "some updated name"}
+      assert {:ok, %Gateway{} = gateway} = Devices.update_gateway(admin, gateway, update_attrs)
+      assert gateway.name == "some updated name"
     end
 
     test "update_gateway/2 with invalid data returns error changeset", %{user: user} do

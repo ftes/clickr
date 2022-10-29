@@ -4,6 +4,8 @@ defmodule Clickr.Lessons.Policy do
   alias Clickr.Accounts.User
   alias Clickr.Lessons.{Lesson, LessonStudent, Question}
 
+  def authorize(_, %User{admin: true}, _), do: true
+
   def authorize(:create_lesson, _, _), do: true
 
   def authorize(action, %User{id: user_id}, %Lesson{user_id: user_id})

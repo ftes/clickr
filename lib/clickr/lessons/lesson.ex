@@ -18,6 +18,8 @@ defmodule Clickr.Lessons.Lesson do
     timestamps(type: :utc_datetime)
   end
 
+  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+
   def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
     from x in query, where: x.user_id == ^user_id
   end

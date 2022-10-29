@@ -1,6 +1,5 @@
 # Todo
 
-- [ ] admin user sees everything
 - [ ] teacher add student question answer
 - [ ] soft deleted and non-available devices
   - mark in room plan
