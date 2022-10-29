@@ -1,26 +1,31 @@
 # Todo
 
-- [ ] teacher add student question answer
-- [ ] soft deleted and non-available devices
-  - mark in room plan
-  - inidicator in top bar (link icon)
-- [ ] pair and rename from room plan
-- [ ] add lesson comment per student (mass assignment?)
-- [ ] add qualitative lesson grade
-- [ ] fly.io check handler
+## General UX
+- [ ] Sort, filter and search lists
+
+## Refactoring
 - [ ] add user to all context functions
 - [ ] Add user.system? transient flag
-  - use in side-effect calls
+
 - [ ] Remove _id from changesets
   - separate create and edit changesets
   - set only initially, prevent any further change
   - remove from edit forms
   - remove other things from changesets
-- [ ] Filter and sort lists
-- [ ] List and delete lesson questions
+  - use in side-effect calls
+
+## Device handling
+- [ ] soft deleted and non-available devices
+  - mark in room plan
+  - inidicator in top bar (link icon)
 - [ ] Store device.battery
-- [ ] Store button.last_click_at
-  - mark stale buttons in button plans
-- [ ] Search (global and lists)
-- [ ] Move edit room/seating_plan into form component (save button)
-- [ ] Pair button via clickr UI
+- [ ] pair and rename from room plan
+
+## Lesson features
+- [ ] teacher add student question answer
+- [ ] List and delete lesson questions
+- [ ] add lesson comment per student (mass assignment?)
+- [ ] add qualitative lesson grade
+
+## Infrastructure
+- [ ] fly.io check handler
