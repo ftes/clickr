@@ -107,3 +107,8 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "Question options"
 msgstr ""
+
+#: lib/clickr_web/live/lesson_live/index.html.heex:25
+#, elixir-autogen, elixir-format
+msgid "Inserted at"
+msgstr ""

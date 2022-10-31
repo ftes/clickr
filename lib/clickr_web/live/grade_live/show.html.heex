@@ -25,7 +25,7 @@
       <%= lg.lesson.name %>
     </:col>
     <:col :let={lg} label={dgettext("grades.lesson_grades", "Date")}>
-      <%= Timex.format!(lg.lesson.inserted_at, "{D}.{M}.") %>
+      <%= format_date(lg.lesson.inserted_at) %>
     </:col>
     <:col :let={lg} label={dgettext("grades.lesson_grades", "Percent")}>
       <%= Clickr.Grades.format(:percent, lg.percent) %>
@@ -49,7 +49,7 @@
     <.table id="bonus-grades" compact rows={@grade.bonus_grades}>
       <:col :let={bg} label={dgettext("grades.bonus_grades", "Bonus grade")}><%= bg.name %></:col>
       <:col :let={bg} label={dgettext("grades.bonus_grades", "Date")}>
-        <%= Timex.format!(bg.inserted_at, "{D}.{M}.") %>
+        <%= format_date(bg.inserted_at) %>
       </:col>
       <:col :let={bg} label={dgettext("grades.bonus_grades", "Percent")}>
         <%= Clickr.Grades.format(:percent, bg.percent) %>
@@ -84,7 +84,7 @@
         student_id: @grade.student_id,
         subject_id: @grade.subject_id,
         percent: 1.0,
-        name: Timex.format!(DateTime.utc_now(), "{D}.{M}.")
+        name: format_date(DateTime.utc_now())
       }
     }
   />

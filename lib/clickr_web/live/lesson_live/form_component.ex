@@ -166,7 +166,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
     if changed? || opts[:force] do
       s = Enum.find(a.subjects, &(&1.id == sid))
       sp = Enum.find(a.seating_plans, &(&1.id == spid))
-      date = DateTime.utc_now() |> Timex.format!("{D}.{M}.")
+      date = format_date(DateTime.utc_now())
       Map.put(params, "name", "#{sp.class.name} #{s.name} #{date}")
     else
       params

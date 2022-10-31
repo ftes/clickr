@@ -569,4 +569,6 @@ defmodule ClickrWeb.Components do
   end
 
   def translate_button_name(%Clickr.Devices.Button{name: name}), do: name
+
+  def format_date(date), do: Timex.format!(date, "{D}.{M}.")
 end

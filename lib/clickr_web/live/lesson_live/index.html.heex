@@ -17,7 +17,7 @@
   <:col :let={lesson} label={dgettext("lessons.lessons", "Name")} sortable={true} key={:name}>
     <%= lesson.name %>
   </:col>
-  <:col :let={lesson} label={dgettext("lessons.lessons", "State")}>
+  <:col :let={lesson} label={dgettext("lessons.lessons", "State")} sortable={true} key={:state}>
     <%= translate_lesson_state(lesson) %>
   </:col>
   <:col
@@ -26,7 +26,7 @@
     sortable={true}
     key={:inserted_at}
   >
-    <%= lesson.inserted_at %>
+    <%= format_date(lesson.inserted_at) %>
   </:col>
   <:action :let={lesson}>
     <div class="sr-only">

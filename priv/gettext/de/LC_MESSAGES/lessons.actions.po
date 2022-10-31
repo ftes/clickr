@@ -62,7 +62,7 @@ msgstr "Schüler entfernen"
 msgid "Roll Call"
 msgstr "Anwesenheit abfragen"
 
-#: lib/clickr_web/live/lesson_live/index.html.heex:26
+#: lib/clickr_web/live/lesson_live/index.html.heex:34
 #, elixir-autogen, elixir-format
 msgid "Run"
 msgstr "Durchführen"
