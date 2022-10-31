@@ -435,9 +435,12 @@ defmodule ClickrWeb.Components do
   attr :rows, :list, required: true
   attr :compact, :boolean, default: false
   attr :class, :string, default: ""
+  attr :sort, :map
 
   slot :col, required: true do
     attr :label, :string
+    attr :sortable, :boolean
+    attr :key, :atom
   end
 
   slot :action, doc: "the slot for showing user actions in the last table column"
@@ -448,7 +451,17 @@ defmodule ClickrWeb.Components do
       <table class="w-[40rem] sm:w-full">
         <thead class="text-left text-[0.8125rem] leading-6 text-zinc-500">
           <tr>
-            <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal"><%= col[:label] %></th>
+            <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal">
+              <%= unless col[:sortable], do: col[:label] %>
+              <.live_component
+                :if={col[:sortable]}
+                module={ClickrWeb.TableSortHeader}
+                id={"sort-#{col[:key]}"}
+                key={col[:key]}
+                sort={@sort}
+                label={col[:label]}
+              />
+            </th>
             <th class="relative p-0 pb-4"><span class="sr-only">Actions</span></th>
           </tr>
         </thead>

@@ -12,8 +12,11 @@
   class="mt-11"
   rows={@lessons}
   row_click={&JS.navigate(~p"/lessons/#{&1}/router")}
+  sort={@sort}
 >
-  <:col :let={lesson} label={dgettext("lessons.lessons", "Name")}><%= lesson.name %></:col>
+  <:col :let={lesson} label={dgettext("lessons.lessons", "Name")} sortable={true} key={:name}>
+    <%= lesson.name %>
+  </:col>
   <:col :let={lesson} label={dgettext("lessons.lessons", "State")}>
     <%= translate_lesson_state(lesson) %>
   </:col>

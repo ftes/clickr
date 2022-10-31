@@ -23,9 +23,16 @@ defmodule Clickr.Lessons do
   def list_lessons(%User{} = user, opts \\ []) do
     Lesson
     |> Bodyguard.scope(user)
+    |> sort_lessons(opts[:sort])
     |> Repo.all()
     |> _preload(opts[:preload])
   end
+
+  defp sort_lessons(query, %{sort_by: by, sort_dir: dir}) do
+    order_by(query, {^dir, ^by})
+  end
+
+  defp sort_lessons(query, _opts), do: order_by(query, {:desc, :inserted_at})
 
   def list_lesson_combinations(%User{} = user, opts \\ []) do
     from(l in Lesson,

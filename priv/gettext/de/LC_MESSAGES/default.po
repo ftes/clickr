@@ -16,7 +16,7 @@ msgstr ""
 #: lib/clickr_web/live/gateway_live/index.html.heex:35
 #: lib/clickr_web/live/grade_live/show.html.heex:60
 #: lib/clickr_web/live/lesson_live/ended.ex:18
-#: lib/clickr_web/live/lesson_live/index.html.heex:28
+#: lib/clickr_web/live/lesson_live/index.html.heex:31
 #: lib/clickr_web/live/lesson_live/question.ex:83
 #: lib/clickr_web/live/room_live/index.html.heex:21
 #: lib/clickr_web/live/seating_plan_live/index.html.heex:28
@@ -39,7 +39,7 @@ msgstr "Zurück"
 #: lib/clickr_web/live/class_live/show.html.heex:30
 #: lib/clickr_web/live/gateway_live/index.html.heex:37
 #: lib/clickr_web/live/grade_live/show.html.heex:62
-#: lib/clickr_web/live/lesson_live/index.html.heex:30
+#: lib/clickr_web/live/lesson_live/index.html.heex:33
 #: lib/clickr_web/live/room_live/index.html.heex:23
 #: lib/clickr_web/live/seating_plan_live/index.html.heex:30
 #: lib/clickr_web/live/subject_live/index.html.heex:23

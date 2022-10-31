@@ -6,12 +6,22 @@ defmodule ClickrWeb.LessonLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, load_lessons(socket)}
+    {:ok, socket}
   end
 
   @impl true
   def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+    {:noreply,
+     socket
+     |> apply_action(socket.assigns.live_action, params)
+     |> parse_params(params)
+     |> load_lessons()}
+  end
+
+  @impl true
+  def handle_info({:update, opts}, socket) do
+    path = ~p"/lessons/?#{opts}"
+    {:noreply, push_patch(socket, to: path, replace: true)}
   end
 
   @impl true
@@ -39,7 +49,20 @@ defmodule ClickrWeb.LessonLive.Index do
     |> assign(:lesson, nil)
   end
 
+  defp parse_params(socket, params) do
+    case ClickrWeb.LessonsSortForm.parse(params) do
+      {:ok, sorting_opts} -> assign_sort(socket, sorting_opts)
+      _ -> assign_sort(socket)
+    end
+  end
+
+  defp assign_sort(socket, overrides \\ %{}) do
+    opts = Map.merge(ClickrWeb.LessonsSortForm.default_values(), overrides)
+    assign(socket, :sort, opts)
+  end
+
   defp load_lessons(socket) do
-    assign(socket, :lessons, Lessons.list_lessons(socket.assigns.current_user))
+    %{sort: sort} = socket.assigns
+    assign(socket, :lessons, Lessons.list_lessons(socket.assigns.current_user, sort: sort))
   end
 end

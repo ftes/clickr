@@ -16,4 +16,8 @@ defmodule Clickr.Schema do
       @foreign_key_type :binary_id
     end
   end
+
+  def schemaless_enum(values) do
+    {:parameterized, Ecto.Enum, Ecto.Enum.init(values: values)}
+  end
 end
