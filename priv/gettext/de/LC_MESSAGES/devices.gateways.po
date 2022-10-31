@@ -68,7 +68,7 @@ msgstr "Gateway anzeigen"
 msgid "Gateways"
 msgstr "Gateways"
 
-#: lib/clickr_web/live/components/gateway_presence.ex:11
+#: lib/clickr_web/live/components/gateway_presence.ex:10
 #, elixir-autogen, elixir-format
 msgid "1 Gateway connected"
 msgid_plural "%{count} Gateways connected"

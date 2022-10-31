@@ -21,8 +21,8 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     end
   end
 
-  def handle_message(gateway_id, topic, payload, opts) when is_list(topic) do
-    GenServer.call(via_tuple(gateway_id), {:message, topic, payload, opts})
+  def handle_message(gateway_id, topic, payload) when is_list(topic) do
+    GenServer.call(via_tuple(gateway_id), {:message, topic, payload})
   end
 
   # Private
@@ -44,16 +44,16 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   end
 
   @impl true
-  def handle_call({:message, ["bridge", "devices"], payload, opts}, _from, state)
+  def handle_call({:message, ["bridge", "devices"], payload}, _from, state)
       when is_list(payload) do
     attrs =
       for %{"type" => "EndDevice"} = device <- payload do
         name = device["friendly_name"] || device["ieee_address"]
 
         if String.contains?(name, "/") do
-          payload = Jason.encode!(%{from: name, to: String.replace(name, "/", "_")})
+          payload = %{from: name, to: String.replace(name, "/", "_")}
           topic = "clickr/gateways/#{state.gateway.id}/bridge/request/device/rename"
-          Clickr.Zigbee2Mqtt.Publisher.publish(opts[:client_id], topic, payload)
+          Clickr.Zigbee2Mqtt.Publisher.publish(topic, payload)
         end
 
         %{id: device_id(device), name: name}
@@ -64,7 +64,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   end
 
   def handle_call(
-        {:message, [_device_name], %{"action" => button_name} = payload, _},
+        {:message, [_device_name], %{"action" => button_name} = payload},
         _from,
         state
       ) do
@@ -84,20 +84,19 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     {:reply, :ignored, state}
   end
 
-  def handle_call({:message, [_device_name], %{"battery" => _}, _}, _from, state) do
+  def handle_call({:message, [_device_name], %{"battery" => _}}, _from, state) do
     # TODO Handle battery
     Logger.debug("Battery ignored")
     {:reply, :ignored, state}
   end
 
-  def handle_call({:message, [_device_name, "availability"], payload, _}, _from, state) do
+  def handle_call({:message, [_device_name, "availability"], _payload}, _from, state) do
     # TODO Handle availability
-    IO.inspect(payload, label: :available)
     Logger.debug("Availability ignored")
     {:reply, :ignored, state}
   end
 
-  def handle_call({:message, topic, payload, _}, _from, state) do
+  def handle_call({:message, topic, payload}, _from, state) do
     Logger.info("Unknown message #{state.gateway.id} #{inspect(topic)} #{inspect(payload)}")
 
     {:reply, :ignored, state}

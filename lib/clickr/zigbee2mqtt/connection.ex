@@ -7,6 +7,10 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
 
   defstruct [:client_id]
 
+  def publish(topic, payload) do
+    Tortoise311.publish(client_id(), topic, Jason.encode!(payload))
+  end
+
   def child_spec(_) do
     Tortoise311.Connection.child_spec(
       client_id: client_id(),
@@ -85,7 +89,7 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
   end
 
   defp handle_json(["clickr", "gateways", gid | topicRest], payload, state) do
-    Clickr.Zigbee2Mqtt.Gateway.handle_message(gid, topicRest, payload, client_id: state.client_id)
+    Clickr.Zigbee2Mqtt.Gateway.handle_message(gid, topicRest, payload)
     {:ok, state}
   end
 

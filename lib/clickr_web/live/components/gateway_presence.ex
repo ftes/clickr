@@ -1,7 +1,6 @@
 defmodule ClickrWeb.GatewayPresence do
   use ClickrWeb, :component
 
-  @spec render(any) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
     ~H"""
     <.link

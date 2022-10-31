@@ -83,11 +83,11 @@ defmodule Clickr.Zigbee2MqttTest do
       devices_payload =
         "[{\"type\": \"EndDevice\", \"ieee_address\": \"123\", \"friendly_name\": \"oh/dear\"}]"
 
-      expected_rename_payload = "{\"from\":\"oh/dear\",\"to\":\"oh_dear\"}"
+      expected_rename_payload = %{from: "oh/dear", to: "oh_dear"}
       Gateway.start(g.id)
 
       Publisher.Mock
-      |> expect(:publish, fn "client-id", ^rename_topic, ^expected_rename_payload -> :ok end)
+      |> expect(:publish, fn ^rename_topic, ^expected_rename_payload -> :ok end)
       |> allow(self(), Gateway.via_tuple(g.id))
 
       Connection.handle_message(devices_topic, devices_payload, @state)
