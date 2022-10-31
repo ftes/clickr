@@ -103,7 +103,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     {:reply, :ignored, state}
   end
 
-  defp via_tuple(gateway_id), do: {:via, Registry, {@registry, gateway_id}}
+  def via_tuple(gateway_id), do: {:via, Registry, {@registry, gateway_id}}
 
   def device_id(ieee_address) when is_binary(ieee_address),
     do: UUID.uuid5(@device_type_id, ieee_address)

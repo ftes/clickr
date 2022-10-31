@@ -13,7 +13,7 @@ defmodule Clickr.Zigbee2MqttTest do
     %{gateway: gateway_fixture(user_id: user.id)}
   end
 
-  defp set_online(%{gateway: g}, state \\ "online") do
+  defp publish_state(%{gateway: g}, state) do
     Connection.handle_message(
       ["clickr", "gateways", g.id, "bridge", "state"],
       "{\"state\": \"#{state}\"}",
@@ -25,10 +25,10 @@ defmodule Clickr.Zigbee2MqttTest do
     test "tracks presence", %{user: u, gateway: %{id: gid} = g} do
       presence_topic = Clickr.Presence.gateway_topic(%{user_id: u.id})
 
-      set_online(%{gateway: g}, "online")
+      publish_state(%{gateway: g}, "online")
       assert %{^gid => %{metas: [_]}} = Clickr.Presence.list(presence_topic)
 
-      set_online(%{gateway: g}, "offline")
+      publish_state(%{gateway: g}, "offline")
       assert Clickr.Presence.list(presence_topic) == %{}
     end
 
@@ -40,7 +40,7 @@ defmodule Clickr.Zigbee2MqttTest do
 
     test "handles unknown gateway id gracefully" do
       gid = "46b4c78a-5627-11ed-bf6f-fbb39b04c308"
-      set_online(%{gateway: %{id: gid}}, "online")
+      publish_state(%{gateway: %{id: gid}}, "online")
     end
 
     test "broadcasts click", %{user: u, gateway: g} do
@@ -51,7 +51,7 @@ defmodule Clickr.Zigbee2MqttTest do
       bid = Gateway.button_id(payload)
       json = Jason.encode!(payload)
       Clickr.PubSub.subscribe(Devices.button_click_topic(%{user_id: u.id}))
-      set_online(%{gateway: g})
+      Gateway.start(g.id)
       Connection.handle_message(events_topic, json, @state)
       assert_receive {:button_clicked, _, %{button_id: ^bid}}
     end
@@ -64,7 +64,7 @@ defmodule Clickr.Zigbee2MqttTest do
       payload = [%{type: "EndDevice", ieee_address: "123", friendly_name: "3b renamed"}]
       json = Jason.encode!(payload)
 
-      set_online(%{gateway: g})
+      Gateway.start(g.id)
       Connection.handle_message(mqtt_topic, json, @state)
       # ensure finished processing
       Gateway.stop(g.id)
@@ -77,7 +77,6 @@ defmodule Clickr.Zigbee2MqttTest do
     end
 
     test "renames device with slash in name", %{gateway: g} do
-      set_mox_from_context(%{})
       devices_topic = ["clickr", "gateways", g.id, "bridge", "devices"]
       rename_topic = "clickr/gateways/#{g.id}/bridge/request/device/rename"
 
@@ -85,11 +84,12 @@ defmodule Clickr.Zigbee2MqttTest do
         "[{\"type\": \"EndDevice\", \"ieee_address\": \"123\", \"friendly_name\": \"oh/dear\"}]"
 
       expected_rename_payload = "{\"from\":\"oh/dear\",\"to\":\"oh_dear\"}"
+      Gateway.start(g.id)
 
       Publisher.Mock
       |> expect(:publish, fn "client-id", ^rename_topic, ^expected_rename_payload -> :ok end)
+      |> allow(self(), Gateway.via_tuple(g.id))
 
-      set_online(%{gateway: g})
       Connection.handle_message(devices_topic, devices_payload, @state)
       # ensure finished processing
       Gateway.stop(g.id)

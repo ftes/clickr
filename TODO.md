@@ -1,7 +1,11 @@
 # Todo
 
+## Test
+- [ ] Int test test.mosquitto.org
+
 ## General UX
 - [ ] Sort, filter and search lists
+- [ ] Add user column to lists for admins
 
 ## Refactoring
 - [ ] add user to all context functions
