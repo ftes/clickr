@@ -20,6 +20,14 @@
   <:col :let={lesson} label={dgettext("lessons.lessons", "State")}>
     <%= translate_lesson_state(lesson) %>
   </:col>
+  <:col
+    :let={lesson}
+    label={dgettext("lessons.lessons", "Inserted at")}
+    sortable={true}
+    key={:inserted_at}
+  >
+    <%= lesson.inserted_at %>
+  </:col>
   <:action :let={lesson}>
     <div class="sr-only">
       <.link navigate={~p"/lessons/#{lesson}/router"}>

@@ -47,15 +47,19 @@ defmodule ClickrWeb.LessonLiveTest do
     end
 
     test "sorts by name when clicking on table name header", %{conn: conn, user: u, lesson: l} do
-      lesson_fixture(user_id: u.id, name: "x other")
+      before = Timex.shift(l.inserted_at, seconds: -1)
+      lesson_fixture(user_id: u.id, name: "a older", inserted_at: before)
+
       {:ok, live, html} = live(conn, ~p"/lessons")
-      assert String.replace(html, "\n", "") =~ ~r/x other.*#{l.name}/
+      assert html |> String.replace("\n", "") =~ ~r/#{l.name}.*a older/
 
-      html = live |> element(".sort-by", "Name") |> render_click()
-      assert String.replace(html, "\n", "") =~ ~r/x other.*#{l.name}/
+      live |> element(".sort-by", "Name") |> render_click()
+      assert "/lessons/?sort_by=name&sort_dir=asc" = assert_patch(live)
+      assert live |> render() |> String.replace("\n", "") =~ ~r/a older.*#{l.name}/
 
-      html = live |> element(".sort-by", "Name") |> render_click()
-      assert String.replace(html, "\n", "") =~ ~r/#{l.name}.*x other/
+      live |> element(".sort-by", "Name") |> render_click()
+      assert "/lessons/?sort_by=name&sort_dir=desc" = assert_patch(live)
+      assert live |> render() |> String.replace("\n", "") =~ ~r/#{l.name}.*a older/
     end
 
     test "shows gateway presence", %{conn: conn, user: user} do
