@@ -11,47 +11,47 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2\n"
 
-#: lib/clickr_web/components.ex:651
+#: lib/clickr_web/components.ex:567
 #, elixir-autogen, elixir-format
 msgid "arrow_left_click"
 msgstr "links"
 
-#: lib/clickr_web/components.ex:651
+#: lib/clickr_web/components.ex:567
 #, elixir-autogen, elixir-format
 msgid "arrow_right_click"
 msgstr "rechts"
 
-#: lib/clickr_web/components.ex:651
+#: lib/clickr_web/components.ex:567
 #, elixir-autogen, elixir-format
 msgid "down"
 msgstr "unten"
 
-#: lib/clickr_web/components.ex:651
+#: lib/clickr_web/components.ex:567
 #, elixir-autogen, elixir-format
 msgid "left"
 msgstr "links"
 
-#: lib/clickr_web/components.ex:651
+#: lib/clickr_web/components.ex:567
 #, elixir-autogen, elixir-format
 msgid "middle"
 msgstr "mitte"
 
-#: lib/clickr_web/components.ex:651
+#: lib/clickr_web/components.ex:567
 #, elixir-autogen, elixir-format
 msgid "off"
 msgstr "unten"
 
-#: lib/clickr_web/components.ex:651
+#: lib/clickr_web/components.ex:567
 #, elixir-autogen, elixir-format
 msgid "on"
 msgstr "oben"
 
-#: lib/clickr_web/components.ex:651
+#: lib/clickr_web/components.ex:567
 #, elixir-autogen, elixir-format
 msgid "right"
 msgstr "rechts"
 
-#: lib/clickr_web/components.ex:651
+#: lib/clickr_web/components.ex:567
 #, elixir-autogen, elixir-format
 msgid "up"
 msgstr "oben"
