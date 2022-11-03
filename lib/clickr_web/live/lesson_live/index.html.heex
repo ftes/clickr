@@ -14,16 +14,16 @@
   row_click={&JS.navigate(~p"/lessons/#{&1}/router")}
   sort={@sort}
 >
-  <:col :let={lesson} label={dgettext("lessons.lessons", "Name")} sortable={true} key={:name}>
+  <:col :let={lesson} label={dgettext("lessons.lessons", "Name")} sortable filterable key={:name}>
     <%= lesson.name %>
   </:col>
-  <:col :let={lesson} label={dgettext("lessons.lessons", "State")} sortable={true} key={:state}>
+  <:col :let={lesson} label={dgettext("lessons.lessons", "State")} sortable key={:state}>
     <%= translate_lesson_state(lesson) %>
   </:col>
   <:col
     :let={lesson}
     label={dgettext("lessons.lessons", "Inserted at")}
-    sortable={true}
+    sortable
     key={:inserted_at}
   >
     <%= format_date(lesson.inserted_at) %>

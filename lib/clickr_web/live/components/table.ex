@@ -21,7 +21,9 @@ defmodule ClickrWeb.Table do
   slot :col, required: true do
     attr :label, :string
     attr :sortable, :boolean
+    attr :filterable, :boolean
     attr :key, :atom
+    attr :type, :string
   end
 
   slot :action, doc: "the slot for showing user actions in the last table column"
@@ -33,15 +35,25 @@ defmodule ClickrWeb.Table do
         <thead class="text-left text-[0.8125rem] leading-6 text-zinc-500">
           <tr>
             <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal">
-              <%= unless col[:sortable], do: col[:label] %>
-              <.live_component
-                :if={col[:sortable]}
-                id={"sort-#{col[:key]}"}
-                module={__MODULE__.SortHeader}
-                key={col[:key]}
-                sort={@sort}
-                label={col[:label]}
-              />
+              <div class="flex flex-col items-start">
+                <%= unless col[:sortable], do: col[:label] %>
+                <.live_component
+                  :if={col[:sortable]}
+                  id={"sort-#{col[:key]}"}
+                  module={__MODULE__.SortHeader}
+                  key={col[:key]}
+                  sort={@sort}
+                  label={col[:label]}
+                />
+                <.live_component
+                  :if={col[:filterable]}
+                  id={"filter-#{col[:key]}"}
+                  module={__MODULE__.FilterHeader}
+                  key={col[:key]}
+                  type={col[:type] || "text"}
+                  filter={%{}}
+                />
+              </div>
             </th>
             <th class="relative p-0 pb-4"><span class="sr-only">Actions</span></th>
           </tr>
@@ -88,6 +100,7 @@ end
 
 defmodule ClickrWeb.Table.SortHeader do
   use Phoenix.LiveComponent
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -100,7 +113,12 @@ defmodule ClickrWeb.Table.SortHeader do
   @impl true
   def handle_event("sort", _params, socket) do
     %{key: key, sort: %{sort_dir: dir}} = socket.assigns
-    send(self(), {:update, %{sort_by: key, sort_dir: if(dir == :asc, do: :desc, else: :asc)}})
+
+    send(
+      self(),
+      {:update, %{sort_by: key, sort_dir: if(dir == :asc, do: :desc, else: :asc)}}
+    )
+
     {:noreply, socket}
   end
 
@@ -118,4 +136,66 @@ defmodule ClickrWeb.Table.SortHeader do
     do: ~H"""
 
     """
+end
+
+defmodule ClickrWeb.Table.FilterHeader do
+  use Phoenix.LiveComponent
+
+  def render(assigns) do
+    ~H"""
+    <div>
+      <.form
+        :let={f}
+        for={@changeset}
+        as={:filter}
+        id={@id}
+        phx-change="search"
+        phx-submit="search"
+        phx-target={@myself}
+      >
+        <.input
+          type={@type}
+          form={f}
+          key={@key}
+          x-data="{}"
+          x-on:input="new Event('input', {bubbles: true})"
+        />
+      </.form>
+    </div>
+    """
+  end
+
+  def update(assigns, socket) do
+    {:ok, socket |> assign(assigns) |> assign_changeset(assigns)}
+  end
+
+  def handle_event("search", %{"filter" => filter}, socket) do
+    case ClickrWeb.LessonsFilterForm.parse(filter) do
+      {:ok, opts} ->
+        send(self(), {:update, opts})
+        {:noreply, socket}
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, :changeset, changeset)}
+    end
+  end
+
+  defp assign_changeset(socket, %{filter: filter}) do
+    assign(socket, :changeset, ClickrWeb.LessonsFilterForm.change_values(filter))
+  end
+
+  defp input(%{type: "text"} = assigns) do
+    ~H"""
+    <input
+      type="text"
+      name={Phoenix.HTML.Form.input_name(@form, @key)}
+      value={Phoenix.HTML.Form.input_value(@form, @key)}
+      class={[
+        "mt-2 block w-full rounded-lg border-zinc-300 bg-zinc-100 py-0 px-2",
+        "text-zinc-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
+        "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5"
+      ]}
+    />
+    """
+  end
 end

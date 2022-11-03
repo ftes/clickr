@@ -20,7 +20,8 @@ defmodule ClickrWeb.LessonLive.Index do
 
   @impl true
   def handle_info({:update, opts}, socket) do
-    path = ~p"/lessons/?#{opts}"
+    params = merge_and_sanitize_params(socket, opts)
+    path = ~p"/lessons/?#{params}"
     {:noreply, push_patch(socket, to: path, replace: true)}
   end
 
@@ -49,20 +50,36 @@ defmodule ClickrWeb.LessonLive.Index do
     |> assign(:lesson, nil)
   end
 
+  defp merge_and_sanitize_params(socket, overrides \\ %{}) do
+    %{}
+    |> Map.merge(socket.assigns.sort)
+    |> Map.merge(socket.assigns.filter)
+    |> Map.merge(overrides)
+    |> Map.reject(fn {_key, value} -> is_nil(value) end)
+  end
+
   defp parse_params(socket, params) do
-    case ClickrWeb.LessonsSortForm.parse(params) do
-      {:ok, sorting_opts} -> assign_sort(socket, sorting_opts)
-      _ -> assign_sort(socket)
+    with {:ok, sort} <- ClickrWeb.LessonsSortForm.parse(params),
+         {:ok, filter} <- ClickrWeb.LessonsFilterForm.parse(params) do
+      socket
+      |> assign_sort(sort)
+      |> assign_filter(filter)
+    else
+      _error ->
+        socket
+        |> assign_sort()
+        |> assign_filter()
     end
   end
 
-  defp assign_sort(socket, overrides \\ %{}) do
-    opts = Map.merge(ClickrWeb.LessonsSortForm.default_values(), overrides)
-    assign(socket, :sort, opts)
-  end
+  defp assign_sort(socket, overrides \\ %{}),
+    do: assign(socket, :sort, ClickrWeb.LessonsSortForm.default_values(overrides))
+
+  defp assign_filter(socket, overrides \\ %{}),
+    do: assign(socket, :filter, ClickrWeb.LessonsFilterForm.default_values(overrides))
 
   defp load_lessons(socket) do
-    %{sort: sort} = socket.assigns
-    assign(socket, :lessons, Lessons.list_lessons(socket.assigns.current_user, sort: sort))
+    params = merge_and_sanitize_params(socket)
+    assign(socket, :lessons, Lessons.list_lessons(socket.assigns.current_user, params))
   end
 end

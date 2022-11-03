@@ -62,6 +62,19 @@ defmodule ClickrWeb.LessonLiveTest do
       assert live |> render() |> String.replace("\n", "") =~ ~r/#{l.name}.*a older/
     end
 
+    test "filters by name when entering query", %{conn: conn, user: u, lesson: l} do
+      lesson_fixture(user_id: u.id, name: "unique name")
+
+      {:ok, live, html} = live(conn, ~p"/lessons")
+      assert html =~ "unique name"
+      assert html =~ l.name
+
+      live |> form("#filter-name") |> render_change(%{filter: %{name: "uniq"}})
+      assert "/lessons/?name=uniq&sort_by=inserted_at&sort_dir=desc" = assert_patch(live)
+      assert live |> render() =~ "unique name"
+      refute live |> render() =~ l.name
+    end
+
     test "shows gateway presence", %{conn: conn, user: user} do
       gateway = Clickr.DevicesFixtures.gateway_fixture(user_id: user.id)
       Clickr.Presence.track_gateway(%{user_id: user.id, gateway_id: gateway.id})

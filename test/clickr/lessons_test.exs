@@ -22,6 +22,21 @@ defmodule Clickr.LessonsTest do
       assert Lessons.list_lessons(user) == [lesson]
     end
 
+    test "list_lessons/0 filters by partial name", %{user: user} do
+      lesson = lesson_fixture(user_id: user.id, name: "The lazy Fox jumped Over the Brown dog")
+      other_lesson = lesson_fixture(user_id: user.id, name: "the other")
+      assert Lessons.list_lessons(user, %{name: "ove"}) == [lesson]
+      assert Lessons.list_lessons(user, %{name: "fox"}) == [lesson]
+      assert Lessons.list_lessons(user, %{name: "the lazy"}) == [lesson]
+      assert Lessons.list_lessons(user, %{name: "the o"}) == [other_lesson, lesson]
+    end
+
+    test "list_lessons/0 filters by state", %{user: user} do
+      lesson = lesson_fixture(user_id: user.id, state: :ended)
+      _other_lesson = lesson_fixture(user_id: user.id, state: :started)
+      assert Lessons.list_lessons(user, %{state: "ended"}) == [lesson]
+    end
+
     test "list_lesson_combinations/0 returns most recent unique combinations", %{user: user} do
       at = fn x -> DateTime.from_unix!(x) end
       lesson_fixture(user_id: user.id, name: "l1", inserted_at: at.(1))

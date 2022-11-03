@@ -8,8 +8,10 @@ defmodule ClickrWeb.LessonsSortForm do
   }
   @default_values %{sort_by: :inserted_at, sort_dir: :desc}
   def parse(params) do
-    {@default_values, @fields} |> cast(params, Map.keys(@fields)) |> apply_action(:insert)
+    {@default_values, @fields}
+    |> cast(params, Map.keys(@fields))
+    |> apply_action(:insert)
   end
 
-  def default_values(), do: @default_values
+  def default_values(overrides \\ %{}), do: Map.merge(@default_values, overrides)
 end

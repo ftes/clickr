@@ -1,5 +1,8 @@
 # Todo
 
+## Dev X
+- [ ] User overview + take over
+
 ## Test
 - [ ] Int test test.mosquitto.org
 
@@ -8,6 +11,7 @@
 - [ ] Add user column to lists for admins
 
 ## Refactoring
+- [ ] gateway online in DB (see as admin)
 - [ ] add user to all context functions
 - [ ] Add user.system? transient flag
 

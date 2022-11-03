@@ -20,12 +20,14 @@ defmodule Clickr.Lessons do
 
   def get_button_mapping(%Lesson{} = lesson), do: Clickr.Lessons.ButtonMapping.get_mapping(lesson)
 
-  def list_lessons(%User{} = user, opts \\ []) do
+  def list_lessons(%User{} = user, opts \\ %{}) do
     Lesson
     |> Bodyguard.scope(user)
-    |> sort_lessons(opts[:sort])
+    |> sort_lessons(opts)
+    |> filter_lessons_by_name(opts)
+    |> filter_lessons_by_state(opts)
     |> Repo.all()
-    |> _preload(opts[:preload])
+    |> preload_map(opts)
   end
 
   defp sort_lessons(query, %{sort_by: by, sort_dir: dir}) do
@@ -33,6 +35,19 @@ defmodule Clickr.Lessons do
   end
 
   defp sort_lessons(query, _opts), do: order_by(query, {:desc, :inserted_at})
+
+  defp filter_lessons_by_name(query, %{name: <<_::binary-size(2), _::binary>> = name}) do
+    query
+    |> where([x], fragment("? <% ?", ^name, x.name))
+    |> order_by([x], desc: fragment("similarity(name, ?)", ^name))
+  end
+
+  defp filter_lessons_by_name(query, _), do: query
+
+  defp filter_lessons_by_state(query, %{state: state}) when is_binary(state) and state != "",
+    do: where(query, [x], x.state == ^state)
+
+  defp filter_lessons_by_state(query, _), do: query
 
   def list_lesson_combinations(%User{} = user, opts \\ []) do
     from(l in Lesson,
@@ -340,4 +355,7 @@ defmodule Clickr.Lessons do
 
   defp _preload(input, nil), do: input
   defp _preload(input, args), do: Repo.preload(input, args)
+
+  defp preload_map(input, %{preload: args}), do: Repo.preload(input, args)
+  defp preload_map(input, _), do: input
 end

@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/index.ex:36
+#: lib/clickr_web/live/lesson_live/index.ex:37
 #, elixir-autogen, elixir-format
 msgid "Edit Lesson"
 msgstr ""
@@ -40,7 +40,7 @@ msgstr ""
 msgid "Lesson graded successfully"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/index.ex:48
+#: lib/clickr_web/live/lesson_live/index.ex:49
 #: lib/clickr_web/live/lesson_live/index.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Listing Lessons"
@@ -62,7 +62,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/index.ex:42
+#: lib/clickr_web/live/lesson_live/index.ex:43
 #: lib/clickr_web/live/lesson_live/index.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "New Lesson"
