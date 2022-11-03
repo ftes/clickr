@@ -45,24 +45,22 @@ defmodule ClickrWeb.Table do
         <table class="w-[40rem] sm:w-full">
           <thead class="text-left text-[0.8125rem] leading-6 text-zinc-500">
             <tr>
-              <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal">
-                <div class="flex flex-col items-start">
-                  <%= unless col[:sortable], do: col[:label] %>
-                  <.sort_header
-                    :if={col[:sortable]}
-                    key={col[:key]}
-                    sort={@sort}
-                    label={col[:label]}
-                    phx-target={@myself}
-                  />
-                  <.filter_header
-                    :if={col[:filterable]}
-                    form={form}
-                    key={col[:key]}
-                    type={col[:type] || "text"}
-                    options={col[:options] || []}
-                  />
-                </div>
+              <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal align-top">
+                <%= unless col[:sortable], do: col[:label] %>
+                <.sort_header
+                  :if={col[:sortable]}
+                  key={col[:key]}
+                  sort={@sort}
+                  label={col[:label]}
+                  phx-target={@myself}
+                />
+                <.filter_header
+                  :if={col[:filterable]}
+                  form={form}
+                  key={col[:key]}
+                  type={col[:type] || "text"}
+                  options={col[:options] || []}
+                />
               </th>
               <th class="relative p-0 pb-4"><span class="sr-only">Actions</span></th>
             </tr>
@@ -206,7 +204,7 @@ defmodule ClickrWeb.Table do
 
   defp sort_header(assigns) do
     ~H"""
-    <button
+    <a
       {@rest}
       phx-click={
         JS.push("sort",
@@ -219,7 +217,7 @@ defmodule ClickrWeb.Table do
       class="flex items-baseline gap-2 sort-by"
     >
       <span><%= @label %></span> <.sort_icon sort={@sort} key={@key} />
-    </button>
+    </a>
     """
   end
 
