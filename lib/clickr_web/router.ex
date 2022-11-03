@@ -130,7 +130,12 @@ defmodule ClickrWeb.Router do
       live "/grades/student/:student_id/subject/:subject_id", GradeLive.Show, :show
       live "/grades/:id", GradeLive.Show, :show
       live "/grades/:id/new_bonus_grade", GradeLive.Show, :new_bonus_grade
+
+      live "/users", UserLive.Index, :index
     end
+
+    delete "/users/unimpersonate", UserSessionController, :unimpersonate
+    post "/users/impersonate/:user_id", UserSessionController, :impersonate
   end
 
   scope "/", ClickrWeb do

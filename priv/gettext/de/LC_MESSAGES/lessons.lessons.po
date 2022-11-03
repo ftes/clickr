@@ -89,7 +89,7 @@ msgstr "Status"
 msgid "Subject"
 msgstr "Fach"
 
-#: lib/clickr_web/live/components/menu.ex:6
+#: lib/clickr_web/live/components/menu.ex:114
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Lessons"
 msgstr "Stunden"

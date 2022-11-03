@@ -88,7 +88,7 @@ msgstr ""
 msgid "Subject"
 msgstr ""
 
-#: lib/clickr_web/live/components/menu.ex:6
+#: lib/clickr_web/live/components/menu.ex:114
 #, elixir-autogen, elixir-format
 msgid "Lessons"
 msgstr ""

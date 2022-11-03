@@ -1,6 +1,8 @@
 defmodule Clickr.Accounts do
   use Boundary, exports: [User], deps: [Clickr.{Mailer, Repo, Schema}]
 
+  defdelegate authorize(action, user, params), to: Clickr.Accounts.Policy
+
   @moduledoc """
   The Accounts context.
   """
@@ -11,6 +13,18 @@ defmodule Clickr.Accounts do
   alias Clickr.Accounts.{User, UserToken, UserNotifier}
 
   ## Database getters
+
+  def list_users(%User{} = user) do
+    User
+    |> Bodyguard.scope(user)
+    |> Repo.all()
+  end
+
+  def get_impersonated_user(%User{} = user, impersonated_user_id) do
+    with :ok <- permit(:impersonate_user, user) do
+      get_user!(impersonated_user_id)
+    end
+  end
 
   @doc """
   Gets a user by email.
@@ -352,4 +366,10 @@ defmodule Clickr.Accounts do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
+
+  def permit?(action, user, params \\ []),
+    do: Bodyguard.permit?(__MODULE__, action, user, params)
+
+  defp permit(action, user, params \\ []),
+    do: Bodyguard.permit(__MODULE__, action, user, params)
 end

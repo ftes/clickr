@@ -51,6 +51,11 @@ defmodule ClickrWebTest.ConnCase do
     %{conn: log_in_user(conn, user), user: user}
   end
 
+  def register_and_log_in_admin(%{conn: conn}) do
+    user = Clickr.AccountsFixtures.user_fixture(admin: true)
+    %{conn: log_in_user(conn, user), admin: user}
+  end
+
   @doc """
   Logs the given `user` into the `conn`.
 

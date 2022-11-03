@@ -21,12 +21,12 @@ msgstr "Menü schließen"
 msgid "Open sidebar"
 msgstr "Menü öffnen"
 
-#: lib/clickr_web/live/components/menu.ex:68
+#: lib/clickr_web/live/components/menu.ex:52
 #, elixir-autogen, elixir-format
 msgid "Open user menu"
 msgstr "Benutzermenü öffnen"
 
-#: lib/clickr_web/templates/layout/app.html.heex:121
+#: lib/clickr_web/templates/layout/app.html.heex:133
 #, elixir-autogen, elixir-format
 msgid "Attempting to reconnect"
 msgstr "Verbindung wird wieder hergestellt"

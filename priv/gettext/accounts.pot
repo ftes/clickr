@@ -15,7 +15,7 @@ msgstr ""
 msgid "A link to confirm your email change has been sent to the new address."
 msgstr ""
 
-#: lib/clickr_web/controllers/user_session_controller.ex:8
+#: lib/clickr_web/controllers/user_session_controller.ex:27
 #, elixir-autogen, elixir-format
 msgid "Account created successfully!"
 msgstr ""
@@ -103,7 +103,7 @@ msgstr ""
 msgid "If your email is in our system, you will receive instructions to reset your password shortly."
 msgstr ""
 
-#: lib/clickr_web/controllers/user_session_controller.ex:31
+#: lib/clickr_web/controllers/user_session_controller.ex:50
 #, elixir-autogen, elixir-format
 msgid "Invalid email or password"
 msgstr ""
@@ -113,7 +113,7 @@ msgstr ""
 msgid "Keep me logged in"
 msgstr ""
 
-#: lib/clickr_web/controllers/user_session_controller.ex:39
+#: lib/clickr_web/controllers/user_session_controller.ex:58
 #, elixir-autogen, elixir-format
 msgid "Logged out successfully."
 msgstr ""
@@ -143,7 +143,7 @@ msgstr ""
 msgid "Password reset successfully."
 msgstr ""
 
-#: lib/clickr_web/controllers/user_session_controller.ex:14
+#: lib/clickr_web/controllers/user_session_controller.ex:33
 #, elixir-autogen, elixir-format
 msgid "Password updated successfully!"
 msgstr ""
@@ -179,7 +179,7 @@ msgstr ""
 msgid "Sending..."
 msgstr ""
 
-#: lib/clickr_web/live/components/menu.ex:28
+#: lib/clickr_web/live/components/menu.ex:12
 #, elixir-autogen, elixir-format
 msgid "Settings"
 msgstr ""
@@ -189,12 +189,12 @@ msgstr ""
 msgid "Sigining in..."
 msgstr ""
 
-#: lib/clickr_web/live/components/menu.ex:22
+#: lib/clickr_web/live/components/menu.ex:6
 #, elixir-autogen, elixir-format
 msgid "Sign up"
 msgstr ""
 
-#: lib/clickr_web/live/components/menu.ex:23
+#: lib/clickr_web/live/components/menu.ex:7
 #, elixir-autogen, elixir-format
 msgid "Sign in"
 msgstr ""
@@ -219,13 +219,13 @@ msgstr ""
 msgid "We'll send a password reset link to your inbox"
 msgstr ""
 
-#: lib/clickr_web/controllers/user_session_controller.ex:18
+#: lib/clickr_web/controllers/user_session_controller.ex:37
 #, elixir-autogen, elixir-format
 msgid "Welcome back!"
 msgstr ""
 
-#: lib/clickr_web/user_auth.ex:161
-#: lib/clickr_web/user_auth.ex:217
+#: lib/clickr_web/user_auth.ex:187
+#: lib/clickr_web/user_auth.ex:247
 #, elixir-autogen, elixir-format
 msgid "You must log in to access this page."
 msgstr ""
@@ -233,4 +233,25 @@ msgstr ""
 #: lib/clickr_web/live/user_registration_live.ex:47
 #, elixir-autogen, elixir-format
 msgid "Signing up..."
+msgstr ""
+
+#: lib/clickr_web/controllers/user_session_controller.ex:10
+#, elixir-autogen, elixir-format
+msgid "Impersonated user successfully!"
+msgstr ""
+
+#: lib/clickr_web/controllers/user_session_controller.ex:14
+#, elixir-autogen, elixir-format
+msgid "Not allowed to impersonate user!"
+msgstr ""
+
+#: lib/clickr_web/templates/layout/app.html.heex:104
+#: lib/clickr_web/templates/layout/app.html.heex:106
+#, elixir-autogen, elixir-format
+msgid "Stop impersonating user"
+msgstr ""
+
+#: lib/clickr_web/controllers/user_session_controller.ex:22
+#, elixir-autogen, elixir-format
+msgid "Unimpersonated user successfully!"
 msgstr ""

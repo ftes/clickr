@@ -57,7 +57,7 @@ msgstr "Löschen"
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: lib/clickr_web/templates/layout/app.html.heex:111
+#: lib/clickr_web/templates/layout/app.html.heex:123
 #, elixir-autogen, elixir-format
 msgid "Error!"
 msgstr "Fehler!"
@@ -105,12 +105,12 @@ msgstr "Speichere..."
 msgid "Show"
 msgstr "Anzeigen"
 
-#: lib/clickr_web/templates/layout/app.html.heex:110
+#: lib/clickr_web/templates/layout/app.html.heex:122
 #, elixir-autogen, elixir-format
 msgid "Success!"
 msgstr "Erfolg!"
 
-#: lib/clickr_web/templates/layout/app.html.heex:115
+#: lib/clickr_web/templates/layout/app.html.heex:127
 #, elixir-autogen, elixir-format
 msgid "We can't find the internet"
 msgstr "Wir können das Internet nicht finden"

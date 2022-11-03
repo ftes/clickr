@@ -85,7 +85,7 @@
               </div>
             </form-->
         </div>
-        <div class="ml-4 flex items-center md:ml-6">
+        <div class="ml-4 flex items-center md:ml-6 gap-3">
           <!--button
               type="button"
               class="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
@@ -95,6 +95,18 @@
             </button-->
             <!-- Profile dropdown -->
           <ClickrWeb.GatewayPresence.render present_gateways={assigns[:present_gateways]} />
+
+          <.link
+            :if={assigns[:impersonating_user]}
+            href={~p"/users/unimpersonate"}
+            method="delete"
+            class="h-8 w-8 rounded-full text-xl bg-red-400 flex items-center justify-center font-bold"
+            title={dgettext("accounts", "Stop impersonating user")}
+          >
+            <span class="sr-only"><%= dgettext("accounts", "Stop impersonating user") %></span>
+            <Heroicons.user_minus class="h-5 w-5 text-white" />
+          </.link>
+
           <ClickrWeb.Menu.user
             user_menu_entries={@user_menu_entries}
             current_user={@current_user}

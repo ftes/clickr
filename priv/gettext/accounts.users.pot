@@ -10,22 +10,18 @@
 msgid ""
 msgstr ""
 
-#: lib/clickr_web/templates/layout/app.html.heex:19
+#: lib/clickr_web/live/user_live/index.ex:10
+#: lib/clickr_web/live/user_live/index.html.heex:2
 #, elixir-autogen, elixir-format
-msgid "Close sidebar"
+msgid "Listing Users"
 msgstr ""
 
-#: lib/clickr_web/templates/layout/app.html.heex:66
+#: lib/clickr_web/live/components/menu.ex:127
 #, elixir-autogen, elixir-format
-msgid "Open sidebar"
+msgid "Users"
 msgstr ""
 
-#: lib/clickr_web/live/components/menu.ex:52
+#: lib/clickr_web/live/user_live/index.html.heex:6
 #, elixir-autogen, elixir-format
-msgid "Open user menu"
-msgstr ""
-
-#: lib/clickr_web/templates/layout/app.html.heex:133
-#, elixir-autogen, elixir-format
-msgid "Attempting to reconnect"
+msgid "Email"
 msgstr ""

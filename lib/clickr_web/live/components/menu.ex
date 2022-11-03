@@ -1,22 +1,6 @@
 defmodule ClickrWeb.Menu do
   use ClickrWeb, :component
 
-  @sidebar_menu_entries_user [
-    [
-      {dgettext("lessons.lessons", "Lessons"), "/lessons", [], &Heroicons.academic_cap/1},
-      {dgettext("grades.grades", "Grades"), "/grades", [], &Heroicons.chart_bar/1}
-    ],
-    [
-      {dgettext("classes.classes", "Classes"), "/classes", [], &Heroicons.users/1},
-      {dgettext("classes.seating_plans", "Seating plans"), "/seating_plans", [], &Heroicons.map/1}
-    ],
-    [
-      {dgettext("rooms.rooms", "Rooms"), "/rooms", [], &Heroicons.building_office/1},
-      {dgettext("subjects.subjects", "Subjects"), "/subjects", [], &Heroicons.folder/1},
-      {dgettext("devices.gateways", "Gateways"), "/gateways", [], &Heroicons.server/1}
-    ]
-  ]
-
   @sidebar_menu_entries_anon [
     [
       {dgettext("accounts", "Sign up"), "/users/register", [], &Heroicons.home/1},
@@ -51,7 +35,7 @@ defmodule ClickrWeb.Menu do
   def user(assigns) do
     ~H"""
     <div
-      class="relative ml-3"
+      class="relative"
       x-data="{userMenuOpen: false}"
       x-bind:x-data-open="userMenuOpen ? 'open' : 'closed'"
       x-onclick.outside="open = false"
@@ -123,7 +107,28 @@ defmodule ClickrWeb.Menu do
     do: {:cont, assign(socket, current_path: URI.parse(url).path)}
 
   defp sidebar_menu_entries(%{assigns: %{current_user: nil}}), do: @sidebar_menu_entries_anon
-  defp sidebar_menu_entries(_), do: @sidebar_menu_entries_user
+
+  defp sidebar_menu_entries(%{assigns: %{current_user: user}}) do
+    [
+      [
+        {dgettext("lessons.lessons", "Lessons"), "/lessons", [], &Heroicons.academic_cap/1},
+        {dgettext("grades.grades", "Grades"), "/grades", [], &Heroicons.chart_bar/1}
+      ],
+      [
+        {dgettext("classes.classes", "Classes"), "/classes", [], &Heroicons.users/1},
+        {dgettext("classes.seating_plans", "Seating plans"), "/seating_plans", [],
+         &Heroicons.map/1}
+      ],
+      [
+        {dgettext("rooms.rooms", "Rooms"), "/rooms", [], &Heroicons.building_office/1},
+        {dgettext("subjects.subjects", "Subjects"), "/subjects", [], &Heroicons.folder/1},
+        {dgettext("devices.gateways", "Gateways"), "/gateways", [], &Heroicons.server/1},
+        if(Clickr.Accounts.permit?(:list_users, user),
+          do: {dgettext("accounts.users", "Users"), "/users", [], &Heroicons.user_circle/1}
+        )
+      ]
+    ]
+  end
 
   defp entry_class(current_path, entry_path) do
     current_path = current_path

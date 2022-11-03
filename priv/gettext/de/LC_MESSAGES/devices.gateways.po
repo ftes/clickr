@@ -63,7 +63,7 @@ msgstr "Neues Gateway"
 msgid "Show Gateway"
 msgstr "Gateway anzeigen"
 
-#: lib/clickr_web/live/components/menu.ex:16
+#: lib/clickr_web/live/components/menu.ex:125
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Gateways"
 msgstr "Gateways"

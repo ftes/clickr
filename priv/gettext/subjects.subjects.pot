@@ -56,7 +56,7 @@ msgstr ""
 msgid "Subject updated successfully"
 msgstr ""
 
-#: lib/clickr_web/live/components/menu.ex:15
+#: lib/clickr_web/live/components/menu.ex:124
 #, elixir-autogen, elixir-format
 msgid "Subjects"
 msgstr ""

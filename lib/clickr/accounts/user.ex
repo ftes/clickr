@@ -11,6 +11,12 @@ defmodule Clickr.Accounts.User do
     timestamps(type: :utc_datetime)
   end
 
+  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+
+  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+    from x in query, where: x.id == ^user_id
+  end
+
   @doc """
   A user changeset for registration.
 

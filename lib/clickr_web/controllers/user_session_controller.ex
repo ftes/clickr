@@ -4,6 +4,25 @@ defmodule ClickrWeb.UserSessionController do
   alias Clickr.Accounts
   alias ClickrWeb.UserAuth
 
+  def impersonate(conn, %{"user_id" => user_id}) do
+    if Accounts.permit?(:impersonate_user, conn.assigns.current_user, user_id) do
+      conn
+      |> put_flash(:info, dgettext("accounts", "Impersonated user successfully!"))
+      |> UserAuth.impersonate_user(user_id)
+    else
+      conn
+      |> put_flash(:error, dgettext("accounts", "Not allowed to impersonate user!"))
+      |> redirect(to: ~p"/users")
+    end
+  end
+
+  def unimpersonate(conn, _) do
+    conn
+    |> put_session(:user_return_to, ~p"/users")
+    |> put_flash(:info, dgettext("accounts", "Unimpersonated user successfully!"))
+    |> UserAuth.unimpersonate_user()
+  end
+
   def create(conn, %{"_action" => "registered"} = params) do
     create(conn, params, dgettext("accounts", "Account created successfully!"))
   end

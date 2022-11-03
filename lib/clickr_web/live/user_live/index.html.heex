@@ -1,0 +1,12 @@
+<.header>
+  <%= dgettext("accounts.users", "Listing Users") %>
+</.header>
+
+<.live_component module={ClickrWeb.Table} id="users" class="mt-11" rows={@users}>
+  <:col :let={user} label={dgettext("accounts.users", "Email")}><%= user.email %></:col>
+  <:action :let={user}>
+    <.link method="post" href={~p"/users/impersonate/#{user.id}"}>
+      <%= dgettext("accounts.actions", "Impersonate") %>
+    </.link>
+  </:action>
+</.live_component>

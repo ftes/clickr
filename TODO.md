@@ -1,7 +1,6 @@
 # Todo
 
 ## Dev X
-- [ ] User overview + take over
 - [ ] Grafana alert
 
 ## Test
@@ -9,9 +8,20 @@
 
 ## General UX
 - [ ] Sort, filter and search lists
-- [ ] Add user column to lists for admins
+  - [ ] lessons
+    - [x] name
+    - [x] state
+    - [ ] class name
+    - [ ] subject name
+  - [x] classes
+    - [x] name
+  - [ ] grades
+    - [ ] student name
+    - [ ] class name
+    - [ ] subject name
 
 ## Refactoring
+- [ ] Delete API socket and related code
 - [ ] Convert Table.LiveViewHelpers to using macro
 - [ ] gateway online in DB (see as admin)
 - [ ] add user to all context functions

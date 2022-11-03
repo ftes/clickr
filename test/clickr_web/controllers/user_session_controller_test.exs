@@ -7,6 +7,52 @@ defmodule ClickrWeb.UserSessionControllerTest do
     %{user: user_fixture()}
   end
 
+  describe "POST /users/impersonate/:user_id" do
+    setup do
+      %{admin: user_fixture(admin: true)}
+    end
+
+    test "admin can impersonate user", %{conn: conn, admin: admin, user: user} do
+      conn = conn |> log_in_user(admin) |> post(~p"/users/impersonate/#{user}")
+
+      assert get_session(conn, :user_token)
+      assert get_session(conn, :impersonated_user_id) == user.id
+      assert redirected_to(conn) == ~p"/"
+
+      # Now do a logged in request and assert on the users
+      conn = get(conn, ~p"/users")
+      response = html_response(conn, 200)
+      refute response =~ admin.email
+      assert response =~ "Stop impersonating user"
+    end
+
+    test "regular user cannot impersonate other user", %{conn: conn, user: user} do
+      conn = conn |> log_in_user(user) |> post(~p"/users/impersonate/#{user_fixture()}")
+      assert redirected_to(conn) == ~p"/users"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~ "Not allowed"
+      refute get_session(conn, :impersonated_user_id) == user.id
+    end
+  end
+
+  describe "DELETE /users/unimpersonate" do
+    setup do
+      %{admin: user_fixture(admin: true)}
+    end
+
+    test "unimpersonates the user", %{conn: conn, admin: admin, user: user} do
+      conn =
+        conn
+        |> log_in_user(admin)
+        |> post(~p"/users/impersonate/#{user}")
+        |> delete(~p"/users/unimpersonate")
+
+      assert get_session(conn, :user_token)
+      refute get_session(conn, :impersonated_user_id) == user.id
+      assert redirected_to(conn) == ~p"/users"
+    end
+  end
+
   describe "POST /users/log_in" do
     test "logs the user in", %{conn: conn, user: user} do
       conn =

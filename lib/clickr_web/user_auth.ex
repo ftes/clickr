@@ -37,6 +37,22 @@ defmodule ClickrWeb.UserAuth do
     |> redirect(to: user_return_to || signed_in_path(conn))
   end
 
+  def impersonate_user(conn, impersonated_user_id) do
+    user_return_to = get_session(conn, :user_return_to)
+
+    conn
+    |> put_session(:impersonated_user_id, impersonated_user_id)
+    |> redirect(to: user_return_to || signed_in_path(conn))
+  end
+
+  def unimpersonate_user(conn) do
+    user_return_to = get_session(conn, :user_return_to)
+
+    conn
+    |> delete_session(:impersonated_user_id)
+    |> redirect(to: user_return_to || signed_in_path(conn))
+  end
+
   defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
     put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
   end
@@ -92,7 +108,17 @@ defmodule ClickrWeb.UserAuth do
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
     user = user_token && Accounts.get_user_by_session_token(user_token)
-    assign(conn, :current_user, user)
+
+    with impersonated_id when not is_nil(impersonated_id) <-
+           get_session(conn, :impersonated_user_id),
+         impersonated_user when not is_nil(impersonated_user) <-
+           Accounts.get_impersonated_user(user, impersonated_id) do
+      conn
+      |> assign(:current_user, impersonated_user)
+      |> assign(:impersonating_user, user)
+    else
+      _ -> assign(conn, :current_user, user)
+    end
   end
 
   defp ensure_user_token(conn) do
@@ -145,11 +171,11 @@ defmodule ClickrWeb.UserAuth do
       end
   """
   def on_mount(:mount_current_user, _params, session, socket) do
-    {:cont, mount_current_user(session, socket)}
+    {:cont, mount_current_user(socket, session)}
   end
 
   def on_mount(:ensure_authenticated, _params, session, socket) do
-    socket = mount_current_user(session, socket)
+    socket = mount_current_user(socket, session)
 
     if socket.assigns.current_user do
       {:cont, socket}
@@ -167,7 +193,7 @@ defmodule ClickrWeb.UserAuth do
   end
 
   def on_mount(:redirect_if_user_is_authenticated, _params, session, socket) do
-    socket = mount_current_user(session, socket)
+    socket = mount_current_user(socket, session)
 
     if socket.assigns.current_user do
       {:halt, Phoenix.LiveView.redirect(socket, to: signed_in_path(socket))}
@@ -176,15 +202,19 @@ defmodule ClickrWeb.UserAuth do
     end
   end
 
-  defp mount_current_user(session, socket) do
-    case session do
-      %{"user_token" => user_token} ->
-        Phoenix.Component.assign_new(socket, :current_user, fn ->
-          Accounts.get_user_by_session_token(user_token)
-        end)
+  defp mount_current_user(socket, session) do
+    user_token = session["user_token"]
+    user = user_token && Accounts.get_user_by_session_token(user_token)
 
-      %{} ->
-        Phoenix.Component.assign_new(socket, :current_user, fn -> nil end)
+    with impersonated_id when not is_nil(impersonated_id) <-
+           session["impersonated_user_id"],
+         impersonated_user when not is_nil(impersonated_user) <-
+           Accounts.get_impersonated_user(user, impersonated_id) do
+      socket
+      |> Phoenix.Component.assign_new(:current_user, fn -> impersonated_user end)
+      |> Phoenix.Component.assign_new(:impersonating_user, fn -> user end)
+    else
+      _ -> Phoenix.Component.assign_new(socket, :current_user, fn -> user end)
     end
   end
 
