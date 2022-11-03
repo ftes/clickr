@@ -3,6 +3,7 @@ defmodule ClickrWeb.LessonLive.Index do
 
   alias Clickr.Lessons
   alias Clickr.Lessons.Lesson
+  import ClickrWeb.Table.LiveViewHelpers
 
   @impl true
   def mount(_params, _session, socket) do
@@ -14,13 +15,16 @@ defmodule ClickrWeb.LessonLive.Index do
     {:noreply,
      socket
      |> apply_action(socket.assigns.live_action, params)
-     |> parse_params(params)
+     |> parse_table_params(params, %{
+       sort: ClickrWeb.LessonsSortForm,
+       filter: ClickrWeb.LessonsFilterForm
+     })
      |> load_lessons()}
   end
 
   @impl true
   def handle_info({:update, opts}, socket) do
-    params = merge_and_sanitize_params(socket, opts)
+    params = merge_and_sanitize_table_params(socket, opts)
     path = ~p"/lessons/?#{params}"
     {:noreply, push_patch(socket, to: path, replace: true)}
   end
@@ -50,36 +54,8 @@ defmodule ClickrWeb.LessonLive.Index do
     |> assign(:lesson, nil)
   end
 
-  defp merge_and_sanitize_params(socket, overrides \\ %{}) do
-    %{}
-    |> Map.merge(socket.assigns.sort)
-    |> Map.merge(socket.assigns.filter)
-    |> Map.merge(overrides)
-    |> Map.reject(fn {_key, value} -> is_nil(value) end)
-  end
-
-  defp parse_params(socket, params) do
-    with {:ok, sort} <- ClickrWeb.LessonsSortForm.parse(params),
-         {:ok, filter} <- ClickrWeb.LessonsFilterForm.parse(params) do
-      socket
-      |> assign_sort(sort)
-      |> assign_filter(filter)
-    else
-      _error ->
-        socket
-        |> assign_sort()
-        |> assign_filter()
-    end
-  end
-
-  defp assign_sort(socket, overrides \\ %{}),
-    do: assign(socket, :sort, ClickrWeb.LessonsSortForm.default_values(overrides))
-
-  defp assign_filter(socket, overrides \\ %{}),
-    do: assign(socket, :filter, ClickrWeb.LessonsFilterForm.default_values(overrides))
-
   defp load_lessons(socket) do
-    params = merge_and_sanitize_params(socket)
+    params = merge_and_sanitize_table_params(socket)
     assign(socket, :lessons, Lessons.list_lessons(socket.assigns.current_user, params))
   end
 end

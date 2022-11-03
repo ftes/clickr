@@ -237,4 +237,30 @@ defmodule ClickrWeb.Table do
     do: ~H"""
 
     """
+
+  defmodule LiveViewHelpers do
+    def merge_and_sanitize_table_params(socket, overrides \\ %{}) do
+      %{}
+      |> Map.merge(socket.assigns.sort)
+      |> Map.merge(socket.assigns.filter)
+      |> Map.merge(overrides)
+      |> Map.reject(fn {_key, value} -> is_nil(value) end)
+    end
+
+    def parse_table_params(socket, params, %{sort: sort_module, filter: filter_module}) do
+      with {:ok, sort} <- sort_module.parse(params),
+           {:ok, filter} <- filter_module.parse(params) do
+        socket
+        |> assign(:sort, ensure_defaults(sort_module.defaults(), sort))
+        |> assign(:filter, ensure_defaults(filter_module.defaults(), filter))
+      else
+        _error ->
+          socket
+          |> assign(:sort, sort_module.defaults())
+          |> assign(:filter, filter_module.defaults())
+      end
+    end
+
+    defp ensure_defaults(defaults, overrides), do: Map.merge(defaults, overrides)
+  end
 end

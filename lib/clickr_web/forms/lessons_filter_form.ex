@@ -6,21 +6,20 @@ defmodule ClickrWeb.LessonsFilterForm do
     state: :string
   }
 
-  @default_values %{
+  @defaults %{
     name: nil,
     state: nil
   }
-
-  def default_values(overrides \\ %{}), do: Map.merge(@default_values, overrides)
-
   def parse(params) do
-    {@default_values, @fields}
+    {@defaults, @fields}
     |> cast(params, Map.keys(@fields))
     |> apply_action(:insert)
   end
 
-  def change_values(values \\ @default_values) do
+  def change_values(values \\ @defaults) do
     {values, @fields}
     |> cast(%{}, Map.keys(@fields))
   end
+
+  def defaults(), do: @defaults
 end
