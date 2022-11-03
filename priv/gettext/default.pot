@@ -10,23 +10,23 @@
 msgid ""
 msgstr ""
 
-#: lib/clickr_web/live/class_live/index.html.heex:21
+#: lib/clickr_web/live/class_live/index.html.heex:27
 #: lib/clickr_web/live/class_live/show.html.heex:28
-#: lib/clickr_web/live/gateway_live/index.html.heex:35
-#: lib/clickr_web/live/grade_live/show.html.heex:60
+#: lib/clickr_web/live/gateway_live/index.html.heex:41
+#: lib/clickr_web/live/grade_live/show.html.heex:61
 #: lib/clickr_web/live/lesson_live/ended.ex:18
-#: lib/clickr_web/live/lesson_live/index.html.heex:47
+#: lib/clickr_web/live/lesson_live/index.html.heex:49
 #: lib/clickr_web/live/lesson_live/question.ex:83
-#: lib/clickr_web/live/room_live/index.html.heex:21
-#: lib/clickr_web/live/seating_plan_live/index.html.heex:28
-#: lib/clickr_web/live/subject_live/index.html.heex:21
+#: lib/clickr_web/live/room_live/index.html.heex:27
+#: lib/clickr_web/live/seating_plan_live/index.html.heex:29
+#: lib/clickr_web/live/subject_live/index.html.heex:27
 #, elixir-autogen, elixir-format
 msgid "Are you sure?"
 msgstr ""
 
 #: lib/clickr_web/live/class_live/show.html.heex:59
 #: lib/clickr_web/live/gateway_live/show.html.heex:23
-#: lib/clickr_web/live/grade_live/show.html.heex:69
+#: lib/clickr_web/live/grade_live/show.html.heex:70
 #: lib/clickr_web/live/room_live/show.html.heex:95
 #: lib/clickr_web/live/seating_plan_live/show.html.heex:106
 #: lib/clickr_web/live/subject_live/show.html.heex:14
@@ -34,24 +34,24 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: lib/clickr_web/live/class_live/index.html.heex:23
+#: lib/clickr_web/live/class_live/index.html.heex:29
 #: lib/clickr_web/live/class_live/show.html.heex:30
-#: lib/clickr_web/live/gateway_live/index.html.heex:37
-#: lib/clickr_web/live/grade_live/show.html.heex:62
-#: lib/clickr_web/live/lesson_live/index.html.heex:49
-#: lib/clickr_web/live/room_live/index.html.heex:23
-#: lib/clickr_web/live/seating_plan_live/index.html.heex:30
-#: lib/clickr_web/live/subject_live/index.html.heex:23
+#: lib/clickr_web/live/gateway_live/index.html.heex:43
+#: lib/clickr_web/live/grade_live/show.html.heex:63
+#: lib/clickr_web/live/lesson_live/index.html.heex:51
+#: lib/clickr_web/live/room_live/index.html.heex:29
+#: lib/clickr_web/live/seating_plan_live/index.html.heex:31
+#: lib/clickr_web/live/subject_live/index.html.heex:29
 #, elixir-autogen, elixir-format
 msgid "Delete"
 msgstr ""
 
-#: lib/clickr_web/live/class_live/index.html.heex:16
+#: lib/clickr_web/live/class_live/index.html.heex:22
 #: lib/clickr_web/live/class_live/show.html.heex:22
-#: lib/clickr_web/live/gateway_live/index.html.heex:30
-#: lib/clickr_web/live/room_live/index.html.heex:16
-#: lib/clickr_web/live/seating_plan_live/index.html.heex:23
-#: lib/clickr_web/live/subject_live/index.html.heex:16
+#: lib/clickr_web/live/gateway_live/index.html.heex:36
+#: lib/clickr_web/live/room_live/index.html.heex:22
+#: lib/clickr_web/live/seating_plan_live/index.html.heex:24
+#: lib/clickr_web/live/subject_live/index.html.heex:22
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr ""
@@ -93,13 +93,13 @@ msgstr ""
 msgid "Saving..."
 msgstr ""
 
-#: lib/clickr_web/live/class_live/index.html.heex:14
-#: lib/clickr_web/live/gateway_live/index.html.heex:28
-#: lib/clickr_web/live/grade_live/index.html.heex:13
-#: lib/clickr_web/live/grade_live/show.html.heex:35
-#: lib/clickr_web/live/room_live/index.html.heex:14
-#: lib/clickr_web/live/seating_plan_live/index.html.heex:21
-#: lib/clickr_web/live/subject_live/index.html.heex:14
+#: lib/clickr_web/live/class_live/index.html.heex:20
+#: lib/clickr_web/live/gateway_live/index.html.heex:34
+#: lib/clickr_web/live/grade_live/index.html.heex:19
+#: lib/clickr_web/live/grade_live/show.html.heex:36
+#: lib/clickr_web/live/room_live/index.html.heex:20
+#: lib/clickr_web/live/seating_plan_live/index.html.heex:22
+#: lib/clickr_web/live/subject_live/index.html.heex:20
 #, elixir-autogen, elixir-format
 msgid "Show"
 msgstr ""
@@ -114,13 +114,13 @@ msgstr ""
 msgid "We can't find the internet"
 msgstr ""
 
-#: lib/clickr_web/live/gateway_live/index.html.heex:22
+#: lib/clickr_web/live/gateway_live/index.html.heex:28
 #: lib/clickr_web/live/gateway_live/show.html.heex:19
 #, elixir-autogen, elixir-format
 msgid "No"
 msgstr ""
 
-#: lib/clickr_web/live/gateway_live/index.html.heex:21
+#: lib/clickr_web/live/gateway_live/index.html.heex:27
 #: lib/clickr_web/live/gateway_live/show.html.heex:18
 #, elixir-autogen, elixir-format
 msgid "Yes"

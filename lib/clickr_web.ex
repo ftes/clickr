@@ -105,7 +105,6 @@ defmodule ClickrWeb do
       import Phoenix.HTML
       import Phoenix.HTML.Form
       import ClickrWeb.Components
-      import ClickrWeb.Table
 
       alias Phoenix.LiveView.JS
 

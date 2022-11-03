@@ -564,7 +564,7 @@ defmodule ClickrWeb.Components do
   def translate_lesson_state(state), do: to_string(state)
 
   def lesson_state_options(),
-    do: Enum.map(Clickr.Lessons.Lesson.states(), &{&1, translate_lesson_state(&1)})
+    do: Enum.map(Clickr.Lessons.Lesson.states(), &{"#{&1}", translate_lesson_state(&1)})
 
   @button_names ~w(left right up down middle arrow_left_click arrow_right_click off on)
   for name <- @button_names do

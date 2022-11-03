@@ -7,12 +7,14 @@
   </:actions>
 </.header>
 
-<.table
+<.live_component
+  module={ClickrWeb.Table}
   id="lessons"
   class="mt-11"
   rows={@lessons}
   row_click={&JS.navigate(~p"/lessons/#{&1}/router")}
   sort={@sort}
+  filter={@filter}
 >
   <:col :let={lesson} label={dgettext("lessons.lessons", "Name")} sortable filterable key={:name}>
     <%= lesson.name %>
@@ -49,7 +51,7 @@
       <%= gettext("Delete") %>
     </.link>
   </:action>
-</.table>
+</.live_component>
 
 <%= if @live_action in [:new, :edit] do %>
   <.modal id="lesson-modal" show on_cancel={JS.navigate(~p"/lessons")}>

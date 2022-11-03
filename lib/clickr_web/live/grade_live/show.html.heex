@@ -14,7 +14,8 @@
     </:item>
   </.list>
 
-  <.table
+  <.live_component
+    module={ClickrWeb.Table}
     id="lesson-grades"
     class="py-4"
     compact
@@ -35,7 +36,7 @@
         <.link navigate={~p"/lessons/#{lg.lesson_id}/router"}><%= gettext("Show") %></.link>
       </div>
     </:action>
-  </.table>
+  </.live_component>
 
   <div class="py-4">
     <div class="flex justify-end">
@@ -46,7 +47,7 @@
       </.link>
     </div>
 
-    <.table id="bonus-grades" compact rows={@grade.bonus_grades}>
+    <.live_component module={ClickrWeb.Table} id="bonus-grades" compact rows={@grade.bonus_grades}>
       <:col :let={bg} label={dgettext("grades.bonus_grades", "Bonus grade")}><%= bg.name %></:col>
       <:col :let={bg} label={dgettext("grades.bonus_grades", "Date")}>
         <%= format_date(bg.inserted_at) %>
@@ -62,7 +63,7 @@
           <%= gettext("Delete") %>
         </.link>
       </:action>
-    </.table>
+    </.live_component>
   </div>
 </div>
 

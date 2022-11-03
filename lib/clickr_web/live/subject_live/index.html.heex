@@ -7,7 +7,13 @@
   </:actions>
 </.header>
 
-<.table id="subjects" class="mt-11" rows={@subjects} row_click={&JS.navigate(~p"/subjects/#{&1}")}>
+<.live_component
+  module={ClickrWeb.Table}
+  id="subjects"
+  class="mt-11"
+  rows={@subjects}
+  row_click={&JS.navigate(~p"/subjects/#{&1}")}
+>
   <:col :let={subject} label={dgettext("subjects.subjects", "Name")}><%= subject.name %></:col>
   <:action :let={subject}>
     <div class="sr-only">
@@ -23,7 +29,7 @@
       <%= gettext("Delete") %>
     </.link>
   </:action>
-</.table>
+</.live_component>
 
 <%= if @live_action in [:new, :edit] do %>
   <.modal id="subject-modal" show on_cancel={JS.navigate(~p"/subjects")}>

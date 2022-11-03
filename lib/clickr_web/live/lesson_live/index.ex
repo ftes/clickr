@@ -54,7 +54,7 @@ defmodule ClickrWeb.LessonLive.Index do
     %{}
     |> Map.merge(socket.assigns.sort)
     |> Map.merge(socket.assigns.filter)
-    |> Map.merge(overrides, fn _k, v1, v2 -> v2 || v1 end)
+    |> Map.merge(overrides)
     |> Map.reject(fn {_key, value} -> is_nil(value) end)
   end
 

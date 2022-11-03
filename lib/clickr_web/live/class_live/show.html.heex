@@ -13,7 +13,7 @@
   </.list>
 
   <div class="py-4">
-    <.table id="students" compact rows={@class.students}>
+    <.live_component module={ClickrWeb.Table} id="students" compact rows={@class.students}>
       <:col :let={student} label={dgettext("students.students", "Student")}>
         <%= student.name %>
       </:col>
@@ -30,7 +30,7 @@
           <%= gettext("Delete") %>
         </.link>
       </:action>
-    </.table>
+    </.live_component>
 
     <.simple_form
       :let={f}

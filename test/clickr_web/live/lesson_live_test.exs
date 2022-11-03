@@ -69,7 +69,7 @@ defmodule ClickrWeb.LessonLiveTest do
       assert html =~ "unique name"
       assert html =~ l.name
 
-      live |> form("#filter-name") |> render_change(%{filter: %{name: "uniq"}})
+      live |> form("#lessons-filter-form") |> render_change(%{filter: %{name: "uniq"}})
       assert "/lessons/?name=uniq&sort_by=inserted_at&sort_dir=desc" = assert_patch(live)
       assert live |> render() =~ "unique name"
       refute live |> render() =~ l.name
@@ -82,7 +82,7 @@ defmodule ClickrWeb.LessonLiveTest do
       assert html =~ "ended name"
       assert html =~ l.name
 
-      live |> form("#filter-state") |> render_change(%{filter: %{state: "ended"}})
+      live |> form("#lessons-filter-form") |> render_change(%{filter: %{state: "ended"}})
       assert "/lessons/?sort_by=inserted_at&sort_dir=desc&state=ended" = assert_patch(live)
       assert live |> render() =~ "ended name"
       refute live |> render() =~ l.name
@@ -93,9 +93,10 @@ defmodule ClickrWeb.LessonLiveTest do
       lesson_fixture(user_id: u.id, name: "unique ended", state: :ended)
 
       {:ok, live, _html} = live(conn, ~p"/lessons")
-      live |> form("#filter-name") |> render_change(%{filter: %{name: "uniq"}})
-      assert "/lessons/?name=uniq&sort_by=inserted_at&sort_dir=desc" = assert_patch(live)
-      live |> form("#filter-state") |> render_change(%{filter: %{state: "ended"}})
+
+      live
+      |> form("#lessons-filter-form")
+      |> render_change(%{filter: %{name: "uniq", state: "ended"}})
 
       assert "/lessons/?name=uniq&sort_by=inserted_at&sort_dir=desc&state=ended" =
                assert_patch(live)

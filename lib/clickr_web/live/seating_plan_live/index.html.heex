@@ -7,7 +7,8 @@
   </:actions>
 </.header>
 
-<.table
+<.live_component
+  module={ClickrWeb.Table}
   id="seating_plans"
   class="mt-11"
   rows={@seating_plans}
@@ -30,7 +31,7 @@
       <%= gettext("Delete") %>
     </.link>
   </:action>
-</.table>
+</.live_component>
 
 <%= if @live_action in [:new, :edit] do %>
   <.modal id="seating_plan-modal" show on_cancel={JS.navigate(~p"/seating_plans")}>

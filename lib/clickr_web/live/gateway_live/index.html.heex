@@ -7,7 +7,13 @@
   </:actions>
 </.header>
 
-<.table id="gateways" class="mt-11" rows={@gateways} row_click={&JS.navigate(~p"/gateways/#{&1}")}>
+<.live_component
+  module={ClickrWeb.Table}
+  id="gateways"
+  class="mt-11"
+  rows={@gateways}
+  row_click={&JS.navigate(~p"/gateways/#{&1}")}
+>
   <:col :let={gateway} label={dgettext("devices.gateways", "Name")}><%= gateway.name %></:col>
   <:col :let={gateway} label={dgettext("devices.gateways", "Connected")}>
     <div class="flex items-center gap-3">
@@ -37,7 +43,7 @@
       <%= gettext("Delete") %>
     </.link>
   </:action>
-</.table>
+</.live_component>
 
 <%= if @live_action in [:new, :edit] do %>
   <.modal id="gateway-modal" show on_cancel={JS.navigate(~p"/gateways")}>

@@ -16,7 +16,7 @@ msgstr ""
 msgid "Bonus grade created successfully"
 msgstr "Bonusnote erstellt"
 
-#: lib/clickr_web/live/grade_live/show.html.heex:51
+#: lib/clickr_web/live/grade_live/show.html.heex:52
 #, elixir-autogen, elixir-format
 msgid "Date"
 msgstr "Datum"
@@ -27,18 +27,18 @@ msgid "Name"
 msgstr "Name"
 
 #: lib/clickr_web/live/grade_live/bonus_grade_form_component.ex:11
-#: lib/clickr_web/live/grade_live/show.html.heex:44
+#: lib/clickr_web/live/grade_live/show.html.heex:45
 #, elixir-autogen, elixir-format
 msgid "New bonus grade"
 msgstr "Neue Bonusnote"
 
 #: lib/clickr_web/live/grade_live/bonus_grade_form_component.ex:31
-#: lib/clickr_web/live/grade_live/show.html.heex:54
+#: lib/clickr_web/live/grade_live/show.html.heex:55
 #, elixir-autogen, elixir-format
 msgid "Percent"
 msgstr "Prozent"
 
-#: lib/clickr_web/live/grade_live/show.html.heex:50
+#: lib/clickr_web/live/grade_live/show.html.heex:51
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Bonus grade"
 msgstr "Bonusnote"
