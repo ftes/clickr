@@ -554,12 +554,17 @@ defmodule ClickrWeb.Components do
   end
 
   for state <- Clickr.Lessons.Lesson.states() do
-    def translate_lesson_state(%Clickr.Lessons.Lesson{state: unquote(state)}) do
-      dgettext("lessons.lessons.state", unquote(to_string(state)))
-    end
+    def translate_lesson_state(unquote(state)),
+      do: dgettext("lessons.lessons.state", unquote(to_string(state)))
   end
 
-  def translate_lesson_state(%Clickr.Lessons.Lesson{state: state}), do: to_string(state)
+  def translate_lesson_state(%Clickr.Lessons.Lesson{state: state}),
+    do: translate_lesson_state(state)
+
+  def translate_lesson_state(state), do: to_string(state)
+
+  def lesson_state_options(),
+    do: Enum.map(Clickr.Lessons.Lesson.states(), &{&1, translate_lesson_state(&1)})
 
   @button_names ~w(left right up down middle arrow_left_click arrow_right_click off on)
   for name <- @button_names do

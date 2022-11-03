@@ -17,7 +17,15 @@
   <:col :let={lesson} label={dgettext("lessons.lessons", "Name")} sortable filterable key={:name}>
     <%= lesson.name %>
   </:col>
-  <:col :let={lesson} label={dgettext("lessons.lessons", "State")} sortable key={:state}>
+  <:col
+    :let={lesson}
+    label={dgettext("lessons.lessons", "State")}
+    sortable
+    filterable
+    type="select"
+    options={lesson_state_options()}
+    key={:state}
+  >
     <%= translate_lesson_state(lesson) %>
   </:col>
   <:col

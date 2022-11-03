@@ -24,6 +24,7 @@ defmodule ClickrWeb.Table do
     attr :filterable, :boolean
     attr :key, :atom
     attr :type, :string
+    attr :options, :list
   end
 
   slot :action, doc: "the slot for showing user actions in the last table column"
@@ -51,6 +52,7 @@ defmodule ClickrWeb.Table do
                   module={__MODULE__.FilterHeader}
                   key={col[:key]}
                   type={col[:type] || "text"}
+                  options={col[:options] || []}
                   filter={%{}}
                 />
               </div>
@@ -153,13 +155,7 @@ defmodule ClickrWeb.Table.FilterHeader do
         phx-submit="search"
         phx-target={@myself}
       >
-        <.input
-          type={@type}
-          form={f}
-          key={@key}
-          x-data="{}"
-          x-on:input="new Event('input', {bubbles: true})"
-        />
+        <.input form={f} {assigns} x-data="{}" x-on:input="new Event('input', {bubbles: true})" />
       </.form>
     </div>
     """
@@ -196,6 +192,26 @@ defmodule ClickrWeb.Table.FilterHeader do
         "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5"
       ]}
     />
+    """
+  end
+
+  defp input(%{type: "select", options: _} = assigns) do
+    ~H"""
+    <select
+      name={Phoenix.HTML.Form.input_name(@form, @key)}
+      value={Phoenix.HTML.Form.input_value(@form, @key)}
+      class={[
+        "mt-2 block w-full rounded-lg border-zinc-300 bg-zinc-100 py-0 px-2",
+        "text-zinc-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
+        "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5"
+      ]}
+      x-class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
+    >
+      <option value=""></option>
+      <option :for={{value, label} <- @options} value={value}>
+        <%= label %>
+      </option>
+    </select>
     """
   end
 end

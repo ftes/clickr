@@ -2,6 +2,7 @@
 
 ## Dev X
 - [ ] User overview + take over
+- [ ] Grafana alert
 
 ## Test
 - [ ] Int test test.mosquitto.org
