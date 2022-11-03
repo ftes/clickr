@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 
-#: lib/clickr_web/live/class_live/index.html.heex:27
+#: lib/clickr_web/live/class_live/index.html.heex:39
 #: lib/clickr_web/live/class_live/show.html.heex:28
 #: lib/clickr_web/live/gateway_live/index.html.heex:41
 #: lib/clickr_web/live/grade_live/show.html.heex:61
@@ -34,7 +34,7 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: lib/clickr_web/live/class_live/index.html.heex:29
+#: lib/clickr_web/live/class_live/index.html.heex:41
 #: lib/clickr_web/live/class_live/show.html.heex:30
 #: lib/clickr_web/live/gateway_live/index.html.heex:43
 #: lib/clickr_web/live/grade_live/show.html.heex:63
@@ -46,7 +46,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: lib/clickr_web/live/class_live/index.html.heex:22
+#: lib/clickr_web/live/class_live/index.html.heex:34
 #: lib/clickr_web/live/class_live/show.html.heex:22
 #: lib/clickr_web/live/gateway_live/index.html.heex:36
 #: lib/clickr_web/live/room_live/index.html.heex:22
@@ -93,7 +93,7 @@ msgstr ""
 msgid "Saving..."
 msgstr ""
 
-#: lib/clickr_web/live/class_live/index.html.heex:20
+#: lib/clickr_web/live/class_live/index.html.heex:32
 #: lib/clickr_web/live/gateway_live/index.html.heex:34
 #: lib/clickr_web/live/grade_live/index.html.heex:19
 #: lib/clickr_web/live/grade_live/show.html.heex:36

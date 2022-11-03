@@ -12,6 +12,7 @@
 - [ ] Add user column to lists for admins
 
 ## Refactoring
+- [ ] Convert Table.LiveViewHelpers to using macro
 - [ ] gateway online in DB (see as admin)
 - [ ] add user to all context functions
 - [ ] Add user.system? transient flag

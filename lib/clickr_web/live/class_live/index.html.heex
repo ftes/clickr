@@ -13,8 +13,20 @@
   class="mt-11"
   rows={@classes}
   row_click={&JS.navigate(~p"/classes/#{&1}")}
+  sort={@sort}
+  filter={@filter}
 >
-  <:col :let={class} label={dgettext("classes.classes", "Name")}><%= class.name %></:col>
+  <:col :let={class} label={dgettext("classes.classes", "Name")} sortable filterable key={:name}>
+    <%= class.name %>
+  </:col>
+  <:col
+    :let={lesson}
+    label={dgettext("lessons.lessons", "Inserted at")}
+    sortable
+    key={:inserted_at}
+  >
+    <%= format_date(lesson.inserted_at) %>
+  </:col>
   <:action :let={class}>
     <div class="sr-only">
       <.link navigate={~p"/classes/#{class}"}><%= gettext("Show") %></.link>

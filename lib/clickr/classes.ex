@@ -10,11 +10,13 @@ defmodule Clickr.Classes do
   alias Clickr.Accounts.User
   alias Clickr.Classes.{Class, SeatingPlan, SeatingPlanSeat}
 
-  def list_classes(%User{} = user, opts \\ []) do
+  def list_classes(%User{} = user, opts \\ %{}) do
     Class
     |> Bodyguard.scope(user)
+    |> sort(opts)
+    |> filter_by_name(opts)
     |> Repo.all()
-    |> _preload(opts[:preload])
+    |> preload_map(opts)
   end
 
   def get_class!(%User{} = user, id, opts \\ []) do
@@ -122,4 +124,21 @@ defmodule Clickr.Classes do
 
   defp _preload(input, nil), do: input
   defp _preload(input, args), do: Repo.preload(input, args)
+
+  defp preload_map(input, %{preload: args}), do: Repo.preload(input, args)
+  defp preload_map(input, _), do: input
+
+  defp sort(query, %{sort_by: by, sort_dir: dir}) do
+    order_by(query, {^dir, ^by})
+  end
+
+  defp sort(query, _opts), do: order_by(query, {:desc, :inserted_at})
+
+  defp filter_by_name(query, %{name: <<_::binary-size(2), _::binary>> = name}) do
+    query
+    |> where([x], fragment("? <% ?", ^name, x.name))
+    |> order_by([x], desc: fragment("similarity(name, ?)", ^name))
+  end
+
+  defp filter_by_name(query, _), do: query
 end
