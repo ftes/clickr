@@ -1,11 +1,5 @@
 # Todo
 
-## Dev X
-- [ ] Grafana alert
-
-## Test
-- [ ] Int test test.mosquitto.org
-
 ## General UX
 - [ ] Sort, filter and search lists
   - [ ] lessons
@@ -23,7 +17,6 @@
 ## Refactoring
 - [ ] Delete API socket and related code
 - [ ] Convert Table.LiveViewHelpers to using macro
-- [ ] gateway online in DB (see as admin)
 - [ ] add user to all context functions
 - [ ] Add user.system? transient flag
 

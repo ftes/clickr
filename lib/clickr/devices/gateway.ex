@@ -5,6 +5,7 @@ defmodule Clickr.Devices.Gateway do
     field :name, :string
     field :api_token, :string
     field :url, :string
+    field :online, :boolean, default: false
     belongs_to :user, Clickr.Accounts.User
 
     timestamps(type: :utc_datetime)

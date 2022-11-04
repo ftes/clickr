@@ -19,13 +19,11 @@
     <div class="flex items-center gap-3">
       <span class={[
         "rounded-full h-5 w-5",
-        if(Map.has_key?(@present_gateways, gateway.id), do: "bg-green-500", else: "bg-red-500")
+        if(gateway.online, do: "bg-green-500", else: "bg-red-500")
       ]}>
       </span>
       <span>
-        <%= if Map.has_key?(@present_gateways, gateway.id),
-          do: gettext("Yes"),
-          else: gettext("No") %>
+        <%= if gateway.online, do: gettext("Yes"), else: gettext("No") %>
       </span>
     </div>
   </:col>

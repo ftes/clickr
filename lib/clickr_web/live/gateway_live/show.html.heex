@@ -14,9 +14,7 @@
     <a :if={@gateway.url} href={@gateway.url} target="_blank"><%= @gateway.url %></a>
   </:item>
   <:item title={dgettext("devices.gateways", "Connected")}>
-    <%= if Map.has_key?(@present_gateways, @gateway.id),
-      do: gettext("Yes"),
-      else: gettext("No") %>
+    <%= if @gateway.online, do: gettext("Yes"), else: gettext("No") %>
   </:item>
 </.list>
 

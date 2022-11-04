@@ -14,6 +14,7 @@ defmodule Clickr.Devices do
     Gateway
     |> Bodyguard.scope(user)
     |> where_ids(opts[:ids])
+    |> where_online(opts[:online])
     |> Repo.all()
     |> _preload(opts[:preload])
   end
@@ -56,6 +57,15 @@ defmodule Clickr.Devices do
   def change_gateway(%Gateway{} = gateway, attrs \\ %{}) do
     Gateway.changeset(gateway, attrs)
   end
+
+  def set_gateway_online(gateway_id, online?) do
+    {1, _} =
+      Repo.update_all(from(g in Gateway, where: g.id == ^gateway_id), set: [online: online?])
+
+    Clickr.PubSub.broadcast(gateways_topic(), %{gateway_id: gateway_id, online: online?})
+  end
+
+  def gateways_topic(), do: "gateways"
 
   def list_devices(%User{} = user, opts \\ []) do
     Device
@@ -180,6 +190,9 @@ defmodule Clickr.Devices do
 
   defp where_ids(query, nil), do: query
   defp where_ids(query, ids), do: where(query, [x], x.id in ^ids)
+
+  defp where_online(query, nil), do: query
+  defp where_online(query, online), do: where(query, [x], x.online == ^online)
 
   defp permit(action, user, params \\ []),
     do: Bodyguard.permit(__MODULE__, action, user, params)

@@ -71,8 +71,7 @@ defmodule ClickrWeb.DeconzChannel do
   end
 
   def handle_info(:track_presence, socket) do
-    %{current_gateway: gateway, current_user: user} = socket.assigns
-    Clickr.Presence.track_gateway(%{user_id: user.id, gateway_id: gateway.id})
+    # %{current_gateway: gateway, current_user: user} = socket.assigns
     {:noreply, socket}
   end
 

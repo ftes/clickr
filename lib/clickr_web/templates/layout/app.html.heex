@@ -94,7 +94,7 @@
               <Heroicons.bell class="h-6 w-6" />
             </button-->
             <!-- Profile dropdown -->
-          <ClickrWeb.GatewayPresence.render present_gateways={assigns[:present_gateways]} />
+          <ClickrWeb.GatewayPresence.render online_gateways={assigns[:online_gateways]} />
 
           <.link
             :if={assigns[:impersonating_user]}

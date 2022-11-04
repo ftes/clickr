@@ -37,7 +37,6 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
         {:stop, :unknown_gateway_id}
 
       gateway ->
-        Clickr.Presence.track_gateway(%{gateway_id: gateway.id, user_id: gateway.user_id})
         state = %__MODULE__{gateway: gateway, user: gateway.user}
         {:ok, state}
     end

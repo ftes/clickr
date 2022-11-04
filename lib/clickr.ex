@@ -12,7 +12,6 @@ defmodule Clickr do
       Grades.{BonusGrade, Grade, LessonGrade},
       Lessons,
       Lessons.{Lesson, LessonStudent, Question, QuestionAnswer},
-      Presence,
       PubSub,
       Rooms,
       Rooms.{Room, RoomSeat},

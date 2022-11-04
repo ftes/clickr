@@ -61,6 +61,8 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
 
     case Clickr.Zigbee2Mqtt.Gateway.start(gid) do
       {:ok, _} ->
+        Clickr.Devices.set_gateway_online(gid, true)
+
         {:ok, state,
          [
            {:subscribe, device_list_topic(gid), @qos.at_least_once,
@@ -78,6 +80,7 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
 
   defp handle_json(["clickr", "gateways", gid, "bridge", "state"], %{"state" => "offline"}, state) do
     Logger.info("Stop gateway #{gid}")
+    Clickr.Devices.set_gateway_online(gid, false)
     Clickr.Zigbee2Mqtt.Gateway.stop(gid)
 
     {:ok, state,

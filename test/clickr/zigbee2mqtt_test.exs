@@ -23,13 +23,11 @@ defmodule Clickr.Zigbee2MqttTest do
 
   describe "zigbee2mqtt" do
     test "tracks presence", %{user: u, gateway: %{id: gid} = g} do
-      presence_topic = Clickr.Presence.gateway_topic(%{user_id: u.id})
-
       publish_state(%{gateway: g}, "online")
-      assert %{^gid => %{metas: [_]}} = Clickr.Presence.list(presence_topic)
+      assert [%{id: ^gid}] = Devices.list_gateways(u, online: true)
 
       publish_state(%{gateway: g}, "offline")
-      assert Clickr.Presence.list(presence_topic) == %{}
+      assert [] = Devices.list_gateways(u, online: true)
     end
 
     test "handles malformed gateway id gracefully" do
