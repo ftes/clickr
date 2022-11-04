@@ -88,7 +88,6 @@ defmodule ClickrWeb.LessonLiveTest do
       refute live |> render() =~ l.name
     end
 
-    @tag :inspect
     test "filters by name and state", %{conn: conn, user: u, lesson: l} do
       lesson_fixture(user_id: u.id, name: "other ended", state: :ended)
       lesson_fixture(user_id: u.id, name: "unique ended", state: :ended)

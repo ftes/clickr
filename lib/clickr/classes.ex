@@ -128,10 +128,7 @@ defmodule Clickr.Classes do
   defp preload_map(input, %{preload: args}), do: Repo.preload(input, args)
   defp preload_map(input, _), do: input
 
-  defp sort(query, %{sort_by: by, sort_dir: dir}) do
-    order_by(query, {^dir, ^by})
-  end
-
+  defp sort(query, %{sort_by: by, sort_dir: dir}), do: order_by(query, {^dir, ^by})
   defp sort(query, _opts), do: query
 
   defp filter_by_name(query, %{name: <<_::binary-size(2), _::binary>> = name}) do

@@ -10,14 +10,14 @@
 msgid ""
 msgstr ""
 
-#: lib/clickr_web/live/grade_live/index.html.heex:14
+#: lib/clickr_web/live/grade_live/index.html.heex:44
 #: lib/clickr_web/live/grade_live/show.html.heex:2
 #: lib/clickr_web/live/grade_live/show.html.heex:9
 #, elixir-autogen, elixir-format
 msgid "Grade"
 msgstr ""
 
-#: lib/clickr_web/live/grade_live/index.ex:18
+#: lib/clickr_web/live/grade_live/index.ex:20
 #: lib/clickr_web/live/grade_live/index.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Listing Grades"
@@ -34,13 +34,13 @@ msgstr ""
 msgid "Show Grade"
 msgstr ""
 
-#: lib/clickr_web/live/grade_live/index.html.heex:12
+#: lib/clickr_web/live/grade_live/index.html.heex:17
 #: lib/clickr_web/live/grade_live/show.html.heex:7
 #, elixir-autogen, elixir-format
 msgid "Student"
 msgstr ""
 
-#: lib/clickr_web/live/grade_live/index.html.heex:13
+#: lib/clickr_web/live/grade_live/index.html.heex:36
 #: lib/clickr_web/live/grade_live/show.html.heex:8
 #, elixir-autogen, elixir-format
 msgid "Subject"
@@ -54,4 +54,9 @@ msgstr ""
 #: lib/clickr_web/live/grade_live/show.ex:36
 #, elixir-autogen, elixir-format
 msgid "Bonus grade was deleted!"
+msgstr ""
+
+#: lib/clickr_web/live/grade_live/index.html.heex:26
+#, elixir-autogen, elixir-format
+msgid "Class"
 msgstr ""

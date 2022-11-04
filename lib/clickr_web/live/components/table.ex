@@ -205,6 +205,7 @@ defmodule ClickrWeb.Table do
   defp sort_header(assigns) do
     ~H"""
     <a
+      href="#"
       {@rest}
       phx-click={
         JS.push("sort",

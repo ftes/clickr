@@ -15,14 +15,16 @@ defmodule Clickr.Grades do
   def format(:percent, percent) when is_float(percent), do: "#{round(percent * 100)}%"
   def format(:german, percent), do: Clickr.Grades.Format.German.format(percent)
 
-  def list_grades(%User{} = user, opts \\ []) do
+  def list_grades(%User{} = user, opts \\ %{}) do
     Grade
     |> Bodyguard.scope(user)
-    |> where_subject_lesson_id(opts[:lesson_id])
-    |> where_student_id(opts[:student_id])
-    |> where_student_ids(opts[:student_ids])
+    |> filter_by_student_name(opts)
+    |> filter_by_student_id(opts)
+    |> filter_by_subject_id(opts)
+    |> filter_by_student_class_id(opts)
+    |> sort(opts)
     |> Repo.all()
-    |> _preload(opts[:preload])
+    |> preload_map(opts)
   end
 
   def get_grade!(user, args, opts \\ [])
@@ -109,23 +111,51 @@ defmodule Clickr.Grades do
     from(bg in BonusGrade, where: bg.student_id == ^stid and bg.subject_id == ^suid)
   end
 
-  defp where_student_id(query, nil), do: query
-  defp where_student_id(query, id), do: where(query, [x], x.student_id == ^id)
-
-  defp where_student_ids(query, nil), do: query
-  defp where_student_ids(query, ids), do: where(query, [x], x.student_id in ^ids)
-
-  defp where_subject_lesson_id(query, nil), do: query
-
-  defp where_subject_lesson_id(query, id) do
+  defp filter_by_student_name(query, %{student_name: <<_::binary-size(2), _::binary>> = name}) do
     query
-    |> join(:inner, [x], s in assoc(x, :subject))
-    |> where([x, s], s.lesson_id == ^id)
+    |> join(:inner, [x], s in assoc(x, :student), as: :student_filter)
+    |> where([student_filter: s], fragment("? <% ?", ^name, s.name))
+    |> order_by([student_filter: s], desc: fragment("similarity(?, ?)", s.name, ^name))
   end
+
+  defp filter_by_student_name(query, _), do: query
+
+  defp filter_by_subject_id(query, %{subject_id: id}) when is_binary(id),
+    do: where(query, [x], x.subject_id == ^id)
+
+  defp filter_by_subject_id(query, _), do: query
+
+  defp filter_by_student_class_id(query, %{class_id: id}) when is_binary(id) do
+    query
+    |> join(:inner, [x], s in assoc(x, :student), as: :student_class_filter)
+    |> where([student_class_filter: s], s.class_id == ^id)
+  end
+
+  defp filter_by_student_class_id(query, _), do: query
+
+  defp filter_by_student_id(query, %{student_id: id}) when is_binary(id),
+    do: where(query, [x], x.student_id == ^id)
+
+  defp filter_by_student_id(query, %{student_ids: ids}) when is_list(ids),
+    do: where(query, [x], x.student_id in ^ids)
+
+  defp filter_by_student_id(query, _), do: query
 
   defp permit(action, user, params),
     do: Bodyguard.permit(__MODULE__, action, user, params)
 
   defp _preload(input, nil), do: input
   defp _preload(input, args), do: Repo.preload(input, args)
+
+  defp preload_map(input, %{preload: args}), do: Repo.preload(input, args)
+  defp preload_map(input, _), do: input
+
+  defp sort(query, %{sort_by: :student_name, sort_dir: dir}) do
+    query
+    |> join(:inner, [x], s in assoc(x, :student), as: :student_sort)
+    |> order_by([student_sort: s], {^dir, s.name})
+  end
+
+  defp sort(query, %{sort_by: by, sort_dir: dir}), do: order_by(query, {^dir, ^by})
+  defp sort(query, _opts), do: query
 end

@@ -8,10 +8,40 @@
   class="mt-11"
   rows={@grades}
   row_click={&JS.navigate(~p"/grades/#{&1}")}
+  sort={@sort}
+  filter={@filter}
+  filter_form={ClickrWeb.GradesFilterForm}
 >
-  <:col :let={grade} label={dgettext("grades.grades", "Student")}><%= grade.student.name %></:col>
-  <:col :let={grade} label={dgettext("grades.grades", "Subject")}><%= grade.subject.name %></:col>
-  <:col :let={grade} label={dgettext("grades.grades", "Grade")}>
+  <:col
+    :let={grade}
+    label={dgettext("grades.grades", "Student")}
+    key={:student_name}
+    sortable
+    filterable
+  >
+    <%= grade.student.name %>
+  </:col>
+  <:col
+    :let={grade}
+    label={dgettext("grades.grades", "Class")}
+    key={:class_id}
+    filterable
+    type="select"
+    options={@class_options}
+  >
+    <%= grade.student.class.name %>
+  </:col>
+  <:col
+    :let={grade}
+    label={dgettext("grades.grades", "Subject")}
+    key={:subject_id}
+    filterable
+    type="select"
+    options={@subject_options}
+  >
+    <%= grade.subject.name %>
+  </:col>
+  <:col :let={grade} label={dgettext("grades.grades", "Grade")} sortable key={:percent}>
     <%= Clickr.Grades.format(:german, grade.percent) %>
   </:col>
   <:action :let={grade}>

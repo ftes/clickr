@@ -37,7 +37,6 @@ defmodule Clickr.LessonsTest do
       assert Lessons.list_lessons(user, %{state: "ended"}) == [lesson]
     end
 
-    @tag :inspect
     test "list_lessons/2 filters by name and state", %{user: u} do
       lesson_fixture(user_id: u.id, name: "some name", state: :started)
       lesson_fixture(user_id: u.id, name: "other ended", state: :ended)

@@ -1,18 +1,9 @@
 # Todo
 
-## General UX
-- [ ] Sort, filter and search lists
-  - [x] classes
-    - [x] name
-  - [ ] grades
-    - [ ] student name
-    - [ ] class name
-    - [ ] subject name
-
 ## Refactoring
+- [ ] change all context db getters to %{} map opts
 - [ ] add user to all context functions
 - [ ] Add user.system? transient flag
-
 - [ ] Remove _id from changesets
   - separate create and edit changesets
   - set only initially, prevent any further change

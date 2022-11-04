@@ -96,7 +96,7 @@ msgstr "Speichere..."
 
 #: lib/clickr_web/live/class_live/index.html.heex:33
 #: lib/clickr_web/live/gateway_live/index.html.heex:32
-#: lib/clickr_web/live/grade_live/index.html.heex:19
+#: lib/clickr_web/live/grade_live/index.html.heex:49
 #: lib/clickr_web/live/grade_live/show.html.heex:36
 #: lib/clickr_web/live/room_live/index.html.heex:20
 #: lib/clickr_web/live/seating_plan_live/index.html.heex:22
