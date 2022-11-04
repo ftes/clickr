@@ -69,8 +69,7 @@ config :clickr, Clickr.Zigbee2Mqtt.Connection,
   host: "d8a49c0682174333860981a8c709e3b4.s1.eu.hivemq.cloud",
   user: "clickr_server",
   password: "set $MQTT_PASSWORD env var",
-  port: 8883,
-  client_id: "clickr-server"
+  port: 8883
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -21,7 +21,10 @@ if System.get_env("PHX_SERVER") do
 end
 
 if password = System.get_env("MQTT_PASSWORD") do
-  config :clickr, Clickr.Zigbee2Mqtt.Connection, password: password, disabled: false
+  config :clickr, Clickr.Zigbee2Mqtt.Connection,
+    password: password,
+    disabled: false,
+    client_id: "clickr-server-#{UUID.uuid4()}"
 end
 
 if config_env() == :prod do

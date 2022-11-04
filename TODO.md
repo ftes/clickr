@@ -1,7 +1,7 @@
 # Todo
 
-## Stability
-- [ ] Heartbeat for gateways (trigger echo via server)
+## Bugs
+- [ ] Upate gateway online in gateway index (presence catches pubsub event before it reaches liveview)
 
 ## Refactoring
 - [ ] change all context db getters to %{} map opts

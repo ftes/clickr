@@ -7,6 +7,7 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
   @qos %{at_most_once: 0, at_least_once: 1, exactly_once: 2}
   @subscriptions [
     {"clickr/gateways/+/bridge/state", @qos.at_least_once},
+    {"clickr/gateways/+/bridge/response/health_check", @qos.at_least_once},
     {"clickr/gateways/+/bridge/devices", @qos.at_least_once},
     {"clickr/gateways/+/+/availability", @qos.at_least_once},
     {"clickr/gateways/+/+", @qos.at_most_once}
@@ -14,11 +15,17 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
 
   defstruct [:client_id]
 
-  def publish(topic, payload) do
+  def publish(topic, payload) when is_list(payload) or is_map(payload) do
     Tortoise311.publish(client_id(), topic, Jason.encode!(payload))
   end
 
+  def publish(topic, payload) do
+    Tortoise311.publish(client_id(), topic, payload)
+  end
+
   def child_spec(_) do
+    Logger.info("Connecting as client_id: #{client_id()}")
+
     Tortoise311.Connection.child_spec(
       client_id: client_id(),
       server: {
