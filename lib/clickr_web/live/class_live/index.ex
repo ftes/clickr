@@ -1,9 +1,13 @@
 defmodule ClickrWeb.ClassLive.Index do
   use ClickrWeb, :live_view
 
+  use ClickrWeb.Table.LiveView,
+    path_factory: fn p -> ~p"/classes/?#{p}" end,
+    sort_form: ClickrWeb.ClassesSortForm,
+    filter_form: ClickrWeb.ClassesFilterForm
+
   alias Clickr.Classes
   alias Clickr.Classes.Class
-  import ClickrWeb.Table.LiveViewHelpers
 
   @impl true
   def mount(_params, _session, socket) do
@@ -15,18 +19,8 @@ defmodule ClickrWeb.ClassLive.Index do
     {:noreply,
      socket
      |> apply_action(socket.assigns.live_action, params)
-     |> parse_table_params(params, %{
-       sort: ClickrWeb.ClassesSortForm,
-       filter: ClickrWeb.ClassesFilterForm
-     })
+     |> parse_table_params(params)
      |> load_classes()}
-  end
-
-  @impl true
-  def handle_info({:update, opts}, socket) do
-    params = merge_and_sanitize_table_params(socket, opts)
-    path = ~p"/classes/?#{params}"
-    {:noreply, push_patch(socket, to: path, replace: true)}
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do

@@ -35,14 +35,14 @@ msgstr ""
 msgid "Class updated successfully"
 msgstr ""
 
-#: lib/clickr_web/live/class_live/index.ex:34
+#: lib/clickr_web/live/class_live/index.ex:28
 #: lib/clickr_web/live/class_live/show.ex:44
 #: lib/clickr_web/live/class_live/show.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "Edit Class"
 msgstr ""
 
-#: lib/clickr_web/live/class_live/index.ex:46
+#: lib/clickr_web/live/class_live/index.ex:40
 #: lib/clickr_web/live/class_live/index.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Listing Classes"
@@ -60,7 +60,7 @@ msgstr ""
 msgid "Names (one per line)"
 msgstr ""
 
-#: lib/clickr_web/live/class_live/index.ex:40
+#: lib/clickr_web/live/class_live/index.ex:34
 #: lib/clickr_web/live/class_live/index.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "New Class"

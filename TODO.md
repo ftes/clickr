@@ -15,7 +15,6 @@
     - [ ] subject name
 
 ## Refactoring
-- [ ] Convert Table.LiveViewHelpers to using macro
 - [ ] add user to all context functions
 - [ ] Add user.system? transient flag
 

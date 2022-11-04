@@ -120,7 +120,8 @@ defmodule ClickrWeb.Table do
   def handle_event("sort", %{"sort_by" => key, "sort_dir" => dir}, socket) do
     send(
       self(),
-      {:update, %{sort_by: String.to_existing_atom(key), sort_dir: String.to_existing_atom(dir)}}
+      {:update_table_query,
+       %{sort_by: String.to_existing_atom(key), sort_dir: String.to_existing_atom(dir)}}
     )
 
     {:noreply, socket}
@@ -129,7 +130,7 @@ defmodule ClickrWeb.Table do
   def handle_event("search", %{"filter" => filter}, socket) do
     case ClickrWeb.LessonsFilterForm.parse(filter) do
       {:ok, opts} ->
-        send(self(), {:update, opts})
+        send(self(), {:update_table_query, opts})
         {:noreply, socket}
 
       {:error, changeset} ->
@@ -236,7 +237,41 @@ defmodule ClickrWeb.Table do
 
     """
 
-  defmodule LiveViewHelpers do
+  defmodule LiveView do
+    defmacro __using__(opts \\ []) do
+      path_factory = opts[:path_factory] || raise "Missing opts.path_factory"
+      sm = opts[:sort_form] || raise "Missing opts.sort_form"
+      fm = opts[:filter_form] || raise "Missing opts.filter_form"
+
+      quote do
+        import unquote(__MODULE__)
+
+        @impl true
+        def handle_info({:update_table_query, opts}, socket) do
+          params = unquote(__MODULE__).merge_and_sanitize_table_params(socket, opts)
+          path = unquote(path_factory).(params)
+          {:noreply, push_patch(socket, to: path, replace: true)}
+        end
+
+        def parse_table_params(socket, params) do
+          with {:ok, sort} <- unquote(sm).parse(params),
+               {:ok, filter} <- unquote(fm).parse(params) do
+            socket
+            |> assign(:sort, unquote(__MODULE__).ensure_defaults(unquote(sm).defaults(), sort))
+            |> assign(
+              :filter,
+              unquote(__MODULE__).ensure_defaults(unquote(fm).defaults(), filter)
+            )
+          else
+            _error ->
+              socket
+              |> assign(:sort, unquote(sm).defaults())
+              |> assign(:filter, unquote(fm).defaults())
+          end
+        end
+      end
+    end
+
     def merge_and_sanitize_table_params(socket, overrides \\ %{}) do
       %{}
       |> Map.merge(socket.assigns.sort)
@@ -245,20 +280,6 @@ defmodule ClickrWeb.Table do
       |> Map.reject(fn {_key, value} -> is_nil(value) end)
     end
 
-    def parse_table_params(socket, params, %{sort: sort_module, filter: filter_module}) do
-      with {:ok, sort} <- sort_module.parse(params),
-           {:ok, filter} <- filter_module.parse(params) do
-        socket
-        |> assign(:sort, ensure_defaults(sort_module.defaults(), sort))
-        |> assign(:filter, ensure_defaults(filter_module.defaults(), filter))
-      else
-        _error ->
-          socket
-          |> assign(:sort, sort_module.defaults())
-          |> assign(:filter, filter_module.defaults())
-      end
-    end
-
-    defp ensure_defaults(defaults, overrides), do: Map.merge(defaults, overrides)
+    def ensure_defaults(defaults, overrides), do: Map.merge(defaults, overrides)
   end
 end
