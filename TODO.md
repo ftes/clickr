@@ -1,8 +1,5 @@
 # Todo
 
-## Bugs
-- [ ] health check request arrives twice (first time)
-
 ## Refactoring
 - [ ] add gateway type, only start/stop mqtt gateways in connection
 - [ ] remove gateway api token

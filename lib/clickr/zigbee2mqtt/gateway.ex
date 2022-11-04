@@ -4,8 +4,6 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   alias Clickr.Devices
 
   @device_type_id "c9eb071e-5612-11ed-a896-f7a5f8566984"
-  @timeout_10s 10_000
-  @heartbeat_5s 5_000
   @registry __MODULE__.Registry
   @supervisor __MODULE__.Supervisor
 
@@ -51,7 +49,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
         schedule_health_check()
         Clickr.Devices.set_gateway_online(gateway_id, true)
         state = %__MODULE__{gateway: gateway, user: gateway.user, last_call: false}
-        {:ok, state, @timeout_10s}
+        {:ok, state, timeout()}
     end
   end
 
@@ -60,17 +58,17 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
 
   def handle_info(:timeout, state) do
     request_health_check(state)
-    {:noreply, %{state | last_call: true}, @timeout_10s}
+    {:noreply, %{state | last_call: true}, timeout()}
   end
 
   def handle_info(:request_health_check, state) do
     request_health_check(state)
-    {:noreply, state, @timeout_10s}
+    extend_timeout(state)
   end
 
   @impl true
   def handle_cast({:message, ["bridge", "state"], %{"state" => "online"}}, state),
-    do: {:noreply, state, @timeout_10s}
+    do: extend_timeout(state)
 
   def handle_cast({:message, ["bridge", "state"], %{"state" => "offline"}}, state),
     do: {:stop, {:shutdown, :mqtt_state_offline}, state}
@@ -84,13 +82,13 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
       end
 
     Devices.upsert_devices(state.user, state.gateway, attrs)
-    {:noreply, state, @timeout_10s}
+    extend_timeout(state)
   end
 
   def handle_cast({:message, ["bridge", "response", "health_check"], payload}, state) do
     Logger.debug("Health check (heartbeat): #{inspect(payload)}")
     schedule_health_check()
-    {:noreply, %{state | last_call: false}, @timeout_10s}
+    extend_timeout(state)
   end
 
   def handle_cast({:message, [_device_name], %{"action" => button_name} = payload}, state) do
@@ -107,24 +105,24 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     Devices.broadcast_button_click(state.user, attrs, upserts)
 
     # TODO Handle battery
-    {:noreply, state, @timeout_10s}
+    extend_timeout(state)
   end
 
   def handle_cast({:message, [_device_name], %{"battery" => _}}, state) do
     # TODO Handle battery
     Logger.info("Battery ignored")
-    {:noreply, state, @timeout_10s}
+    extend_timeout(state)
   end
 
   def handle_cast({:message, [_device_name, "availability"], _payload}, state) do
     # TODO Handle availability
     Logger.info("Availability ignored")
-    {:noreply, state, @timeout_10s}
+    extend_timeout(state)
   end
 
   def handle_cast({:message, topic, payload}, state) do
     Logger.info("Unknown message #{state.gateway.id} #{inspect(topic)} #{inspect(payload)}")
-    {:noreply, state, @timeout_10s}
+    extend_timeout(state)
   end
 
   @impl true
@@ -163,10 +161,15 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   end
 
   defp schedule_health_check(),
-    do: Process.send_after(self(), :request_health_check, @heartbeat_5s)
+    do: Process.send_after(self(), :request_health_check, heartbeat())
 
   defp request_health_check(state) do
     topic = "clickr/gateways/#{state.gateway.id}/bridge/request/health_check"
     Clickr.Zigbee2Mqtt.Publisher.publish(topic, "")
   end
+
+  defp extend_timeout(state), do: {:noreply, %{state | last_call: false}, timeout()}
+
+  def timeout(), do: Application.get_env(:clickr, __MODULE__)[:timeout] || 10_000
+  def heartbeat(), do: Application.get_env(:clickr, __MODULE__)[:heartbeat] || 5_000
 end

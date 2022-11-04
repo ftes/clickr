@@ -42,6 +42,43 @@ defmodule Clickr.Zigbee2MqttTest do
       assert [] = Gateway.lookup(gid)
     end
 
+    test "timeout is extended by any mesage", %{gateway: %{id: gid} = g} do
+      publish_state(%{gateway: g}, "online")
+      just_before_timeout = Gateway.timeout() - 5
+      Clickr.PubSub.subscribe(Devices.gateways_topic())
+
+      Publisher.Mock
+      |> allow(self(), Gateway.via_tuple(g.id))
+      |> stub(:publish, fn _, _ -> :ok end)
+
+      for _ <- 1..5 do
+        Process.sleep(just_before_timeout)
+        refute_received {:gateway_online_changed, %{gateway_id: ^gid, online: false}}
+        publish_state(%{gateway: g}, "online")
+      end
+
+      assert_receive {:gateway_online_changed, %{gateway_id: ^gid, online: false}}
+    end
+
+    test "requests health check (heart beat) twice before turning offline", %{
+      gateway: %{id: gid} = g
+    } do
+      publish_state(%{gateway: g}, "online")
+      request_health_check_topic = "clickr/gateways/#{g.id}/bridge/request/health_check"
+      parent = self()
+      ref = make_ref()
+
+      Publisher.Mock
+      |> allow(self(), Gateway.via_tuple(g.id))
+      |> expect(:publish, 2, fn ^request_health_check_topic, "" -> send(parent, ref) end)
+
+      Clickr.PubSub.subscribe(Devices.gateways_topic())
+      assert_receive ^ref
+      assert_receive ^ref
+      assert_receive {:gateway_online_changed, %{gateway_id: ^gid, online: false}}
+      verify!()
+    end
+
     test "sets gateway online", %{user: u, gateway: %{id: gid} = g} do
       Clickr.PubSub.subscribe(Clickr.Devices.gateways_topic())
 
