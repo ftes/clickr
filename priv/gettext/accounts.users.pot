@@ -16,7 +16,7 @@ msgstr ""
 msgid "Listing Users"
 msgstr ""
 
-#: lib/clickr_web/live/components/menu.ex:127
+#: lib/clickr_web/live/components/menu.ex:122
 #, elixir-autogen, elixir-format
 msgid "Users"
 msgstr ""

@@ -245,8 +245,8 @@ msgstr ""
 msgid "Not allowed to impersonate user!"
 msgstr ""
 
-#: lib/clickr_web/templates/layout/app.html.heex:104
-#: lib/clickr_web/templates/layout/app.html.heex:106
+#: lib/clickr_web/templates/layout/app.html.heex:79
+#: lib/clickr_web/templates/layout/app.html.heex:81
 #, elixir-autogen, elixir-format
 msgid "Stop impersonating user"
 msgstr ""

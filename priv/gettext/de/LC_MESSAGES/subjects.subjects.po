@@ -57,7 +57,7 @@ msgstr "Fach angelegt"
 msgid "Subject updated successfully"
 msgstr "Fach geändert"
 
-#: lib/clickr_web/live/components/menu.ex:124
+#: lib/clickr_web/live/components/menu.ex:119
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Subjects"
 msgstr "Fächer"

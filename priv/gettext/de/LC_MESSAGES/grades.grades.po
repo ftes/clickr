@@ -47,7 +47,7 @@ msgstr "Schüler"
 msgid "Subject"
 msgstr "Fach"
 
-#: lib/clickr_web/live/components/menu.ex:115
+#: lib/clickr_web/live/components/menu.ex:110
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Grades"
 msgstr "Noten"

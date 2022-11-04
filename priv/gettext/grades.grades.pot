@@ -46,7 +46,7 @@ msgstr ""
 msgid "Subject"
 msgstr ""
 
-#: lib/clickr_web/live/components/menu.ex:115
+#: lib/clickr_web/live/components/menu.ex:110
 #, elixir-autogen, elixir-format
 msgid "Grades"
 msgstr ""

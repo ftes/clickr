@@ -34,12 +34,7 @@ defmodule ClickrWeb.Menu do
 
   def user(assigns) do
     ~H"""
-    <div
-      class="relative"
-      x-data="{userMenuOpen: false}"
-      x-bind:x-data-open="userMenuOpen ? 'open' : 'closed'"
-      x-onclick.outside="open = false"
-    >
+    <div class="relative" x-data="{userMenuOpen: false}" x-on:click.outside="userMenuOpen = false">
       <div>
         <button
           x-on:click="userMenuOpen = !userMenuOpen"

@@ -10,22 +10,22 @@
 msgid ""
 msgstr ""
 
-#: lib/clickr_web/templates/layout/app.html.heex:19
+#: lib/clickr_web/templates/layout/app.html.heex:22
 #, elixir-autogen, elixir-format
 msgid "Close sidebar"
 msgstr ""
 
-#: lib/clickr_web/templates/layout/app.html.heex:66
+#: lib/clickr_web/templates/layout/app.html.heex:65
 #, elixir-autogen, elixir-format
 msgid "Open sidebar"
 msgstr ""
 
-#: lib/clickr_web/live/components/menu.ex:52
+#: lib/clickr_web/live/components/menu.ex:47
 #, elixir-autogen, elixir-format
 msgid "Open user menu"
 msgstr ""
 
-#: lib/clickr_web/templates/layout/app.html.heex:133
+#: lib/clickr_web/templates/layout/app.html.heex:108
 #, elixir-autogen, elixir-format
 msgid "Attempting to reconnect"
 msgstr ""

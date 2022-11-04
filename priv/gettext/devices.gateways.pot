@@ -62,7 +62,7 @@ msgstr ""
 msgid "Show Gateway"
 msgstr ""
 
-#: lib/clickr_web/live/components/menu.ex:125
+#: lib/clickr_web/live/components/menu.ex:120
 #, elixir-autogen, elixir-format
 msgid "Gateways"
 msgstr ""
