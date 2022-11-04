@@ -8,7 +8,7 @@ defmodule Clickr.Devices do
   import Ecto.Query, warn: false
   alias Clickr.Repo
   alias Clickr.Accounts.User
-  alias Clickr.Devices.{Button, Deconz, Device, Gateway, Keyboard}
+  alias Clickr.Devices.{Button, Device, Gateway, Keyboard}
 
   def list_gateways(%User{} = user, opts \\ []) do
     Gateway
@@ -181,8 +181,6 @@ defmodule Clickr.Devices do
     attrs = Map.put(attrs, :user_id, uid)
     Clickr.PubSub.broadcast(button_click_topic(attrs), {:button_clicked, upserts, attrs})
   end
-
-  def deconz_parse_event(sensor, event), do: Deconz.parse_event(sensor, event)
 
   def keyboard_parse_event(%{user_id: _, key: _} = attrs), do: Keyboard.parse_event(attrs)
 
