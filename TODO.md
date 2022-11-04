@@ -1,5 +1,9 @@
 # Todo
 
+## Stability
+- [ ] start online gateways on server startup
+- [ ] Heartbeat for gateways (trigger echo via server)
+
 ## Refactoring
 - [ ] change all context db getters to %{} map opts
 - [ ] add user to all context functions

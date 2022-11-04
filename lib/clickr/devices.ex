@@ -59,10 +59,8 @@ defmodule Clickr.Devices do
   end
 
   def set_gateway_online(gateway_id, online?) do
-    {1, _} =
-      Repo.update_all(from(g in Gateway, where: g.id == ^gateway_id), set: [online: online?])
-
-    Clickr.PubSub.broadcast(gateways_topic(), %{gateway_id: gateway_id, online: online?})
+    Repo.update_all(from(g in Gateway, where: g.id == ^gateway_id), set: [online: online?])
+    Clickr.PubSub.broadcast(gateways_topic(), {:gateway_online_changed, %{gateway_id: gateway_id, online: online?}})
   end
 
   def gateways_topic(), do: "gateways"

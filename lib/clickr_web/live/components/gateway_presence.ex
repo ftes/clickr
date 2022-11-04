@@ -32,7 +32,7 @@ defmodule ClickrWeb.GatewayPresence do
      |> Phoenix.LiveView.attach_hook(:load_online_gateways, :handle_info, &handle_info/2)}
   end
 
-  defp handle_info(%{event: "presence_diff"}, socket), do: {:halt, load_online_gateways(socket)}
+  defp handle_info({:gateway_online_changed, _}, socket), do: {:halt, load_online_gateways(socket)}
   defp handle_info(_, socket), do: {:cont, socket}
 
   defp load_online_gateways(socket) do

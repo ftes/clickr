@@ -10,7 +10,9 @@ defmodule Clickr.Zigbee2MqttTest do
   @state %{client_id: "client-id"}
 
   defp create_gateway(%{user: user}) do
-    %{gateway: gateway_fixture(user_id: user.id)}
+    gateway = gateway_fixture(user_id: user.id)
+    on_exit(fn -> Gateway.stop(gateway.id) end)
+    %{gateway: gateway}
   end
 
   defp publish_state(%{gateway: g}, state) do
@@ -22,11 +24,15 @@ defmodule Clickr.Zigbee2MqttTest do
   end
 
   describe "zigbee2mqtt" do
-    test "tracks presence", %{user: u, gateway: %{id: gid} = g} do
+    test "sets gateway online", %{user: u, gateway: %{id: gid} = g} do
+      Clickr.PubSub.subscribe(Clickr.Devices.gateways_topic())
+
       publish_state(%{gateway: g}, "online")
+      assert_receive {:gateway_online_changed, %{gateway_id: ^gid, online: true}}
       assert [%{id: ^gid}] = Devices.list_gateways(u, online: true)
 
       publish_state(%{gateway: g}, "offline")
+      assert_receive {:gateway_online_changed, %{gateway_id: ^gid, online: false}}
       assert [] = Devices.list_gateways(u, online: true)
     end
 
@@ -49,7 +55,19 @@ defmodule Clickr.Zigbee2MqttTest do
       bid = Gateway.button_id(payload)
       json = Jason.encode!(payload)
       Clickr.PubSub.subscribe(Devices.button_click_topic(%{user_id: u.id}))
-      Gateway.start(g.id)
+      publish_state(%{gateway: g}, "online")
+      Connection.handle_message(events_topic, json, @state)
+      assert_receive {:button_clicked, _, %{button_id: ^bid}}
+    end
+
+    test "broadcasts click without state online event", %{user: u, gateway: g} do
+      d = device_fixture(id: Gateway.device_id("123"), user_id: u.id, name: "device")
+      events_topic = ["clickr", "gateways", g.id, d.id]
+
+      payload = %{"action" => "click", "device" => %{"ieeeAddr" => "123"}}
+      bid = Gateway.button_id(payload)
+      json = Jason.encode!(payload)
+      Clickr.PubSub.subscribe(Devices.button_click_topic(%{user_id: u.id}))
       Connection.handle_message(events_topic, json, @state)
       assert_receive {:button_clicked, _, %{button_id: ^bid}}
     end
@@ -62,7 +80,7 @@ defmodule Clickr.Zigbee2MqttTest do
       payload = [%{type: "EndDevice", ieee_address: "123", friendly_name: "3b renamed"}]
       json = Jason.encode!(payload)
 
-      Gateway.start(g.id)
+      publish_state(%{gateway: g}, "online")
       Connection.handle_message(mqtt_topic, json, @state)
       # ensure finished processing
       Gateway.stop(g.id)
@@ -82,7 +100,7 @@ defmodule Clickr.Zigbee2MqttTest do
         "[{\"type\": \"EndDevice\", \"ieee_address\": \"123\", \"friendly_name\": \"oh/dear\"}]"
 
       expected_rename_payload = %{from: "oh/dear", to: "oh_dear"}
-      Gateway.start(g.id)
+      publish_state(%{gateway: g}, "online")
 
       Publisher.Mock
       |> expect(:publish, fn ^rename_topic, ^expected_rename_payload -> :ok end)

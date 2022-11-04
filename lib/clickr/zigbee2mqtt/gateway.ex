@@ -2,27 +2,28 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   use GenServer, restart: :transient
   require Logger
   alias Clickr.Devices
-  @device_type_id "c9eb071e-5612-11ed-a896-f7a5f8566984"
 
+  @device_type_id "c9eb071e-5612-11ed-a896-f7a5f8566984"
+  @timeout_60_minutes 60 * 60 * 1_000
   @registry __MODULE__.Registry
   @supervisor __MODULE__.Supervisor
 
   defstruct [:gateway, :user]
 
-  # Public API
-  def start(gateway_id) do
-    DynamicSupervisor.start_child(@supervisor, {__MODULE__, gateway_id})
+  def handle_message(gateway_id, topic, payload) when is_list(topic) do
+    with {:ok, pid} <- start_or_get_pid(gateway_id) do
+      GenServer.cast(pid, {:message, topic, payload})
+    else
+      error -> Logger.info("Failed to handle gateway message #{inspect error}")
+    end
   end
 
+  # For tests
   def stop(gateway_id) do
     case Registry.lookup(@registry, gateway_id) do
       [{pid, _}] -> {:ok, GenServer.stop(pid)}
       [] -> {:error, :not_found}
     end
-  end
-
-  def handle_message(gateway_id, topic, payload) when is_list(topic) do
-    GenServer.call(via_tuple(gateway_id), {:message, topic, payload})
   end
 
   # Private
@@ -32,41 +33,44 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
 
   @impl true
   def init(gateway_id) do
+    Process.flag(:trap_exit, true)
+
     case Devices.get_gateway_without_user_scope_by([id: gateway_id], preload: :user) do
       nil ->
-        {:stop, :unknown_gateway_id}
+        Logger.info("Unknown gateway #{gateway_id}")
+        {:stop, {:shutdown, :unknown_gateway_id}}
 
       gateway ->
+        Logger.info("Gateway online #{gateway_id}")
+        Clickr.Devices.set_gateway_online(gateway_id, true)
         state = %__MODULE__{gateway: gateway, user: gateway.user}
-        {:ok, state}
+        {:ok, state, @timeout_60_minutes}
     end
   end
 
   @impl true
-  def handle_call({:message, ["bridge", "devices"], payload}, _from, state)
-      when is_list(payload) do
+  def handle_info(:timeout, state), do: {:stop, {:shutdown, :timeout}, state}
+
+  @impl true
+  def handle_cast({:message, ["bridge", "state"], %{"state" => "online"}}, state),
+    do: {:noreply, state, @timeout_60_minutes}
+
+  def handle_cast({:message, ["bridge", "state"], %{"state" => "offline"}}, state),
+    do: {:stop, {:shutdown, :mqtt_state_offline}, state}
+
+  def handle_cast({:message, ["bridge", "devices"], payload}, state) do
     attrs =
       for %{"type" => "EndDevice"} = device <- payload do
         name = device["friendly_name"] || device["ieee_address"]
-
-        if String.contains?(name, "/") do
-          payload = %{from: name, to: String.replace(name, "/", "_")}
-          topic = "clickr/gateways/#{state.gateway.id}/bridge/request/device/rename"
-          Clickr.Zigbee2Mqtt.Publisher.publish(topic, payload)
-        end
-
+        maybe_rename(name, state)
         %{id: device_id(device), name: name}
       end
 
     Devices.upsert_devices(state.user, state.gateway, attrs)
-    {:reply, :ignored, state}
+    {:noreply, state, @timeout_60_minutes}
   end
 
-  def handle_call(
-        {:message, [_device_name], %{"action" => button_name} = payload},
-        _from,
-        state
-      ) do
+  def handle_cast({:message, [_device_name], %{"action" => button_name} = payload}, state) do
     gid = state.gateway.id
     did = device_id(payload)
     bid = button_id(payload)
@@ -80,25 +84,31 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     Devices.broadcast_button_click(state.user, attrs, upserts)
 
     # TODO Handle battery
-    {:reply, :ignored, state}
+    {:noreply, state, @timeout_60_minutes}
   end
 
-  def handle_call({:message, [_device_name], %{"battery" => _}}, _from, state) do
+  def handle_cast({:message, [_device_name], %{"battery" => _}}, state) do
     # TODO Handle battery
-    Logger.debug("Battery ignored")
-    {:reply, :ignored, state}
+    Logger.info("Battery ignored")
+    {:noreply, state, @timeout_60_minutes}
   end
 
-  def handle_call({:message, [_device_name, "availability"], _payload}, _from, state) do
+  def handle_cast({:message, [_device_name, "availability"], _payload}, state) do
     # TODO Handle availability
-    Logger.debug("Availability ignored")
-    {:reply, :ignored, state}
+    Logger.info("Availability ignored")
+    {:noreply, state, @timeout_60_minutes}
   end
 
-  def handle_call({:message, topic, payload}, _from, state) do
+  def handle_cast({:message, topic, payload}, state) do
     Logger.info("Unknown message #{state.gateway.id} #{inspect(topic)} #{inspect(payload)}")
+    {:noreply, state, @timeout_60_minutes}
+  end
 
-    {:reply, :ignored, state}
+  @impl true
+  def terminate(reason, state) do
+    Logger.info("Gateway offline #{state.gateway.id} #{inspect(reason)}")
+    Clickr.Devices.set_gateway_online(state.gateway.id, false)
+    :ignored
   end
 
   def via_tuple(gateway_id), do: {:via, Registry, {@registry, gateway_id}}
@@ -112,4 +122,20 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
 
   def button_id(%{"device" => _, "action" => action} = payload),
     do: UUID.uuid5(device_id(payload), action)
+
+  defp start_or_get_pid(gateway_id) do
+    case DynamicSupervisor.start_child(@supervisor, {__MODULE__, gateway_id}) do
+      {:ok, pid} -> {:ok, pid}
+      {:error, {:already_started, pid}} -> {:ok, pid}
+      other -> other
+    end
+  end
+
+  defp maybe_rename(device_name, state) do
+    if String.contains?(device_name, "/") do
+      payload = %{from: device_name, to: String.replace(device_name, "/", "_")}
+      topic = "clickr/gateways/#{state.gateway.id}/bridge/request/device/rename"
+      Clickr.Zigbee2Mqtt.Publisher.publish(topic, payload)
+    end
+  end
 end
