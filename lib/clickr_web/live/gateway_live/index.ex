@@ -6,7 +6,15 @@ defmodule ClickrWeb.GatewayLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, load_gateways(socket)}
+    {:ok,
+     socket
+     |> assign(:gateway_online_changed_action, :cont)
+     |> load_gateways()}
+  end
+
+  @impl true
+  def handle_info({:gateway_online_changed, _}, socket) do
+    {:noreply, load_gateways(socket)}
   end
 
   @impl true

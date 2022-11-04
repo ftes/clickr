@@ -1,9 +1,11 @@
 # Todo
 
 ## Bugs
-- [ ] Upate gateway online in gateway index (presence catches pubsub event before it reaches liveview)
+- [ ] health check request arrives twice (first time)
 
 ## Refactoring
+- [ ] add gateway type, only start/stop mqtt gateways in connection
+- [ ] remove gateway api token
 - [ ] change all context db getters to %{} map opts
 - [ ] add user to all context functions
 - [ ] Add user.system? transient flag

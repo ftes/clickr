@@ -16,7 +16,7 @@ msgstr ""
 msgid "API Token"
 msgstr ""
 
-#: lib/clickr_web/live/gateway_live/index.ex:19
+#: lib/clickr_web/live/gateway_live/index.ex:27
 #: lib/clickr_web/live/gateway_live/show.ex:20
 #: lib/clickr_web/live/gateway_live/show.html.heex:5
 #, elixir-autogen, elixir-format
@@ -38,7 +38,7 @@ msgstr ""
 msgid "Gateway updated successfully"
 msgstr ""
 
-#: lib/clickr_web/live/gateway_live/index.ex:31
+#: lib/clickr_web/live/gateway_live/index.ex:39
 #: lib/clickr_web/live/gateway_live/index.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Listing Gateways"
@@ -51,7 +51,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: lib/clickr_web/live/gateway_live/index.ex:25
+#: lib/clickr_web/live/gateway_live/index.ex:33
 #: lib/clickr_web/live/gateway_live/index.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "New Gateway"
