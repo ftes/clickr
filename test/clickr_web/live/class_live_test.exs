@@ -25,6 +25,31 @@ defmodule ClickrWeb.ClassLiveTest do
       assert html =~ class.name
     end
 
+    test "sorts by name when clicking on table name header", %{conn: conn, user: u, class: l} do
+      before = Timex.shift(l.inserted_at, seconds: -1)
+      class_fixture(user_id: u.id, name: "x older", inserted_at: before)
+
+      {:ok, live, html} = live(conn, ~p"/classes")
+      assert html |> String.replace("\n", "") =~ ~r/#{l.name}.*x older/
+
+      live |> element(".sort-by", "Name") |> render_click()
+      assert "/classes/?sort_by=name&sort_dir=desc" = assert_patch(live)
+      assert live |> render() |> String.replace("\n", "") =~ ~r/x older.*#{l.name}/
+    end
+
+    test "filters by name when entering query", %{conn: conn, user: u, class: l} do
+      class_fixture(user_id: u.id, name: "unique name")
+
+      {:ok, live, html} = live(conn, ~p"/classes")
+      assert html =~ "unique name"
+      assert html =~ l.name
+
+      live |> form("#classes-filter-form") |> render_change(%{filter: %{name: "uniq"}})
+      assert "/classes/?name=uniq&sort_by=name&sort_dir=asc" = assert_patch(live)
+      assert live |> render() =~ "unique name"
+      refute live |> render() =~ l.name
+    end
+
     test "saves new class", %{conn: conn} do
       {:ok, index_live, _html} = live(conn, ~p"/classes")
 

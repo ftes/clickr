@@ -15,6 +15,7 @@
   row_click={&JS.navigate(~p"/lessons/#{&1}/router")}
   sort={@sort}
   filter={@filter}
+  filter_form={ClickrWeb.LessonsFilterForm}
 >
   <:col :let={lesson} label={dgettext("lessons.lessons", "Name")} sortable filterable key={:name}>
     <%= lesson.name %>

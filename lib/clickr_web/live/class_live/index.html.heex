@@ -15,6 +15,7 @@
   row_click={&JS.navigate(~p"/classes/#{&1}")}
   sort={@sort}
   filter={@filter}
+  filter_form={ClickrWeb.ClassesFilterForm}
 >
   <:col :let={class} label={dgettext("classes.classes", "Name")} sortable filterable key={:name}>
     <%= class.name %>

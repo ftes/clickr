@@ -61,7 +61,7 @@ msgstr ""
 msgid "Roll Call"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/index.html.heex:44
+#: lib/clickr_web/live/lesson_live/index.html.heex:45
 #, elixir-autogen, elixir-format
 msgid "Run"
 msgstr ""
