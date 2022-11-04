@@ -12,6 +12,8 @@ defmodule Clickr.Accounts do
 
   alias Clickr.Accounts.{User, UserToken, UserNotifier}
 
+  def system_user(), do: %User{system: true}
+
   ## Database getters
 
   def list_users(%User{} = user) do

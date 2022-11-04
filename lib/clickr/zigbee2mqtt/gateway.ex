@@ -14,13 +14,18 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     with {:ok, pid} <- start_or_get_pid(gateway_id) do
       GenServer.cast(pid, {:message, topic, payload})
     else
-      error -> Logger.info("Failed to handle gateway message #{inspect error}")
+      error -> Logger.info("Failed to handle gateway message #{inspect(error)}")
     end
   end
 
-  # For tests
+  def start(gateway_id) do
+    DynamicSupervisor.start_child(@supervisor, {__MODULE__, gateway_id})
+  end
+
+  def lookup(gateway_id), do: Registry.lookup(@registry, gateway_id)
+
   def stop(gateway_id) do
-    case Registry.lookup(@registry, gateway_id) do
+    case lookup(gateway_id) do
       [{pid, _}] -> {:ok, GenServer.stop(pid)}
       [] -> {:error, :not_found}
     end
@@ -124,7 +129,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     do: UUID.uuid5(device_id(payload), action)
 
   defp start_or_get_pid(gateway_id) do
-    case DynamicSupervisor.start_child(@supervisor, {__MODULE__, gateway_id}) do
+    case start(gateway_id) do
       {:ok, pid} -> {:ok, pid}
       {:error, {:already_started, pid}} -> {:ok, pid}
       other -> other

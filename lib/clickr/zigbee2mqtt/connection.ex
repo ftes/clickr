@@ -1,5 +1,7 @@
 defmodule Clickr.Zigbee2Mqtt.Connection do
   require Logger
+  alias Clickr.Zigbee2Mqtt.Gateway
+
   @behaviour Tortoise311.Handler
 
   @qos %{at_most_once: 0, at_least_once: 1, exactly_once: 2}
@@ -41,8 +43,19 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
   end
 
   @impl true
-  def connection(status, state) do
-    Logger.info("Connection #{status}")
+  def connection(:up, state) do
+    Logger.info("Connection up. Ensure gateway servers started for heartbeat and timeout.")
+    gateways = Clickr.Devices.list_gateways(Clickr.Accounts.system_user(), online: true)
+    Enum.each(gateways, &Gateway.start(&1.id))
+    {:ok, state}
+  end
+
+  def connection(:down, state) do
+    Logger.info("Connection down. Ensure gateway servers stopped and online=false in database.")
+    gateways = Clickr.Devices.list_gateways(Clickr.Accounts.system_user(), online: true)
+    topic = ["bridge", "state"]
+    offline = %{"state" => "offline"}
+    Enum.each(gateways, &Gateway.handle_message(&1.id, topic, offline))
     {:ok, state}
   end
 
@@ -61,7 +74,7 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
   end
 
   defp handle_json(["clickr", "gateways", gid | topic_rest], payload, state) do
-    Clickr.Zigbee2Mqtt.Gateway.handle_message(gid, topic_rest, payload)
+    Gateway.handle_message(gid, topic_rest, payload)
     {:ok, state}
   end
 

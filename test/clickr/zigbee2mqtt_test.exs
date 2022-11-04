@@ -24,6 +24,24 @@ defmodule Clickr.Zigbee2MqttTest do
   end
 
   describe "zigbee2mqtt" do
+    test "starts gateway server when connection up", %{gateway: %{id: gid}} do
+      Devices.set_gateway_online(gid, true)
+      Connection.connection(:up, @state)
+      assert [_] = Gateway.lookup(gid)
+    end
+
+    test "stops gateway server and sets offline when connection down", %{
+      user: u,
+      gateway: %{id: gid}
+    } do
+      Clickr.PubSub.subscribe(Clickr.Devices.gateways_topic())
+      Devices.set_gateway_online(gid, true)
+      Connection.connection(:down, @state)
+      assert_receive {:gateway_online_changed, %{gateway_id: ^gid, online: false}}
+      assert [] = Devices.list_gateways(u, online: true)
+      assert [] = Gateway.lookup(gid)
+    end
+
     test "sets gateway online", %{user: u, gateway: %{id: gid} = g} do
       Clickr.PubSub.subscribe(Clickr.Devices.gateways_topic())
 

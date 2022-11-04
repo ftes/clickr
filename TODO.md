@@ -1,7 +1,6 @@
 # Todo
 
 ## Stability
-- [ ] start online gateways on server startup
 - [ ] Heartbeat for gateways (trigger echo via server)
 
 ## Refactoring

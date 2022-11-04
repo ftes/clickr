@@ -5,6 +5,8 @@ defmodule Clickr.Devices.Policy do
 
   def authorize(_, %User{admin: true}, _), do: true
 
+  def authorize(_, %User{system: true}, _), do: true
+
   def authorize(:create_gateway, _, _), do: true
 
   def authorize(action, %User{id: user_id}, %Gateway{user_id: user_id})

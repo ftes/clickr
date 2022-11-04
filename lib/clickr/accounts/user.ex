@@ -4,6 +4,7 @@ defmodule Clickr.Accounts.User do
   schema "users" do
     field :email, :string
     field :admin, :boolean
+    field :system, :boolean, virtual: true
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :utc_datetime
