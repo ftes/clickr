@@ -16,7 +16,7 @@ defmodule ClickrWeb.LessonLiveTest do
   @invalid_attrs %{name: nil}
 
   defp create_lesson(%{user: user}) do
-    lesson = lesson_fixture(user_id: user.id)
+    lesson = lesson_fixture(user_id: user.id, name: "some lesson")
     %{lesson: lesson}
   end
 
@@ -88,6 +88,7 @@ defmodule ClickrWeb.LessonLiveTest do
       refute live |> render() =~ l.name
     end
 
+    @tag :inspect
     test "filters by name and state", %{conn: conn, user: u, lesson: l} do
       lesson_fixture(user_id: u.id, name: "other ended", state: :ended)
       lesson_fixture(user_id: u.id, name: "unique ended", state: :ended)

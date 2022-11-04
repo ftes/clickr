@@ -23,9 +23,11 @@ defmodule Clickr.Lessons do
   def list_lessons(%User{} = user, opts \\ %{}) do
     Lesson
     |> Bodyguard.scope(user)
-    |> sort(opts)
     |> filter_by_name(opts)
+    |> filter_by_class_id(opts)
+    |> filter_by_subject_id(opts)
     |> filter_by_state(opts)
+    |> sort(opts)
     |> Repo.all()
     |> preload_map(opts)
   end
@@ -340,12 +342,6 @@ defmodule Clickr.Lessons do
   defp preload_map(input, %{preload: args}), do: Repo.preload(input, args)
   defp preload_map(input, _), do: input
 
-  defp sort(query, %{sort_by: by, sort_dir: dir}) do
-    order_by(query, {^dir, ^by})
-  end
-
-  defp sort(query, _opts), do: order_by(query, {:desc, :inserted_at})
-
   defp filter_by_name(query, %{name: <<_::binary-size(2), _::binary>> = name}) do
     query
     |> where([x], fragment("? <% ?", ^name, x.name))
@@ -354,8 +350,25 @@ defmodule Clickr.Lessons do
 
   defp filter_by_name(query, _), do: query
 
-  defp filter_by_state(query, %{state: state}) when is_binary(state) and state != "",
-    do: where(query, [x], x.state == ^state)
+  defp filter_by_class_id(query, %{class_id: cid}) when is_binary(cid) and cid != "" do
+    query
+    |> join(:inner, [x], sp in assoc(x, :seating_plan), as: :seating_plan_filter)
+    |> where([seating_plan_filter: spf], spf.class_id == ^cid)
+  end
+
+  defp filter_by_class_id(query, _), do: query
+
+  defp filter_by_subject_id(query, %{subject_id: sid}) when is_binary(sid) and sid != "",
+    do: where(query, [x], x.subject_id == ^sid)
+
+  defp filter_by_subject_id(query, _), do: query
+
+  defp filter_by_state(query, %{state: state})
+       when (is_binary(state) or is_atom(state)) and state != "",
+       do: where(query, [x], x.state == ^state)
 
   defp filter_by_state(query, _), do: query
+
+  defp sort(query, %{sort_by: by, sort_dir: dir}), do: order_by(query, {^dir, ^by})
+  defp sort(query, _opts), do: query
 end

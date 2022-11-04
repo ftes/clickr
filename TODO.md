@@ -2,11 +2,6 @@
 
 ## General UX
 - [ ] Sort, filter and search lists
-  - [ ] lessons
-    - [x] name
-    - [x] state
-    - [ ] class name
-    - [ ] subject name
   - [x] classes
     - [x] name
   - [ ] grades

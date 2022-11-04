@@ -22,6 +22,26 @@
   </:col>
   <:col
     :let={lesson}
+    label={dgettext("lessons.lessons", "Class")}
+    filterable
+    key={:class_id}
+    type="select"
+    options={@class_options}
+  >
+    <%= lesson.seating_plan.class.name %>
+  </:col>
+  <:col
+    :let={lesson}
+    label={dgettext("lessons.lessons", "Subject")}
+    filterable
+    key={:subject_id}
+    type="select"
+    options={@subject_options}
+  >
+    <%= lesson.subject.name %>
+  </:col>
+  <:col
+    :let={lesson}
     label={dgettext("lessons.lessons", "State")}
     sortable
     filterable

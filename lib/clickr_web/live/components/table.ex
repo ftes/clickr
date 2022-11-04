@@ -115,12 +115,7 @@ defmodule ClickrWeb.Table do
 
   @impl true
   def handle_event("sort", %{"sort_by" => key, "sort_dir" => dir}, socket) do
-    send(
-      self(),
-      {:update_table_query,
-       %{sort_by: String.to_existing_atom(key), sort_dir: String.to_existing_atom(dir)}}
-    )
-
+    send(self(), {:update_table_query, %{sort_by: key, sort_dir: dir}})
     {:noreply, socket}
   end
 

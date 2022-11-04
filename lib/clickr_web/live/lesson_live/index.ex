@@ -20,7 +20,9 @@ defmodule ClickrWeb.LessonLive.Index do
      socket
      |> apply_action(socket.assigns.live_action, params)
      |> parse_table_params(params)
-     |> load_lessons()}
+     |> load_lessons()
+     |> load_class_options()
+     |> load_subject_options()}
   end
 
   @impl true
@@ -49,7 +51,20 @@ defmodule ClickrWeb.LessonLive.Index do
   end
 
   defp load_lessons(socket) do
-    params = merge_and_sanitize_table_params(socket)
+    params =
+      merge_and_sanitize_table_params(socket)
+      |> Map.put(:preload, [:subject, seating_plan: :class])
+
     assign(socket, :lessons, Lessons.list_lessons(socket.assigns.current_user, params))
+  end
+
+  defp load_class_options(socket) do
+    classes = Clickr.Classes.list_classes(socket.assigns.current_user)
+    assign(socket, :class_options, Enum.map(classes, &{&1.id, &1.name}))
+  end
+
+  defp load_subject_options(socket) do
+    subjects = Clickr.Subjects.list_subjects(socket.assigns.current_user)
+    assign(socket, :subject_options, Enum.map(subjects, &{&1.id, &1.name}))
   end
 end

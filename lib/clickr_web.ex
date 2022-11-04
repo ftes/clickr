@@ -1,5 +1,5 @@
 defmodule ClickrWeb do
-  use Boundary, deps: [Clickr, Ecto.Changeset, Ecto.Multi], exports: [Endpoint]
+  use Boundary, deps: [Clickr, Ecto.Changeset, Ecto.Multi, Ecto.UUID], exports: [Endpoint]
 
   @moduledoc """
   The entrypoint for defining your web interface, such

@@ -13,7 +13,6 @@ defmodule ClickrWeb.UserLiveTest do
   describe "Index" do
     setup [:create_other_user]
 
-    @tag :inspect
     test "lists all users for admin", %{conn: conn, admin: a, other_user: u} do
       {:ok, _index_live, html} = live(conn, ~p"/users")
 

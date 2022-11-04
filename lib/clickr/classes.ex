@@ -13,8 +13,8 @@ defmodule Clickr.Classes do
   def list_classes(%User{} = user, opts \\ %{}) do
     Class
     |> Bodyguard.scope(user)
-    |> sort(opts)
     |> filter_by_name(opts)
+    |> sort(opts)
     |> Repo.all()
     |> preload_map(opts)
   end
@@ -132,7 +132,7 @@ defmodule Clickr.Classes do
     order_by(query, {^dir, ^by})
   end
 
-  defp sort(query, _opts), do: order_by(query, {:desc, :inserted_at})
+  defp sort(query, _opts), do: query
 
   defp filter_by_name(query, %{name: <<_::binary-size(2), _::binary>> = name}) do
     query

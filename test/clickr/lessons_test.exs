@@ -17,12 +17,12 @@ defmodule Clickr.LessonsTest do
   describe "lessons" do
     @invalid_attrs %{name: nil, state: nil}
 
-    test "list_lessons/0 returns all lessons", %{user: user} do
+    test "list_lessons/2 returns all lessons", %{user: user} do
       lesson = lesson_fixture(user_id: user.id)
       assert Lessons.list_lessons(user) == [lesson]
     end
 
-    test "list_lessons/0 filters by partial name", %{user: user} do
+    test "list_lessons/2 filters by partial name", %{user: user} do
       lesson = lesson_fixture(user_id: user.id, name: "The lazy Fox jumped Over the Brown dog")
       other_lesson = lesson_fixture(user_id: user.id, name: "the other")
       assert Lessons.list_lessons(user, %{name: "ove"}) == [lesson]
@@ -31,13 +31,22 @@ defmodule Clickr.LessonsTest do
       assert Lessons.list_lessons(user, %{name: "the o"}) == [other_lesson, lesson]
     end
 
-    test "list_lessons/0 filters by state", %{user: user} do
+    test "list_lessons/2 filters by state", %{user: user} do
       lesson = lesson_fixture(user_id: user.id, state: :ended)
       _other_lesson = lesson_fixture(user_id: user.id, state: :started)
       assert Lessons.list_lessons(user, %{state: "ended"}) == [lesson]
     end
 
-    test "list_lesson_combinations/0 returns most recent unique combinations", %{user: user} do
+    @tag :inspect
+    test "list_lessons/2 filters by name and state", %{user: u} do
+      lesson_fixture(user_id: u.id, name: "some name", state: :started)
+      lesson_fixture(user_id: u.id, name: "other ended", state: :ended)
+      lesson_fixture(user_id: u.id, name: "unique ended", state: :ended)
+
+      assert [%{name: "unique ended"}] = Lessons.list_lessons(u, %{name: "uniq", state: :ended})
+    end
+
+    test "list_lesson_combinations/1 returns most recent unique combinations", %{user: user} do
       at = fn x -> DateTime.from_unix!(x) end
       lesson_fixture(user_id: user.id, name: "l1", inserted_at: at.(1))
       lesson_fixture(user_id: user.id, name: "l2", inserted_at: at.(2))

@@ -5,12 +5,16 @@ defmodule ClickrWeb.LessonsFilterForm do
 
   @fields %{
     name: :string,
-    state: :string
+    state: :string,
+    class_id: Ecto.UUID,
+    subject_id: Ecto.UUID
   }
 
   @defaults %{
     name: nil,
-    state: nil
+    state: nil,
+    class_id: nil,
+    subject_id: nil
   }
 
   @impl true
