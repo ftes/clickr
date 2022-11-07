@@ -1,7 +1,6 @@
 # Todo
 
 ## Refactoring
-- [ ] remove gateway api token
 - [ ] change all context db getters to %{} map opts
 - [ ] add user to all context functions
 - [ ] Add user.system? transient flag

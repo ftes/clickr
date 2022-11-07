@@ -5,7 +5,6 @@ defmodule Clickr.Devices.Gateway do
 
   schema "gateways" do
     field :name, :string
-    field :api_token, :string
     field :url, :string
     field :online, :boolean, default: false
     field :type, Ecto.Enum, values: @types, default: :zigbee2mqtt
@@ -25,10 +24,9 @@ defmodule Clickr.Devices.Gateway do
   @doc false
   def changeset(gateway, attrs) do
     gateway
-    |> cast(attrs, [:name, :api_token, :url, :type])
+    |> cast(attrs, [:name, :url, :type])
     |> validate_required([:name, :type])
     |> foreign_key_constraint(:user_id)
-    |> unique_constraint(:api_token)
   end
 
   def types(), do: @types

@@ -10,12 +10,6 @@
 msgid ""
 msgstr ""
 
-#: lib/clickr_web/live/gateway_live/form_component.ex:23
-#: lib/clickr_web/live/gateway_live/show.html.heex:12
-#, elixir-autogen, elixir-format
-msgid "API Token"
-msgstr ""
-
 #: lib/clickr_web/live/gateway_live/index.ex:27
 #: lib/clickr_web/live/gateway_live/show.ex:20
 #: lib/clickr_web/live/gateway_live/show.html.heex:5
@@ -28,12 +22,12 @@ msgstr ""
 msgid "Gateway"
 msgstr ""
 
-#: lib/clickr_web/live/gateway_live/form_component.ex:85
+#: lib/clickr_web/live/gateway_live/form_component.ex:84
 #, elixir-autogen, elixir-format
 msgid "Gateway created successfully"
 msgstr ""
 
-#: lib/clickr_web/live/gateway_live/form_component.ex:72
+#: lib/clickr_web/live/gateway_live/form_component.ex:71
 #, elixir-autogen, elixir-format
 msgid "Gateway updated successfully"
 msgstr ""
@@ -75,20 +69,20 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: lib/clickr_web/live/gateway_live/index.html.heex:21
-#: lib/clickr_web/live/gateway_live/show.html.heex:19
+#: lib/clickr_web/live/gateway_live/show.html.heex:18
 #, elixir-autogen, elixir-format
 msgid "Connected"
 msgstr ""
 
-#: lib/clickr_web/live/gateway_live/form_component.ex:24
-#: lib/clickr_web/live/gateway_live/show.html.heex:13
+#: lib/clickr_web/live/gateway_live/form_component.ex:23
+#: lib/clickr_web/live/gateway_live/show.html.heex:12
 #, elixir-autogen, elixir-format
 msgid "URL"
 msgstr ""
 
-#: lib/clickr_web/live/gateway_live/form_component.ex:28
+#: lib/clickr_web/live/gateway_live/form_component.ex:27
 #: lib/clickr_web/live/gateway_live/index.html.heex:18
-#: lib/clickr_web/live/gateway_live/show.html.heex:16
+#: lib/clickr_web/live/gateway_live/show.html.heex:15
 #, elixir-autogen, elixir-format
 msgid "Type"
 msgstr ""

@@ -4,14 +4,13 @@ defmodule ClickrWeb.GatewayLiveTest do
   import Phoenix.LiveViewTest
   import Clickr.DevicesFixtures
 
-  @create_attrs %{name: "some name", api_token: "some token", url: "some url", type: "keyboard"}
+  @create_attrs %{name: "some name", url: "some url", type: "keyboard"}
   @update_attrs %{
     name: "some updated name",
-    api_token: "some updated token",
     url: "some updated url",
     type: "zigbee2mqtt"
   }
-  @invalid_attrs %{name: nil, api_token: nil, url: nil}
+  @invalid_attrs %{name: nil, url: nil, type: nil}
 
   defp create_gateway(%{user: user}) do
     gateway = gateway_fixture(user_id: user.id)

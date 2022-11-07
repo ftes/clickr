@@ -9,7 +9,6 @@
 
 <.list>
   <:item title={dgettext("devices.gateways", "Name")}><%= @gateway.name %></:item>
-  <:item title={dgettext("devices.gateways", "API Token")}><%= @gateway.api_token %></:item>
   <:item title={dgettext("devices.gateways", "URL")}>
     <a :if={@gateway.url} href={@gateway.url} target="_blank"><%= @gateway.url %></a>
   </:item>
