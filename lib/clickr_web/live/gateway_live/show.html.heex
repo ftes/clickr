@@ -13,6 +13,9 @@
   <:item title={dgettext("devices.gateways", "URL")}>
     <a :if={@gateway.url} href={@gateway.url} target="_blank"><%= @gateway.url %></a>
   </:item>
+  <:item title={dgettext("devices.gateways", "Type")}>
+    <%= translate_gateway_type(@gateway) %>
+  </:item>
   <:item title={dgettext("devices.gateways", "Connected")}>
     <%= if @gateway.online, do: gettext("Yes"), else: gettext("No") %>
   </:item>

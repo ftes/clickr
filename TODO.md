@@ -1,7 +1,7 @@
 # Todo
 
 ## Refactoring
-- [ ] add gateway type, only start/stop mqtt gateways in connection
+- [ ] remove _without_user_scope context functions
 - [ ] remove gateway api token
 - [ ] change all context db getters to %{} map opts
 - [ ] add user to all context functions

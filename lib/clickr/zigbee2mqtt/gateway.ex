@@ -46,6 +46,10 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
 
       gateway ->
         Logger.info("Gateway online #{gateway_id}")
+
+        if gateway.type !== :zigbee2mqtt,
+          do: Logger.warn("Unexpected gateway type #{gateway.id} #{gateway.type}")
+
         schedule_health_check()
         Clickr.Devices.set_gateway_online(gateway_id, true)
         state = %__MODULE__{gateway: gateway, user: gateway.user, last_call: false}

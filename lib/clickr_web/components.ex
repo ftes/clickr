@@ -564,7 +564,20 @@ defmodule ClickrWeb.Components do
   def translate_lesson_state(state), do: to_string(state)
 
   def lesson_state_options(),
-    do: Enum.map(Clickr.Lessons.Lesson.states(), &{"#{&1}", translate_lesson_state(&1)})
+    do: Enum.map(Clickr.Lessons.Lesson.states(), &{&1, translate_lesson_state(&1)})
+
+  for type <- Clickr.Devices.Gateway.types() do
+    def translate_gateway_type(unquote(type)),
+      do: dgettext("devices.gateways.type", unquote(to_string(type)))
+  end
+
+  def translate_gateway_type(%Clickr.Devices.Gateway{type: type}),
+    do: translate_gateway_type(type)
+
+  def translate_gateway_type(type), do: to_string(type)
+
+  def gateway_type_options(),
+    do: Enum.map(Clickr.Devices.Gateway.types(), &{&1, translate_gateway_type(&1)})
 
   @button_names ~w(left right up down middle arrow_left_click arrow_right_click off on)
   for name <- @button_names do

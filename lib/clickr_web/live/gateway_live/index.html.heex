@@ -15,6 +15,9 @@
   row_click={&JS.navigate(~p"/gateways/#{&1}")}
 >
   <:col :let={gateway} label={dgettext("devices.gateways", "Name")}><%= gateway.name %></:col>
+  <:col :let={gateway} label={dgettext("devices.gateways", "Type")}>
+    <%= translate_gateway_type(gateway) %>
+  </:col>
   <:col :let={gateway} label={dgettext("devices.gateways", "Connected")}>
     <div class="flex items-center gap-3">
       <span class={[

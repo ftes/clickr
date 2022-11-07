@@ -2,10 +2,11 @@ defmodule ClickrWeb.LessonsFilterForm do
   @behaviour ClickrWeb.FilterForm
 
   import Ecto.Changeset
+  alias Clickr.Schema
 
   @fields %{
     name: :string,
-    state: :string,
+    state: Schema.schemaless_enum(Clickr.Lessons.Lesson.states()),
     class_id: Ecto.UUID,
     subject_id: Ecto.UUID
   }

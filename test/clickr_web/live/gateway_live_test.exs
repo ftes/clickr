@@ -4,11 +4,12 @@ defmodule ClickrWeb.GatewayLiveTest do
   import Phoenix.LiveViewTest
   import Clickr.DevicesFixtures
 
-  @create_attrs %{name: "some name", api_token: "some token", url: "some url"}
+  @create_attrs %{name: "some name", api_token: "some token", url: "some url", type: "keyboard"}
   @update_attrs %{
     name: "some updated name",
     api_token: "some updated token",
-    url: "some updated url"
+    url: "some updated url",
+    type: "zigbee2mqtt"
   }
   @invalid_attrs %{name: nil, api_token: nil, url: nil}
 
@@ -49,6 +50,7 @@ defmodule ClickrWeb.GatewayLiveTest do
 
       assert html =~ "Gateway created successfully"
       assert html =~ "some name"
+      assert html =~ "keyboard"
     end
 
     test "updates gateway in listing", %{conn: conn, gateway: gateway} do
@@ -71,6 +73,7 @@ defmodule ClickrWeb.GatewayLiveTest do
 
       assert html =~ "Gateway updated successfully"
       assert html =~ "some updated name"
+      assert html =~ "zigbee2mqtt"
     end
 
     test "deletes gateway in listing", %{conn: conn, gateway: gateway} do
@@ -111,6 +114,7 @@ defmodule ClickrWeb.GatewayLiveTest do
 
       assert html =~ "Gateway updated successfully"
       assert html =~ "some updated name"
+      assert html =~ "zigbee2mqtt"
     end
   end
 end
