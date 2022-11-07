@@ -39,16 +39,15 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   def init(gateway_id) do
     Process.flag(:trap_exit, true)
 
-    case Devices.get_gateway_without_user_scope_by([id: gateway_id], preload: :user) do
+    case Devices.zigbee2mqtt_get_gateway(Clickr.Accounts.system_user(), %{gateway_id: gateway_id},
+           preload: :user
+         ) do
       nil ->
         Logger.info("Unknown gateway #{gateway_id}")
         {:stop, {:shutdown, :unknown_gateway_id}}
 
       gateway ->
         Logger.info("Gateway online #{gateway_id}")
-
-        if gateway.type !== :zigbee2mqtt,
-          do: Logger.warn("Unexpected gateway type #{gateway.id} #{gateway.type}")
 
         schedule_health_check()
         Clickr.Devices.set_gateway_online(gateway_id, true)

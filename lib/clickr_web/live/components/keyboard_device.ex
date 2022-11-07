@@ -37,7 +37,7 @@ defmodule ClickrWeb.KeyboardDevice do
     if String.length(key) == 1 do
       other_attrs = %{gateway_id: gateway.id}
       {:ok, attrs} = Clickr.Devices.keyboard_parse_event(%{user_id: user.id, key: key})
-      %{device_id: did, button_id: bid, device_name: dn, button_name: bn} = attrs
+      %{device_id: did, device_name: dn, button_id: bid, button_name: bn} = attrs
       device = %Devices.Device{id: did, gateway_id: gateway.id, name: dn}
       button = %Devices.Button{id: bid, device_id: did, name: bn}
 

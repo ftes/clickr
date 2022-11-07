@@ -1,9 +1,5 @@
 defmodule Clickr.Devices.Keyboard do
-  @name "Keyboard"
   @device_type_id "2ae4ae54-48c5-11ed-b290-ff51622b2427"
-
-  def get_gateway(%Clickr.Accounts.User{} = user),
-    do: Clickr.Devices.get_gateway_without_user_scope_by(name: @name, user_id: user.id)
 
   def parse_event(%{user_id: _, key: key} = attrs) do
     {:ok,

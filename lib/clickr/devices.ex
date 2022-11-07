@@ -26,12 +26,6 @@ defmodule Clickr.Devices do
     |> _preload(opts[:preload])
   end
 
-  def get_gateway_without_user_scope_by(args, opts \\ []) do
-    Gateway
-    |> Repo.get_by(args)
-    |> _preload(opts[:preload])
-  end
-
   def create_gateway(%User{} = user, attrs \\ %{}) do
     with :ok <- permit(:create_gateway, user) do
       %Gateway{user_id: user.id}
@@ -186,7 +180,20 @@ defmodule Clickr.Devices do
 
   def keyboard_parse_event(%{user_id: _, key: _} = attrs), do: Keyboard.parse_event(attrs)
 
-  def keyboard_get_gateway(%User{} = user), do: Keyboard.get_gateway(user)
+  def keyboard_get_gateway(%User{} = user) do
+    Gateway
+    |> Bodyguard.scope(user)
+    |> where([g], g.user_id == ^user.id and g.type == :keyboard)
+    |> Repo.one()
+  end
+
+  def zigbee2mqtt_get_gateway(%User{} = user, %{gateway_id: gid}, opts \\ []) do
+    Gateway
+    |> Bodyguard.scope(user)
+    |> where([g], g.id == ^gid and g.type == :zigbee2mqtt)
+    |> Repo.one()
+    |> _preload(opts[:preload])
+  end
 
   defp where_ids(query, nil), do: query
   defp where_ids(query, ids), do: where(query, [x], x.id in ^ids)

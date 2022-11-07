@@ -135,7 +135,7 @@ defmodule ClickrWeb.RoomLiveTest do
     end
 
     test "assigns seat to keyboard button", %{conn: conn, user: user, room: r} do
-      gateway_fixture(user_id: user.id, name: "Keyboard")
+      gateway_fixture(user_id: user.id, name: "Keyboard", type: :keyboard)
       {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
       show_live |> element("#empty-seat-1-1") |> render_click()
       show_live |> element("#keyboard-device") |> render_keyup(%{"key" => "x"})
