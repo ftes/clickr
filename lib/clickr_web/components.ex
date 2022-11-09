@@ -293,7 +293,11 @@ defmodule ClickrWeb.Components do
         {@rest}
       >
         <option value="" selected={@value == nil}></option>
-        <option :for={{value, label} <- @options} value={value} selected={value == @value}>
+        <option
+          :for={{value, label} <- @options}
+          value={value}
+          selected={to_string(value) == to_string(@value)}
+        >
           <%= label %>
         </option>
       </select>

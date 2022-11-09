@@ -11,32 +11,32 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2\n"
 
-#: lib/clickr_web/components.ex:558
+#: lib/clickr_web/components.ex:562
 #, elixir-autogen
 msgid "started"
 msgstr "Gestartet"
 
-#: lib/clickr_web/components.ex:558
+#: lib/clickr_web/components.ex:562
 #, elixir-autogen
 msgid "roll_call"
 msgstr "Anwesenheit"
 
-#: lib/clickr_web/components.ex:558
+#: lib/clickr_web/components.ex:562
 #, elixir-autogen
 msgid "active"
 msgstr "Läuft"
 
-#: lib/clickr_web/components.ex:558
+#: lib/clickr_web/components.ex:562
 #, elixir-autogen
 msgid "question"
 msgstr "Frage"
 
-#: lib/clickr_web/components.ex:558
+#: lib/clickr_web/components.ex:562
 #, elixir-autogen
 msgid "ended"
 msgstr "Beendet"
 
-#: lib/clickr_web/components.ex:558
+#: lib/clickr_web/components.ex:562
 #, elixir-autogen
 msgid "graded"
 msgstr "Benotet"

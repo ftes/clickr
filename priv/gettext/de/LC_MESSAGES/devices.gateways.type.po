@@ -11,12 +11,12 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2\n"
 
-#: lib/clickr_web/components.ex:571
+#: lib/clickr_web/components.ex:575
 #, elixir-autogen, elixir-format
 msgid "keyboard"
 msgstr "Tastatur"
 
-#: lib/clickr_web/components.ex:571
+#: lib/clickr_web/components.ex:575
 #, elixir-autogen, elixir-format
 msgid "zigbee2mqtt"
 msgstr "Zigbee2Mqtt"
