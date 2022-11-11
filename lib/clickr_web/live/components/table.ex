@@ -16,7 +16,9 @@ defmodule ClickrWeb.Table do
   attr :rows, :list, required: true
   attr :compact, :boolean, default: false
   attr :class, :string, default: ""
-  attr :sort, :map
+  attr :sort, :map, required: false
+  attr :filter, :map, required: false
+  attr :filter_form, :any, required: false
 
   slot :col, required: true do
     attr :label, :string
