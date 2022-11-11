@@ -42,7 +42,7 @@ defmodule Clickr.Zigbee2MqttTest do
       assert [] = Gateway.lookup(gid)
     end
 
-    test "timeout is extended by any mesage", %{gateway: %{id: gid} = g} do
+    test "timeout is extended by any message", %{gateway: %{id: gid} = g} do
       publish_state(%{gateway: g}, "online")
       just_before_timeout = Gateway.timeout() - 5
       Clickr.PubSub.subscribe(Devices.gateways_topic())
