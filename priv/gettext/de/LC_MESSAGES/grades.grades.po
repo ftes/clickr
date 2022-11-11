@@ -18,7 +18,7 @@ msgstr ""
 msgid "Grade"
 msgstr "Note"
 
-#: lib/clickr_web/live/grade_live/index.ex:20
+#: lib/clickr_web/live/grade_live/index.ex:25
 #: lib/clickr_web/live/grade_live/index.html.heex:2
 #, elixir-autogen, elixir-format
 msgid "Listing Grades"

@@ -1,24 +1,28 @@
 defmodule ClickrWeb.GradeLive.Index do
   use ClickrWeb, :live_view
-
-  use ClickrWeb.Table.LiveView,
-    path_factory: fn p -> ~p"/grades/?#{p}" end,
-    sort_form: ClickrWeb.GradesSortForm,
-    filter_form: ClickrWeb.GradesFilterForm
-
   alias Clickr.Grades
 
+  defp path(query), do: ~p"/grades/?#{query}"
+
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, socket}
+  def mount(_params, session, socket) do
+    {:ok,
+     ClickrWeb.Table.LiveView.mount(
+       %{
+         path: &path/1,
+         sort: ClickrWeb.GradesSortForm,
+         filter: ClickrWeb.GradesFilterForm
+       },
+       session,
+       socket
+     )}
   end
 
   @impl true
-  def handle_params(params, _url, socket) do
+  def handle_params(_params, _url, socket) do
     {:noreply,
      socket
      |> assign(:page_title, dgettext("grades.grades", "Listing Grades"))
-     |> parse_table_params(params)
      |> load_grades()
      |> load_class_options()
      |> load_subject_options()}
@@ -26,7 +30,7 @@ defmodule ClickrWeb.GradeLive.Index do
 
   defp load_grades(socket) do
     params =
-      merge_and_sanitize_table_params(socket)
+      ClickrWeb.Table.LiveView.merge_and_sanitize_table_params(socket)
       |> Map.put(:preload, [:subject, student: :class])
 
     assign(socket, :grades, Grades.list_grades(socket.assigns.current_user, params))

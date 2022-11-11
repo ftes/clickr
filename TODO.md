@@ -1,5 +1,14 @@
 # Todo
 
+## Bugs
+- [ ] Debounce/single health check timeout: 2nd server creates avalanche
+
+## Permissions
+- [ ] Share gateway (group based)
+
+## Infrastructure
+- [ ] Use fly deployed rabbitMQ for mqtt
+
 ## Refactoring
 - [ ] change all context db getters to %{} map opts
 - [ ] add user to all context functions

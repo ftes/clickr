@@ -120,7 +120,7 @@ defmodule ClickrWeb.Table do
   end
 
   def handle_event("search", %{"filter" => filter}, socket) do
-    case ClickrWeb.FilterForm.parse(socket.assigns.filter_form, filter) do
+    case socket.assigns.filter_form.parse(filter) do
       {:ok, opts} ->
         send(self(), {:update_table_query, opts})
         {:noreply, socket}
@@ -131,7 +131,7 @@ defmodule ClickrWeb.Table do
   end
 
   defp assign_filter_changeset(socket, %{filter_form: ff} = assigns) do
-    changeset = ClickrWeb.FilterForm.change_values(ff, assigns[:filter] || %{})
+    changeset = ff.change_values(assigns[:filter] || %{})
     assign(socket, :filter_changeset, changeset)
   end
 
@@ -238,46 +238,40 @@ defmodule ClickrWeb.Table do
     """
 
   defmodule LiveView do
-    defmacro __using__(opts \\ []) do
-      path_factory = opts[:path_factory] || raise "Missing opts.path_factory"
-      sf = opts[:sort_form] || raise "Missing opts.sort_form"
-      ff = opts[:filter_form] || raise "Missing opts.filter_form"
-
-      quote do
-        import unquote(__MODULE__)
-
-        @impl true
-        def handle_info({:update_table_query, _} = msg, socket) do
-          unquote(__MODULE__).handle_info(msg, socket, unquote(path_factory))
-        end
-
-        def parse_table_params(socket, params) do
-          unquote(__MODULE__).parse_table_params(socket, params, %{
-            sort_form: unquote(sf),
-            filter_form: unquote(ff)
-          })
-        end
-      end
+    def mount(%{filter: filter, sort: sort, path: path}, _session, socket) do
+      socket
+      |> assign(:table_filter, filter)
+      |> assign(:table_sort, sort)
+      |> assign(:table_path, path)
+      |> Phoenix.LiveView.attach_hook(:table_info, :handle_info, &handle_info/2)
+      |> Phoenix.LiveView.attach_hook(:table_params, :handle_params, &handle_params/3)
     end
 
-    def handle_info({:update_table_query, opts}, socket, path_factory) do
+    defp handle_info({:update_table_query, opts}, socket) do
       params = merge_and_sanitize_table_params(socket, opts)
-      path = path_factory.(params)
-      {:noreply, push_patch(socket, to: path, replace: true)}
+      path = socket.assigns.table_path.(params)
+      {:halt, push_patch(socket, to: path, replace: true)}
     end
 
-    def parse_table_params(socket, params, %{sort_form: sf, filter_form: ff}) do
-      with {:ok, sort} <- ClickrWeb.SortForm.parse(sf, params),
-           {:ok, filter} <- ClickrWeb.FilterForm.parse(ff, params) do
-        socket
-        |> assign(:sort, ensure_defaults(ClickrWeb.SortForm.defaults(sf), sort))
-        |> assign(:filter, ensure_defaults(ClickrWeb.FilterForm.defaults(ff), filter))
-      else
-        _error ->
+    defp handle_info(_, socket), do: {:cont, socket}
+
+    def handle_params(params, _url, socket) do
+      %{table_sort: s, table_filter: f} = socket.assigns
+
+      socket =
+        with {:ok, sort} <- s.parse(params),
+             {:ok, filter} <- f.parse(params) do
           socket
-          |> assign(:sort, ClickrWeb.SortForm.defaults(sf))
-          |> assign(:filter, ClickrWeb.FilterForm.defaults(ff))
-      end
+          |> assign(:sort, ensure_defaults(s.defaults(), sort))
+          |> assign(:filter, ensure_defaults(f.defaults(), filter))
+        else
+          _error ->
+            socket
+            |> assign(:sort, s.defaults())
+            |> assign(:filter, f.defaults())
+        end
+
+      {:cont, socket}
     end
 
     def merge_and_sanitize_table_params(socket, overrides \\ %{}) do
