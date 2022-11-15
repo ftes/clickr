@@ -1,5 +1,21 @@
 # Clickr
 
+## About
+
+**Designed to motivate: A student response system for schools.**
+
+![Clickr Diagram](docs/images/diagram_small.png)
+
+**For teachers:**
+- Give oral grades based on the response data, rather than a gut feeling.
+- Spend less time taking notes on student participation after or during each lesson.
+
+**For students:**
+- Motivation for participation: Immediately see how your oral grade improves.
+- Continuously reflect on your participation.
+
+## Getting started
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
