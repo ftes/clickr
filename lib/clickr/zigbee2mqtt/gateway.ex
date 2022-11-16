@@ -13,7 +13,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     with {:ok, pid} <- start_or_get_pid(gateway_id) do
       GenServer.cast(pid, {:message, topic, payload})
     else
-      error -> Logger.info("Failed to handle gateway message #{inspect(error)}")
+      error -> Logger.warn("Failed to handle gateway message #{inspect(error)}")
     end
   end
 
@@ -94,12 +94,13 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     extend_timeout(state)
   end
 
-  def handle_cast({:message, [_device_name], %{"action" => button_name} = payload}, state) do
+  def handle_cast({:message, [device_name], %{"action" => button_name} = payload}, state) do
     gid = state.gateway.id
     did = device_id(payload)
     bid = button_id(payload)
     button = %Devices.Button{id: bid, device_id: did, name: button_name}
     attrs = %{gateway_id: gid, device_id: did, button_id: bid}
+    Logger.info("Handle click #{device_name}/#{button_name}")
 
     upserts =
       Ecto.Multi.new()
