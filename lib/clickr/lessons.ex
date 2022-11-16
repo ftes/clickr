@@ -199,12 +199,6 @@ defmodule Clickr.Lessons do
 
   def lesson_topic(%{lesson_id: lid}), do: "lesson:#{lid}"
 
-  def broadcast_new_lesson_student(%{lesson_id: _, student_id: _} = attrs),
-    do: Clickr.PubSub.broadcast(lesson_topic(attrs), {:new_lesson_student, attrs})
-
-  def broadcast_new_question_answer(%{lesson_id: _, question_id: _, student_id: _} = attrs),
-    do: Clickr.PubSub.broadcast(lesson_topic(attrs), {:new_question_answer, attrs})
-
   def list_question_answers(%User{} = user, opts \\ []) do
     QuestionAnswer
     |> Bodyguard.scope(user)
@@ -217,8 +211,11 @@ defmodule Clickr.Lessons do
     changeset = QuestionAnswer.changeset(%QuestionAnswer{}, attrs)
     question_id = Ecto.Changeset.get_field(changeset, :question_id)
 
-    with :ok <- permit(:create_question_answer, user, %{question_id: question_id}) do
-      Repo.insert(changeset)
+    with :ok <- permit(:create_question_answer, user, %{question_id: question_id}),
+         {:ok, question_answer} = res <- Repo.insert(changeset) do
+      question = Repo.preload(question_answer, question: :lesson).question
+      Clickr.PubSub.broadcast(lesson_topic(question), {:new_question_answer, question_answer})
+      res
     end
   end
 
@@ -234,8 +231,10 @@ defmodule Clickr.Lessons do
     changeset = LessonStudent.changeset(%LessonStudent{}, attrs)
     lesson_id = Ecto.Changeset.get_field(changeset, :lesson_id)
 
-    with :ok <- permit(:create_lesson_student, user, %{lesson_id: lesson_id}) do
-      Repo.insert(changeset)
+    with :ok <- permit(:create_lesson_student, user, %{lesson_id: lesson_id}),
+         {:ok, lesson_student} = res <- Repo.insert(changeset) do
+      Clickr.PubSub.broadcast(lesson_topic(lesson_student), {:new_lesson_student, lesson_student})
+      res
     end
   end
 

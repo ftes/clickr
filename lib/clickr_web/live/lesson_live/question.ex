@@ -76,57 +76,68 @@ defmodule ClickrWeb.LessonLive.Question do
           <%= @points[seat.student_id] || 0 %>
         </div>
 
-        <div
-          :if={@lesson.state != :question and MapSet.member?(@student_ids, seat.student_id)}
-          class="absolute inset-0 hidden group-hover:flex items-stretch justify-between bg-white/80 rounded-lg"
-        >
+        <div class="absolute inset-0 hidden group-hover:flex items-stretch justify-between bg-white/80 rounded-lg">
           <button
-            title={dgettext("lessons.actions", "Add point")}
-            phx-click={JS.push("add_point", value: %{student_id: seat.student_id})}
+            :if={
+              MapSet.member?(@student_ids, seat.student_id) and
+                not MapSet.member?(@answers, seat.student_id)
+            }
+            title={dgettext("lessons.actions", "Register answer")}
+            phx-click={JS.push("register_answer", value: %{student_id: seat.student_id})}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
-            <span class="sr-only"><%= dgettext("lessons.actions", "Add point") %></span>
-            <Heroicons.plus class="w-8 h-8" />
+            <span class="sr-only"><%= dgettext("lessons.actions", "Register answer") %></span>
+            <Heroicons.check_badge class="w-6 h-6" />
           </button>
           <button
-            title={dgettext("lessons.actions", "Remove student")}
-            phx-click={JS.push("remove_student", value: %{student_id: seat.student_id})}
-            data-confirm={gettext("Are you sure?")}
+            :if={@lesson.state != :question and not MapSet.member?(@student_ids, seat.student_id)}
+            title={dgettext("lessons.actions", "Add student")}
+            phx-click={JS.push("add_student", value: %{student_id: seat.student_id})}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
-            <span class="sr-only"><%= dgettext("lessons.actions", "Remove student") %></span>
-            <Heroicons.user_minus class="w-8 h-8" />
+            <span class="sr-only"><%= dgettext("lessons.actions", "Add student") %></span>
+            <Heroicons.user_plus class="w-6 h-6" />
           </button>
-          <button
-            title={dgettext("lessons.actions", "Subtract point")}
-            phx-click={JS.push("subtract_point", value: %{student_id: seat.student_id})}
-            class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
-          >
-            <span class="sr-only"><%= dgettext("lessons.actions", "Subtract point") %></span>
-            <Heroicons.minus class="w-8 h-8" />
-          </button>
-          <.link
-            class="flex-1 flex items-stretch"
-            navigate={~p"/lessons/#{@lesson}/active/new_bonus_grade/#{seat.student_id}"}
-          >
+          <%= if MapSet.member?(@student_ids, seat.student_id) and @lesson.state != :question do %>
             <button
-              title={dgettext("lessons.actions", "Add bonus grade")}
+              title={dgettext("lessons.actions", "Add point")}
+              phx-click={JS.push("add_point", value: %{student_id: seat.student_id})}
               class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
             >
-              <span class="sr-only"><%= dgettext("lessons.actions", "Add bonus grade") %></span>
-              <Heroicons.sparkles class="w-8 h-8" />
+              <span class="sr-only"><%= dgettext("lessons.actions", "Add point") %></span>
+              <Heroicons.plus class="w-6 h-6" />
             </button>
-          </.link>
+            <button
+              title={dgettext("lessons.actions", "Remove student")}
+              phx-click={JS.push("remove_student", value: %{student_id: seat.student_id})}
+              data-confirm={gettext("Are you sure?")}
+              class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
+            >
+              <span class="sr-only"><%= dgettext("lessons.actions", "Remove student") %></span>
+              <Heroicons.user_minus class="w-6 h-6" />
+            </button>
+            <button
+              title={dgettext("lessons.actions", "Subtract point")}
+              phx-click={JS.push("subtract_point", value: %{student_id: seat.student_id})}
+              class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
+            >
+              <span class="sr-only"><%= dgettext("lessons.actions", "Subtract point") %></span>
+              <Heroicons.minus class="w-6 h-6" />
+            </button>
+            <.link
+              class="flex-1 flex items-stretch"
+              navigate={~p"/lessons/#{@lesson}/active/new_bonus_grade/#{seat.student_id}"}
+            >
+              <button
+                title={dgettext("lessons.actions", "Add bonus grade")}
+                class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
+              >
+                <span class="sr-only"><%= dgettext("lessons.actions", "Add bonus grade") %></span>
+                <Heroicons.sparkles class="w-6 h-6" />
+              </button>
+            </.link>
+          <% end %>
         </div>
-        <button
-          :if={@lesson.state != :question and not MapSet.member?(@student_ids, seat.student_id)}
-          title={dgettext("lessons.actions", "Add student")}
-          phx-click={JS.push("add_student", value: %{student_id: seat.student_id})}
-          class="absolute w-full inset-0 hidden group-hover:flex bg-green-400/80 items-center justify-center rounded-lg"
-        >
-          <span class="sr-only"><%= dgettext("lessons.actions", "Add student") %></span>
-          <Heroicons.user_plus class="w-8 h-8" />
-        </button>
       </div>
     </div>
 
@@ -241,8 +252,21 @@ defmodule ClickrWeb.LessonLive.Question do
     {:noreply, push_event(socket, "animate_select_answer", %{steps: steps})}
   end
 
+  def handle_event("register_answer", %{"student_id" => student_id}, socket) do
+    Lessons.create_question_answer(socket.assigns.current_user, %{
+      question_id: socket.assigns.question.id,
+      student_id: student_id
+    })
+
+    {:noreply, socket}
+  end
+
   @impl true
   def handle_info({:new_question_answer, _}, socket) do
+    {:noreply, load_question_and_answers(socket)}
+  end
+
+  def handle_info({:new_lesson_student, _}, socket) do
     {:noreply, load_question_and_answers(socket)}
   end
 

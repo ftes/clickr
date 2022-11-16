@@ -296,6 +296,21 @@ defmodule ClickrWeb.LessonLiveTest do
       assert [%{name: "this question", points: 42}] = Clickr.Repo.all(Clickr.Lessons.Question)
     end
 
+    test "registers answer for student that didn't yet answer", %{
+      conn: conn,
+      lesson: l,
+      student: s
+    } do
+      lesson_student_fixture(lesson_id: l.id, student_id: s.id)
+      question_fixture(lesson_id: l.id, state: :ended)
+
+      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
+      refute render(live) =~ "x-answered"
+
+      live |> element("#student-#{s.id} button", "Register answer") |> render_click()
+      assert render(live) =~ "x-answered"
+    end
+
     test "highlights student that answered after question is ended", %{
       conn: conn,
       lesson: l,

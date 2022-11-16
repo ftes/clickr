@@ -44,12 +44,7 @@ defmodule Clickr.Lessons.ActiveQuestion do
       )
       when is_map_key(mapping, bid) do
     args = %{question_id: state.question_id, student_id: mapping[bid]}
-    broadcast_args = Map.put(args, :lesson_id, state.lesson_id)
-
-    case Lessons.create_question_answer(%Clickr.Accounts.User{id: state.user_id}, args) do
-      {:ok, _} -> Lessons.broadcast_new_question_answer(broadcast_args)
-      _ -> nil
-    end
+    Lessons.create_question_answer(%Clickr.Accounts.User{id: state.user_id}, args)
 
     {:noreply, state}
   end

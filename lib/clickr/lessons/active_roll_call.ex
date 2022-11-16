@@ -42,11 +42,7 @@ defmodule Clickr.Lessons.ActiveRollCall do
       )
       when is_map_key(mapping, bid) do
     args = %{lesson_id: state.lesson_id, student_id: mapping[bid]}
-
-    case Lessons.create_lesson_student(%Clickr.Accounts.User{id: state.user_id}, args) do
-      {:ok, lesson_student} -> Lessons.broadcast_new_lesson_student(lesson_student)
-      _ -> nil
-    end
+    Lessons.create_lesson_student(%Clickr.Accounts.User{id: state.user_id}, args)
 
     {:noreply, state}
   end
