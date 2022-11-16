@@ -15,7 +15,8 @@ defmodule Clickr.Lessons do
     Lesson,
     LessonStudent,
     Question,
-    QuestionAnswer
+    QuestionAnswer,
+    SelectAnswer
   }
 
   def get_button_mapping(%Lesson{} = lesson), do: Clickr.Lessons.ButtonMapping.get_mapping(lesson)
@@ -328,6 +329,11 @@ defmodule Clickr.Lessons do
   def active_question_start(%Question{} = question), do: ActiveQuestion.start(question)
 
   def active_question_stop(%Question{} = question), do: ActiveQuestion.stop(question)
+
+  def animate_select_answer(:wheel_of_fortune, %Question{} = question) do
+    answers = Repo.preload(question, :answers).answers
+    SelectAnswer.WheelOfFortune.animate_select_answer(answers)
+  end
 
   defp where_lesson_id(query, nil), do: query
   defp where_lesson_id(query, id), do: where(query, [x], x.lesson_id == ^id)

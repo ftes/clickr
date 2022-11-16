@@ -31,7 +31,6 @@
 - [ ] pair and rename from room plan
 
 ## Lesson features
-- [ ] choose student (roulette)
 - [ ] teacher add student question answer
 - [ ] List and delete lesson questions
 - [ ] add lesson comment per student (mass assignment?)

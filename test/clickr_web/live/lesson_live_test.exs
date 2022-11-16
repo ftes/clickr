@@ -306,6 +306,19 @@ defmodule ClickrWeb.LessonLiveTest do
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
       assert render(live) =~ "x-answered"
     end
+
+    test "selects answer", %{
+      conn: conn,
+      lesson: l,
+      student: %{id: sid}
+    } do
+      question = question_fixture(lesson_id: l.id)
+      question_answer_fixture(question_id: question.id, student_id: sid)
+      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
+      live |> element("button", "Select answer") |> render_click()
+
+      assert_push_event(live, "animate_select_answer", %{steps: [%{student_id: ^sid, pause: nil}]})
+    end
   end
 
   describe "question" do

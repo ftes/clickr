@@ -10,14 +10,14 @@
 msgid ""
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/question.ex:73
-#: lib/clickr_web/live/lesson_live/question.ex:77
+#: lib/clickr_web/live/lesson_live/question.ex:84
+#: lib/clickr_web/live/lesson_live/question.ex:88
 #, elixir-autogen, elixir-format
 msgid "Add point"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/question.ex:112
-#: lib/clickr_web/live/lesson_live/question.ex:116
+#: lib/clickr_web/live/lesson_live/question.ex:123
+#: lib/clickr_web/live/lesson_live/question.ex:127
 #, elixir-autogen, elixir-format
 msgid "Add student"
 msgstr ""
@@ -50,8 +50,8 @@ msgstr ""
 msgid "Note Attendance"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/question.ex:81
-#: lib/clickr_web/live/lesson_live/question.ex:86
+#: lib/clickr_web/live/lesson_live/question.ex:92
+#: lib/clickr_web/live/lesson_live/question.ex:97
 #, elixir-autogen, elixir-format
 msgid "Remove student"
 msgstr ""
@@ -66,14 +66,19 @@ msgstr ""
 msgid "Run"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/question.ex:90
-#: lib/clickr_web/live/lesson_live/question.ex:94
+#: lib/clickr_web/live/lesson_live/question.ex:101
+#: lib/clickr_web/live/lesson_live/question.ex:105
 #, elixir-autogen, elixir-format
 msgid "Subtract point"
 msgstr ""
 
-#: lib/clickr_web/live/lesson_live/question.ex:102
-#: lib/clickr_web/live/lesson_live/question.ex:105
+#: lib/clickr_web/live/lesson_live/question.ex:113
+#: lib/clickr_web/live/lesson_live/question.ex:116
 #, elixir-autogen, elixir-format
 msgid "Add bonus grade"
+msgstr ""
+
+#: lib/clickr_web/live/lesson_live/question.ex:25
+#, elixir-autogen, elixir-format
+msgid "Select answer"
 msgstr ""

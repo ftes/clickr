@@ -19,6 +19,12 @@ defmodule ClickrWeb.LessonLive.Question do
       </:subtitle>
       <:actions>
         <.button
+          :if={@lesson.state == :active and MapSet.size(@answers) > 0}
+          phx-click={JS.push("select_answer")}
+        >
+          <%= dgettext("lessons.actions", "Select answer") %>
+        </.button>
+        <.button
           :for={{label, state} <- ClickrWeb.LessonLive.Router.transitions(@lesson)}
           phx-click={JS.push("transition", value: %{state: state})}
         >
@@ -36,13 +42,18 @@ defmodule ClickrWeb.LessonLive.Question do
       </:actions>
     </.header>
 
-    <div class="mt-5 flex-grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr">
+    <div
+      class="mt-5 flex-grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr"
+      phx-hook="AnimateSelectAnswer"
+      id="seating-plan"
+    >
       <div
         :for={seat <- @lesson.seating_plan.seats}
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
         class={[
-          "relative group flex flex-col items-stretch justify-between rounded-lg border border-gray-300 p-1 lg:p-3 shadow-sm",
+          "x-student relative group flex flex-col items-stretch justify-between rounded-lg border border-gray-300 p-1 lg:p-3 shadow-sm",
+          "data-[select-answer-intermediate]:!bg-yellow-400 data-[select-answer-final]:!bg-orange-400",
           if(MapSet.member?(@answers, seat.student_id),
             do: "x-answered bg-green-400",
             else: "bg-white"
@@ -172,7 +183,7 @@ defmodule ClickrWeb.LessonLive.Question do
      |> assign(:page_title, dgettext("lessons.lessons", "Lesson"))
      |> assign(:student_id, params["student_id"])
      |> assign_lesson_and_related(id)
-     |> load_answers()
+     |> load_question_and_answers()
      |> ClickrWeb.LessonLive.Router.maybe_navigate([
        :active_new_bonus_grade,
        :active_question_options
@@ -225,9 +236,14 @@ defmodule ClickrWeb.LessonLive.Question do
     {:noreply, assign_lesson_and_related(socket)}
   end
 
+  def handle_event("select_answer", _params, socket) do
+    steps = Lessons.animate_select_answer(:wheel_of_fortune, socket.assigns.question)
+    {:noreply, push_event(socket, "animate_select_answer", %{steps: steps})}
+  end
+
   @impl true
   def handle_info({:new_question_answer, _}, socket) do
-    {:noreply, load_answers(socket)}
+    {:noreply, load_question_and_answers(socket)}
   end
 
   def handle_info({:ask_question, params}, socket) do
@@ -251,26 +267,28 @@ defmodule ClickrWeb.LessonLive.Question do
     |> assign(:points, Lessons.get_lesson_points(lesson))
   end
 
-  defp load_answers(%{assigns: %{lesson: %{state: :question} = lesson}} = socket) do
+  defp load_question_and_answers(%{assigns: %{lesson: %{state: :question} = lesson}} = socket) do
     question =
       Lessons.get_last_question(socket.assigns.current_user, lesson) || raise "Must not be nil"
 
     Lessons.active_question_start(question)
-    assign_answers(socket, question)
+    assign_question_and_answers(socket, question)
   end
 
-  defp load_answers(%{assigns: %{lesson: %{state: :active} = lesson}} = socket) do
+  defp load_question_and_answers(%{assigns: %{lesson: %{state: :active} = lesson}} = socket) do
     case Lessons.get_last_question(socket.assigns.current_user, lesson) do
       nil -> assign(socket, :answers, MapSet.new())
-      question -> assign_answers(socket, question)
+      question -> assign_question_and_answers(socket, question)
     end
   end
 
-  defp assign_answers(socket, question) do
+  defp assign_question_and_answers(socket, question) do
     student_ids =
       Lessons.list_question_answers(socket.assigns.current_user, question_id: question.id)
       |> Enum.map(& &1.student_id)
 
-    assign(socket, :answers, MapSet.new(student_ids))
+    socket
+    |> assign(:question, question)
+    |> assign(:answers, MapSet.new(student_ids))
   end
 end
