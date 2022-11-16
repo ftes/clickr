@@ -15,7 +15,7 @@
 # ============
 # You can explicitly set the COOKIE value in the script if you prefer. That would look like this.
 #
-COOKIE=GiuABWCdF6V5b7o3hs8MF6zqWiferbajc2bfvOLQVSd7XF58A8ARbA
+COOKIE=GiuABWCdF6V5b7o3hs8MF6zqWiferbajc2bfvOLQVSd7XF58A8ARbA==
 
 set -e
 
