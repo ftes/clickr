@@ -13,7 +13,8 @@ defmodule Clickr.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      compilers: [:boundary] ++ Mix.compilers()
+      compilers: [:boundary] ++ Mix.compilers(),
+      releases: releases()
     ]
   end
 
@@ -82,6 +83,15 @@ defmodule Clickr.MixProject do
       "gettext.extract_and_merge": [
         "gettext.extract --merge --locale de",
         "gettext.merge priv/gettext --locale de"
+      ]
+    ]
+  end
+
+  defp releases() do
+    [
+      hello_elixir: [
+        include_executables_for: [:unix],
+        cookie: "GiuABWCdF6V5b7o3hs8MF6zqWiferbajc2bfvOLQVSd7XF58A8ARbA=="
       ]
     ]
   end

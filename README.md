@@ -36,6 +36,11 @@ fly ssh console
 >> Clickr.Release.migrate
 ```
 
+## Observer
+```sh
+./observer.sh
+```
+
 ## Remote database
 ```sh
 # credentials: Remote iex `System.get_env("DATABASE_URL")`
