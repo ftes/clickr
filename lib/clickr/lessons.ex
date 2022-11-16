@@ -172,10 +172,12 @@ defmodule Clickr.Lessons do
     Lesson.changeset(lesson, attrs)
   end
 
-  def get_started_question!(%User{} = user, %Lesson{} = lesson, opts \\ []) do
+  def get_last_question(%User{} = user, %Lesson{} = lesson, opts \\ []) do
     Question
     |> Bodyguard.scope(user)
-    |> Repo.get_by!(lesson_id: lesson.id, state: :started)
+    |> where(lesson_id: ^lesson.id)
+    |> first(desc: :inserted_at)
+    |> Repo.one()
     |> _preload(opts[:preload])
   end
 

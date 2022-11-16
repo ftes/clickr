@@ -252,15 +252,25 @@ defmodule ClickrWeb.LessonLive.Question do
   end
 
   defp load_answers(%{assigns: %{lesson: %{state: :question} = lesson}} = socket) do
-    question = Lessons.get_started_question!(socket.assigns.current_user, lesson)
-    Lessons.active_question_start(question)
+    question =
+      Lessons.get_last_question(socket.assigns.current_user, lesson) || raise "Must not be nil"
 
+    Lessons.active_question_start(question)
+    assign_answers(socket, question)
+  end
+
+  defp load_answers(%{assigns: %{lesson: %{state: :active} = lesson}} = socket) do
+    case Lessons.get_last_question(socket.assigns.current_user, lesson) do
+      nil -> assign(socket, :answers, MapSet.new())
+      question -> assign_answers(socket, question)
+    end
+  end
+
+  defp assign_answers(socket, question) do
     student_ids =
       Lessons.list_question_answers(socket.assigns.current_user, question_id: question.id)
       |> Enum.map(& &1.student_id)
 
     assign(socket, :answers, MapSet.new(student_ids))
   end
-
-  defp load_answers(socket), do: assign(socket, :answers, MapSet.new())
 end

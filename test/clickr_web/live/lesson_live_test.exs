@@ -295,6 +295,17 @@ defmodule ClickrWeb.LessonLiveTest do
       assert_redirect(live, ~p"/lessons/#{l}/question")
       assert [%{name: "this question", points: 42}] = Clickr.Repo.all(Clickr.Lessons.Question)
     end
+
+    test "highlights student that answered after question is ended", %{
+      conn: conn,
+      lesson: l,
+      student: s
+    } do
+      question = question_fixture(lesson_id: l.id)
+      question_answer_fixture(question_id: question.id, student_id: s.id)
+      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
+      assert render(live) =~ "x-answered"
+    end
   end
 
   describe "question" do

@@ -5,6 +5,9 @@
 
 ## Permissions
 - [ ] Share gateway (group based)
+  - add tenant id?
+  - broadcast button click for group/tenant/user id?
+  - select gateway while editing room plan to prevent noise
 
 ## Infrastructure
 - [ ] Use fly deployed rabbitMQ for mqtt
@@ -28,6 +31,7 @@
 - [ ] pair and rename from room plan
 
 ## Lesson features
+- [ ] choose student (roulette)
 - [ ] teacher add student question answer
 - [ ] List and delete lesson questions
 - [ ] add lesson comment per student (mass assignment?)

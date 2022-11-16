@@ -45,6 +45,23 @@ defmodule Clickr.LessonsTest do
       assert [%{name: "unique ended"}] = Lessons.list_lessons(u, %{name: "uniq", state: :ended})
     end
 
+    test "get_last_question/2 gets started question", %{user: user} do
+      lesson = lesson_fixture(user_id: user.id, state: :question)
+      question = question_fixture(lesson_id: lesson.id, state: :started)
+      assert Lessons.get_last_question(user, lesson) == question
+    end
+
+    test "get_last_question/2 gets ended question", %{user: user} do
+      lesson = lesson_fixture(user_id: user.id, state: :active)
+      question = question_fixture(lesson_id: lesson.id, state: :ended)
+      assert Lessons.get_last_question(user, lesson) == question
+    end
+
+    test "get_last_question/2 returns nil for no question", %{user: user} do
+      lesson = lesson_fixture(user_id: user.id, state: :active)
+      assert Lessons.get_last_question(user, lesson) == nil
+    end
+
     test "list_lesson_combinations/1 returns most recent unique combinations", %{user: user} do
       at = fn x -> DateTime.from_unix!(x) end
       lesson_fixture(user_id: user.id, name: "l1", inserted_at: at.(1))
