@@ -89,7 +89,7 @@ defmodule Clickr.MixProject do
 
   defp releases() do
     [
-      hello_elixir: [
+      clickr: [
         include_executables_for: [:unix],
         cookie: "GiuABWCdF6V5b7o3hs8MF6zqWiferbajc2bfvOLQVSd7XF58A8ARbA=="
       ]
