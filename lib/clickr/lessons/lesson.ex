@@ -51,6 +51,12 @@ defmodule Clickr.Lessons.Lesson do
     |> cast_assoc(:grades)
   end
 
+  def changeset(%{state: :active} = lesson, %{lesson_students: _} = attrs) do
+    lesson
+    |> cast(attrs, [])
+    |> cast_assoc([:lesson_students])
+  end
+
   def changeset(lesson, %{state: _} = attrs) do
     lesson
     |> cast(attrs, [:state])

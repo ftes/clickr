@@ -181,6 +181,17 @@ defmodule Clickr.LessonsTest do
       lesson = lesson_fixture()
       assert %Ecto.Changeset{} = Lessons.change_lesson(lesson)
     end
+
+    test "add_extra_point_for_all/1 adds point for all students", %{user: u} do
+      l = lesson_fixture(user_id: u.id)
+      s1 = student_fixture()
+      s2 = student_fixture()
+      lesson_student_fixture(lesson_id: l.id, student_id: s1.id)
+      lesson_student_fixture(lesson_id: l.id, student_id: s2.id, extra_points: 42)
+
+      assert {2, _} = Lessons.add_extra_point_for_all(u, l)
+      assert [%{extra_points: 1}, %{extra_points: 43}] = Lessons.list_lesson_students(u)
+    end
   end
 
   describe "questions" do

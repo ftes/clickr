@@ -156,21 +156,23 @@ defmodule Clickr.Lessons do
     lesson = Repo.preload(lesson, :lesson_students)
 
     with :ok <- permit(:delete_lesson, user, lesson), {:ok, _} = res <- Repo.delete(lesson) do
-      suid = lesson.subject_id
-
-      for ls <- lesson.lesson_students,
-          do:
-            Clickr.Grades.calculate_and_save_grade(user, %{
-              subject_id: suid,
-              student_id: ls.student_id
-            })
-
+      calculate_overall_grades(user, lesson)
       res
     end
   end
 
   def change_lesson(%Lesson{} = lesson, attrs \\ %{}) do
     Lesson.changeset(lesson, attrs)
+  end
+
+  def add_extra_point_for_all(%User{} = user, %Lesson{} = lesson) do
+    with :ok <- permit(:update_lesson, user, lesson) do
+      from(ls in LessonStudent,
+        where: ls.lesson_id == ^lesson.id,
+        update: [inc: [extra_points: 1]]
+      )
+      |> Repo.update_all([])
+    end
   end
 
   def get_last_question(%User{} = user, %Lesson{} = lesson, opts \\ []) do
@@ -307,14 +309,7 @@ defmodule Clickr.Lessons do
         |> Repo.update()
 
       with {:ok, _} <- res do
-        suid = lesson.subject_id
-
-        for ls <- lesson.lesson_students do
-          Clickr.Grades.calculate_and_save_grade(user, %{
-            subject_id: suid,
-            student_id: ls.student_id
-          })
-        end
+        calculate_overall_grades(user, lesson)
       end
     end
   end
@@ -332,6 +327,17 @@ defmodule Clickr.Lessons do
   def animate_select_answer(:wheel_of_fortune, %Question{} = question) do
     answers = Repo.preload(question, :answers).answers
     SelectAnswer.WheelOfFortune.animate_select_answer(answers)
+  end
+
+  defp calculate_overall_grades(%User{} = user, %Lesson{} = lesson) do
+    lesson = Repo.preload(lesson, :lesson_students)
+
+    for ls <- lesson.lesson_students do
+      Clickr.Grades.calculate_and_save_grade(user, %{
+        subject_id: lesson.subject_id,
+        student_id: ls.student_id
+      })
+    end
   end
 
   defp where_lesson_id(query, nil), do: query

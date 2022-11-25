@@ -245,8 +245,8 @@ defmodule ClickrWeb.LessonLiveTest do
       lesson_student_fixture(lesson_id: l.id, student_id: s.id, extra_points: 42)
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
 
-      live |> element("button", "Add point") |> render_click() =~ "43"
-      live |> element("button", "Subtract point") |> render_click() =~ "42"
+      live |> element("#student-#{s.id} button", "Add point") |> render_click() =~ "43"
+      live |> element("#student-#{s.id} button", "Subtract point") |> render_click() =~ "42"
     end
 
     test "shows extra points + question points", %{conn: conn, lesson: lesson, student: student} do
@@ -333,6 +333,26 @@ defmodule ClickrWeb.LessonLiveTest do
       live |> element("button", "Select answer") |> render_click()
 
       assert_push_event(live, "animate_select_answer", %{steps: [%{student_id: ^sid, pause: nil}]})
+    end
+
+    test "adds point for all", %{conn: conn, lesson: l, student: s1, user: u} do
+      s2 = student_fixture(user_id: u.id, class_id: s1.class_id)
+
+      seating_plan_seat_fixture(%{
+        seating_plan_id: l.seating_plan_id,
+        student_id: s2.id,
+        x: 2,
+        y: 1
+      })
+
+      lesson_student_fixture(lesson_id: l.id, student_id: s1.id, extra_points: 118)
+      lesson_student_fixture(lesson_id: l.id, student_id: s2.id, extra_points: 142)
+
+      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
+      html = live |> element("button", "Add point for all") |> render_click()
+
+      assert html =~ "119"
+      assert html =~ "143"
     end
   end
 

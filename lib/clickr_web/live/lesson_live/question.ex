@@ -24,6 +24,9 @@ defmodule ClickrWeb.LessonLive.Question do
         >
           <%= dgettext("lessons.actions", "Select answer") %>
         </.button>
+        <.button :if={@lesson.state == :active} phx-click={JS.push("add_point_for_all")}>
+          <%= dgettext("lessons.actions", "Add point for all") %>
+        </.button>
         <.button
           :for={{label, state} <- ClickrWeb.LessonLive.Router.transitions(@lesson)}
           phx-click={JS.push("transition", value: %{state: state})}
@@ -226,6 +229,12 @@ defmodule ClickrWeb.LessonLive.Question do
   def handle_event("remove_student", %{"student_id" => student_id}, socket) do
     ls = Enum.find(socket.assigns.lesson.lesson_students, &(&1.student_id == student_id))
     {:ok, _} = Lessons.delete_lesson_student(socket.assigns.current_user, ls)
+    {:noreply, assign_lesson_and_related(socket)}
+  end
+
+  def handle_event("add_point_for_all", _params, socket) do
+    lesson = socket.assigns.lesson
+    {_, _} = Lessons.add_extra_point_for_all(socket.assigns.current_user, lesson)
     {:noreply, assign_lesson_and_related(socket)}
   end
 

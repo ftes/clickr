@@ -24,7 +24,7 @@ msgstr "Benote..."
 #: lib/clickr_web/live/lesson_live/ended.ex:11
 #: lib/clickr_web/live/lesson_live/ended.ex:101
 #: lib/clickr_web/live/lesson_live/question.ex:16
-#: lib/clickr_web/live/lesson_live/question.ex:194
+#: lib/clickr_web/live/lesson_live/question.ex:197
 #: lib/clickr_web/live/lesson_live/roll_call.ex:16
 #: lib/clickr_web/live/lesson_live/roll_call.ex:69
 #, elixir-autogen, elixir-format
@@ -105,7 +105,7 @@ msgstr "Auswahl von letzten Stunden übernehmen"
 msgid "Ask Question"
 msgstr "Frage stellen"
 
-#: lib/clickr_web/live/lesson_live/question.ex:38
+#: lib/clickr_web/live/lesson_live/question.ex:41
 #, elixir-autogen, elixir-format
 msgid "Question options"
 msgstr "Frage Optionen"

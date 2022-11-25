@@ -31,9 +31,10 @@
 - [ ] pair and rename from room plan
 
 ## Lesson features
+- [ ] set manual student lesson grade
+- [ ] Delete question answer
 - [ ] List and delete lesson questions
 - [ ] add lesson comment per student (mass assignment?)
-- [ ] add qualitative lesson grade
 
 ## Infrastructure
 - [ ] fly.io check handler
