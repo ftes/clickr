@@ -1,6 +1,6 @@
 defmodule Clickr.Lessons.SelectAnswer.WheelOfFortune do
-  @longest_pause_ms 1_500
-  @shortest_pause_ms 100
+  @longest_pause_ms 1_000
+  @shortest_pause_ms 75
   @power_base 1.5
 
   alias Clickr.Lessons.SelectAnswer.Animation
