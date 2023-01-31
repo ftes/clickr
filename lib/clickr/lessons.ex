@@ -242,15 +242,18 @@ defmodule Clickr.Lessons do
 
   def add_extra_points(
         %User{} = user,
-        %Lesson{state: :active} = lesson,
+        %Lesson{state: state} = lesson,
         %{student_id: sid},
         delta
-      ) do
+      )
+      when state in [:active, :ended, :graded] do
     {1, _} =
       from(ls in LessonStudent, where: ls.lesson_id == ^lesson.id and ls.student_id == ^sid)
       |> Bodyguard.scope(user)
       |> Repo.update_all(inc: [extra_points: delta])
 
+    lesson = lesson |> Repo.preload(:lesson_students, force: true)
+    calculate_and_save_lesson_grades(user, lesson)
     {:ok, nil}
   end
 

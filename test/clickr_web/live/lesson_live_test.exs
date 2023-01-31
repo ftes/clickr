@@ -245,8 +245,10 @@ defmodule ClickrWeb.LessonLiveTest do
       lesson_student_fixture(lesson_id: l.id, student_id: s.id, extra_points: 42)
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/active")
 
-      live |> element("#student-#{s.id} button", "Add point") |> render_click() =~ "43"
-      live |> element("#student-#{s.id} button", "Subtract point") |> render_click() =~ "42"
+      assert live |> element("#student-#{s.id} button", "Add point") |> render_click() =~ "43"
+
+      assert live |> element("#student-#{s.id} button", "Subtract point") |> render_click() =~
+               "42"
     end
 
     test "shows extra points + question points", %{conn: conn, lesson: lesson, student: student} do
@@ -419,10 +421,14 @@ defmodule ClickrWeb.LessonLiveTest do
       %{lesson: lesson_fixture(user_id: user.id, state: :graded, grade: %{min: 0.0, max: 100.0})}
     end
 
-    setup [:create_lesson_graded, :seat_student_with_button, :attend_student]
+    defp grade_lesson(%{user: user, lesson: lesson}) do
+      Clickr.Lessons.calculate_and_save_lesson_grades(user, lesson)
+      %{}
+    end
 
-    test "shows initial and updated lesson grade", %{conn: conn, lesson: l, student: s} do
-      lesson_grade_fixture(lesson_id: l.id, student_id: s.id, percent: 0.42)
+    setup [:create_lesson_graded, :seat_student_with_button, :attend_student, :grade_lesson]
+
+    test "shows initial and updated lesson grade", %{conn: conn, lesson: l} do
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/graded")
       assert render(live) =~ "42%"
 
@@ -432,7 +438,6 @@ defmodule ClickrWeb.LessonLiveTest do
     end
 
     test "shows overall grade", %{user: user, conn: conn, lesson: l, student: s} do
-      lesson_grade_fixture(lesson_id: l.id, student_id: s.id, percent: 0.42)
       l2 = lesson_fixture(subject_id: l.subject_id)
       lesson_grade_fixture(lesson_id: l2.id, student_id: s.id, percent: 0.20)
       Clickr.Grades.calculate_and_save_grade(user, %{student_id: s.id, subject_id: l.subject_id})
@@ -440,6 +445,13 @@ defmodule ClickrWeb.LessonLiveTest do
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/graded")
       assert render(live) =~ "31%"
       assert render(live) =~ "5-"
+    end
+
+    test "adds point for student and updates grade", %{conn: conn, lesson: l, student: s} do
+      {:ok, live, _} = live(conn, ~p"/lessons/#{l}/graded")
+      assert render(live) =~ "42%"
+
+      assert live |> element("#student-#{s.id} button", "Add point") |> render_click() =~ "43%"
     end
   end
 end

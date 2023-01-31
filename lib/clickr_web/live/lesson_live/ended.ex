@@ -84,6 +84,28 @@ defmodule ClickrWeb.LessonLive.Ended do
             <%= Grades.format(:german, @grades[seat.student_id] || 0.0) %>
           </span>
         </div>
+
+        <div
+          :if={MapSet.member?(@student_ids, seat.student_id)}
+          class="absolute inset-0 hidden group-hover:flex items-stretch justify-between bg-white/80 rounded-lg"
+        >
+          <button
+            title={dgettext("lessons.actions", "Add point")}
+            phx-click={JS.push("add_point", value: %{student_id: seat.student_id})}
+            class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
+          >
+            <span class="sr-only"><%= dgettext("lessons.actions", "Add point") %></span>
+            <Heroicons.plus class="w-6 h-6" />
+          </button>
+          <button
+            title={dgettext("lessons.actions", "Subtract point")}
+            phx-click={JS.push("subtract_point", value: %{student_id: seat.student_id})}
+            class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
+          >
+            <span class="sr-only"><%= dgettext("lessons.actions", "Subtract point") %></span>
+            <Heroicons.minus class="w-6 h-6" />
+          </button>
+        </div>
       </.link>
     </div>
     """
@@ -129,6 +151,24 @@ defmodule ClickrWeb.LessonLive.Ended do
      socket
      |> assign(:changeset, changeset)
      |> assign_new_lesson_grades()}
+  end
+
+  def handle_event("add_point", %{"student_id" => student_id}, socket) do
+    lesson = socket.assigns.lesson
+
+    {:ok, _} =
+      Lessons.add_extra_points(socket.assigns.current_user, lesson, %{student_id: student_id}, 1)
+
+    {:noreply, assign_lesson_and_related(socket, lesson.id)}
+  end
+
+  def handle_event("subtract_point", %{"student_id" => student_id}, socket) do
+    lesson = socket.assigns.lesson
+
+    {:ok, _} =
+      Lessons.add_extra_points(socket.assigns.current_user, lesson, %{student_id: student_id}, -1)
+
+    {:noreply, assign_lesson_and_related(socket, lesson.id)}
   end
 
   defp assign_lesson_and_related(socket, id) do
