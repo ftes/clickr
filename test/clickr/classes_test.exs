@@ -2,7 +2,7 @@ defmodule Clickr.ClassesTest do
   use ClickrTest.DataCase, async: true
 
   alias Clickr.Classes
-  import Clickr.{ClassesFixtures, StudentsFixtures}
+  import Clickr.{ClassesFixtures, LessonsFixtures, StudentsFixtures}
   alias Clickr.Classes.{Class, SeatingPlan, SeatingPlanSeat}
 
   setup :create_user
@@ -45,8 +45,12 @@ defmodule Clickr.ClassesTest do
       assert class == Classes.get_class!(user, class.id)
     end
 
-    test "delete_class/1 deletes the class", %{user: user} do
+    test "delete_class/1 deletes the class including students and seating plans", %{user: user} do
       class = class_fixture(user_id: user.id)
+      seating_plan = seating_plan_fixture(class_id: class.id)
+      seating_plan_seat_fixture(seating_plan_id: seating_plan.id)
+      student_fixture(class_id: class.id)
+      lesson_fixture(class_id: class.id)
       assert {:ok, %Class{}} = Classes.delete_class(user, class)
       assert_raise Ecto.NoResultsError, fn -> Classes.get_class!(user, class.id) end
     end
