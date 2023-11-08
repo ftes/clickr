@@ -46,9 +46,8 @@ defmodule ClickrWeb.LessonLive.Ended do
     </.simple_form>
 
     <div class="mt-5 flex-grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr">
-      <.link
+      <div
         :for={seat <- @lesson.seating_plan.seats}
-        navigate={~p"/grades/student/#{seat.student_id}/subject/#{@lesson.subject_id}"}
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
         class={[
@@ -102,7 +101,7 @@ defmodule ClickrWeb.LessonLive.Ended do
             <Heroicons.minus class="w-6 h-6" />
           </button>
         </div>
-      </.link>
+      </div>
     </div>
     """
   end
