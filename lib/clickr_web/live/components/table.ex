@@ -137,7 +137,7 @@ defmodule ClickrWeb.Table do
     assign(socket, :filter_changeset, changeset)
   end
 
-  defp assign_filter_changeset(socket, _assigns), do: assign(socket, :filter_changeset, :empty)
+  defp assign_filter_changeset(socket, _assigns), do: assign(socket, :filter_changeset, %{})
 
   attr :key, :atom, required: true
   attr :form, :map, required: true

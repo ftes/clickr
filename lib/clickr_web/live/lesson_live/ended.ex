@@ -24,7 +24,7 @@ defmodule ClickrWeb.LessonLive.Ended do
 
       <.input field={{f, :state}} type="hidden" value="graded" />
 
-      <%= for grade_f <- inputs_for(f, :grade) do %>
+      <.inputs_for :let={grade_f} field={f[:grade]}>
         <.input
           field={{grade_f, :min}}
           label={"#{dgettext("lessons.lessons", "Minimum")} #{Phoenix.HTML.Form.input_value(grade_f, :min)}"}
@@ -42,7 +42,7 @@ defmodule ClickrWeb.LessonLive.Ended do
           min="0"
           max={@max_points}
         />
-      <% end %>
+      </.inputs_for>
     </.simple_form>
 
     <div class="mt-5 flex-grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr">

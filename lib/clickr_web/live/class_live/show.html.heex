@@ -34,7 +34,8 @@
 
     <.simple_form
       :let={f}
-      for={:students}
+      for={%{}}
+      as={:students}
       id="students-form"
       phx-change="students_validate"
       phx-submit="students_create"

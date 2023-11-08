@@ -7,7 +7,7 @@ defmodule ClickrWeb.UserConfirmationLive do
     ~H"""
     <.header><%= dgettext("accounts", "Confirm Account") %></.header>
 
-    <.simple_form :let={f} for={:user} id="confirmation_form" phx-submit="confirm_account">
+    <.simple_form :let={f} for={%{}} as={:user} id="confirmation_form" phx-submit="confirm_account">
       <.input field={{f, :token}} type="hidden" value={@token} />
       <:actions>
         <.button phx-disable-with={dgettext("accounts", "Confirming...")}>

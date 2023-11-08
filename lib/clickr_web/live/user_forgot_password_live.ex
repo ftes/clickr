@@ -13,7 +13,7 @@ defmodule ClickrWeb.UserForgotPasswordLive do
         </:subtitle>
       </.header>
 
-      <.simple_form :let={f} id="reset_password_form" for={:user} phx-submit="send_email">
+      <.simple_form :let={f} id="reset_password_form" for={%{}} as={:user} phx-submit="send_email">
         <.input field={{f, :email}} type="email" placeholder={dgettext("accounts", "Email")} required />
         <:actions>
           <.button phx-disable-with={dgettext("accounts", "Sending...")} class="w-full">

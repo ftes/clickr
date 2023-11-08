@@ -7,7 +7,13 @@ defmodule ClickrWeb.UserConfirmationInstructionsLive do
     ~H"""
     <.header><%= dgettext("accounts", "Resend confirmation instructions") %></.header>
 
-    <.simple_form :let={f} for={:user} id="resend_confirmation_form" phx-submit="send_instructions">
+    <.simple_form
+      :let={f}
+      for={%{}}
+      as={:user}
+      id="resend_confirmation_form"
+      phx-submit="send_instructions"
+    >
       <.input field={{f, :email}} type="email" label={dgettext("accounts", "Email")} required />
       <:actions>
         <.button phx-disable-with={dgettext("accounts", "Sending...")}>
