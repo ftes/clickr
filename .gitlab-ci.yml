@@ -4,7 +4,7 @@ stages:
 
 default:
   # Also change versions in Dockerfile
-  image: hexpm/elixir:1.14.2-erlang-25.1.2-alpine-3.16.2
+  image: hexpm/elixir:1.15.7-erlang-26.1.2-alpine-3.18.4
   cache:
     paths:
       - deps/

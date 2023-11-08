@@ -13,7 +13,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     with {:ok, pid} <- start_or_get_pid(gateway_id) do
       GenServer.cast(pid, {:message, topic, payload})
     else
-      error -> Logger.warn("Failed to handle gateway message #{inspect(error)}")
+      error -> Logger.warning("Failed to handle gateway message #{inspect(error)}")
     end
   end
 

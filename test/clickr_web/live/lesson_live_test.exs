@@ -47,7 +47,7 @@ defmodule ClickrWeb.LessonLiveTest do
     end
 
     test "sorts by name when clicking on table name header", %{conn: conn, user: u, lesson: l} do
-      before = Timex.shift(l.inserted_at, seconds: -1)
+      before = DateTime.add(l.inserted_at, -1, :second)
       lesson_fixture(user_id: u.id, name: "a older", inserted_at: before)
 
       {:ok, live, html} = live(conn, ~p"/lessons")
