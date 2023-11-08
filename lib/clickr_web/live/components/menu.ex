@@ -139,7 +139,7 @@ defmodule ClickrWeb.Menu do
 
   defp icon(function, class),
     do:
-      Phoenix.LiveView.HTMLEngine.component(
+      Phoenix.LiveView.TagEngine.component(
         function,
         [class: class],
         {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}

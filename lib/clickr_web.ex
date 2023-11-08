@@ -52,7 +52,7 @@ defmodule ClickrWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ClickrWeb.LayoutView, "app.html"}
+        layout: {ClickrWeb.LayoutView, :app}
 
       unquote(view_helpers())
     end
