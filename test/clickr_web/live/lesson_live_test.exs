@@ -430,11 +430,11 @@ defmodule ClickrWeb.LessonLiveTest do
 
     test "shows initial and updated lesson grade", %{conn: conn, lesson: l} do
       {:ok, live, _} = live(conn, ~p"/lessons/#{l}/graded")
-      assert render(live) =~ "42%"
+      assert render(live) =~ "5+"
 
       assert live
              |> form("#lesson-form", %{lesson: %{grade: %{min: 0.0, max: 42.0}}})
-             |> render_change() =~ "100%"
+             |> render_change() =~ "1+"
     end
 
     test "shows overall grade", %{user: user, conn: conn, lesson: l, student: s} do

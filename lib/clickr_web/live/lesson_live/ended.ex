@@ -72,16 +72,15 @@ defmodule ClickrWeb.LessonLive.Ended do
           <span class="flex justify-center"><%= @points[seat.student_id] || 0 %></span>
           <span class="flex justify-center">
             <%= Grades.format(
-              :percent,
+              :german,
               @new_lesson_grades[seat.student_id] || @old_lesson_grades[seat.student_id] || 0.0
             ) %>
           </span>
           <span
             :if={@lesson.state == :graded}
             class="flex justify-center"
-            title={Grades.format(:percent, @grades[seat.student_id] || 0.0)}
           >
-            <%= Grades.format(:german, @grades[seat.student_id] || 0.0) %>
+            <%= Grades.format(:percent, @grades[seat.student_id] || 0.0) %>
           </span>
         </div>
 
