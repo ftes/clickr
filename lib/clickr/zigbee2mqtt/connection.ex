@@ -54,7 +54,10 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
     Logger.info("Connection up. Ensure gateway servers started for heartbeat and timeout.")
 
     gateways =
-      Clickr.Devices.list_gateways(Clickr.Accounts.system_user(), online: true, type: :zigbee2mqtt)
+      Clickr.Devices.list_gateways(Clickr.Accounts.system_user(),
+        online: true,
+        type: :zigbee2mqtt
+      )
 
     Enum.each(gateways, &Gateway.start(&1.id))
     {:ok, state}
@@ -64,7 +67,10 @@ defmodule Clickr.Zigbee2Mqtt.Connection do
     Logger.info("Connection down. Ensure gateway servers stopped and online=false in database.")
 
     gateways =
-      Clickr.Devices.list_gateways(Clickr.Accounts.system_user(), online: true, type: :zigbee2mqtt)
+      Clickr.Devices.list_gateways(Clickr.Accounts.system_user(),
+        online: true,
+        type: :zigbee2mqtt
+      )
 
     topic = ["bridge", "state"]
     offline = %{"state" => "offline"}
