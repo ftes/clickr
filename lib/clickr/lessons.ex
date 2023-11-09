@@ -175,6 +175,19 @@ defmodule Clickr.Lessons do
     end
   end
 
+  def create_all_lesson_students(%User{} = user, %Lesson{} = lesson) do
+    lesson = Repo.preload(lesson, seating_plan: :seats)
+
+    students =
+      for seat <- lesson.seating_plan.seats do
+        args = %{lesson_id: lesson.id, student_id: seat.student_id}
+        {:ok, student} = create_lesson_student(user, args)
+        student
+      end
+
+    {:ok, students}
+  end
+
   def get_last_question(%User{} = user, %Lesson{} = lesson, opts \\ []) do
     Question
     |> Bodyguard.scope(user)

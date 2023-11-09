@@ -98,12 +98,19 @@ defmodule Clickr.LessonsTest do
       assert {:error, %Ecto.Changeset{}} = Lessons.create_lesson(user, @invalid_attrs)
     end
 
-    defp seat_student(%{user: user, lesson: lesson}) do
+    defp seat_student(%{user: user, lesson: lesson}, attrs \\ []) do
       %{seating_plan_id: spid, room_id: rid} = lesson
       seating_plan = Clickr.Classes.get_seating_plan!(user, spid)
       %{id: sid} = student = student_fixture(user_id: user.id, class_id: seating_plan.class_id)
-      seating_plan_seat_fixture(seating_plan_id: spid, student_id: sid, x: 1, y: 1)
-      room_seat_fixture(room_id: rid, x: 1, y: 1)
+
+      (attrs[:seating_plan_seat] || [])
+      |> Enum.into(%{seating_plan_id: spid, student_id: sid, x: 1, y: 1})
+      |> seating_plan_seat_fixture()
+
+      (attrs[:room_seat] || [])
+      |> Enum.into(%{room_id: rid, x: 1, y: 1})
+      |> room_seat_fixture()
+
       %{student: student}
     end
 
@@ -182,7 +189,7 @@ defmodule Clickr.LessonsTest do
       assert %Ecto.Changeset{} = Lessons.change_lesson(lesson)
     end
 
-    test "add_extra_point_for_all/1 adds point for all students", %{user: u} do
+    test "add_extra_point_for_all/2 adds point for all students", %{user: u} do
       l = lesson_fixture(user_id: u.id)
       s1 = student_fixture()
       s2 = student_fixture()
@@ -191,6 +198,14 @@ defmodule Clickr.LessonsTest do
 
       assert {2, _} = Lessons.add_extra_point_for_all(u, l)
       assert [%{extra_points: 1}, %{extra_points: 43}] = Lessons.list_lesson_students(u)
+    end
+
+    test "create_all_lesson_students/2 marks all students as attending", %{user: u} do
+      l = lesson_fixture(user_id: u.id)
+      seat_student(%{user: u, lesson: l})
+      seat_student(%{user: u, lesson: l}, seating_plan_seat: [x: 2], room_seat: [x: 2])
+
+      assert {:ok, [_, _]} = Lessons.create_all_lesson_students(u, l)
     end
   end
 
