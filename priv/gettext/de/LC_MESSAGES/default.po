@@ -25,7 +25,7 @@ msgstr ""
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
-#: lib/clickr_web/live/class_live/show.html.heex:59
+#: lib/clickr_web/live/class_live/show.html.heex:60
 #: lib/clickr_web/live/gateway_live/show.html.heex:23
 #: lib/clickr_web/live/grade_live/show.html.heex:70
 #: lib/clickr_web/live/room_live/show.html.heex:95

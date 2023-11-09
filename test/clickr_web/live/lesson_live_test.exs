@@ -225,6 +225,15 @@ defmodule ClickrWeb.LessonLiveTest do
       send(live.pid, {:new_lesson_student, %{}})
       assert render(live) =~ "x-answered"
     end
+
+    test "marks all as present", %{conn: conn, lesson: lesson} do
+      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/roll_call")
+      refute render(live) =~ "x-answered"
+
+      assert live |> element("button", "All present") |> render_click()
+      send(live.pid, {:new_lesson_student, %{}})
+      assert render(live) =~ "x-answered"
+    end
   end
 
   describe "active" do

@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 
+#: lib/clickr_web/live/lesson_live/ended.ex:88
 #: lib/clickr_web/live/lesson_live/ended.ex:92
-#: lib/clickr_web/live/lesson_live/ended.ex:96
 #: lib/clickr_web/live/lesson_live/question.ex:106
 #: lib/clickr_web/live/lesson_live/question.ex:110
 #, elixir-autogen, elixir-format
@@ -68,8 +68,8 @@ msgstr ""
 msgid "Run"
 msgstr ""
 
+#: lib/clickr_web/live/lesson_live/ended.ex:96
 #: lib/clickr_web/live/lesson_live/ended.ex:100
-#: lib/clickr_web/live/lesson_live/ended.ex:104
 #: lib/clickr_web/live/lesson_live/question.ex:123
 #: lib/clickr_web/live/lesson_live/question.ex:127
 #, elixir-autogen, elixir-format
