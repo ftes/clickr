@@ -24,8 +24,8 @@ defmodule ClickrWeb.LessonLive.RollCall do
         >
           <%= label %>
         </.button>
-        <.button phx-click="create_all_lesson_students">
-          All present
+        <.button :if={@lesson.state == :started} phx-click="create_all_lesson_students">
+          <%= dgettext("lessons.lessons", "All present") %>
         </.button>
       </:actions>
     </.header>
@@ -90,7 +90,9 @@ defmodule ClickrWeb.LessonLive.RollCall do
   def handle_event("create_all_lesson_students", _, socket) do
     %{current_user: user, lesson: lesson} = socket.assigns
     {:ok, _} = Lessons.create_all_lesson_students(user, lesson)
-    {:noreply, socket}
+    {:ok, lesson} = Lessons.transition_lesson(user, lesson, :roll_call)
+    {:ok, lesson} = Lessons.transition_lesson(user, lesson, :active)
+    {:noreply, ClickrWeb.LessonLive.Router.navigate(socket, lesson)}
   end
 
   @impl true

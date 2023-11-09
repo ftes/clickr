@@ -20,6 +20,11 @@ msgstr ""
 msgid "Grading..."
 msgstr ""
 
+#: lib/clickr_web/live/lesson_live/roll_call.ex:28
+#, elixir-autogen
+msgid "All present"
+msgstr ""
+
 #: lib/clickr_web/live/lesson_live/ended.ex:11
 #: lib/clickr_web/live/lesson_live/ended.ex:118
 #: lib/clickr_web/live/lesson_live/question.ex:16

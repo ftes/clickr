@@ -9,7 +9,6 @@
 msgid ""
 msgstr ""
 "Language: de\n"
-"Plural-Forms: nplurals=2\n"
 
 #: lib/clickr_web/live/lesson_live/question_modal.ex:23
 #, elixir-autogen, elixir-format

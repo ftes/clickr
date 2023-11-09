@@ -9,7 +9,6 @@
 msgid ""
 msgstr ""
 "Language: de\n"
-"Plural-Forms: nplurals=2\n"
 
 #: lib/clickr_web/live/user_live/index.ex:10
 #: lib/clickr_web/live/user_live/index.html.heex:2

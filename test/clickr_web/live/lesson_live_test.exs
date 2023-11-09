@@ -205,6 +205,22 @@ defmodule ClickrWeb.LessonLiveTest do
     end
   end
 
+  describe "started" do
+    defp create_lesson_started(%{user: user}) do
+      %{lesson: lesson_fixture(user_id: user.id, state: :started)}
+    end
+
+    setup [:create_lesson_started, :seat_student_with_button]
+
+    test "marks all as present", %{conn: conn, lesson: lesson} do
+      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/started")
+      refute render(live) =~ "x-answered"
+
+      assert live |> element("button", "All present") |> render_click()
+      assert_redirected(live, ~p"/lessons/#{lesson}/active")
+    end
+  end
+
   describe "roll_call" do
     defp create_lesson_roll_call(%{user: user}) do
       %{lesson: lesson_fixture(user_id: user.id, state: :roll_call)}
@@ -222,15 +238,6 @@ defmodule ClickrWeb.LessonLiveTest do
       refute render(live) =~ "x-answered"
 
       Clickr.Lessons.create_lesson_student(user, %{lesson_id: lesson.id, student_id: student.id})
-      send(live.pid, {:new_lesson_student, %{}})
-      assert render(live) =~ "x-answered"
-    end
-
-    test "marks all as present", %{conn: conn, lesson: lesson} do
-      {:ok, live, _} = live(conn, ~p"/lessons/#{lesson}/roll_call")
-      refute render(live) =~ "x-answered"
-
-      assert live |> element("button", "All present") |> render_click()
       send(live.pid, {:new_lesson_student, %{}})
       assert render(live) =~ "x-answered"
     end

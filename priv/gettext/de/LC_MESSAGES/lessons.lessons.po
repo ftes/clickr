@@ -9,7 +9,6 @@
 msgid ""
 msgstr ""
 "Language: de\n"
-"Plural-Forms: nplurals=2\n"
 
 #: lib/clickr_web/live/lesson_live/index.ex:41
 #, elixir-autogen, elixir-format
@@ -20,6 +19,11 @@ msgstr "Stunde bearbeiten"
 #, elixir-autogen, elixir-format
 msgid "Grading..."
 msgstr "Benote..."
+
+#: lib/clickr_web/live/lesson_live/roll_call.ex:28
+#, elixir-autogen
+msgid "All present"
+msgstr "Alle anwesend"
 
 #: lib/clickr_web/live/lesson_live/ended.ex:11
 #: lib/clickr_web/live/lesson_live/ended.ex:118
