@@ -1,0 +1,41 @@
+# fly.toml app configuration file generated for clickr-new-db on 2024-02-28T08:15:16+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'clickr-new-db'
+primary_region = 'fra'
+
+[env]
+  PRIMARY_REGION = 'fra'
+  FLY_SCALE_TO_ZERO = '1h'
+
+[[mounts]]
+  source = 'pg_data'
+  destination = '/data'
+
+[checks]
+  [checks.pg]
+    port = 5500
+    type = 'http'
+    interval = '15s'
+    timeout = '10s'
+    path = '/flycheck/pg'
+
+  [checks.role]
+    port = 5500
+    type = 'http'
+    interval = '15s'
+    timeout = '10s'
+    path = '/flycheck/role'
+
+  [checks.vm]
+    port = 5500
+    type = 'http'
+    interval = '10s'
+    timeout = '1m0s'
+    path = '/flycheck/vm'
+
+[[metrics]]
+  port = 9187
+  path = '/metrics'
