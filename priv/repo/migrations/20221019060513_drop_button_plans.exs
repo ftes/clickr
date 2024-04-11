@@ -26,17 +26,25 @@ defmodule Clickr.Repo.Migrations.DropButtonPlans do
         ON l.button_plan_id = b.id
     ")
 
-    drop constraint(:room_seats, :room_seats_room_id_fkey)
-    drop constraint(:lessons, :lessons_room_id_fkey)
+    # drop constraint(:room_seats, :room_seats_room_id_fkey)
+    # drop constraint(:lessons, :lessons_room_id_fkey)
+
+    drop index(:button_plan_seats, :button_plan_id)
+    drop index(:button_plan_seats, [:button_plan_id, :x, :y])
+    drop index(:button_plan_seats, [:button_plan_id, :button_id])
 
     alter table(:room_seats) do
       remove :button_plan_id
-      modify :room_id, references(:rooms, on_delete: :delete_all, type: :binary_id), null: false
+      remove :room_id
+      add :room_id, references(:rooms, on_delete: :delete_all, type: :binary_id), null: false
     end
+
+    drop index(:lessons, :button_plan_id)
 
     alter table(:lessons) do
       remove :button_plan_id
-      modify :room_id, references(:rooms, on_delete: :delete_all, type: :binary_id), null: false
+      remove :room_id
+      add :room_id, references(:rooms, on_delete: :delete_all, type: :binary_id), null: false
     end
 
     create unique_index(:room_seats, [:room_id, :x, :y])

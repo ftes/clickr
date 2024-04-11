@@ -3,7 +3,7 @@ defmodule Clickr.Repo.Migrations.AddGatewayApiToken do
 
   def change do
     alter table(:gateways) do
-      add :api_token, :string, null: false, default: fragment("gen_random_uuid()")
+      add :api_token, :string, null: false
     end
   end
 end

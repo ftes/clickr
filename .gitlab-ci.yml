@@ -4,7 +4,7 @@ stages:
 
 default:
   # Also change versions in Dockerfile
-  image: hexpm/elixir:1.15.7-erlang-26.1.2-alpine-3.18.4
+  image: hexpm/elixir:1.16.1-erlang-26.2.2-debian-bullseye-20240130-slim
   cache:
     paths:
       - deps/
@@ -30,11 +30,6 @@ i18n:
 
 test:
   stage: test
-  services:
-    - postgres:14.5-alpine
-  variables:
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: postgres
   script:
     - mix test
 

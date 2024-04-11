@@ -9,12 +9,9 @@ config :bcrypt_elixir, :log_rounds, 1
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :clickr, Clickr.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "postgres",
-  database: "clickr_test#{System.get_env("MIX_TEST_PARTITION")}",
-  pool: Ecto.Adapters.SQL.Sandbox,
-  pool_size: 10
+  database: Path.expand("../clickr_test.db", Path.dirname(__ENV__.file)),
+  pool_size: 1,
+  pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.

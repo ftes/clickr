@@ -7,7 +7,8 @@ defmodule Clickr.Repo.Migrations.AddStateToQuestion do
     end
 
     alter table(:questions) do
-      modify :state, :string, null: false, default: nil
+      remove :state
+      add :state, :string, null: false, default: nil
     end
   end
 end

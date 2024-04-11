@@ -133,8 +133,7 @@ defmodule Clickr.Classes do
 
   defp filter_by_name(query, %{name: <<_::binary-size(2), _::binary>> = name}) do
     query
-    |> where([x], fragment("? <% ?", ^name, x.name))
-    |> order_by([x], desc: fragment("similarity(name, ?)", ^name))
+    |> where([x], like(x.name, ^"%#{name}%"))
   end
 
   defp filter_by_name(query, _), do: query

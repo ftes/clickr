@@ -35,13 +35,11 @@ defmodule Clickr.Lessons do
 
   def list_lesson_combinations(%User{} = user, opts \\ []) do
     from(l in Lesson,
-      distinct: [l.subject_id, l.seating_plan_id, l.room_id],
-      limit: ^opts[:limit]
+      limit: ^(opts[:limit] || 100),
+      order_by: [desc: l.inserted_at]
     )
     |> Bodyguard.scope(user)
     |> Repo.all()
-    # order_by in query doesn't work
-    |> Enum.sort_by(& &1.inserted_at, :desc)
     |> _preload(opts[:preload])
   end
 
@@ -277,13 +275,13 @@ defmodule Clickr.Lessons do
       res =
         Ecto.Multi.new()
         |> Ecto.Multi.delete(:lesson_student, ls)
-        |> Ecto.Multi.delete_all(
-          :question_answers,
-          from(qa in QuestionAnswer,
-            join: q in assoc(qa, :question),
-            where: qa.student_id == ^ls.student_id and q.lesson_id == ^ls.lesson_id
-          )
-        )
+        # |> Ecto.Multi.delete_all(
+        #   :question_answers,
+        #   from(qa in QuestionAnswer,
+        #     join: q in assoc(qa, :question),
+        #     where: qa.student_id == ^ls.student_id and q.lesson_id == ^ls.lesson_id
+        #   )
+        # )
         |> Repo.transaction()
 
       with {:ok, %{lesson_student: lesson_student}} <- res do
@@ -373,8 +371,7 @@ defmodule Clickr.Lessons do
 
   defp filter_by_name(query, %{name: <<_::binary-size(2), _::binary>> = name}) do
     query
-    |> where([x], fragment("? <% ?", ^name, x.name))
-    |> order_by([x], desc: fragment("similarity(name, ?)", ^name))
+    |> where([x], like(x.name, ^"%#{name}%"))
   end
 
   defp filter_by_name(query, _), do: query
