@@ -49,6 +49,7 @@ fly ssh console
 
 - `mix gettext.extract --merge --locale de`
 - `mix gettext.extract --merge --locale de`
+- `mix gettext.extract_and_merge`
 
 ## Learn more
 

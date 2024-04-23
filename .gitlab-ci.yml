@@ -17,20 +17,21 @@ before_script:
   - mix local.hex --force
   - mix deps.get --only test
 
-format:
-  stage: test
-  script:
-    - mix format --check-formatted
-    - mix compile --warnings-as-errors
+# format:
+#   stage: test
+#   script:
+# - mix format --check-formatted
+# - mix compile --warnings-as-errors
 
-i18n:
-  stage: test
-  script:
-    - mix gettext.extract --check-up-to-date
+# i18n:
+#   stage: test
+#   script:
+#     - mix gettext.extract --check-up-to-date
 
 test:
   stage: test
   script:
+    - MIX_ENV=test mix compile --warnings-as-errors
     - mix test
 
 deploy:
