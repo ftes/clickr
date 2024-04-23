@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for clickr-server on 2024-04-11T18:08:48+02:00
+# fly.toml app configuration file generated for clickr-new-litefs on 2024-04-12T07:50:17+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -7,17 +7,16 @@ app = 'clickr-new'
 primary_region = 'fra'
 kill_signal = 'SIGTERM'
 
-[build]
-
-[deploy]
-  release_command = '/app/bin/migrate'
-
 [env]
   PHX_HOST = 'new.klassenknopf.de'
-  PORT = '8080'
+  PORT = '8081'
+
+[mounts]
+  source = 'litefs'
+  destination = '/var/lib/litefs'
 
 [http_service]
-  internal_port = 8080
+  internal_port = 8081
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true

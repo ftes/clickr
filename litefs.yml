@@ -45,12 +45,18 @@ exec:
 # "consul" lease type so that our application can dynamically change the primary.
 #
 # These environment variables will be available in your Fly.io application.
-lease:
-  type: "consul"
-  advertise-url: "http://${HOSTNAME}.vm.${FLY_APP_NAME}.internal:20202"
-  candidate: ${FLY_REGION == PRIMARY_REGION}
-  promote: true
+# lease:
+#   type: "consul"
+#   advertise-url: "http://${HOSTNAME}.vm.${FLY_APP_NAME}.internal:20202"
+#   candidate: ${FLY_REGION == PRIMARY_REGION}
+#   promote: true
 
-  consul:
-    url: "${FLY_CONSUL_URL}"
-    key: "litefs/${FLY_APP_NAME}-v15"
+#   consul:
+#     url: "${FLY_CONSUL_URL}"
+#     key: "litefs/${FLY_APP_NAME}-v16"
+
+# Static for now (single node)
+lease:
+  type: "static"
+  advertise-url: "http://primary:20202"
+  candidate: true
