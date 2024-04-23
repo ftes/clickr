@@ -38,7 +38,7 @@ deploy:
   stage: deploy
   cache: []
   before_script:
-    - apk add curl
+    - apt-get update -y && apt-get install -y curl
     - curl -L https://fly.io/install.sh | sh
   script:
     - /root/.fly/bin/flyctl deploy
