@@ -28,19 +28,6 @@ app_name =
     System.get_env("FLY_APP_NAME", "clickr_server_#{config_env()}")
   end
 
-config :libcluster,
-  debug: true,
-  topologies: [
-    fly6pn: [
-      strategy: Cluster.Strategy.DNSPoll,
-      config: [
-        polling_interval: 5_000,
-        query: "#{app_name}.internal",
-        node_basename: app_name
-      ]
-    ]
-  ]
-
 if password = System.get_env("MQTT_PASSWORD") do
   config :clickr, Clickr.Zigbee2Mqtt.Connection,
     password: password,

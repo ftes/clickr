@@ -37,7 +37,6 @@ defmodule Clickr.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:libcluster, "~> 3.3"},
       {:bcrypt_elixir, "~> 3.0"},
       {:phoenix, "~> 1.7"},
       {:phoenix_ecto, "~> 4.4"},

@@ -9,11 +9,7 @@ defmodule Clickr.Application do
 
   @impl true
   def start(_type, _args) do
-    topologies = Application.get_env(:libcluster, :topologies) || []
-
     children = [
-      {Cluster.Supervisor, [topologies, [name: Clickr.ClusterSupervisor]]},
-
       # Start the Telemetry supervisor
       ClickrWeb.Telemetry,
       # Start the Ecto repository
