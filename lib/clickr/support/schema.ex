@@ -18,6 +18,6 @@ defmodule Clickr.Schema do
   end
 
   def schemaless_enum(values) do
-    {:parameterized, Ecto.Enum, Ecto.Enum.init(values: values)}
+    {:parameterized, {Ecto.Enum, Ecto.Enum.init(values: values)}}
   end
 end

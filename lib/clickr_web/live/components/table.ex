@@ -236,7 +236,6 @@ defmodule ClickrWeb.Table do
 
   defp sort_icon(assigns),
     do: ~H"""
-
     """
 
   defmodule LiveView do

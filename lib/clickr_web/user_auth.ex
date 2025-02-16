@@ -3,7 +3,7 @@ defmodule ClickrWeb.UserAuth do
 
   import Plug.Conn
   import Phoenix.Controller
-  import ClickrWeb.Gettext
+  use Gettext, backend: ClickrWeb.Gettext
 
   alias Clickr.Accounts
 
@@ -244,7 +244,7 @@ defmodule ClickrWeb.UserAuth do
       conn
       |> put_flash(
         :error,
-        ClickrWeb.Gettext.dgettext("accounts", "You must log in to access this page.")
+        dgettext("accounts", "You must log in to access this page.")
       )
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log_in")

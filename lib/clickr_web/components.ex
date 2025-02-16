@@ -10,7 +10,7 @@ defmodule ClickrWeb.Components do
   [heroicons_elixir](https://github.com/mveytsman/heroicons_elixir) project.
   """
   use Phoenix.Component
-  import ClickrWeb.Gettext, warn: false
+  use Gettext, backend: ClickrWeb.Gettext
   alias Phoenix.LiveView.JS
 
   @doc """

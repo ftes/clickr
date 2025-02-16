@@ -26,7 +26,7 @@ defmodule ClickrWeb do
       use Phoenix.Controller, namespace: ClickrWeb
 
       import Plug.Conn
-      import ClickrWeb.Gettext
+      use Gettext, backend: ClickrWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -87,7 +87,7 @@ defmodule ClickrWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import ClickrWeb.Gettext
+      use Gettext, backend: ClickrWeb.Gettext
     end
   end
 
@@ -110,7 +110,7 @@ defmodule ClickrWeb do
 
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
-      import ClickrWeb.Gettext
+      use Gettext, backend: ClickrWeb.Gettext
       unquote(verified_routes())
     end
   end
