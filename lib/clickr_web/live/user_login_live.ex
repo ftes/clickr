@@ -5,11 +5,11 @@ defmodule ClickrWeb.UserLoginLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        <%= dgettext("accounts", "Sign in to account") %>
+        {dgettext("accounts", "Sign in to account")}
         <:subtitle>
-          <%= dgettext("accounts", "Don't have an account?") %>
+          {dgettext("accounts", "Don't have an account?")}
           <.link navigate={~p"/users/register"} class="font-semibold text-brand hover:underline">
-            <%= dgettext("accounts.accounts", "Sign up") %>
+            {dgettext("accounts.accounts", "Sign up")}
           </.link>
         </:subtitle>
       </.header>
@@ -37,12 +37,12 @@ defmodule ClickrWeb.UserLoginLive do
             label={dgettext("accounts", "Keep me logged in")}
           />
           <.link href={~p"/users/reset_password"} class="text-sm font-semibold">
-            <%= dgettext("accounts", "Forgot your password?") %>
+            {dgettext("accounts", "Forgot your password?")}
           </.link>
         </:actions>
         <:actions>
           <.button phx-disable-with={dgettext("accounts", "Sigining in...")} class="w-full">
-            <%= dgettext("accounts.actions", "Sign in") %> <span aria-hidden="true">→</span>
+            {dgettext("accounts.actions", "Sign in")} <span aria-hidden="true">→</span>
           </.button>
         </:actions>
       </.simple_form>

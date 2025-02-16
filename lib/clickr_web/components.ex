@@ -79,13 +79,13 @@ defmodule ClickrWeb.Components do
               <div id={"#{@id}-content"}>
                 <header :if={@title != []}>
                   <h1 id={"#{@id}-title"} class="text-lg font-semibold leading-8 text-zinc-800">
-                    <%= render_slot(@title) %>
+                    {render_slot(@title)}
                   </h1>
                   <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
-                    <%= render_slot(@subtitle) %>
+                    {render_slot(@subtitle)}
                   </p>
                 </header>
-                <%= render_slot(@inner_block) %>
+                {render_slot(@inner_block)}
                 <div :if={@confirm != [] or @cancel != []} class="ml-6 mb-4 flex items-center gap-5">
                   <.button
                     :for={confirm <- @confirm}
@@ -94,14 +94,14 @@ defmodule ClickrWeb.Components do
                     phx-disable-with
                     class="py-2 px-3"
                   >
-                    <%= render_slot(confirm) %>
+                    {render_slot(confirm)}
                   </.button>
                   <.link
                     :for={cancel <- @cancel}
                     phx-click={hide_modal(@on_cancel, @id)}
                     class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
                   >
-                    <%= render_slot(cancel) %>
+                    {render_slot(cancel)}
                   </.link>
                 </div>
               </div>
@@ -149,9 +149,9 @@ defmodule ClickrWeb.Components do
       <p :if={@title} class="flex items-center gap-1.5 text-[0.8125rem] font-semibold leading-6">
         <Heroicons.information_circle :if={@kind == :info} mini class="h-4 w-4" />
         <Heroicons.exclamation_circle :if={@kind == :error} mini class="h-4 w-4" />
-        <%= @title %>
+        {@title}
       </p>
-      <p class="mt-2 text-[0.8125rem] leading-5"><%= msg %></p>
+      <p class="mt-2 text-[0.8125rem] leading-5">{msg}</p>
       <button :if={@close} type="button" class="group absolute top-2 right-1 p-2" aria-label="Close">
         <Heroicons.x_mark solid class="h-5 w-5 stroke-current opacity-40 group-hover:opacity-70" />
       </button>
@@ -186,9 +186,9 @@ defmodule ClickrWeb.Components do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
       <div class="space-y-8 my-10">
-        <%= render_slot(@inner_block, f) %>
+        {render_slot(@inner_block, f)}
         <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
-          <%= render_slot(action, f) %>
+          {render_slot(action, f)}
         </div>
       </div>
     </.form>
@@ -220,7 +220,7 @@ defmodule ClickrWeb.Components do
       ]}
       {@rest}
     >
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </button>
     """
   end
@@ -277,7 +277,7 @@ defmodule ClickrWeb.Components do
         name={@name}
         class="rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
       />
-      <%= @label %>
+      {@label}
     </label>
     """
   end
@@ -285,7 +285,7 @@ defmodule ClickrWeb.Components do
   def input(%{type: "select", options: _} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}>{@label}</.label>
       <select
         id={@id}
         name={@name}
@@ -298,7 +298,7 @@ defmodule ClickrWeb.Components do
           value={value}
           selected={to_string(value) == to_string(@value)}
         >
-          <%= label %>
+          {label}
         </option>
       </select>
       <.error :for={msg <- @errors} message={msg} />
@@ -309,14 +309,14 @@ defmodule ClickrWeb.Components do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}>{@label}</.label>
       <select
         id={@id}
         name={@name}
         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
         {@rest}
       >
-        <option :for={opt <- @option} {assigns_to_attributes(opt)}><%= render_slot(opt) %></option>
+        <option :for={opt <- @option} {assigns_to_attributes(opt)}>{render_slot(opt)}</option>
       </select>
       <.error :for={msg <- @errors} message={msg} />
     </div>
@@ -326,7 +326,7 @@ defmodule ClickrWeb.Components do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}>{@label}</.label>
       <textarea
         id={@id || @name}
         name={@name}
@@ -346,7 +346,7 @@ defmodule ClickrWeb.Components do
   def input(assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}>{@label}</.label>
       <input
         type={@type}
         name={@name}
@@ -380,7 +380,7 @@ defmodule ClickrWeb.Components do
   def label(assigns) do
     ~H"""
     <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </label>
     """
   end
@@ -394,7 +394,7 @@ defmodule ClickrWeb.Components do
     ~H"""
     <p class="phx-no-feedback:hidden mt-3 flex gap-3 text-sm leading-6 text-rose-600">
       <Heroicons.exclamation_circle mini class="mt-0.5 h-5 w-5 flex-none fill-rose-500" />
-      <%= @message %>
+      {@message}
     </p>
     """
   end
@@ -413,13 +413,13 @@ defmodule ClickrWeb.Components do
     <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
       <div>
         <h1 class="text-lg font-semibold leading-8 text-zinc-800">
-          <%= render_slot(@inner_block) %>
+          {render_slot(@inner_block)}
         </h1>
         <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
-          <%= render_slot(@subtitle) %>
+          {render_slot(@subtitle)}
         </p>
       </div>
-      <div class="flex-none flex gap-4"><%= render_slot(@actions) %></div>
+      <div class="flex-none flex gap-4">{render_slot(@actions)}</div>
     </header>
     """
   end
@@ -445,8 +445,8 @@ defmodule ClickrWeb.Components do
     <div class={["mt-14", @class]}>
       <dl class="-my-4 divide-y divide-zinc-200">
         <div :for={item <- @item} class="flex gap-4 py-4 sm:gap-8">
-          <dt class="w-1/4 flex-none text-[0.8125rem] leading-6 text-zinc-500"><%= item.title %></dt>
-          <dd class="text-sm leading-6 text-zinc-700"><%= render_slot(item) %></dd>
+          <dt class="w-1/4 flex-none text-[0.8125rem] leading-6 text-zinc-500">{item.title}</dt>
+          <dd class="text-sm leading-6 text-zinc-700">{render_slot(item)}</dd>
         </div>
       </dl>
     </div>
@@ -471,7 +471,7 @@ defmodule ClickrWeb.Components do
         class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
       >
         <Heroicons.arrow_left solid class="w-3 h-3 stroke-current inline" />
-        <%= render_slot(@inner_block) %>
+        {render_slot(@inner_block)}
       </.link>
     </div>
     """

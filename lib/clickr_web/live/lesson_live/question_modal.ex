@@ -8,7 +8,7 @@ defmodule ClickrWeb.LessonLive.QuestionModal do
     ~H"""
     <div>
       <.header>
-        <%= dgettext("lessons.lessons", "Ask Question") %>
+        {dgettext("lessons.lessons", "Ask Question")}
       </.header>
 
       <.simple_form
@@ -22,7 +22,7 @@ defmodule ClickrWeb.LessonLive.QuestionModal do
         <.input field={{f, :points}} type="number" label={dgettext("lessons.questions", "Points")} />
         <.input field={{f, :name}} type="text" label={dgettext("lessons.questions", "Name")} />
         <:actions>
-          <.button><%= dgettext("lessons.actions", "Ask Question") %></.button>
+          <.button>{dgettext("lessons.actions", "Ask Question")}</.button>
         </:actions>
       </.simple_form>
     </div>

@@ -1,23 +1,23 @@
 <.header>
-  <%= dgettext("classes.seating_plans", "Seating plan") %> <%= @seating_plan.name %>
+  {dgettext("classes.seating_plans", "Seating plan")} {@seating_plan.name}
   <:actions>
     <.link patch={~p"/seating_plans/#{@seating_plan}/show/edit"} phx-click={JS.push_focus()}>
-      <.button><%= dgettext("classes.seating_plans", "Edit Seating Plan") %></.button>
+      <.button>{dgettext("classes.seating_plans", "Edit Seating Plan")}</.button>
     </.link>
   </:actions>
 </.header>
 
 <.list>
-  <:item title={dgettext("classes.seating_plans", "Name")}><%= @seating_plan.name %></:item>
-  <:item title={dgettext("classes.seating_plans", "Width")}><%= @seating_plan.width %></:item>
-  <:item title={dgettext("classes.seating_plans", "Height")}><%= @seating_plan.height %></:item>
+  <:item title={dgettext("classes.seating_plans", "Name")}>{@seating_plan.name}</:item>
+  <:item title={dgettext("classes.seating_plans", "Width")}>{@seating_plan.width}</:item>
+  <:item title={dgettext("classes.seating_plans", "Height")}>{@seating_plan.height}</:item>
   <:item title={dgettext("classes.seating_plans", "Class")}>
-    <%= @seating_plan.class.name %>
+    {@seating_plan.class.name}
   </:item>
 </.list>
 
 <h2 class="mt-6 text-[0.8125rem] leading-6 text-zinc-500">
-  <%= dgettext("classes.seating_plans", "Students") %>
+  {dgettext("classes.seating_plans", "Students")}
 </h2>
 
 <div class="flex flex-col divide-y divide-solid gap-4">
@@ -44,14 +44,14 @@
       x-on:dragend.self="dragging = false"
     >
       <p class="flex-1 overflow-hidden text-ellipsis text-sm font-medium text-gray-900 text-center">
-        <%= seat.student.name %>
+        {seat.student.name}
       </p>
       <button
         class="absolute right-3 top-1"
         title={gettext("Remove")}
         phx-click={JS.push("delete_seat", value: %{id: seat.id})}
       >
-        <span class="sr-only"><%= gettext("Remove") %></span>
+        <span class="sr-only">{gettext("Remove")}</span>
         <Heroicons.x_mark class="w-4 h-4 -mr-2" />
       </button>
     </div>
@@ -75,7 +75,7 @@
         '!bg-green-400': dragging == $el,
       }"
     >
-      <span class="invisible"><%= dgettext("classes.seating_plans", "Empty seat") %></span>
+      <span class="invisible">{dgettext("classes.seating_plans", "Empty seat")}</span>
     </div>
   </div>
 
@@ -97,13 +97,13 @@
       "
     >
       <p class="text-xs text-gray-900">
-        <%= student.name %>
+        {student.name}
       </p>
     </div>
   </div>
 </div>
 
-<.back navigate={~p"/seating_plans"}><%= gettext("Back") %></.back>
+<.back navigate={~p"/seating_plans"}>{gettext("Back")}</.back>
 
 <%= if @live_action in [:edit] do %>
   <.modal id="seating_plan-modal" show on_cancel={JS.patch(~p"/seating_plans/#{@seating_plan}")}>

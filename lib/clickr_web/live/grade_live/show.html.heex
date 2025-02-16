@@ -1,16 +1,16 @@
 <.header>
-  <%= dgettext("grades.grades", "Grade") %> <%= @grade.student.name %> <%= @grade.subject.name %>
+  {dgettext("grades.grades", "Grade")} {@grade.student.name} {@grade.subject.name}
 </.header>
 
 <div class="divide-y divide-zinc-200">
   <.list class="py-4">
-    <:item title={dgettext("grades.grades", "Student")}><%= @grade.student.name %></:item>
-    <:item title={dgettext("grades.grades", "Subject")}><%= @grade.subject.name %></:item>
+    <:item title={dgettext("grades.grades", "Student")}>{@grade.student.name}</:item>
+    <:item title={dgettext("grades.grades", "Subject")}>{@grade.subject.name}</:item>
     <:item title={dgettext("grades.grades", "Grade")}>
-      <%= Clickr.Grades.format(:german, @grade.percent) %>
+      {Clickr.Grades.format(:german, @grade.percent)}
     </:item>
     <:item title={dgettext("grades.grades", "Percent")}>
-      <%= Clickr.Grades.format(:percent, @grade.percent) %>
+      {Clickr.Grades.format(:percent, @grade.percent)}
     </:item>
   </.list>
 
@@ -23,17 +23,17 @@
     row_click={&JS.navigate(~p"/lessons/#{&1.lesson_id}/router")}
   >
     <:col :let={lg} label={dgettext("grades.lesson_grades", "Lesson grade")}>
-      <%= lg.lesson.name %>
+      {lg.lesson.name}
     </:col>
     <:col :let={lg} label={dgettext("grades.lesson_grades", "Date")}>
-      <%= format_date(lg.lesson.inserted_at) %>
+      {format_date(lg.lesson.inserted_at)}
     </:col>
     <:col :let={lg} label={dgettext("grades.lesson_grades", "Percent")}>
-      <%= Clickr.Grades.format(:percent, lg.percent) %>
+      {Clickr.Grades.format(:percent, lg.percent)}
     </:col>
     <:action :let={lg}>
       <div class="sr-only">
-        <.link navigate={~p"/lessons/#{lg.lesson_id}/router"}><%= gettext("Show") %></.link>
+        <.link navigate={~p"/lessons/#{lg.lesson_id}/router"}>{gettext("Show")}</.link>
       </div>
     </:action>
   </.live_component>
@@ -42,32 +42,32 @@
     <div class="flex justify-end">
       <.link navigate={~p"/grades/#{@grade}/new_bonus_grade"}>
         <.button>
-          <%= dgettext("grades.bonus_grades", "New bonus grade") %>
+          {dgettext("grades.bonus_grades", "New bonus grade")}
         </.button>
       </.link>
     </div>
 
     <.live_component module={ClickrWeb.Table} id="bonus-grades" compact rows={@grade.bonus_grades}>
-      <:col :let={bg} label={dgettext("grades.bonus_grades", "Bonus grade")}><%= bg.name %></:col>
+      <:col :let={bg} label={dgettext("grades.bonus_grades", "Bonus grade")}>{bg.name}</:col>
       <:col :let={bg} label={dgettext("grades.bonus_grades", "Date")}>
-        <%= format_date(bg.inserted_at) %>
+        {format_date(bg.inserted_at)}
       </:col>
       <:col :let={bg} label={dgettext("grades.bonus_grades", "Percent")}>
-        <%= Clickr.Grades.format(:percent, bg.percent) %>
+        {Clickr.Grades.format(:percent, bg.percent)}
       </:col>
       <:action :let={bg}>
         <.link
           phx-click={JS.push("delete_bonus_grade", value: %{id: bg.id})}
           data-confirm={gettext("Are you sure?")}
         >
-          <%= gettext("Delete") %>
+          {gettext("Delete")}
         </.link>
       </:action>
     </.live_component>
   </div>
 </div>
 
-<.back navigate={~p"/grades"}><%= gettext("Back") %></.back>
+<.back navigate={~p"/grades"}>{gettext("Back")}</.back>
 
 <.modal
   :if={@live_action == :new_bonus_grade}

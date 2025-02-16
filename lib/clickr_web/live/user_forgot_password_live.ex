@@ -7,9 +7,9 @@ defmodule ClickrWeb.UserForgotPasswordLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        <%= dgettext("accounts", "Forgot your password?") %>
+        {dgettext("accounts", "Forgot your password?")}
         <:subtitle>
-          <%= dgettext("accounts", "We'll send a password reset link to your inbox") %>
+          {dgettext("accounts", "We'll send a password reset link to your inbox")}
         </:subtitle>
       </.header>
 
@@ -17,7 +17,7 @@ defmodule ClickrWeb.UserForgotPasswordLive do
         <.input field={{f, :email}} type="email" placeholder={dgettext("accounts", "Email")} required />
         <:actions>
           <.button phx-disable-with={dgettext("accounts", "Sending...")} class="w-full">
-            <%= dgettext("accounts.actions", "Send password reset instructions") %>
+            {dgettext("accounts.actions", "Send password reset instructions")}
           </.button>
         </:actions>
       </.simple_form>

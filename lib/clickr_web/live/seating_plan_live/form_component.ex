@@ -9,7 +9,7 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+        {@title}
       </.header>
 
       <.simple_form
@@ -34,7 +34,7 @@ defmodule ClickrWeb.SeatingPlanLive.FormComponent do
         />
         <.input field={{f, :name}} type="text" label={dgettext("classes.seating_plans", "Name")} />
         <:actions>
-          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
+          <.button phx-disable-with={gettext("Saving...")}>{gettext("Save")}</.button>
         </:actions>
       </.simple_form>
     </div>

@@ -8,11 +8,11 @@ defmodule ClickrWeb.UserRegistrationLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        <%= dgettext("accounts", "Register for an account") %>
+        {dgettext("accounts", "Register for an account")}
         <:subtitle>
-          <%= dgettext("accounts", "Already registered?") %>
+          {dgettext("accounts", "Already registered?")}
           <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            <%= dgettext("accounts.accounts", "Sign in") %>
+            {dgettext("accounts.accounts", "Sign in")}
           </.link>
         </:subtitle>
       </.header>
@@ -45,7 +45,7 @@ defmodule ClickrWeb.UserRegistrationLive do
 
         <:actions>
           <.button phx-disable-with={dgettext("accounts", "Signing up...")} class="w-full">
-            <%= dgettext("accounts.actions", "Sign up") %>
+            {dgettext("accounts.actions", "Sign up")}
           </.button>
         </:actions>
       </.simple_form>

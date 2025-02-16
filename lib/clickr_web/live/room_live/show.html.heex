@@ -5,22 +5,22 @@
 />
 
 <.header>
-  <%= dgettext("rooms.rooms", "Room") %> <%= @room.name %>
+  {dgettext("rooms.rooms", "Room")} {@room.name}
   <:actions>
     <.link patch={~p"/rooms/#{@room}/show/edit"} phx-click={JS.push_focus()}>
-      <.button><%= dgettext("rooms.rooms", "Edit Room") %></.button>
+      <.button>{dgettext("rooms.rooms", "Edit Room")}</.button>
     </.link>
   </:actions>
 </.header>
 
 <.list>
-  <:item title={dgettext("rooms.rooms", "Name")}><%= @room.name %></:item>
-  <:item title={dgettext("rooms.rooms", "Width")}><%= @room.width %></:item>
-  <:item title={dgettext("rooms.rooms", "Height")}><%= @room.height %></:item>
+  <:item title={dgettext("rooms.rooms", "Name")}>{@room.name}</:item>
+  <:item title={dgettext("rooms.rooms", "Width")}>{@room.width}</:item>
+  <:item title={dgettext("rooms.rooms", "Height")}>{@room.height}</:item>
 </.list>
 
 <h2 class="mt-6 text-[0.8125rem] leading-6 text-zinc-500">
-  <%= dgettext("rooms.rooms", "Buttons") %>
+  {dgettext("rooms.rooms", "Buttons")}
 </h2>
 
 <div
@@ -49,14 +49,14 @@
     x-on:dragend.self="dragging = false"
   >
     <p class="flex-1 overflow-hidden text-ellipsis text-sm font-medium text-center text-gray-900">
-      <%= seat.button.device.name %>/<%= translate_button_name(seat.button) %>
+      {seat.button.device.name}/{translate_button_name(seat.button)}
     </p>
     <button
       class="absolute right-3 top-1"
       title={gettext("Remove")}
       phx-click={JS.push("delete_seat", value: %{id: seat.id})}
     >
-      <span class="sr-only"><%= gettext("Remove") %></span>
+      <span class="sr-only">{gettext("Remove")}</span>
       <Heroicons.x_mark class="w-4 h-4 -mr-2" />
     </button>
   </div>
@@ -88,11 +88,11 @@
       '!bg-green-400': dragging == $el,
     }"
   >
-    <span class="invisible"><%= dgettext("rooms.rooms", "Empty seat") %></span>
+    <span class="invisible">{dgettext("rooms.rooms", "Empty seat")}</span>
   </button>
 </div>
 
-<.back navigate={~p"/rooms"}><%= gettext("Back") %></.back>
+<.back navigate={~p"/rooms"}>{gettext("Back")}</.back>
 
 <%= if @live_action in [:edit] do %>
   <.modal id="room-modal" show on_cancel={JS.patch(~p"/rooms/#{@room}")}>

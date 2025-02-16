@@ -13,32 +13,32 @@ defmodule ClickrWeb.LessonLive.Question do
     />
 
     <.header>
-      <%= dgettext("lessons.lessons", "Lesson") %> <%= @lesson.name %>
+      {dgettext("lessons.lessons", "Lesson")} {@lesson.name}
       <:subtitle>
-        <%= translate_lesson_state(@lesson) %>
+        {translate_lesson_state(@lesson)}
       </:subtitle>
       <:actions>
         <.button
           :if={@lesson.state == :active and MapSet.size(@answers) > 0}
           phx-click={JS.push("select_answer")}
         >
-          <%= dgettext("lessons.actions", "Select answer") %>
+          {dgettext("lessons.actions", "Select answer")}
         </.button>
         <.button :if={@lesson.state == :active} phx-click={JS.push("add_point_for_all")}>
-          <%= dgettext("lessons.actions", "Add point for all") %>
+          {dgettext("lessons.actions", "Add point for all")}
         </.button>
         <.button
           :for={{label, state} <- ClickrWeb.LessonLive.Router.transitions(@lesson)}
           phx-click={JS.push("transition", value: %{state: state})}
         >
-          <%= label %>
+          {label}
         </.button>
         <.link
           :if={@lesson.state == :active}
           navigate={~p"/lessons/#{@lesson}/active/question_options"}
         >
           <.button class="-ml-3 bg-zinc-500">
-            <span class="sr-only"><%= dgettext("lessons.lessons", "Question options") %></span>
+            <span class="sr-only">{dgettext("lessons.lessons", "Question options")}</span>
             <Heroicons.cog_6_tooth class="h-6 w-6 text-white" />
           </.button>
         </.link>
@@ -70,13 +70,13 @@ defmodule ClickrWeb.LessonLive.Question do
             else: "text-gray-400"
           )
         ]}>
-          <%= seat.student.name %>
+          {seat.student.name}
         </p>
         <div class={[
           "flex justify-center text-center",
           !MapSet.member?(@student_ids, seat.student_id) && "invisible"
         ]}>
-          <%= @points[seat.student_id] || 0 %>
+          {@points[seat.student_id] || 0}
         </div>
 
         <div class="absolute inset-0 hidden group-hover:flex items-stretch justify-between bg-white/80 rounded-lg">
@@ -89,7 +89,7 @@ defmodule ClickrWeb.LessonLive.Question do
             phx-click={JS.push("register_answer", value: %{student_id: seat.student_id})}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
-            <span class="sr-only"><%= dgettext("lessons.actions", "Register answer") %></span>
+            <span class="sr-only">{dgettext("lessons.actions", "Register answer")}</span>
             <Heroicons.check_badge class="w-6 h-6" />
           </button>
           <button
@@ -98,7 +98,7 @@ defmodule ClickrWeb.LessonLive.Question do
             phx-click={JS.push("add_student", value: %{student_id: seat.student_id})}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
-            <span class="sr-only"><%= dgettext("lessons.actions", "Add student") %></span>
+            <span class="sr-only">{dgettext("lessons.actions", "Add student")}</span>
             <Heroicons.user_plus class="w-6 h-6" />
           </button>
           <%= if MapSet.member?(@student_ids, seat.student_id) and @lesson.state != :question do %>
@@ -107,7 +107,7 @@ defmodule ClickrWeb.LessonLive.Question do
               phx-click={JS.push("add_point", value: %{student_id: seat.student_id})}
               class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
             >
-              <span class="sr-only"><%= dgettext("lessons.actions", "Add point") %></span>
+              <span class="sr-only">{dgettext("lessons.actions", "Add point")}</span>
               <Heroicons.plus class="w-6 h-6" />
             </button>
             <button
@@ -116,7 +116,7 @@ defmodule ClickrWeb.LessonLive.Question do
               data-confirm={gettext("Are you sure?")}
               class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
             >
-              <span class="sr-only"><%= dgettext("lessons.actions", "Remove student") %></span>
+              <span class="sr-only">{dgettext("lessons.actions", "Remove student")}</span>
               <Heroicons.user_minus class="w-6 h-6" />
             </button>
             <button
@@ -124,7 +124,7 @@ defmodule ClickrWeb.LessonLive.Question do
               phx-click={JS.push("subtract_point", value: %{student_id: seat.student_id})}
               class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
             >
-              <span class="sr-only"><%= dgettext("lessons.actions", "Subtract point") %></span>
+              <span class="sr-only">{dgettext("lessons.actions", "Subtract point")}</span>
               <Heroicons.minus class="w-6 h-6" />
             </button>
             <.link
@@ -135,7 +135,7 @@ defmodule ClickrWeb.LessonLive.Question do
                 title={dgettext("lessons.actions", "Add bonus grade")}
                 class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
               >
-                <span class="sr-only"><%= dgettext("lessons.actions", "Add bonus grade") %></span>
+                <span class="sr-only">{dgettext("lessons.actions", "Add bonus grade")}</span>
                 <Heroicons.sparkles class="w-6 h-6" />
               </button>
             </.link>

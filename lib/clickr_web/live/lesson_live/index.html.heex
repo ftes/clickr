@@ -1,8 +1,8 @@
 <.header>
-  <%= dgettext("lessons.lessons", "Listing Lessons") %>
+  {dgettext("lessons.lessons", "Listing Lessons")}
   <:actions>
     <.link patch={~p"/lessons/new"}>
-      <.button><%= dgettext("lessons.lessons", "New Lesson") %></.button>
+      <.button>{dgettext("lessons.lessons", "New Lesson")}</.button>
     </.link>
   </:actions>
 </.header>
@@ -18,7 +18,7 @@
   filter_form={ClickrWeb.LessonsFilterForm}
 >
   <:col :let={lesson} label={dgettext("lessons.lessons", "Name")} sortable filterable key={:name}>
-    <%= lesson.name %>
+    {lesson.name}
   </:col>
   <:col
     :let={lesson}
@@ -28,7 +28,7 @@
     type="select"
     options={@class_options}
   >
-    <%= lesson.seating_plan.class.name %>
+    {lesson.seating_plan.class.name}
   </:col>
   <:col
     :let={lesson}
@@ -38,7 +38,7 @@
     type="select"
     options={@subject_options}
   >
-    <%= lesson.subject.name %>
+    {lesson.subject.name}
   </:col>
   <:col
     :let={lesson}
@@ -49,7 +49,7 @@
     options={lesson_state_options()}
     key={:state}
   >
-    <%= translate_lesson_state(lesson) %>
+    {translate_lesson_state(lesson)}
   </:col>
   <:col
     :let={lesson}
@@ -57,19 +57,19 @@
     sortable
     key={:inserted_at}
   >
-    <%= format_date(lesson.inserted_at) %>
+    {format_date(lesson.inserted_at)}
   </:col>
   <:action :let={lesson}>
     <div class="sr-only">
       <.link navigate={~p"/lessons/#{lesson}/router"}>
-        <%= dgettext("lessons.actions", "Run") %>
+        {dgettext("lessons.actions", "Run")}
       </.link>
     </div>
     <.link
       phx-click={JS.push("delete", value: %{id: lesson.id})}
       data-confirm={gettext("Are you sure?")}
     >
-      <%= gettext("Delete") %>
+      {gettext("Delete")}
     </.link>
   </:action>
 </.live_component>

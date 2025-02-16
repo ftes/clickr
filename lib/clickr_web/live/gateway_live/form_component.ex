@@ -8,7 +8,7 @@ defmodule ClickrWeb.GatewayLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+        {@title}
       </.header>
 
       <.simple_form
@@ -28,7 +28,7 @@ defmodule ClickrWeb.GatewayLive.FormComponent do
           options={gateway_type_options()}
         />
         <:actions>
-          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
+          <.button phx-disable-with={gettext("Saving...")}>{gettext("Save")}</.button>
         </:actions>
       </.simple_form>
     </div>

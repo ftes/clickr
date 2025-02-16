@@ -5,7 +5,7 @@ defmodule ClickrWeb.UserResetPasswordLive do
 
   def render(assigns) do
     ~H"""
-    <.header><%= dgettext("accounts", "Reset Password") %></.header>
+    <.header>{dgettext("accounts", "Reset Password")}</.header>
 
     <.simple_form
       :let={f}
@@ -35,14 +35,14 @@ defmodule ClickrWeb.UserResetPasswordLive do
       />
       <:actions>
         <.button phx-disable-with={dgettext("accounts", "Resetting...")}>
-          <%= dgettext("accounts.actions", "Reset Password") %>
+          {dgettext("accounts.actions", "Reset Password")}
         </.button>
       </:actions>
     </.simple_form>
 
     <p>
-      <.link href={~p"/users/register"}><%= dgettext("accounts.actions", "Sign up") %></.link>
-      | <.link href={~p"/users/log_in"}><%= dgettext("accounts.actions", "Sign in") %></.link>
+      <.link href={~p"/users/register"}>{dgettext("accounts.actions", "Sign up")}</.link>
+      | <.link href={~p"/users/log_in"}>{dgettext("accounts.actions", "Sign in")}</.link>
     </p>
     """
   end

@@ -13,19 +13,19 @@ defmodule ClickrWeb.LessonLive.RollCall do
     />
 
     <.header>
-      <%= dgettext("lessons.lessons", "Lesson") %> <%= @lesson.name %>
+      {dgettext("lessons.lessons", "Lesson")} {@lesson.name}
       <:subtitle>
-        <%= translate_lesson_state(@lesson) %>
+        {translate_lesson_state(@lesson)}
       </:subtitle>
       <:actions>
         <.button
           :for={{label, state} <- ClickrWeb.LessonLive.Router.transitions(@lesson)}
           phx-click={JS.push("transition", value: %{state: state})}
         >
-          <%= label %>
+          {label}
         </.button>
         <.button :if={@lesson.state == :started} phx-click="create_all_lesson_students">
-          <%= dgettext("lessons.lessons", "All present") %>
+          {dgettext("lessons.lessons", "All present")}
         </.button>
       </:actions>
     </.header>
@@ -44,7 +44,7 @@ defmodule ClickrWeb.LessonLive.RollCall do
         ]}
       >
         <p class="overflow-hidden text-ellipsis text-sm font-medium text-center text-gray-900">
-          <%= seat.student.name %>
+          {seat.student.name}
         </p>
         <div class="invisible">0</div>
       </div>

@@ -9,12 +9,12 @@ defmodule ClickrWeb.LessonLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+        {@title}
       </.header>
 
       <div :if={@action == :new && not Enum.empty?(@combinations)} class="my-3">
         <h2 class="my-1 text-[0.8125rem] leading-6 text-zinc-500">
-          <%= dgettext("lessons.lessons", "Recent combinations") %>
+          {dgettext("lessons.lessons", "Recent combinations")}
         </h2>
         <button
           :for={lesson <- @combinations}
@@ -32,7 +32,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
           phx-target={@myself}
           class="x-create block my-1 bg-zinc-500 text-white text-sm py-1 px-2 rounded"
         >
-          <%= lesson.subject.name %> • <%= lesson.seating_plan.name %> • <%= lesson.room.name %>
+          {lesson.subject.name} • {lesson.seating_plan.name} • {lesson.room.name}
         </button>
       </div>
 
@@ -64,7 +64,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
         />
         <.input field={{f, :name}} type="text" label={dgettext("lessons.lessons", "Name")} />
         <:actions>
-          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
+          <.button phx-disable-with={gettext("Saving...")}>{gettext("Save")}</.button>
         </:actions>
       </.simple_form>
     </div>

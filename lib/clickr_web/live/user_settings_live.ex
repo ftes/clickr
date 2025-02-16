@@ -5,7 +5,7 @@ defmodule ClickrWeb.UserSettingsLive do
 
   def render(assigns) do
     ~H"""
-    <.header><%= dgettext("accounts", "Change Email") %></.header>
+    <.header>{dgettext("accounts", "Change Email")}</.header>
 
     <.simple_form
       :let={f}
@@ -39,12 +39,12 @@ defmodule ClickrWeb.UserSettingsLive do
       />
       <:actions>
         <.button phx-disable-with={dgettext("accounts", "Changing...")}>
-          <%= dgettext("accounts.actions", "Change Email") %>
+          {dgettext("accounts.actions", "Change Email")}
         </.button>
       </:actions>
     </.simple_form>
 
-    <.header><%= dgettext("accounts", "Change Password") %></.header>
+    <.header>{dgettext("accounts", "Change Password")}</.header>
 
     <.simple_form
       :let={f}
@@ -88,7 +88,7 @@ defmodule ClickrWeb.UserSettingsLive do
       />
       <:actions>
         <.button phx-disable-with={dgettext("accounts", "Changing...")}>
-          <%= dgettext("accounts.actions", "Change Password") %>
+          {dgettext("accounts.actions", "Change Password")}
         </.button>
       </:actions>
     </.simple_form>

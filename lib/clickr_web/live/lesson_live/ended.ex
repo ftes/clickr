@@ -8,16 +8,16 @@ defmodule ClickrWeb.LessonLive.Ended do
     ~H"""
     <.simple_form :let={f} phx-submit="submit" phx-change="validate" id="lesson-form" for={@changeset}>
       <.header>
-        <%= dgettext("lessons.lessons", "Lesson") %> <%= @lesson.name %>
+        {dgettext("lessons.lessons", "Lesson")} {@lesson.name}
         <:subtitle>
-          <%= translate_lesson_state(@lesson) %>
+          {translate_lesson_state(@lesson)}
         </:subtitle>
         <:actions>
           <.button
             phx-disable-with={dgettext("lessons.lessons", "Grading...")}
             data-confirm={@lesson.state == :graded && gettext("Are you sure?")}
           >
-            <%= dgettext("lessons.actions", "Grade") %>
+            {dgettext("lessons.actions", "Grade")}
           </.button>
         </:actions>
       </.header>
@@ -62,21 +62,21 @@ defmodule ClickrWeb.LessonLive.Ended do
             else: "text-gray-400"
           )
         ]}>
-          <%= seat.student.name %>
+          {seat.student.name}
         </p>
         <div class={[
           "flex justify-between text-zinc-600 text-sm",
           !MapSet.member?(@student_ids, seat.student_id) && "invisible"
         ]}>
-          <span class="flex justify-center"><%= @points[seat.student_id] || 0 %></span>
+          <span class="flex justify-center">{@points[seat.student_id] || 0}</span>
           <span class="flex justify-center">
-            <%= Grades.format(
+            {Grades.format(
               :german,
               @new_lesson_grades[seat.student_id] || @old_lesson_grades[seat.student_id] || 0.0
-            ) %>
+            )}
           </span>
           <span :if={@lesson.state == :graded} class="flex justify-center">
-            <%= Grades.format(:percent, @grades[seat.student_id] || 0.0) %>
+            {Grades.format(:percent, @grades[seat.student_id] || 0.0)}
           </span>
         </div>
 
@@ -89,7 +89,7 @@ defmodule ClickrWeb.LessonLive.Ended do
             phx-click={JS.push("add_point", value: %{student_id: seat.student_id})}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
-            <span class="sr-only"><%= dgettext("lessons.actions", "Add point") %></span>
+            <span class="sr-only">{dgettext("lessons.actions", "Add point")}</span>
             <Heroicons.plus class="w-6 h-6" />
           </button>
           <button
@@ -97,7 +97,7 @@ defmodule ClickrWeb.LessonLive.Ended do
             phx-click={JS.push("subtract_point", value: %{student_id: seat.student_id})}
             class="flex-1 hover:bg-green-400/80 flex items-center justify-center rounded-lg"
           >
-            <span class="sr-only"><%= dgettext("lessons.actions", "Subtract point") %></span>
+            <span class="sr-only">{dgettext("lessons.actions", "Subtract point")}</span>
             <Heroicons.minus class="w-6 h-6" />
           </button>
         </div>

@@ -8,7 +8,7 @@ defmodule ClickrWeb.RoomLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+        {@title}
       </.header>
 
       <.simple_form
@@ -23,7 +23,7 @@ defmodule ClickrWeb.RoomLive.FormComponent do
         <.input field={{f, :width}} type="number" label={dgettext("rooms.rooms", "Width")} />
         <.input field={{f, :height}} type="number" label={dgettext("rooms.rooms", "Height")} />
         <:actions>
-          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
+          <.button phx-disable-with={gettext("Saving...")}>{gettext("Save")}</.button>
         </:actions>
       </.simple_form>
     </div>

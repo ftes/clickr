@@ -48,7 +48,7 @@ defmodule ClickrWeb.Table do
           <thead class="text-left text-[0.8125rem] leading-6 text-zinc-500">
             <tr>
               <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal align-top">
-                <%= unless col[:sortable], do: col[:label] %>
+                {unless col[:sortable], do: col[:label]}
                 <.sort_header
                   :if={col[:sortable]}
                   key={col[:key]}
@@ -81,7 +81,7 @@ defmodule ClickrWeb.Table do
                 <div class={["block pr-6", !@compact && "py-4"]}>
                   <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-200 sm:rounded-l-xl" />
                   <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
-                    <%= render_slot(col, row) %>
+                    {render_slot(col, row)}
                   </span>
                 </div>
               </td>
@@ -95,7 +95,7 @@ defmodule ClickrWeb.Table do
                     :for={action <- @action}
                     class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
                   >
-                    <%= render_slot(action, row) %>
+                    {render_slot(action, row)}
                   </span>
                 </div>
               </td>
@@ -193,7 +193,7 @@ defmodule ClickrWeb.Table do
     >
       <option value="" selected={@value == nil}></option>
       <option :for={{value, label} <- @options} value={value} selected={@value == value}>
-        <%= label %>
+        {label}
       </option>
     </select>
     """
@@ -219,7 +219,7 @@ defmodule ClickrWeb.Table do
       }
       class="flex items-baseline gap-2 sort-by"
     >
-      <span><%= @label %></span> <.sort_icon sort={@sort} key={@key} />
+      <span>{@label}</span> <.sort_icon sort={@sort} key={@key} />
     </a>
     """
   end

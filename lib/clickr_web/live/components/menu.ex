@@ -24,8 +24,8 @@ defmodule ClickrWeb.Menu do
           class={entry_class(@current_path, path)}
           {opts}
         >
-          <%= icon(icon, "group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6 text-gray-500") %>
-          <%= label %>
+          {icon(icon, "group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6 text-gray-500")}
+          {label}
         </.link>
       </div>
     </nav>
@@ -44,7 +44,7 @@ defmodule ClickrWeb.Menu do
           x-bind:aria-expanded="userMenuOpen"
           aria-haspopup="true"
         >
-          <span class="sr-only"><%= dgettext("layout", "Open user menu") %></span>
+          <span class="sr-only">{dgettext("layout", "Open user menu")}</span>
           <div
             class={[
               "h-8 w-8 rounded-full text-xl text-white flex items-center justify-center font-bold",
@@ -52,7 +52,7 @@ defmodule ClickrWeb.Menu do
             ]}
             alt={@current_user.email}
           >
-            <%= user_initial(@current_user) |> String.upcase() %>
+            {user_initial(@current_user) |> String.upcase()}
           </div>
         </button>
       </div>
@@ -67,7 +67,7 @@ defmodule ClickrWeb.Menu do
         tabindex="-1"
       >
         <div class="ml-7 py-2 px-4 text-sm text-gray-500 overflow-hidden text-ellipsis">
-          <%= @current_user.email %>
+          {@current_user.email}
         </div>
         <.link
           :for={{label, path, opts, icon} <- @user_menu_entries}
@@ -75,8 +75,8 @@ defmodule ClickrWeb.Menu do
           class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 flex"
           {opts}
         >
-          <%= icon(icon, "mr-2 flex-shrink-0 h-5 w-5 text-gray-400") %>
-          <%= label %>
+          {icon(icon, "mr-2 flex-shrink-0 h-5 w-5 text-gray-400")}
+          {label}
         </.link>
       </div>
     </div>

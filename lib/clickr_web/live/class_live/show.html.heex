@@ -1,25 +1,25 @@
 <.header>
-  <%= dgettext("classes.classes", "Class") %> <%= @class.name %>
+  {dgettext("classes.classes", "Class")} {@class.name}
   <:actions>
     <.link patch={~p"/classes/#{@class}/show/edit"} phx-click={JS.push_focus()} id="edit-class">
-      <.button><%= dgettext("classes.classes", "Edit Class") %></.button>
+      <.button>{dgettext("classes.classes", "Edit Class")}</.button>
     </.link>
   </:actions>
 </.header>
 
 <div class="divide-y divide-zinc-200">
   <.list class="py-4">
-    <:item title={dgettext("classes.classes", "Name")}><%= @class.name %></:item>
+    <:item title={dgettext("classes.classes", "Name")}>{@class.name}</:item>
   </.list>
 
   <div class="py-4">
     <.live_component module={ClickrWeb.Table} id="students" compact rows={@class.students}>
       <:col :let={student} label={dgettext("students.students", "Student")}>
-        <%= student.name %>
+        {student.name}
       </:col>
       <:action :let={student}>
         <.link navigate={~p"/classes/#{@class}/show/edit_student/#{student}"}>
-          <%= gettext("Edit") %>
+          {gettext("Edit")}
         </.link>
       </:action>
       <:action :let={student}>
@@ -27,7 +27,7 @@
           phx-click={JS.push("student_delete", value: %{id: student.id})}
           data-confirm={gettext("Are you sure?")}
         >
-          <%= gettext("Delete") %>
+          {gettext("Delete")}
         </.link>
       </:action>
     </.live_component>
@@ -46,18 +46,18 @@
         label={dgettext("classes.classes", "Names (one per line)")}
       />
       <div class="text-sm text-zinc-500">
-        <%= @students_create_count %> students
+        {@students_create_count} students
       </div>
       <:actions>
         <.button phx-disable-with={dgettext("classes.classes", "Adding students...")}>
-          <%= dgettext("classes.classes", "Add students") %>
+          {dgettext("classes.classes", "Add students")}
         </.button>
       </:actions>
     </.simple_form>
   </div>
 </div>
 
-<.back navigate={~p"/classes"}><%= gettext("Back") %></.back>
+<.back navigate={~p"/classes"}>{gettext("Back")}</.back>
 
 <.modal
   :if={@live_action in [:edit]}

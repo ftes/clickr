@@ -5,7 +5,7 @@ defmodule ClickrWeb.UserConfirmationInstructionsLive do
 
   def render(assigns) do
     ~H"""
-    <.header><%= dgettext("accounts", "Resend confirmation instructions") %></.header>
+    <.header>{dgettext("accounts", "Resend confirmation instructions")}</.header>
 
     <.simple_form
       :let={f}
@@ -17,14 +17,14 @@ defmodule ClickrWeb.UserConfirmationInstructionsLive do
       <.input field={{f, :email}} type="email" label={dgettext("accounts", "Email")} required />
       <:actions>
         <.button phx-disable-with={dgettext("accounts", "Sending...")}>
-          <%= dgettext("accounts.actions", "Resend confirmation instructions") %>
+          {dgettext("accounts.actions", "Resend confirmation instructions")}
         </.button>
       </:actions>
     </.simple_form>
 
     <p>
-      <.link href={~p"/users/register"}><%= dgettext("accounts.actions", "Sign up") %></.link>
-      | <.link href={~p"/users/log_in"}><%= dgettext("accounts.actions", "Sign in") %></.link>
+      <.link href={~p"/users/register"}>{dgettext("accounts.actions", "Sign up")}</.link>
+      | <.link href={~p"/users/log_in"}>{dgettext("accounts.actions", "Sign in")}</.link>
     </p>
     """
   end

@@ -1,8 +1,8 @@
 <.header>
-  <%= dgettext("classes.classes", "Listing Classes") %>
+  {dgettext("classes.classes", "Listing Classes")}
   <:actions>
     <.link patch={~p"/classes/new"}>
-      <.button><%= dgettext("classes.classes", "New Class") %></.button>
+      <.button>{dgettext("classes.classes", "New Class")}</.button>
     </.link>
   </:actions>
 </.header>
@@ -18,7 +18,7 @@
   filter_form={ClickrWeb.ClassesFilterForm}
 >
   <:col :let={class} label={dgettext("classes.classes", "Name")} sortable filterable key={:name}>
-    <%= class.name %>
+    {class.name}
   </:col>
   <:col
     :let={lesson}
@@ -26,20 +26,20 @@
     sortable
     key={:inserted_at}
   >
-    <%= format_date(lesson.inserted_at) %>
+    {format_date(lesson.inserted_at)}
   </:col>
   <:action :let={class}>
     <div class="sr-only">
-      <.link navigate={~p"/classes/#{class}"}><%= gettext("Show") %></.link>
+      <.link navigate={~p"/classes/#{class}"}>{gettext("Show")}</.link>
     </div>
-    <.link patch={~p"/classes/#{class}/edit"}><%= gettext("Edit") %></.link>
+    <.link patch={~p"/classes/#{class}/edit"}>{gettext("Edit")}</.link>
   </:action>
   <:action :let={class}>
     <.link
       phx-click={JS.push("delete", value: %{id: class.id})}
       data-confirm={gettext("Are you sure?")}
     >
-      <%= gettext("Delete") %>
+      {gettext("Delete")}
     </.link>
   </:action>
 </.live_component>

@@ -1,8 +1,8 @@
 <.header>
-  <%= dgettext("classes.seating_plans", "Listing Seating plans") %>
+  {dgettext("classes.seating_plans", "Listing Seating plans")}
   <:actions>
     <.link patch={~p"/seating_plans/new"}>
-      <.button><%= dgettext("classes.seating_plans", "New Seating plan") %></.button>
+      <.button>{dgettext("classes.seating_plans", "New Seating plan")}</.button>
     </.link>
   </:actions>
 </.header>
@@ -15,20 +15,20 @@
   row_click={&JS.navigate(~p"/seating_plans/#{&1}")}
 >
   <:col :let={seating_plan} label={dgettext("classes.seating_plans", "Name")}>
-    <%= seating_plan.name %>
+    {seating_plan.name}
   </:col>
   <:action :let={seating_plan}>
     <div class="sr-only">
-      <.link navigate={~p"/seating_plans/#{seating_plan}"}><%= gettext("Show") %></.link>
+      <.link navigate={~p"/seating_plans/#{seating_plan}"}>{gettext("Show")}</.link>
     </div>
-    <.link patch={~p"/seating_plans/#{seating_plan}/edit"}><%= gettext("Edit") %></.link>
+    <.link patch={~p"/seating_plans/#{seating_plan}/edit"}>{gettext("Edit")}</.link>
   </:action>
   <:action :let={seating_plan}>
     <.link
       phx-click={JS.push("delete", value: %{id: seating_plan.id})}
       data-confirm={gettext("Are you sure?")}
     >
-      <%= gettext("Delete") %>
+      {gettext("Delete")}
     </.link>
   </:action>
 </.live_component>

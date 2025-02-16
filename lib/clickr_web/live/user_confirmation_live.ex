@@ -5,20 +5,20 @@ defmodule ClickrWeb.UserConfirmationLive do
 
   def render(%{live_action: :edit} = assigns) do
     ~H"""
-    <.header><%= dgettext("accounts", "Confirm Account") %></.header>
+    <.header>{dgettext("accounts", "Confirm Account")}</.header>
 
     <.simple_form :let={f} for={%{}} as={:user} id="confirmation_form" phx-submit="confirm_account">
       <.input field={{f, :token}} type="hidden" value={@token} />
       <:actions>
         <.button phx-disable-with={dgettext("accounts", "Confirming...")}>
-          <%= dgettext("accounts.actions", "Confirm my account") %>
+          {dgettext("accounts.actions", "Confirm my account")}
         </.button>
       </:actions>
     </.simple_form>
 
     <p>
-      <.link href={~p"/users/register"}><%= dgettext("accounts.actions", "Sign up") %></.link>
-      | <.link href={~p"/users/log_in"}><%= dgettext("accounts.actions", "Sign in") %></.link>
+      <.link href={~p"/users/register"}>{dgettext("accounts.actions", "Sign up")}</.link>
+      | <.link href={~p"/users/log_in"}>{dgettext("accounts.actions", "Sign in")}</.link>
     </p>
     """
   end

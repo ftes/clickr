@@ -1,5 +1,5 @@
 <.header>
-  <%= dgettext("grades.grades", "Listing Grades") %>
+  {dgettext("grades.grades", "Listing Grades")}
 </.header>
 
 <.live_component
@@ -19,7 +19,7 @@
     sortable
     filterable
   >
-    <%= grade.student.name %>
+    {grade.student.name}
   </:col>
   <:col
     :let={grade}
@@ -29,7 +29,7 @@
     type="select"
     options={@class_options}
   >
-    <%= grade.student.class.name %>
+    {grade.student.class.name}
   </:col>
   <:col
     :let={grade}
@@ -39,14 +39,14 @@
     type="select"
     options={@subject_options}
   >
-    <%= grade.subject.name %>
+    {grade.subject.name}
   </:col>
   <:col :let={grade} label={dgettext("grades.grades", "Grade")} sortable key={:percent}>
-    <%= Clickr.Grades.format(:german, grade.percent) %>
+    {Clickr.Grades.format(:german, grade.percent)}
   </:col>
   <:action :let={grade}>
     <div class="sr-only">
-      <.link navigate={~p"/grades/#{grade}"}><%= gettext("Show") %></.link>
+      <.link navigate={~p"/grades/#{grade}"}>{gettext("Show")}</.link>
     </div>
   </:action>
 </.live_component>

@@ -8,7 +8,7 @@ defmodule ClickrWeb.ClassLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+        {@title}
       </.header>
 
       <.simple_form
@@ -21,7 +21,7 @@ defmodule ClickrWeb.ClassLive.FormComponent do
       >
         <.input field={{f, :name}} type="text" label={dgettext("classes.classes", "Name")} />
         <:actions>
-          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
+          <.button phx-disable-with={gettext("Saving...")}>{gettext("Save")}</.button>
         </:actions>
       </.simple_form>
     </div>

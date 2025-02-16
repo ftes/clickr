@@ -1,26 +1,26 @@
 <.header>
-  <%= dgettext("devices.gateways", "Gateway") %> <%= @gateway.name %>
+  {dgettext("devices.gateways", "Gateway")} {@gateway.name}
   <:actions>
     <.link patch={~p"/gateways/#{@gateway}/show/edit"} phx-click={JS.push_focus()}>
-      <.button><%= dgettext("devices.gateways", "Edit Gateway") %></.button>
+      <.button>{dgettext("devices.gateways", "Edit Gateway")}</.button>
     </.link>
   </:actions>
 </.header>
 
 <.list>
-  <:item title={dgettext("devices.gateways", "Name")}><%= @gateway.name %></:item>
+  <:item title={dgettext("devices.gateways", "Name")}>{@gateway.name}</:item>
   <:item title={dgettext("devices.gateways", "URL")}>
-    <a :if={@gateway.url} href={@gateway.url} target="_blank"><%= @gateway.url %></a>
+    <a :if={@gateway.url} href={@gateway.url} target="_blank">{@gateway.url}</a>
   </:item>
   <:item title={dgettext("devices.gateways", "Type")}>
-    <%= translate_gateway_type(@gateway) %>
+    {translate_gateway_type(@gateway)}
   </:item>
   <:item title={dgettext("devices.gateways", "Connected")}>
-    <%= if @gateway.online, do: gettext("Yes"), else: gettext("No") %>
+    {if @gateway.online, do: gettext("Yes"), else: gettext("No")}
   </:item>
 </.list>
 
-<.back navigate={~p"/gateways"}><%= gettext("Back") %></.back>
+<.back navigate={~p"/gateways"}>{gettext("Back")}</.back>
 
 <%= if @live_action in [:edit] do %>
   <.modal id="gateway-modal" show on_cancel={JS.patch(~p"/gateways/#{@gateway}")}>

@@ -8,7 +8,7 @@ defmodule ClickrWeb.GradeLive.BonusGradeFormComponent do
     ~H"""
     <div>
       <.header>
-        <%= dgettext("grades.bonus_grades", "New bonus grade") %>
+        {dgettext("grades.bonus_grades", "New bonus grade")}
       </.header>
 
       <.simple_form
@@ -31,7 +31,7 @@ defmodule ClickrWeb.GradeLive.BonusGradeFormComponent do
           label={"#{dgettext("grades.bonus_grades", "Percent")} #{Clickr.Grades.format(:percent, Phoenix.HTML.Form.input_value(f, :percent))}"}
         />
         <:actions>
-          <.button phx-disable-with={gettext("Saving...")}><%= gettext("Save") %></.button>
+          <.button phx-disable-with={gettext("Saving...")}>{gettext("Save")}</.button>
         </:actions>
       </.simple_form>
     </div>

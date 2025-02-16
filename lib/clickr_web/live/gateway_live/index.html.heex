@@ -1,8 +1,8 @@
 <.header>
-  <%= dgettext("devices.gateways", "Listing Gateways") %>
+  {dgettext("devices.gateways", "Listing Gateways")}
   <:actions>
     <.link patch={~p"/gateways/new"}>
-      <.button><%= dgettext("devices.gateways", "New Gateway") %></.button>
+      <.button>{dgettext("devices.gateways", "New Gateway")}</.button>
     </.link>
   </:actions>
 </.header>
@@ -14,9 +14,9 @@
   rows={@gateways}
   row_click={&JS.navigate(~p"/gateways/#{&1}")}
 >
-  <:col :let={gateway} label={dgettext("devices.gateways", "Name")}><%= gateway.name %></:col>
+  <:col :let={gateway} label={dgettext("devices.gateways", "Name")}>{gateway.name}</:col>
   <:col :let={gateway} label={dgettext("devices.gateways", "Type")}>
-    <%= translate_gateway_type(gateway) %>
+    {translate_gateway_type(gateway)}
   </:col>
   <:col :let={gateway} label={dgettext("devices.gateways", "Connected")}>
     <div class="flex items-center gap-3">
@@ -26,22 +26,22 @@
       ]}>
       </span>
       <span>
-        <%= if gateway.online, do: gettext("Yes"), else: gettext("No") %>
+        {if gateway.online, do: gettext("Yes"), else: gettext("No")}
       </span>
     </div>
   </:col>
   <:action :let={gateway}>
     <div class="sr-only">
-      <.link navigate={~p"/gateways/#{gateway}"}><%= gettext("Show") %></.link>
+      <.link navigate={~p"/gateways/#{gateway}"}>{gettext("Show")}</.link>
     </div>
-    <.link patch={~p"/gateways/#{gateway}/edit"}><%= gettext("Edit") %></.link>
+    <.link patch={~p"/gateways/#{gateway}/edit"}>{gettext("Edit")}</.link>
   </:action>
   <:action :let={gateway}>
     <.link
       phx-click={JS.push("delete", value: %{id: gateway.id})}
       data-confirm={gettext("Are you sure?")}
     >
-      <%= gettext("Delete") %>
+      {gettext("Delete")}
     </.link>
   </:action>
 </.live_component>
