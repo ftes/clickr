@@ -23,7 +23,6 @@ if Mix.env() != :test do
   {:ok, %{id: did}} =
     Repo.insert(%Devices.Device{
       id: Devices.Keyboard.device_id(%{user_id: uid}),
-      user_id: uid,
       gateway_id: gid,
       name: "Keyboard"
     })
@@ -33,7 +32,6 @@ if Mix.env() != :test do
     {:ok, %{id: bid}} =
       Repo.insert(%Devices.Button{
         id: Devices.Keyboard.button_id(%{user_id: uid, key: key}),
-        user_id: uid,
         device_id: did,
         name: "Keyboard/#{key}"
       })

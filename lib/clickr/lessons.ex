@@ -36,7 +36,8 @@ defmodule Clickr.Lessons do
   def list_lesson_combinations(%User{} = user, opts \\ []) do
     from(l in Lesson,
       limit: ^(opts[:limit] || 100),
-      order_by: [desc: l.inserted_at]
+      order_by: [desc: l.inserted_at],
+      group_by: [l.subject_id, l.room_id, l.seating_plan_id]
     )
     |> Bodyguard.scope(user)
     |> Repo.all()

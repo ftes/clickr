@@ -62,15 +62,16 @@ defmodule Clickr.LessonsTest do
       assert Lessons.get_last_question(user, lesson) == nil
     end
 
-    test "list_lesson_combinations/1 returns most recent combinations (not unique)", %{user: user} do
+    test "list_lesson_combinations/1 returns distinct most recent combinations", %{user: user} do
       at = fn x -> DateTime.from_unix!(x) end
+
       lesson_fixture(user_id: user.id, name: "l1", inserted_at: at.(1))
       lesson_fixture(user_id: user.id, name: "l2", inserted_at: at.(2))
       l3 = lesson_fixture(user_id: user.id, name: "l3", inserted_at: at.(3))
       l3_dup = Map.take(l3, [:subject_id, :seating_plan_id, :room_id])
-      lesson_fixture(Map.merge(%{user_id: user.id, name: "l4", inserted_at: at.(4)}, l3_dup))
+      lesson_fixture(Map.merge(%{user_id: user.id, name: "l3_dup", inserted_at: at.(4)}, l3_dup))
 
-      assert ["l4", "l3", "l2", "l1"] =
+      assert ["l3", "l2", "l1"] =
                Lessons.list_lesson_combinations(user) |> Enum.map(& &1.name)
     end
 
