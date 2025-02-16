@@ -18,7 +18,7 @@ if Mix.env() != :test do
 
   {:ok, %{id: rid}} = Rooms.create_room(u, %{name: "R42", width: 8, height: 4})
 
-  {:ok, %{id: gid}} = Devices.create_gateway(u, %{name: "Keyboard"})
+  {:ok, %{id: gid}} = Devices.create_gateway(u, %{name: "Keyboard", type: :keyboard})
 
   {:ok, %{id: did}} =
     Repo.insert(%Devices.Device{

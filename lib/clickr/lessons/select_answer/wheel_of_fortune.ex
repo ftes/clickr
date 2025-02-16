@@ -1,15 +1,15 @@
 defmodule Clickr.Lessons.SelectAnswer.WheelOfFortune do
-  @longest_pause_ms 1_000
+  @longest_pause_ms 500
   @shortest_pause_ms 75
   @power_base 1.5
 
   alias Clickr.Lessons.SelectAnswer.Animation
 
   def animate_select_answer(answers) do
-    n = length(answers)
+    n = ceil(length(answers) * 0.5)
 
     answers
-    |> Enum.shuffle()
+    |> Enum.take_random(n)
     |> Enum.with_index(1)
     |> Enum.map(fn {a, i} -> %Animation.Step{student_id: a.student_id, pause: pause(n, i)} end)
   end
