@@ -146,7 +146,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
   defp load_combinations(socket) do
     combinations =
       Clickr.Lessons.list_lesson_combinations(socket.assigns.current_user,
-        limit: 12,
+        limit: 15,
         preload: [:subject, :seating_plan, :room]
       )
 

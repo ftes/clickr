@@ -32,6 +32,12 @@ clickr-*.tar
 npm-debug.log
 /assets/node_modules/
 
-# SQLIte
+# SQLite
 *.db
 *.db-*
+
+# Language server
+.expert
+
+# MacOS
+.DS_Store
