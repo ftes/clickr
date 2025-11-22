@@ -70,15 +70,9 @@ defmodule ClickrWeb.UserRegistrationLiveTest do
 
   describe "registration navigation" do
     test "redirects to login page when the Log in button is clicked", %{conn: conn} do
-      {:ok, lv, _html} = live(conn, ~p"/users/register")
-
-      {:ok, _login_live, login_html} =
-        lv
-        |> element(~s|main a:fl-contains("Sign in")|)
-        |> render_click()
-        |> follow_redirect(conn, ~p"/users/log_in")
-
-      assert login_html =~ "Sign in"
+      visit(conn, ~p"/users/register")
+      |> click_link("header a", "Sign in")
+      |> assert_has("h1", text: "Sign in")
     end
   end
 end

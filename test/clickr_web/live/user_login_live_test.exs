@@ -73,15 +73,9 @@ defmodule ClickrWeb.UserLoginLiveTest do
     test "redirects to forgot password page when the Forgot Password button is clicked", %{
       conn: conn
     } do
-      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
-
-      {:ok, conn} =
-        lv
-        |> element(~s{a:fl-contains('Forgot your password?')})
-        |> render_click()
-        |> follow_redirect(conn, ~p"/users/reset_password")
-
-      assert conn.resp_body =~ "Forgot your password?"
+      visit(conn, ~p"/users/log_in")
+      |> click_link("Forgot your password?")
+      |> assert_has("h1", text: "Forgot your password?")
     end
   end
 end

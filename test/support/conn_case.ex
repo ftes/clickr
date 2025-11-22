@@ -30,6 +30,7 @@ defmodule ClickrWebTest.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import ClickrWebTest.ConnCase
+      import PhoenixTest
     end
   end
 

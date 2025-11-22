@@ -34,3 +34,5 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :clickr, Clickr.Zigbee2Mqtt.Connection, disabled: true
 config :clickr, Clickr.Zigbee2Mqtt.Gateway, timeout: 20, heartbeat: 10
+
+config :phoenix_test, :endpoint, ClickrWeb.Endpoint
