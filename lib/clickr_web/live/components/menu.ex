@@ -24,7 +24,7 @@ defmodule ClickrWeb.Menu do
           class={entry_class(@current_path, path)}
           {opts}
         >
-          {icon(icon, "group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6 text-gray-500")}
+          {icon(icon, "group-hover:text-gray-500 mr-3 h-6 w-6 text-gray-500")}
           {label}
         </.link>
       </div>
@@ -39,7 +39,7 @@ defmodule ClickrWeb.Menu do
         <button
           x-on:click="userMenuOpen = !userMenuOpen"
           type="button"
-          class="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+          class="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
           id="user-menu-button"
           x-bind:aria-expanded="userMenuOpen"
           aria-haspopup="true"
@@ -60,7 +60,7 @@ defmodule ClickrWeb.Menu do
       <div
         x-cloak
         x-show="userMenuOpen"
-        class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden"
         role="menu"
         aria-orientation="vertical"
         aria-labelledby="user-menu-button"
@@ -75,7 +75,7 @@ defmodule ClickrWeb.Menu do
           class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 flex"
           {opts}
         >
-          {icon(icon, "mr-2 flex-shrink-0 h-5 w-5 text-gray-400")}
+          {icon(icon, "mr-2 h-5 w-5 text-gray-400")}
           {label}
         </.link>
       </div>

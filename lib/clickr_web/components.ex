@@ -280,7 +280,7 @@ defmodule ClickrWeb.Components do
         type="checkbox"
         id={@id || @name}
         name={@name}
-        class="rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+        class="rounded-sm border border-zinc-300 text-zinc-900 focus:ring-zinc-900"
       />
       {@label}
     </label>
@@ -294,7 +294,7 @@ defmodule ClickrWeb.Components do
       <select
         id={@id}
         name={@name}
-        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
+        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-xs focus:outline-hidden focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
         {@rest}
       >
         <option value="" selected={@value == nil}></option>
@@ -318,7 +318,7 @@ defmodule ClickrWeb.Components do
       <select
         id={@id}
         name={@name}
-        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
+        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-xs focus:outline-hidden focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
         {@rest}
       >
         <option :for={opt <- @option} {assigns_to_attributes(opt)}>{render_slot(opt)}</option>
@@ -337,8 +337,8 @@ defmodule ClickrWeb.Components do
         name={@name}
         class={[
           input_border(@errors),
-          "mt-2 block min-h-[6rem] w-full rounded-lg border-zinc-300 py-[calc(theme(spacing.2)-1px)] px-[calc(theme(spacing.3)-1px)]",
-          "text-zinc-900 focus:border-zinc-400 focus:outline-none focus:ring-4 focus:ring-zinc-800/5 sm:text-sm sm:leading-6",
+          "mt-2 block min-h-[6rem] w-full rounded-lg border py-[calc(--spacing(2)-1px)] px-[calc(--spacing(3)-1px)]",
+          "text-zinc-900 focus:border-zinc-400 focus:outline-hidden focus:ring-4 focus:ring-zinc-800/5 sm:text-sm sm:leading-6",
           "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5"
         ]}
         {@rest}
@@ -359,8 +359,8 @@ defmodule ClickrWeb.Components do
         value={@value}
         class={[
           input_border(@errors),
-          "mt-2 block w-full rounded-lg border-zinc-300 py-[calc(theme(spacing.2)-1px)] px-[calc(theme(spacing.3)-1px)]",
-          "text-zinc-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
+          "mt-2 block w-full rounded-lg border py-[calc(--spacing(2)-1px)] px-[calc(--spacing(3)-1px)] bg-white",
+          "text-zinc-900 focus:outline-hidden focus:ring-4 sm:text-sm sm:leading-6",
           "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5"
         ]}
         {@rest}

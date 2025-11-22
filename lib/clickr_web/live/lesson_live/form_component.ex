@@ -32,7 +32,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
             )
           }
           phx-target={@myself}
-          class="x-create block my-1 bg-zinc-500 text-white text-sm py-1 px-2 rounded"
+          class="x-create block my-1 bg-zinc-500 text-white text-sm py-1 px-2 rounded-sm"
         >
           {lesson.subject.name} • {lesson.seating_plan.name} • {lesson.room.name}
         </button>

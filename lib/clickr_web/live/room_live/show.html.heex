@@ -24,7 +24,7 @@
 </h2>
 
 <div
-  class="flex-grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr"
+  class="grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr"
   id="seating-plan-grid"
   x-data="{dragging: false}"
   phx-hook="PushEvent"
@@ -36,7 +36,7 @@
     id={"button-#{seat.button_id}"}
     style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
     class={[
-      "cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 p-1 lg:p-3 shadow-sm hover:border-gray-400",
+      "cursor-move relative flex items-center space-x-3 rounded-lg border border-gray-300 p-1 lg:p-3 shadow-xs hover:border-gray-400",
       if(MapSet.member?(@active, seat.button_id), do: "x-active bg-green-400", else: "bg-white")
     ]}
     draggable="true"
@@ -84,8 +84,8 @@
     x-on:dragover.self="dragging = $el, console.log(dragging == $el)"
     x-on:dragleave.self="dragging = true"
     x-bind:class="{
-      '!bg-green-200': dragging && dragging != $el,
-      '!bg-green-400': dragging == $el,
+      'bg-green-200!': dragging && dragging != $el,
+      'bg-green-400!': dragging == $el,
     }"
   >
     <span class="invisible">{dgettext("rooms.rooms", "Empty seat")}</span>

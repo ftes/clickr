@@ -7,7 +7,7 @@
       role="dialog"
       aria-modal="true"
     >
-      <div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
+      <div class="fixed inset-0 bg-gray-600/75"></div>
 
       <div class="fixed inset-0 z-40 flex">
         <div
@@ -17,14 +17,14 @@
           <div x-on:click="sidebarOpen = false" class="absolute top-0 right-0 -mr-12 pt-2">
             <button
               type="button"
-              class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white"
             >
               <span class="sr-only"><% dgettext("layout", "Close sidebar") %></span>
               <Heroicons.x_circle class="h-6 w-6 text-white" />
             </button>
           </div>
 
-          <div class="flex flex-shrink-0 items-center px-4">
+          <div class="flex shrink-0 items-center px-4">
             <img class="h-12 w-auto" src={~p"/images/logo.png"} alt="Clickr" />
             <span class="ml-2 text-xl text-zinc-500">Klassenknopf</span>
           </div>
@@ -37,16 +37,16 @@
           </div>
         </div>
 
-        <div class="w-14 flex-shrink-0" aria-hidden="true"></div>
+        <div class="w-14 shrink-0" aria-hidden="true"></div>
       </div>
     </div>
     <div class="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
-      <div class="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-white pt-5">
-        <div class="flex flex-shrink-0 items-center px-4">
+      <div class="flex grow flex-col overflow-y-auto border-r border-gray-200 bg-white pt-5">
+        <div class="flex shrink-0 items-center px-4">
           <img class="h-12 w-auto" src={~p"/images/logo.png"} alt="Clickr" />
           <span class="ml-2 text-xl text-zinc-500">Klassenknopf</span>
         </div>
-        <div class="mt-5 flex flex-grow flex-col">
+        <div class="mt-5 flex grow flex-col">
           <ClickrWeb.Menu.sidebar
             sidebar_menu_entries={@sidebar_menu_entries}
             current_path={@current_path}
@@ -56,11 +56,11 @@
       </div>
     </div>
     <div class="flex flex-1 flex-col md:pl-64">
-      <div class="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow">
+      <div class="sticky top-0 z-10 flex h-16 shrink-0 bg-white shadow-sm">
         <button
           x-on:click="sidebarOpen = true"
           type="button"
-          class="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 md:hidden"
+          class="border-r border-gray-200 px-4 text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-primary-500 md:hidden"
         >
           <span class="sr-only">{dgettext("layout", "Open sidebar")}</span>
           <Heroicons.bars_3 class="h-6 w-6" />

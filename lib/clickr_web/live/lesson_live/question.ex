@@ -48,7 +48,7 @@ defmodule ClickrWeb.LessonLive.Question do
     </.header>
 
     <div
-      class="mt-5 flex-grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr"
+      class="mt-5 grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr"
       phx-hook="AnimateSelectAnswer"
       id="seating-plan"
     >
@@ -57,8 +57,8 @@ defmodule ClickrWeb.LessonLive.Question do
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
         class={[
-          "x-student relative group flex flex-col items-stretch justify-between rounded-lg border border-gray-300 p-1 lg:p-3 shadow-sm",
-          "data-[select-answer-intermediate]:!bg-yellow-400 data-[select-answer-final]:!bg-orange-400",
+          "x-student relative group flex flex-col items-stretch justify-between rounded-lg border border-gray-300 p-1 lg:p-3 shadow-xs",
+          "data-[select-answer-intermediate]:bg-yellow-400! data-[select-answer-final]:bg-orange-400!",
           if(MapSet.member?(@answers, seat.student_id),
             do: "x-answered bg-green-400",
             else: "bg-white"

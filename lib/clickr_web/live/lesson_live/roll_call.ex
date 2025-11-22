@@ -32,13 +32,13 @@ defmodule ClickrWeb.LessonLive.RollCall do
       </:actions>
     </.header>
 
-    <div class="mt-5 flex-grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr">
+    <div class="mt-5 grow grid gap-1 lg:gap-4 auto-rows-fr auto-cols-fr">
       <div
         :for={seat <- @lesson.seating_plan.seats}
         id={"student-#{seat.student_id}"}
         style={"grid-column: #{seat.x}; grid-row: #{seat.y};"}
         class={[
-          "relative group flex flex-col items-stretch justify-between rounded-lg border border-gray-300 p-1 lg:p-3 shadow-sm",
+          "relative group flex flex-col items-stretch justify-between rounded-lg border border-gray-300 p-1 lg:p-3 shadow-xs",
           if(MapSet.member?(@answers, seat.student_id),
             do: "x-answered bg-green-400",
             else: "bg-white"

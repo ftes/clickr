@@ -176,7 +176,7 @@ defmodule ClickrWeb.Table do
       value={@value}
       class={[
         "mt-2 block w-full rounded-lg border-zinc-300 bg-zinc-100 py-0 px-2",
-        "text-zinc-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
+        "text-zinc-900 focus:outline-hidden focus:ring-4 sm:text-sm sm:leading-6",
         "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5"
       ]}
     />
@@ -189,10 +189,10 @@ defmodule ClickrWeb.Table do
       name={@name}
       class={[
         "mt-2 block w-full rounded-lg border-zinc-300 bg-zinc-100 py-0 px-2",
-        "text-zinc-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
+        "text-zinc-900 focus:outline-hidden focus:ring-4 sm:text-sm sm:leading-6",
         "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5"
       ]}
-      x-class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
+      x-class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-xs focus:outline-hidden focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
     >
       <option value="" selected={@value == nil}></option>
       <option :for={{value, label} <- @options} value={value} selected={@value == value}>
