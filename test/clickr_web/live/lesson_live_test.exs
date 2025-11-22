@@ -147,7 +147,7 @@ defmodule ClickrWeb.LessonLiveTest do
       |> form("#lesson-form", lesson: %{subject_id: s.id, seating_plan_id: sp.id})
       |> render_change()
 
-      expected_name = "class subject #{Timex.format!(Date.utc_today(), "{D}.{M}.")}"
+      expected_name = "class subject #{Calendar.strftime(Date.utc_today(), "%d.%m.")}"
       assert has_element?(index_live, "#lesson-form_name[value='#{expected_name}']")
     end
 
