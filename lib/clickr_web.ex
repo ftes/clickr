@@ -23,7 +23,7 @@ defmodule ClickrWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: ClickrWeb
+      use Phoenix.Controller, formats: [:html]
 
       import Plug.Conn
       use Gettext, backend: ClickrWeb.Gettext

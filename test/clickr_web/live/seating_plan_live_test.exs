@@ -117,10 +117,10 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
       %{id: sid} = student_fixture(class_id: sp.class_id)
       seating_plan_seat_fixture(seating_plan_id: sp.id, student_id: sid, x: 1, y: 1)
       {:ok, show_live, _html} = live(conn, ~p"/seating_plans/#{sp}")
-      assert show_live |> has_element?("#seated-student-#{sid}[data-x=1, data-y=1]")
+      assert show_live |> has_element?("#seated-student-#{sid}[data-x='1'][data-y='1']")
 
       show_live |> render_hook(:assign_seat, %{x: 2, y: 2, student_id: sid})
-      assert show_live |> has_element?("#seated-student-#{sid}[data-x=2, data-y=2]")
+      assert show_live |> has_element?("#seated-student-#{sid}[data-x='2'][data-y='2']")
     end
 
     test "removes student from seat", %{conn: conn, seating_plan: sp} do

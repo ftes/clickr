@@ -13,7 +13,7 @@ defmodule Clickr.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      compilers: [:boundary] ++ Mix.compilers(),
+      compilers: [:boundary, :phoenix_live_view] ++ Mix.compilers(),
       releases: releases()
     ]
   end
@@ -44,10 +44,10 @@ defmodule Clickr.MixProject do
       {:ecto_sqlite3, "~> 0.15"},
       {:phoenix_html, "~> 4.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 1.0"},
+      {:phoenix_live_view, "~> 1.1"},
       {:phoenix_view, "~> 2.0"},
       {:heroicons, "~> 0.5"},
-      {:floki, ">= 0.30.0", only: :test},
+      {:lazy_html, ">= 0.0.0", only: :test},
       {:tailwind, "~> 0.1.8", runtime: Mix.env() == :dev},
       {:phoenix_live_dashboard, "~> 0.8"},
       {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},

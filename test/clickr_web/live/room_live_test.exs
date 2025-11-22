@@ -146,10 +146,10 @@ defmodule ClickrWeb.RoomLiveTest do
       %{id: bid} = button_fixture()
       room_seat_fixture(room_id: r.id, button_id: bid, x: 1, y: 1)
       {:ok, show_live, _html} = live(conn, ~p"/rooms/#{r}")
-      assert show_live |> has_element?("#button-#{bid}[data-x=1, data-y=1]")
+      assert show_live |> has_element?("#button-#{bid}[data-x='1'][data-y='1']")
 
       show_live |> render_hook(:assign_seat, %{x: 2, y: 2, button_id: bid})
-      assert show_live |> has_element?("#button-#{bid}[data-x=2, data-y=2]")
+      assert show_live |> has_element?("#button-#{bid}[data-x='2'][data-y='2']")
     end
 
     test "removes button from seat", %{conn: conn, room: r} do
