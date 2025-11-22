@@ -58,6 +58,8 @@ if config_env() == :prod do
   host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
+  config :appsignal, :config, push_api_key: System.fetch_env!("APPSIGNAL_PUSH_API_KEY")
+
   config :clickr, Clickr.Repo,
     database: database_path,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")

@@ -65,7 +65,8 @@ defmodule Clickr.MixProject do
       {:tortoise311, "~> 0.11.5"},
       {:mox, "~> 1.0"},
       {:phoenix_test, "~> 0.9", only: :test, runtime: false},
-      {:styler, "~> 1.9", only: [:dev, :test], runtime: false}
+      {:styler, "~> 1.9", only: [:dev, :test], runtime: false},
+      {:appsignal_phoenix, "~> 2.0"}
     ]
   end
 

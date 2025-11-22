@@ -7,6 +7,12 @@
 # General application configuration
 import Config
 
+config :appsignal, :config,
+  otp_app: :clickr,
+  name: "clickr",
+  env: Mix.env(),
+  active: true
+
 config :bodyguard,
   # The second element of the {:error, reason} tuple returned on auth failure
   default_error: :unauthorized

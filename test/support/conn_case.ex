@@ -21,6 +21,7 @@ defmodule ClickrWebTest.ConnCase do
   using do
     quote do
       use ClickrWeb, :verified_routes
+
       import ClickrWebTest.ConnCase
       import Phoenix.ConnTest
       import PhoenixTest
