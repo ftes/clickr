@@ -1,4 +1,5 @@
 defmodule Clickr.PubSub do
+  @moduledoc false
   use Boundary, exports: [], deps: []
 
   alias Phoenix.PubSub

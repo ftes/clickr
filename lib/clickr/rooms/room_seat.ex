@@ -1,4 +1,5 @@
 defmodule Clickr.Rooms.RoomSeat do
+  @moduledoc false
   use Clickr.Schema
 
   schema "room_seats" do

@@ -1,10 +1,11 @@
 defmodule Clickr.AccountsTest do
   use ClickrTest.DataCase, async: true
 
-  alias Clickr.Accounts
-
   import Clickr.AccountsFixtures
-  alias Clickr.Accounts.{User, UserToken}
+
+  alias Clickr.Accounts
+  alias Clickr.Accounts.User
+  alias Clickr.Accounts.UserToken
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do

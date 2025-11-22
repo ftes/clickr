@@ -1,4 +1,5 @@
 defmodule Clickr.Classes.SeatingPlanSeat do
+  @moduledoc false
   use Clickr.Schema, bodyguard: false
 
   schema "seating_plan_seats" do

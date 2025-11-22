@@ -1,8 +1,8 @@
 defmodule ClickrWeb.SubjectLiveTest do
   use ClickrWebTest.ConnCase
 
-  import Phoenix.LiveViewTest
   import Clickr.SubjectsFixtures
+  import Phoenix.LiveViewTest
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}

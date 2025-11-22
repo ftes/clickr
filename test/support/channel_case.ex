@@ -1,6 +1,4 @@
 defmodule ClickrWebTest.ChannelCase do
-  use Boundary, check: [out: false]
-
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -17,13 +15,14 @@ defmodule ClickrWebTest.ChannelCase do
   this option is not recommended for other databases.
   """
 
+  use Boundary, check: [out: false]
   use ExUnit.CaseTemplate
 
   using do
     quote do
+      import ClickrWebTest.ChannelCase
       # Import conveniences for testing with channels
       import Phoenix.ChannelTest
-      import ClickrWebTest.ChannelCase
 
       # The default endpoint for testing
       @endpoint ClickrWeb.Endpoint

@@ -11,6 +11,8 @@ import Config
 # before starting your production server.
 config :clickr, ClickrWeb.Endpoint, cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :gettext, :default_locale, "de"
+
 # Do not print debug messages in production
 config :logger, level: :info
 
@@ -50,5 +52,3 @@ config :logger, level: :info
 
 # Disable in production for now
 config :swoosh, :api_client, false
-
-config :gettext, :default_locale, "de"

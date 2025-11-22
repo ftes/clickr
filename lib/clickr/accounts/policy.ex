@@ -1,7 +1,8 @@
 defmodule Clickr.Accounts.Policy do
+  @moduledoc false
   @behaviour Bodyguard.Policy
+
   alias Clickr.Accounts.User
-  alias Clickr.Accounts.{User}
 
   def authorize(_, %User{admin: true}, _), do: true
 

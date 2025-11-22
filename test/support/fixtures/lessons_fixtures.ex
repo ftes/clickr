@@ -3,14 +3,12 @@ defmodule Clickr.LessonsFixtures do
   This module defines test helpers for creating
   entities via the `Clickr.Lessons` context.
   """
-  import Clickr.{
-    AccountsFixtures,
-    ClassesFixtures,
-    FixturesHelper,
-    RoomsFixtures,
-    StudentsFixtures,
-    SubjectsFixtures
-  }
+  import Clickr.AccountsFixtures
+  import Clickr.ClassesFixtures
+  import Clickr.FixturesHelper
+  import Clickr.RoomsFixtures
+  import Clickr.StudentsFixtures
+  import Clickr.SubjectsFixtures
 
   @doc """
   Generate a lesson.
@@ -48,7 +46,7 @@ defmodule Clickr.LessonsFixtures do
   """
   def question_answer_fixture(attrs \\ %{}) do
     attrs
-    |> Enum.into(%{})
+    |> Map.new()
     |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
     |> put_with_user(:question_id, fn uid -> question_fixture(user_id: uid).id end)
     |> put_with_user(:student_id, fn uid -> student_fixture(user_id: uid).id end)

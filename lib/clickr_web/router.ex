@@ -1,8 +1,8 @@
 defmodule ClickrWeb.Router do
   use ClickrWeb, :router
 
-  import ClickrWeb.UserAuth
   import ClickrWeb.Menu, only: [mount_menu: 2]
+  import ClickrWeb.UserAuth
 
   pipeline :browser do
     plug :accepts, ["html"]

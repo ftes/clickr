@@ -4,6 +4,8 @@ defmodule Clickr.AccountsFixtures do
   entities via the `Clickr.Accounts` context.
   """
 
+  alias Clickr.Accounts.User
+
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
   def valid_user_password, do: "hello world!"
 
@@ -17,9 +19,9 @@ defmodule Clickr.AccountsFixtures do
   def user_fixture(attrs \\ %{}) do
     attrs = valid_user_attributes(attrs)
 
-    %Clickr.Accounts.User{}
-    |> Clickr.Accounts.User.registration_changeset(attrs)
-    |> Clickr.Accounts.User.admin_changeset(attrs)
+    %User{}
+    |> User.registration_changeset(attrs)
+    |> User.admin_changeset(attrs)
     |> Clickr.Repo.insert!()
   end
 

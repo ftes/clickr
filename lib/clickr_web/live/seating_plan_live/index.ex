@@ -1,4 +1,5 @@
 defmodule ClickrWeb.SeatingPlanLive.Index do
+  @moduledoc false
   use ClickrWeb, :live_view
 
   alias Clickr.Classes

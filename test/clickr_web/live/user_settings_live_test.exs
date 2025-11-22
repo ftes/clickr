@@ -1,9 +1,10 @@
 defmodule ClickrWeb.UserSettingsLiveTest do
   use ClickrWebTest.ConnCase
 
-  alias Clickr.Accounts
-  import Phoenix.LiveViewTest
   import Clickr.AccountsFixtures
+  import Phoenix.LiveViewTest
+
+  alias Clickr.Accounts
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do

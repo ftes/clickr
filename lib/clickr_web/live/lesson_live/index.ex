@@ -1,14 +1,17 @@
 defmodule ClickrWeb.LessonLive.Index do
+  @moduledoc false
   use ClickrWeb, :live_view
+
   alias Clickr.Lessons
   alias Clickr.Lessons.Lesson
+  alias ClickrWeb.Table.LiveView
 
   defp path(query), do: ~p"/lessons/?#{query}"
 
   @impl true
   def mount(_params, session, socket) do
     {:ok,
-     ClickrWeb.Table.LiveView.mount(
+     LiveView.mount(
        %{
          path: &path/1,
          sort: ClickrWeb.LessonsSortForm,
@@ -56,7 +59,8 @@ defmodule ClickrWeb.LessonLive.Index do
 
   defp load_lessons(socket) do
     params =
-      ClickrWeb.Table.LiveView.merge_and_sanitize_table_params(socket)
+      socket
+      |> LiveView.merge_and_sanitize_table_params()
       |> Map.put(:preload, [:subject, seating_plan: :class])
 
     assign(socket, :lessons, Lessons.list_lessons(socket.assigns.current_user, params))

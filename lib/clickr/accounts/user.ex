@@ -1,5 +1,8 @@
 defmodule Clickr.Accounts.User do
+  @moduledoc false
   use Clickr.Schema, bodyguard: false
+
+  alias Clickr.Accounts.User
 
   schema "users" do
     field :email, :string
@@ -12,9 +15,9 @@ defmodule Clickr.Accounts.User do
     timestamps(type: :utc_datetime)
   end
 
-  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+  def scope(query, %User{admin: true}, _), do: query
 
-  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+  def scope(query, %User{id: user_id}, _) do
     from x in query, where: x.id == ^user_id
   end
 
@@ -129,7 +132,7 @@ defmodule Clickr.Accounts.User do
   Confirms the account by setting `confirmed_at`.
   """
   def confirm_changeset(user) do
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    now = DateTime.truncate(DateTime.utc_now(), :second)
     change(user, confirmed_at: now)
   end
 
@@ -139,7 +142,7 @@ defmodule Clickr.Accounts.User do
   If there is no user or the user doesn't have a password, we call
   `Bcrypt.no_user_verify/0` to avoid timing attacks.
   """
-  def valid_password?(%Clickr.Accounts.User{hashed_password: hashed_password}, password)
+  def valid_password?(%User{hashed_password: hashed_password}, password)
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Bcrypt.verify_pass(password, hashed_password)
   end
@@ -161,7 +164,6 @@ defmodule Clickr.Accounts.User do
   end
 
   def admin_changeset(user, attrs) do
-    user
-    |> cast(attrs, [:admin])
+    cast(user, attrs, [:admin])
   end
 end

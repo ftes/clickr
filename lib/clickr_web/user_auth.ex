@@ -1,9 +1,10 @@
 defmodule ClickrWeb.UserAuth do
+  @moduledoc false
   use ClickrWeb, :verified_routes
-
-  import Plug.Conn
-  import Phoenix.Controller
   use Gettext, backend: ClickrWeb.Gettext
+
+  import Phoenix.Controller
+  import Plug.Conn
 
   alias Clickr.Accounts
 

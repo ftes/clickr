@@ -1,4 +1,5 @@
 defmodule ClickrWeb.UserLoginLive do
+  @moduledoc false
   use ClickrWeb, :live_view
 
   def render(assigns) do

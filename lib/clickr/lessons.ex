@@ -1,23 +1,22 @@
 defmodule Clickr.Lessons do
+  @moduledoc false
   use Boundary,
     exports: [Lesson, LessonStudent, Question, QuestionAnswer],
     deps: [Clickr.{Accounts, Devices, Grades, PubSub, Repo, Schema}]
 
-  defdelegate authorize(action, user, params), to: Clickr.Lessons.Policy
-
   import Ecto.Query, warn: false
-  alias Clickr.Repo
-  alias Clickr.Accounts.User
 
-  alias Clickr.Lessons.{
-    ActiveQuestion,
-    ActiveRollCall,
-    Lesson,
-    LessonStudent,
-    Question,
-    QuestionAnswer,
-    SelectAnswer
-  }
+  alias Clickr.Accounts.User
+  alias Clickr.Lessons.ActiveQuestion
+  alias Clickr.Lessons.ActiveRollCall
+  alias Clickr.Lessons.Lesson
+  alias Clickr.Lessons.LessonStudent
+  alias Clickr.Lessons.Question
+  alias Clickr.Lessons.QuestionAnswer
+  alias Clickr.Lessons.SelectAnswer
+  alias Clickr.Repo
+
+  defdelegate authorize(action, user, params), to: Clickr.Lessons.Policy
 
   def get_button_mapping(%Lesson{} = lesson), do: Clickr.Lessons.ButtonMapping.get_mapping(lesson)
 
@@ -61,12 +60,7 @@ defmodule Clickr.Lessons do
 
   def transition_lesson(user, lesson, new_state, attrs \\ %{})
 
-  def transition_lesson(
-        %User{} = user,
-        %Lesson{state: :started} = lesson,
-        :roll_call = new_state,
-        _
-      ) do
+  def transition_lesson(%User{} = user, %Lesson{state: :started} = lesson, :roll_call = new_state, _) do
     with :ok <- permit(:update_lesson, user, lesson),
          {:ok, lesson} = res <- Repo.update(Lesson.changeset(lesson, %{state: new_state})) do
       ActiveRollCall.start(lesson)
@@ -74,12 +68,7 @@ defmodule Clickr.Lessons do
     end
   end
 
-  def transition_lesson(
-        %User{} = user,
-        %Lesson{state: :roll_call} = lesson,
-        :active = new_state,
-        _
-      ) do
+  def transition_lesson(%User{} = user, %Lesson{state: :roll_call} = lesson, :active = new_state, _) do
     with :ok <- permit(:update_lesson, user, lesson) do
       Task.start(fn -> ActiveRollCall.stop(lesson) end)
 
@@ -142,14 +131,11 @@ defmodule Clickr.Lessons do
     end
   end
 
-  defp put_params_attr(attrs, key, value),
-    do: put_params_attr(attrs, key, value, Enum.at(Map.keys(attrs), 0))
+  defp put_params_attr(attrs, key, value), do: put_params_attr(attrs, key, value, Enum.at(Map.keys(attrs), 0))
 
-  defp put_params_attr(attrs, key, value, first_other_key) when is_atom(first_other_key),
-    do: Map.put(attrs, key, value)
+  defp put_params_attr(attrs, key, value, first_other_key) when is_atom(first_other_key), do: Map.put(attrs, key, value)
 
-  defp put_params_attr(attrs, key, value, _),
-    do: Map.put(attrs, Atom.to_string(key), value)
+  defp put_params_attr(attrs, key, value, _), do: Map.put(attrs, Atom.to_string(key), value)
 
   def delete_lesson(%User{} = user, %Lesson{} = lesson) do
     lesson = Repo.preload(lesson, :lesson_students)
@@ -166,11 +152,7 @@ defmodule Clickr.Lessons do
 
   def add_extra_point_for_all(%User{} = user, %Lesson{} = lesson) do
     with :ok <- permit(:update_lesson, user, lesson) do
-      from(ls in LessonStudent,
-        where: ls.lesson_id == ^lesson.id,
-        update: [inc: [extra_points: 1]]
-      )
-      |> Repo.update_all([])
+      Repo.update_all(from(ls in LessonStudent, where: ls.lesson_id == ^lesson.id, update: [inc: [extra_points: 1]]), [])
     end
   end
 
@@ -252,19 +234,14 @@ defmodule Clickr.Lessons do
     end
   end
 
-  def add_extra_points(
-        %User{} = user,
-        %Lesson{state: state} = lesson,
-        %{student_id: sid},
-        delta
-      )
+  def add_extra_points(%User{} = user, %Lesson{state: state} = lesson, %{student_id: sid}, delta)
       when state in [:active, :ended, :graded] do
     {1, _} =
       from(ls in LessonStudent, where: ls.lesson_id == ^lesson.id and ls.student_id == ^sid)
       |> Bodyguard.scope(user)
       |> Repo.update_all(inc: [extra_points: delta])
 
-    lesson = lesson |> Repo.preload(:lesson_students, force: true)
+    lesson = Repo.preload(lesson, :lesson_students, force: true)
     calculate_and_save_lesson_grades(user, lesson)
     {:ok, nil}
   end
@@ -361,8 +338,7 @@ defmodule Clickr.Lessons do
   defp where_question_id(query, nil), do: query
   defp where_question_id(query, id), do: where(query, [x], x.question_id == ^id)
 
-  defp permit(action, user, params \\ []),
-    do: Bodyguard.permit(__MODULE__, action, user, params)
+  defp permit(action, user, params \\ []), do: Bodyguard.permit(__MODULE__, action, user, params)
 
   defp _preload(input, nil), do: input
   defp _preload(input, args), do: Repo.preload(input, args)
@@ -371,8 +347,7 @@ defmodule Clickr.Lessons do
   defp preload_map(input, _), do: input
 
   defp filter_by_name(query, %{name: <<_::binary-size(2), _::binary>> = name}) do
-    query
-    |> where([x], like(x.name, ^"%#{name}%"))
+    where(query, [x], like(x.name, ^"%#{name}%"))
   end
 
   defp filter_by_name(query, _), do: query
@@ -390,9 +365,8 @@ defmodule Clickr.Lessons do
 
   defp filter_by_subject_id(query, _), do: query
 
-  defp filter_by_state(query, %{state: state})
-       when (is_binary(state) or is_atom(state)) and state != "",
-       do: where(query, [x], x.state == ^state)
+  defp filter_by_state(query, %{state: state}) when (is_binary(state) or is_atom(state)) and state != "",
+    do: where(query, [x], x.state == ^state)
 
   defp filter_by_state(query, _), do: query
 

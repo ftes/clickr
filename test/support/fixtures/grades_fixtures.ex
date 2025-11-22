@@ -4,13 +4,11 @@ defmodule Clickr.GradesFixtures do
   entities via the `Clickr.Grades` context.
   """
 
-  import Clickr.{
-    AccountsFixtures,
-    FixturesHelper,
-    LessonsFixtures,
-    StudentsFixtures,
-    SubjectsFixtures
-  }
+  import Clickr.AccountsFixtures
+  import Clickr.FixturesHelper
+  import Clickr.LessonsFixtures
+  import Clickr.StudentsFixtures
+  import Clickr.SubjectsFixtures
 
   @doc """
   Generate a lesson_grade.
@@ -37,7 +35,7 @@ defmodule Clickr.GradesFixtures do
     |> Map.put_new_lazy(:user_id, fn -> user_fixture().id end)
     |> put_with_user(:student_id, fn uid -> student_fixture(user_id: uid).id end)
     |> put_with_user(:subject_id, fn uid -> subject_fixture(user_id: uid).id end)
-    |> Map.drop([:user_id])
+    |> Map.delete(:user_id)
     |> create(Clickr.Grades.Grade)
   end
 

@@ -1,4 +1,5 @@
 defmodule Clickr.Devices.Keyboard do
+  @moduledoc false
   @device_type_id "2ae4ae54-48c5-11ed-b290-ff51622b2427"
 
   def parse_event(%{user_id: _, key: key} = attrs) do

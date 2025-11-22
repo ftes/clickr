@@ -64,7 +64,8 @@ defmodule Clickr.MixProject do
       {:boundary, "~> 0.9.4", runtime: false},
       {:tortoise311, "~> 0.11.5"},
       {:mox, "~> 1.0"},
-      {:phoenix_test, "~> 0.9", only: :test, runtime: false}
+      {:phoenix_test, "~> 0.9", only: :test, runtime: false},
+      {:styler, "~> 1.9", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -88,7 +89,7 @@ defmodule Clickr.MixProject do
     ]
   end
 
-  defp releases() do
+  defp releases do
     [
       clickr: [
         include_executables_for: [:unix],

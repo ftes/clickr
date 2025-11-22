@@ -1,7 +1,11 @@
 defmodule Clickr.Zigbee2Mqtt.Gateway do
+  @moduledoc false
   use GenServer, restart: :transient
-  require Logger
+
   alias Clickr.Devices
+  alias Clickr.Zigbee2Mqtt.Publisher
+
+  require Logger
 
   @device_type_id "c9eb071e-5612-11ed-a896-f7a5f8566984"
   @registry __MODULE__.Registry
@@ -10,9 +14,8 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   defstruct [:gateway, :user, last_call: false]
 
   def handle_message(gateway_id, topic, payload) when is_list(topic) do
-    with {:ok, pid} <- start_or_get_pid(gateway_id) do
-      GenServer.cast(pid, {:message, topic, payload})
-    else
+    case start_or_get_pid(gateway_id) do
+      {:ok, pid} -> GenServer.cast(pid, {:message, topic, payload})
       error -> Logger.warning("Failed to handle gateway message #{inspect(error)}")
     end
   end
@@ -39,9 +42,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   def init(gateway_id) do
     Process.flag(:trap_exit, true)
 
-    case Devices.zigbee2mqtt_get_gateway(Clickr.Accounts.system_user(), %{gateway_id: gateway_id},
-           preload: :user
-         ) do
+    case Devices.zigbee2mqtt_get_gateway(Clickr.Accounts.system_user(), %{gateway_id: gateway_id}, preload: :user) do
       nil ->
         Logger.info("Unknown gateway #{gateway_id}")
         {:stop, {:shutdown, :unknown_gateway_id}}
@@ -50,7 +51,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
         Logger.info("Gateway online #{gateway_id}")
 
         schedule_health_check()
-        Clickr.Devices.set_gateway_online(gateway_id, true)
+        Devices.set_gateway_online(gateway_id, true)
         state = %__MODULE__{gateway: gateway, user: gateway.user, last_call: false}
         {:ok, state, timeout()}
     end
@@ -70,8 +71,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   end
 
   @impl true
-  def handle_cast({:message, ["bridge", "state"], %{"state" => "online"}}, state),
-    do: extend_timeout(state)
+  def handle_cast({:message, ["bridge", "state"], %{"state" => "online"}}, state), do: extend_timeout(state)
 
   def handle_cast({:message, ["bridge", "state"], %{"state" => "offline"}}, state),
     do: {:stop, {:shutdown, :mqtt_state_offline}, state}
@@ -102,9 +102,7 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     attrs = %{gateway_id: gid, device_id: did, button_id: bid}
     Logger.info("Handle click #{device_name}/#{button_name}")
 
-    upserts =
-      Ecto.Multi.new()
-      |> Ecto.Multi.insert(:btn, button, conflict_target: [:id], on_conflict: {:replace, [:name]})
+    upserts = Ecto.Multi.insert(Ecto.Multi.new(), :btn, button, conflict_target: [:id], on_conflict: {:replace, [:name]})
 
     Devices.broadcast_button_click(state.user, attrs, upserts)
 
@@ -132,21 +130,19 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
   @impl true
   def terminate(reason, state) do
     Logger.info("Gateway offline #{state.gateway.id} #{inspect(reason)}")
-    Clickr.Devices.set_gateway_online(state.gateway.id, false)
+    Devices.set_gateway_online(state.gateway.id, false)
     :ignored
   end
 
   def via_tuple(gateway_id), do: {:via, Registry, {@registry, gateway_id}}
 
-  def device_id(ieee_address) when is_binary(ieee_address),
-    do: UUID.uuid5(@device_type_id, ieee_address)
+  def device_id(ieee_address) when is_binary(ieee_address), do: UUID.uuid5(@device_type_id, ieee_address)
 
   def device_id(%{"ieee_address" => ieee_address}), do: device_id(ieee_address)
 
   def device_id(%{"device" => %{"ieeeAddr" => ieee_address}}), do: device_id(ieee_address)
 
-  def button_id(%{"device" => _, "action" => action} = payload),
-    do: UUID.uuid5(device_id(payload), action)
+  def button_id(%{"device" => _, "action" => action} = payload), do: UUID.uuid5(device_id(payload), action)
 
   defp start_or_get_pid(gateway_id) do
     case start(gateway_id) do
@@ -160,20 +156,19 @@ defmodule Clickr.Zigbee2Mqtt.Gateway do
     if String.contains?(device_name, "/") do
       payload = %{from: device_name, to: String.replace(device_name, "/", "_")}
       topic = "clickr/gateways/#{state.gateway.id}/bridge/request/device/rename"
-      Clickr.Zigbee2Mqtt.Publisher.publish(topic, payload)
+      Publisher.publish(topic, payload)
     end
   end
 
-  defp schedule_health_check(),
-    do: Process.send_after(self(), :request_health_check, heartbeat())
+  defp schedule_health_check, do: Process.send_after(self(), :request_health_check, heartbeat())
 
   defp request_health_check(state) do
     topic = "clickr/gateways/#{state.gateway.id}/bridge/request/health_check"
-    Clickr.Zigbee2Mqtt.Publisher.publish(topic, "")
+    Publisher.publish(topic, "")
   end
 
   defp extend_timeout(state), do: {:noreply, %{state | last_call: false}, timeout()}
 
-  def timeout(), do: Application.get_env(:clickr, __MODULE__)[:timeout] || 10_000
-  def heartbeat(), do: Application.get_env(:clickr, __MODULE__)[:heartbeat] || 5_000
+  def timeout, do: Application.get_env(:clickr, __MODULE__)[:timeout] || 10_000
+  def heartbeat, do: Application.get_env(:clickr, __MODULE__)[:heartbeat] || 5_000
 end

@@ -1,8 +1,10 @@
 defmodule Clickr.Lessons.ActiveQuestion do
+  @moduledoc false
   use GenServer, restart: :transient
 
   alias Clickr.Lessons
-  alias Clickr.Lessons.{ButtonMapping, Question}
+  alias Clickr.Lessons.ButtonMapping
+  alias Clickr.Lessons.Question
 
   defstruct [:question_id, :lesson_id, :user_id, :mapping]
 
@@ -38,10 +40,7 @@ defmodule Clickr.Lessons.ActiveQuestion do
   end
 
   @impl true
-  def handle_info(
-        {:button_clicked, _create_button_multi, %{button_id: bid}},
-        %__MODULE__{mapping: mapping} = state
-      )
+  def handle_info({:button_clicked, _create_button_multi, %{button_id: bid}}, %__MODULE__{mapping: mapping} = state)
       when is_map_key(mapping, bid) do
     args = %{question_id: state.question_id, student_id: mapping[bid]}
     Lessons.create_question_answer(%Clickr.Accounts.User{id: state.user_id}, args)

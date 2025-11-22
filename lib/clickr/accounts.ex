@@ -1,18 +1,20 @@
 defmodule Clickr.Accounts do
-  use Boundary, exports: [User], deps: [Clickr.{Mailer, Repo, Schema}]
-
-  defdelegate authorize(action, user, params), to: Clickr.Accounts.Policy
-
   @moduledoc """
   The Accounts context.
   """
 
+  use Boundary, exports: [User], deps: [Clickr.{Mailer, Repo, Schema}]
+
   import Ecto.Query, warn: false
+
+  alias Clickr.Accounts.User
+  alias Clickr.Accounts.UserNotifier
+  alias Clickr.Accounts.UserToken
   alias Clickr.Repo
 
-  alias Clickr.Accounts.{User, UserToken, UserNotifier}
+  defdelegate authorize(action, user, params), to: Clickr.Accounts.Policy
 
-  def system_user(), do: %User{system: true}
+  def system_user, do: %User{system: true}
 
   ## Database getters
 
@@ -56,8 +58,7 @@ defmodule Clickr.Accounts do
       nil
 
   """
-  def get_user_by_email_and_password(email, password)
-      when is_binary(email) and is_binary(password) do
+  def get_user_by_email_and_password(email, password) when is_binary(email) and is_binary(password) do
     user = Repo.get_by(User, email: email)
     if User.valid_password?(user, password), do: user
   end
@@ -369,9 +370,7 @@ defmodule Clickr.Accounts do
     end
   end
 
-  def permit?(action, user, params \\ []),
-    do: Bodyguard.permit?(__MODULE__, action, user, params)
+  def permit?(action, user, params \\ []), do: Bodyguard.permit?(__MODULE__, action, user, params)
 
-  defp permit(action, user, params \\ []),
-    do: Bodyguard.permit(__MODULE__, action, user, params)
+  defp permit(action, user, params \\ []), do: Bodyguard.permit(__MODULE__, action, user, params)
 end

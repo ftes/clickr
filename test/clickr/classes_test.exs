@@ -1,9 +1,14 @@
 defmodule Clickr.ClassesTest do
   use ClickrTest.DataCase, async: true
 
+  import Clickr.ClassesFixtures
+  import Clickr.LessonsFixtures
+  import Clickr.StudentsFixtures
+
   alias Clickr.Classes
-  import Clickr.{ClassesFixtures, LessonsFixtures, StudentsFixtures}
-  alias Clickr.Classes.{Class, SeatingPlan, SeatingPlanSeat}
+  alias Clickr.Classes.Class
+  alias Clickr.Classes.SeatingPlan
+  alias Clickr.Classes.SeatingPlanSeat
 
   setup :create_user
 

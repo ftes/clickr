@@ -1,9 +1,10 @@
 defmodule Clickr.Lessons.SelectAnswer.WheelOfFortune do
+  @moduledoc false
+  alias Clickr.Lessons.SelectAnswer.Animation
+
   @longest_pause_ms 500
   @shortest_pause_ms 75
   @power_base 1.5
-
-  alias Clickr.Lessons.SelectAnswer.Animation
 
   def animate_select_answer(answers) do
     n = ceil(length(answers) * 0.5)

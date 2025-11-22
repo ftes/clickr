@@ -1,7 +1,10 @@
 defmodule ClickrWeb.LessonLive.Ended do
+  @moduledoc false
   use ClickrWeb, :live_view
 
-  alias Clickr.{Grades, Lessons}
+  alias Clickr.Grades
+  alias Clickr.Lessons
+  alias ClickrWeb.LessonLive.Router
 
   @impl true
   def render(assigns) do
@@ -117,7 +120,7 @@ defmodule ClickrWeb.LessonLive.Ended do
      socket
      |> assign(:page_title, dgettext("lessons.lessons", "Lesson"))
      |> assign_lesson_and_related(id)
-     |> ClickrWeb.LessonLive.Router.maybe_navigate()}
+     |> Router.maybe_navigate()}
   end
 
   @impl true
@@ -133,7 +136,7 @@ defmodule ClickrWeb.LessonLive.Ended do
     {:noreply,
      socket
      |> put_flash(:info, dgettext("lessons.lessons", "Lesson graded successfully"))
-     |> ClickrWeb.LessonLive.Router.navigate(lesson)}
+     |> Router.navigate(lesson)}
   end
 
   def handle_event("validate", %{"lesson" => lesson_params}, socket) do
@@ -180,7 +183,7 @@ defmodule ClickrWeb.LessonLive.Ended do
     student_ids = Enum.map(lesson.lesson_students, & &1.student_id)
 
     grades =
-      Clickr.Grades.list_grades(socket.assigns.current_user, %{
+      Grades.list_grades(socket.assigns.current_user, %{
         subject_id: lesson.subject_id,
         student_id: student_ids
       })
@@ -188,7 +191,7 @@ defmodule ClickrWeb.LessonLive.Ended do
     points = Lessons.get_lesson_points(lesson)
 
     max_student_points =
-      Enum.map(points, fn {_student_id, points} -> points end) |> Enum.max(&>=/2, fn -> 0 end)
+      points |> Enum.map(fn {_student_id, points} -> points end) |> Enum.max(&>=/2, fn -> 0 end)
 
     number_of_questions = length(lesson.questions)
     max_points = Enum.max([max_student_points, number_of_questions])

@@ -1,16 +1,18 @@
 defmodule Clickr.LessonsTest do
   use ClickrTest.DataCase
 
-  alias Clickr.Lessons
-  alias Clickr.Lessons.{Lesson, LessonStudent, Question, QuestionAnswer}
+  import Clickr.ClassesFixtures
+  import Clickr.LessonsFixtures
+  import Clickr.RoomsFixtures
+  import Clickr.StudentsFixtures
+  import Clickr.SubjectsFixtures
 
-  import Clickr.{
-    ClassesFixtures,
-    LessonsFixtures,
-    RoomsFixtures,
-    SubjectsFixtures,
-    StudentsFixtures
-  }
+  alias Clickr.Grades.LessonGrade
+  alias Clickr.Lessons
+  alias Clickr.Lessons.Lesson
+  alias Clickr.Lessons.LessonStudent
+  alias Clickr.Lessons.Question
+  alias Clickr.Lessons.QuestionAnswer
 
   setup :create_user
 
@@ -72,7 +74,7 @@ defmodule Clickr.LessonsTest do
       lesson_fixture(Map.merge(%{user_id: user.id, name: "l3_dup", inserted_at: at.(4)}, l3_dup))
 
       assert ["l3", "l2", "l1"] =
-               Lessons.list_lesson_combinations(user) |> Enum.map(& &1.name)
+               user |> Lessons.list_lesson_combinations() |> Enum.map(& &1.name)
     end
 
     test "get_lesson!/1 returns the lesson with given id", %{user: user} do
@@ -148,7 +150,7 @@ defmodule Clickr.LessonsTest do
       attrs = %{question: %{points: 42, name: "q"}}
       {:ok, _} = Lessons.transition_lesson(user, lesson, :question, attrs)
 
-      assert [%{points: 42, name: "q", state: :started}] = Clickr.Repo.all(Lessons.Question)
+      assert [%{points: 42, name: "q", state: :started}] = Clickr.Repo.all(Question)
     end
 
     test "transition_lesson ended -> graded stores grade, lesson grades and updates grade", %{
@@ -164,7 +166,7 @@ defmodule Clickr.LessonsTest do
                Lessons.transition_lesson(user, lesson, :graded, %{grade: %{min: 10.0, max: 20.0}})
 
       assert [%{lesson_id: ^lid, student_id: ^sid, percent: 0.6}] =
-               Clickr.Repo.all(Clickr.Grades.LessonGrade)
+               Clickr.Repo.all(LessonGrade)
 
       assert [%{student_id: ^sid, percent: 0.6}] = Clickr.Grades.list_grades(user)
     end
@@ -177,11 +179,11 @@ defmodule Clickr.LessonsTest do
       assert {:ok, _} =
                Lessons.transition_lesson(user, lesson, :graded, %{grade: %{min: 0.0, max: 10.0}})
 
-      assert [_] = Clickr.Repo.all(Clickr.Grades.LessonGrade)
+      assert [_] = Clickr.Repo.all(LessonGrade)
       assert [%{percent: 0.5}] = Clickr.Grades.list_grades(user)
 
       assert {:ok, %Lesson{}} = Lessons.delete_lesson(user, lesson)
-      assert [] = Clickr.Repo.all(Clickr.Grades.LessonGrade)
+      assert [] = Clickr.Repo.all(LessonGrade)
       assert [%{percent: +0.0}] = Clickr.Grades.list_grades(user)
       assert_raise Ecto.NoResultsError, fn -> Lessons.get_lesson!(user, lesson.id) end
     end
@@ -201,7 +203,7 @@ defmodule Clickr.LessonsTest do
       assert {2, _} = Lessons.add_extra_point_for_all(u, l)
 
       assert [1, 43] =
-               Lessons.list_lesson_students(u) |> Enum.map(& &1.extra_points) |> Enum.sort()
+               u |> Lessons.list_lesson_students() |> Enum.map(& &1.extra_points) |> Enum.sort()
     end
 
     test "create_all_lesson_students/2 marks all students as attending", %{user: u} do
@@ -217,7 +219,7 @@ defmodule Clickr.LessonsTest do
     test "delete_question/1 deletes the question", %{user: user} do
       question = question_fixture(user_id: user.id)
       assert {:ok, %Question{}} = Lessons.delete_question(user, question)
-      assert_raise Ecto.NoResultsError, fn -> Clickr.Repo.get!(Lessons.Question, question.id) end
+      assert_raise Ecto.NoResultsError, fn -> Clickr.Repo.get!(Question, question.id) end
     end
 
     test "change_question/1 returns a question changeset", %{user: user} do

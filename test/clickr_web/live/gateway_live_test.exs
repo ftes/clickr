@@ -1,8 +1,8 @@
 defmodule ClickrWeb.GatewayLiveTest do
   use ClickrWebTest.ConnCase
 
-  import Phoenix.LiveViewTest
   import Clickr.DevicesFixtures
+  import Phoenix.LiveViewTest
 
   @create_attrs %{name: "some name", url: "some url", type: "keyboard"}
   @update_attrs %{
@@ -44,7 +44,7 @@ defmodule ClickrWeb.GatewayLiveTest do
       {:ok, _, html} =
         index_live
         |> form("#gateway-form", gateway: @create_attrs)
-        |> render_submit
+        |> render_submit()
         |> follow_redirect(conn, ~p"/gateways")
 
       assert html =~ "Gateway created successfully"

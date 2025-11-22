@@ -1,8 +1,10 @@
 defmodule Clickr.Lessons.ActiveRollCall do
+  @moduledoc false
   use GenServer, restart: :transient
 
   alias Clickr.Lessons
-  alias Clickr.Lessons.{ButtonMapping, Lesson}
+  alias Clickr.Lessons.ButtonMapping
+  alias Clickr.Lessons.Lesson
 
   defstruct [:lesson_id, :user_id, :mapping]
 
@@ -36,10 +38,7 @@ defmodule Clickr.Lessons.ActiveRollCall do
   end
 
   @impl true
-  def handle_info(
-        {:button_clicked, _create_button_multi, %{button_id: bid}},
-        %__MODULE__{mapping: mapping} = state
-      )
+  def handle_info({:button_clicked, _create_button_multi, %{button_id: bid}}, %__MODULE__{mapping: mapping} = state)
       when is_map_key(mapping, bid) do
     args = %{lesson_id: state.lesson_id, student_id: mapping[bid]}
     Lessons.create_lesson_student(%Clickr.Accounts.User{id: state.user_id}, args)

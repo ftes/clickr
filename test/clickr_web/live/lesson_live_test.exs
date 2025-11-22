@@ -1,16 +1,13 @@
 defmodule ClickrWeb.LessonLiveTest do
   use ClickrWebTest.ConnCase
 
+  import Clickr.ClassesFixtures
+  import Clickr.GradesFixtures
+  import Clickr.LessonsFixtures
+  import Clickr.RoomsFixtures
+  import Clickr.StudentsFixtures
+  import Clickr.SubjectsFixtures
   import Phoenix.LiveViewTest
-
-  import Clickr.{
-    ClassesFixtures,
-    GradesFixtures,
-    LessonsFixtures,
-    RoomsFixtures,
-    StudentsFixtures,
-    SubjectsFixtures
-  }
 
   @create_attrs %{name: "some name"}
   @invalid_attrs %{name: nil}
@@ -51,7 +48,7 @@ defmodule ClickrWeb.LessonLiveTest do
       lesson_fixture(user_id: u.id, name: "a older", inserted_at: before)
 
       {:ok, live, html} = live(conn, ~p"/lessons")
-      assert html |> String.replace("\n", "") =~ ~r/#{l.name}.*a older/
+      assert String.replace(html, "\n", "") =~ ~r/#{l.name}.*a older/
 
       live |> element(".sort-by", "Name") |> render_click()
       assert "/lessons/?sort_by=name&sort_dir=asc" = assert_patch(live)
@@ -71,8 +68,8 @@ defmodule ClickrWeb.LessonLiveTest do
 
       live |> form("#lessons-filter-form") |> render_change(%{filter: %{name: "uniq"}})
       assert "/lessons/?name=uniq&sort_by=inserted_at&sort_dir=desc" = assert_patch(live)
-      assert live |> render() =~ "unique name"
-      refute live |> render() =~ l.name
+      assert render(live) =~ "unique name"
+      refute render(live) =~ l.name
     end
 
     test "filters by state when selecting option", %{conn: conn, user: u, lesson: l} do
@@ -84,8 +81,8 @@ defmodule ClickrWeb.LessonLiveTest do
 
       live |> form("#lessons-filter-form") |> render_change(%{filter: %{state: "ended"}})
       # assert "/lessons/?sort_by=inserted_at&sort_dir=desc&state=ended" = assert_patch(live)
-      assert live |> render() =~ "ended name"
-      refute live |> render() =~ l.name
+      assert render(live) =~ "ended name"
+      refute render(live) =~ l.name
     end
 
     test "filters by name and state", %{conn: conn, user: u, lesson: l} do
@@ -101,9 +98,9 @@ defmodule ClickrWeb.LessonLiveTest do
       # assert "/lessons/?name=uniq&sort_by=inserted_at&sort_dir=desc&state=ended" =
       #  assert_patch(live)
 
-      assert live |> render() =~ "unique ended"
-      refute live |> render() =~ "other ended"
-      refute live |> render() =~ l.name
+      assert render(live) =~ "unique ended"
+      refute render(live) =~ "other ended"
+      refute render(live) =~ l.name
     end
 
     test "shows gateway presence", %{conn: conn, user: user} do
@@ -151,15 +148,15 @@ defmodule ClickrWeb.LessonLiveTest do
       |> render_change()
 
       expected_name = "class subject #{Timex.format!(Date.utc_today(), "{D}.{M}.")}"
-      assert index_live |> has_element?("#lesson-form_name[value='#{expected_name}']")
+      assert has_element?(index_live, "#lesson-form_name[value='#{expected_name}']")
     end
 
     test "creates lesson using recent combination", %{conn: conn, user: user, lesson: old_lesson} do
       {:ok, index_live, _html} = live(conn, ~p"/lessons/new")
       index_live |> element("button.x-create") |> render_click()
 
-      assert {<<"/lessons/", lesson_id::binary-size(36), "/started">>,
-              %{"info" => "Lesson created successfully"}} = assert_redirect(index_live)
+      assert {<<"/lessons/", lesson_id::binary-size(36), "/started">>, %{"info" => "Lesson created successfully"}} =
+               assert_redirect(index_live)
 
       lesson = Clickr.Lessons.get_lesson!(user, lesson_id)
       assert lesson.subject_id == old_lesson.subject_id
@@ -183,7 +180,8 @@ defmodule ClickrWeb.LessonLiveTest do
       lesson: lesson
     } do
       {:ok, live, _} =
-        live(conn, ~p"/lessons/#{lesson}/router")
+        conn
+        |> live(~p"/lessons/#{lesson}/router")
         |> follow_redirect(conn, ~p"/lessons/#{lesson}/started")
 
       click_and_follow = fn live, btn, to ->

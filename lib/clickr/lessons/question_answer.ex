@@ -1,5 +1,8 @@
 defmodule Clickr.Lessons.QuestionAnswer do
+  @moduledoc false
   use Clickr.Schema
+
+  alias Clickr.Accounts.User
 
   schema "question_answers" do
     belongs_to :question, Clickr.Lessons.Question
@@ -8,9 +11,9 @@ defmodule Clickr.Lessons.QuestionAnswer do
     timestamps(type: :utc_datetime)
   end
 
-  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+  def scope(query, %User{admin: true}, _), do: query
 
-  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+  def scope(query, %User{id: user_id}, _) do
     from x in query,
       join: q in assoc(x, :question),
       join: l in assoc(q, :lesson),

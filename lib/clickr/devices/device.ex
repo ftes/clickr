@@ -1,5 +1,8 @@
 defmodule Clickr.Devices.Device do
+  @moduledoc false
   use Clickr.Schema
+
+  alias Clickr.Accounts.User
 
   schema "devices" do
     field :name, :string
@@ -9,9 +12,9 @@ defmodule Clickr.Devices.Device do
     timestamps(type: :utc_datetime)
   end
 
-  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+  def scope(query, %User{admin: true}, _), do: query
 
-  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+  def scope(query, %User{id: user_id}, _) do
     from x in query, join: g in assoc(x, :gateway), where: g.user_id == ^user_id
   end
 

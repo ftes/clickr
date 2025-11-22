@@ -1,15 +1,19 @@
 defmodule Clickr.Grades do
+  @moduledoc false
   use Boundary, exports: [BonusGrade, Grade, LessonGrade], deps: [Clickr.{Accounts, Repo, Schema}]
+
+  import Ecto.Query, warn: false
+
+  alias Clickr.Accounts.User
+  alias Clickr.Grades.BonusGrade
+  alias Clickr.Grades.Grade
+  alias Clickr.Grades.LessonGrade
+  alias Clickr.Grades.LinearGrade
+  alias Clickr.Repo
 
   defdelegate authorize(action, user, params), to: Clickr.Grades.Policy
 
-  import Ecto.Query, warn: false
-  alias Clickr.Repo
-  alias Clickr.Accounts.User
-  alias Clickr.Grades.{BonusGrade, Grade, LessonGrade, LinearGrade}
-
-  def calculate_linear_grade(%{min: _, max: _, value: _} = attrs),
-    do: LinearGrade.calculate(attrs)
+  def calculate_linear_grade(%{min: _, max: _, value: _} = attrs), do: LinearGrade.calculate(attrs)
 
   def format(:percent, nil), do: nil
   def format(:percent, percent) when is_float(percent), do: "#{round(percent * 100)}%"
@@ -70,7 +74,8 @@ defmodule Clickr.Grades do
     lesson_grades = Repo.all(query_lesson_grades(args))
     bonus_grades = Repo.all(query_bonus_grades(args))
 
-    Enum.concat([lesson_grades, bonus_grades])
+    [lesson_grades, bonus_grades]
+    |> Enum.concat()
     |> Enum.map(& &1.percent)
     |> average()
   end
@@ -78,10 +83,7 @@ defmodule Clickr.Grades do
   defp average([]), do: 0.0
   defp average(percentages), do: Enum.sum(percentages) / length(percentages)
 
-  def calculate_and_save_grade(
-        %User{} = user,
-        %{student_id: student_id, subject_id: subject_id} = args
-      ) do
+  def calculate_and_save_grade(%User{} = user, %{student_id: student_id, subject_id: subject_id} = args) do
     with :ok <- permit(:upsert_grade, user, args) do
       percent = calculate_grade(args)
       grade = %Grade{student_id: student_id, subject_id: subject_id, percent: percent}
@@ -119,8 +121,7 @@ defmodule Clickr.Grades do
 
   defp filter_by_student_name(query, _), do: query
 
-  defp filter_by_subject_id(query, %{subject_id: id}) when is_binary(id),
-    do: where(query, [x], x.subject_id == ^id)
+  defp filter_by_subject_id(query, %{subject_id: id}) when is_binary(id), do: where(query, [x], x.subject_id == ^id)
 
   defp filter_by_subject_id(query, _), do: query
 
@@ -132,16 +133,13 @@ defmodule Clickr.Grades do
 
   defp filter_by_student_class_id(query, _), do: query
 
-  defp filter_by_student_id(query, %{student_id: id}) when is_binary(id),
-    do: where(query, [x], x.student_id == ^id)
+  defp filter_by_student_id(query, %{student_id: id}) when is_binary(id), do: where(query, [x], x.student_id == ^id)
 
-  defp filter_by_student_id(query, %{student_ids: ids}) when is_list(ids),
-    do: where(query, [x], x.student_id in ^ids)
+  defp filter_by_student_id(query, %{student_ids: ids}) when is_list(ids), do: where(query, [x], x.student_id in ^ids)
 
   defp filter_by_student_id(query, _), do: query
 
-  defp permit(action, user, params),
-    do: Bodyguard.permit(__MODULE__, action, user, params)
+  defp permit(action, user, params), do: Bodyguard.permit(__MODULE__, action, user, params)
 
   defp _preload(input, nil), do: input
   defp _preload(input, args), do: Repo.preload(input, args)

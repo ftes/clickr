@@ -1,6 +1,4 @@
 defmodule ClickrWeb do
-  use Boundary, deps: [Clickr, Ecto.Changeset, Ecto.Multi, Ecto.UUID], exports: [Endpoint]
-
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, views, channels and so on.
@@ -19,14 +17,16 @@ defmodule ClickrWeb do
   and import those modules here.
   """
 
+  use Boundary, deps: [Clickr, Ecto.Changeset, Ecto.Multi, Ecto.UUID], exports: [Endpoint]
+
   def static_paths, do: ~w(assets fonts images favicon.ico favicon.png robots.txt)
 
   def controller do
     quote do
       use Phoenix.Controller, formats: [:html]
+      use Gettext, backend: ClickrWeb.Gettext
 
       import Plug.Conn
-      use Gettext, backend: ClickrWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -78,9 +78,9 @@ defmodule ClickrWeb do
     quote do
       use Phoenix.Router, helpers: false
 
-      import Plug.Conn
       import Phoenix.Controller
       import Phoenix.LiveView.Router
+      import Plug.Conn
     end
   end
 
@@ -102,15 +102,16 @@ defmodule ClickrWeb do
 
   defp view_helpers do
     quote do
+      use Gettext, backend: ClickrWeb.Gettext
+
+      import ClickrWeb.Components
       import Phoenix.HTML
       import Phoenix.HTML.Form
-      import ClickrWeb.Components
+      import Phoenix.View
 
       alias Phoenix.LiveView.JS
 
       # Import basic rendering functionality (render, render_layout, etc)
-      import Phoenix.View
-      use Gettext, backend: ClickrWeb.Gettext
       unquote(verified_routes())
     end
   end

@@ -1,9 +1,13 @@
 defmodule Clickr.GradesTest do
   use ClickrTest.DataCase, async: true
 
+  import Clickr.GradesFixtures
+  import Clickr.LessonsFixtures
+  import Clickr.StudentsFixtures
+  import Clickr.SubjectsFixtures
+
   alias Clickr.Grades
   alias Clickr.Grades.BonusGrade
-  import Clickr.{GradesFixtures, LessonsFixtures, SubjectsFixtures, StudentsFixtures}
 
   setup [:create_user, :create_subject]
 
@@ -104,7 +108,7 @@ defmodule Clickr.GradesTest do
       user: user,
       subject: subject
     } do
-      invalid_attrs = Map.merge(@invalid_attrs, %{subject_id: subject.id})
+      invalid_attrs = Map.put(@invalid_attrs, :subject_id, subject.id)
       assert {:error, %Ecto.Changeset{}} = Grades.create_bonus_grade(user, invalid_attrs)
     end
 

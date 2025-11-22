@@ -4,7 +4,8 @@ defmodule Clickr.SubjectsFixtures do
   entities via the `Clickr.Subjects` context.
   """
 
-  import Clickr.{AccountsFixtures, FixturesHelper}
+  import Clickr.AccountsFixtures
+  import Clickr.FixturesHelper
 
   @doc """
   Generate a subject.

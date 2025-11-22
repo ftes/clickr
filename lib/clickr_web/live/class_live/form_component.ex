@@ -1,4 +1,5 @@
 defmodule ClickrWeb.ClassLive.FormComponent do
+  @moduledoc false
   use ClickrWeb, :live_component
 
   alias Clickr.Classes

@@ -1,7 +1,9 @@
 defmodule ClickrWeb.LessonLive.Question do
+  @moduledoc false
   use ClickrWeb, :live_view
 
   alias Clickr.Lessons
+  alias ClickrWeb.LessonLive.Router
 
   @impl true
   def render(assigns) do
@@ -185,11 +187,11 @@ defmodule ClickrWeb.LessonLive.Question do
   @impl true
   def handle_params(%{"id" => id} = params, _, socket) do
     if lesson = socket.assigns[:lesson] do
-      old_topic = Clickr.Lessons.lesson_topic(%{lesson_id: lesson.id})
+      old_topic = Lessons.lesson_topic(%{lesson_id: lesson.id})
       Clickr.PubSub.unsubscribe(old_topic)
     end
 
-    topic = Clickr.Lessons.lesson_topic(%{lesson_id: id})
+    topic = Lessons.lesson_topic(%{lesson_id: id})
     Clickr.PubSub.subscribe(topic)
 
     {:noreply,
@@ -198,7 +200,7 @@ defmodule ClickrWeb.LessonLive.Question do
      |> assign(:student_id, params["student_id"])
      |> assign_lesson_and_related(id)
      |> load_question_and_answers()
-     |> ClickrWeb.LessonLive.Router.maybe_navigate([
+     |> Router.maybe_navigate([
        :active_new_bonus_grade,
        :active_question_options
      ])}
@@ -213,7 +215,7 @@ defmodule ClickrWeb.LessonLive.Question do
         String.to_existing_atom(state)
       )
 
-    {:noreply, ClickrWeb.LessonLive.Router.navigate(socket, lesson)}
+    {:noreply, Router.navigate(socket, lesson)}
   end
 
   def handle_event("add_student", %{"student_id" => student_id}, socket) do
@@ -285,7 +287,7 @@ defmodule ClickrWeb.LessonLive.Question do
         question: params
       })
 
-    {:noreply, ClickrWeb.LessonLive.Router.navigate(socket, lesson)}
+    {:noreply, Router.navigate(socket, lesson)}
   end
 
   defp assign_lesson_and_related(socket, id \\ nil) do
@@ -317,7 +319,8 @@ defmodule ClickrWeb.LessonLive.Question do
 
   defp assign_question_and_answers(socket, question) do
     student_ids =
-      Lessons.list_question_answers(socket.assigns.current_user, question_id: question.id)
+      socket.assigns.current_user
+      |> Lessons.list_question_answers(question_id: question.id)
       |> Enum.map(& &1.student_id)
 
     socket

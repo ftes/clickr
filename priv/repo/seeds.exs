@@ -10,7 +10,13 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Clickr.{Accounts, Classes, Devices, Repo, Rooms, Students, Subjects}
+alias Clickr.Accounts
+alias Clickr.Classes
+alias Clickr.Devices
+alias Clickr.Repo
+alias Clickr.Rooms
+alias Clickr.Students
+alias Clickr.Subjects
 
 if Mix.env() != :test do
   {:ok, %{id: uid} = u} =

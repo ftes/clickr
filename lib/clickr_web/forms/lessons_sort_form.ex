@@ -1,7 +1,9 @@
 defmodule ClickrWeb.LessonsSortForm do
+  @moduledoc false
   @behaviour ClickrWeb.SortForm
 
   import Ecto.Changeset
+
   alias Clickr.Schema
 
   @fields %{
@@ -19,5 +21,5 @@ defmodule ClickrWeb.LessonsSortForm do
   end
 
   @impl true
-  def defaults(), do: @defaults
+  def defaults, do: @defaults
 end

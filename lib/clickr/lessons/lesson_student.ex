@@ -1,5 +1,8 @@
 defmodule Clickr.Lessons.LessonStudent do
+  @moduledoc false
   use Clickr.Schema
+
+  alias Clickr.Accounts.User
 
   schema "lesson_students" do
     field :extra_points, :integer, default: 0
@@ -9,9 +12,9 @@ defmodule Clickr.Lessons.LessonStudent do
     timestamps(type: :utc_datetime)
   end
 
-  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+  def scope(query, %User{admin: true}, _), do: query
 
-  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+  def scope(query, %User{id: user_id}, _) do
     from x in query,
       join: l in assoc(x, :lesson),
       where: l.user_id == ^user_id

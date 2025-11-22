@@ -1,8 +1,9 @@
 defmodule ClickrWeb.SeatingPlanLiveTest do
   use ClickrWebTest.ConnCase
 
+  import Clickr.ClassesFixtures
+  import Clickr.StudentsFixtures
   import Phoenix.LiveViewTest
-  import Clickr.{ClassesFixtures, StudentsFixtures}
 
   @create_attrs %{name: "some name", width: 8, height: 4}
   @update_attrs %{name: "some updated name", width: 18, height: 14}
@@ -40,7 +41,7 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
 
       index_live
       |> form("#seating_plan-form",
-        seating_plan: Map.merge(@create_attrs, %{class_id: class.id})
+        seating_plan: Map.put(@create_attrs, :class_id, class.id)
       )
       |> render_submit()
 
@@ -56,7 +57,7 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
       |> form("#seating_plan-form", seating_plan: %{class_id: class.id})
       |> render_change()
 
-      assert index_live |> has_element?("#seating_plan-form_name[value='this class']")
+      assert has_element?(index_live, "#seating_plan-form_name[value='this class']")
     end
 
     test "updates seating_plan in listing", %{conn: conn, seating_plan: seating_plan} do
@@ -107,20 +108,20 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
     test "assigns seat to previously unseated student", %{conn: conn, seating_plan: sp} do
       %{id: sid} = student_fixture(class_id: sp.class_id)
       {:ok, show_live, _html} = live(conn, ~p"/seating_plans/#{sp}")
-      assert show_live |> has_element?("#unseated-student-#{sid}")
+      assert has_element?(show_live, "#unseated-student-#{sid}")
 
-      show_live |> render_hook(:assign_seat, %{x: 1, y: 1, student_id: sid})
-      assert show_live |> has_element?("#seated-student-#{sid}")
+      render_hook(show_live, :assign_seat, %{x: 1, y: 1, student_id: sid})
+      assert has_element?(show_live, "#seated-student-#{sid}")
     end
 
     test "changes student seat", %{conn: conn, seating_plan: sp} do
       %{id: sid} = student_fixture(class_id: sp.class_id)
       seating_plan_seat_fixture(seating_plan_id: sp.id, student_id: sid, x: 1, y: 1)
       {:ok, show_live, _html} = live(conn, ~p"/seating_plans/#{sp}")
-      assert show_live |> has_element?("#seated-student-#{sid}[data-x='1'][data-y='1']")
+      assert has_element?(show_live, "#seated-student-#{sid}[data-x='1'][data-y='1']")
 
-      show_live |> render_hook(:assign_seat, %{x: 2, y: 2, student_id: sid})
-      assert show_live |> has_element?("#seated-student-#{sid}[data-x='2'][data-y='2']")
+      render_hook(show_live, :assign_seat, %{x: 2, y: 2, student_id: sid})
+      assert has_element?(show_live, "#seated-student-#{sid}[data-x='2'][data-y='2']")
     end
 
     test "removes student from seat", %{conn: conn, seating_plan: sp} do
@@ -129,7 +130,7 @@ defmodule ClickrWeb.SeatingPlanLiveTest do
       {:ok, show_live, _html} = live(conn, ~p"/seating_plans/#{sp}")
 
       show_live |> element("#seated-student-#{sid} button") |> render_click()
-      refute show_live |> has_element?("#seated-student-#{sid}")
+      refute has_element?(show_live, "#seated-student-#{sid}")
     end
 
     test "updates seating_plan within modal", %{conn: conn, seating_plan: seating_plan} do

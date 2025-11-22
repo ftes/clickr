@@ -1,8 +1,9 @@
 defmodule ClickrWeb.ClassLiveTest do
   use ClickrWebTest.ConnCase
 
+  import Clickr.ClassesFixtures
+  import Clickr.StudentsFixtures
   import Phoenix.LiveViewTest
-  import Clickr.{ClassesFixtures, StudentsFixtures}
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
@@ -30,7 +31,7 @@ defmodule ClickrWeb.ClassLiveTest do
       class_fixture(user_id: u.id, name: "x older", inserted_at: before)
 
       {:ok, live, html} = live(conn, ~p"/classes")
-      assert html |> String.replace("\n", "") =~ ~r/#{l.name}.*x older/
+      assert String.replace(html, "\n", "") =~ ~r/#{l.name}.*x older/
 
       live |> element(".sort-by", "Name") |> render_click()
       assert "/classes/?sort_by=name&sort_dir=desc" = assert_patch(live)
@@ -46,8 +47,8 @@ defmodule ClickrWeb.ClassLiveTest do
 
       live |> form("#classes-filter-form") |> render_change(%{filter: %{name: "uniq"}})
       assert "/classes/?name=uniq&sort_by=name&sort_dir=asc" = assert_patch(live)
-      assert live |> render() =~ "unique name"
-      refute live |> render() =~ l.name
+      assert render(live) =~ "unique name"
+      refute render(live) =~ l.name
     end
 
     test "saves new class", %{conn: conn} do
@@ -160,7 +161,7 @@ defmodule ClickrWeb.ClassLiveTest do
                |> render_submit()
                |> follow_redirect(conn, ~p"/classes/#{c}")
 
-      assert live |> render() =~ "new student name"
+      assert render(live) =~ "new student name"
     end
 
     test "adds students", %{conn: conn, class: class} do

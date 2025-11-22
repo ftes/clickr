@@ -1,4 +1,5 @@
 defmodule ClickrWeb.RoomLive.FormComponent do
+  @moduledoc false
   use ClickrWeb, :live_component
 
   alias Clickr.Rooms

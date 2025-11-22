@@ -1,5 +1,8 @@
 defmodule ClickrWeb.Table do
+  @moduledoc false
   use ClickrWeb, :live_component
+
+  alias Phoenix.HTML.Form
 
   @doc ~S"""
   Renders a table with generic styling.
@@ -159,9 +162,9 @@ defmodule ClickrWeb.Table do
   defp filter_input(%{field: {f, field}} = assigns) do
     assigns
     |> assign(field: nil)
-    |> assign_new(:name, fn -> Phoenix.HTML.Form.input_name(f, field) end)
-    |> assign_new(:id, fn -> Phoenix.HTML.Form.input_id(f, field) end)
-    |> assign_new(:value, fn -> Phoenix.HTML.Form.input_value(f, field) end)
+    |> assign_new(:name, fn -> Form.input_name(f, field) end)
+    |> assign_new(:id, fn -> Form.input_id(f, field) end)
+    |> assign_new(:value, fn -> Form.input_value(f, field) end)
     |> filter_input()
   end
 

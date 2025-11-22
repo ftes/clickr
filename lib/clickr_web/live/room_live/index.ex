@@ -1,4 +1,5 @@
 defmodule ClickrWeb.RoomLive.Index do
+  @moduledoc false
   use ClickrWeb, :live_view
 
   alias Clickr.Rooms

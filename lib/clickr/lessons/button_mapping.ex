@@ -1,4 +1,5 @@
 defmodule Clickr.Lessons.ButtonMapping do
+  @moduledoc false
   defstruct [:button_to_student_ids]
 
   def get_mapping(%Clickr.Lessons.Lesson{} = lesson, opts \\ []) do

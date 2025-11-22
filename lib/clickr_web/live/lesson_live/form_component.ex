@@ -1,8 +1,10 @@
 defmodule ClickrWeb.LessonLive.FormComponent do
+  @moduledoc false
   use ClickrWeb, :live_component
 
-  alias Clickr.Lessons
   import Ecto.Changeset, only: [get_field: 2]
+
+  alias Clickr.Lessons
 
   @impl true
   def render(assigns) do
@@ -145,7 +147,7 @@ defmodule ClickrWeb.LessonLive.FormComponent do
 
   defp load_combinations(socket) do
     combinations =
-      Clickr.Lessons.list_lesson_combinations(socket.assigns.current_user,
+      Lessons.list_lesson_combinations(socket.assigns.current_user,
         limit: 15,
         preload: [:subject, :seating_plan, :room]
       )

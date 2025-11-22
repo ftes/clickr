@@ -1,8 +1,8 @@
 defmodule ClickrWeb.UserRegistrationLiveTest do
   use ClickrWebTest.ConnCase
 
-  import Phoenix.LiveViewTest
   import Clickr.AccountsFixtures
+  import Phoenix.LiveViewTest
 
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do
@@ -70,7 +70,8 @@ defmodule ClickrWeb.UserRegistrationLiveTest do
 
   describe "registration navigation" do
     test "redirects to login page when the Log in button is clicked", %{conn: conn} do
-      visit(conn, ~p"/users/register")
+      conn
+      |> visit(~p"/users/register")
       |> click_link("header a", "Sign in")
       |> assert_has("h1", text: "Sign in")
     end

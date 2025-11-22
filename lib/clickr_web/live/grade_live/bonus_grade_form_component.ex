@@ -1,4 +1,5 @@
 defmodule ClickrWeb.GradeLive.BonusGradeFormComponent do
+  @moduledoc false
   use ClickrWeb, :live_component
 
   alias Clickr.Grades
@@ -51,7 +52,8 @@ defmodule ClickrWeb.GradeLive.BonusGradeFormComponent do
   @impl true
   def handle_event("validate", %{"bonus_grade" => bonus_grade_params}, socket) do
     changeset =
-      Grades.change_bonus_grade(%Grades.BonusGrade{}, bonus_grade_params)
+      %Grades.BonusGrade{}
+      |> Grades.change_bonus_grade(bonus_grade_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, :changeset, changeset)}

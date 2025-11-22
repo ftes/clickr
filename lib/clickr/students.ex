@@ -1,12 +1,14 @@
 defmodule Clickr.Students do
+  @moduledoc false
   use Boundary, exports: [Student], deps: [Clickr.{Accounts, Repo, Schema}]
 
-  defdelegate authorize(action, user, params), to: Clickr.Students.Policy
-
   import Ecto.Query, warn: false
-  alias Clickr.Repo
+
   alias Clickr.Accounts.User
+  alias Clickr.Repo
   alias Clickr.Students.Student
+
+  defdelegate authorize(action, user, params), to: Clickr.Students.Policy
 
   def list_students(%User{} = user, opts \\ []) do
     Student
@@ -48,8 +50,7 @@ defmodule Clickr.Students do
     Student.changeset(student, attrs)
   end
 
-  defp permit(action, user, params \\ []),
-    do: Bodyguard.permit(__MODULE__, action, user, params)
+  defp permit(action, user, params \\ []), do: Bodyguard.permit(__MODULE__, action, user, params)
 
   defp _preload(input, nil), do: input
   defp _preload(input, args), do: Repo.preload(input, args)

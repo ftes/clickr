@@ -1,6 +1,9 @@
 defmodule Clickr.Accounts.UserToken do
+  @moduledoc false
   use Clickr.Schema, bodyguard: false
+
   import Ecto.Query
+
   alias Clickr.Accounts.UserToken
 
   @hash_algorithm :sha256

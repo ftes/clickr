@@ -1,14 +1,18 @@
 defmodule Clickr.Classes do
+  @moduledoc false
   use Boundary,
     exports: [Class, SeatingPlan, SeatingPlanSeat],
     deps: [Clickr.{Accounts, Repo, Schema}]
 
-  defdelegate authorize(action, user, params), to: Clickr.Classes.Policy
-
   import Ecto.Query, warn: false
-  alias Clickr.Repo
+
   alias Clickr.Accounts.User
-  alias Clickr.Classes.{Class, SeatingPlan, SeatingPlanSeat}
+  alias Clickr.Classes.Class
+  alias Clickr.Classes.SeatingPlan
+  alias Clickr.Classes.SeatingPlanSeat
+  alias Clickr.Repo
+
+  defdelegate authorize(action, user, params), to: Clickr.Classes.Policy
 
   def list_classes(%User{} = user, opts \\ %{}) do
     Class
@@ -44,8 +48,7 @@ defmodule Clickr.Classes do
 
   def delete_class(%User{} = user, %Class{} = class) do
     with :ok <- permit(:delete_class, user, class) do
-      class
-      |> Repo.delete()
+      Repo.delete(class)
     end
   end
 
@@ -100,11 +103,7 @@ defmodule Clickr.Classes do
     end
   end
 
-  def assign_seating_plan_seat(%User{} = user, %SeatingPlan{id: spid} = sp, %{
-        x: x,
-        y: y,
-        student_id: sid
-      }) do
+  def assign_seating_plan_seat(%User{} = user, %SeatingPlan{id: spid} = sp, %{x: x, y: y, student_id: sid}) do
     with :ok <- permit(:assign_seating_plan_seat, user, sp) do
       cond do
         Repo.get_by(SeatingPlanSeat, seating_plan_id: spid, x: x, y: y) ->
@@ -119,8 +118,7 @@ defmodule Clickr.Classes do
     end
   end
 
-  defp permit(action, user, params \\ []),
-    do: Bodyguard.permit(__MODULE__, action, user, params)
+  defp permit(action, user, params \\ []), do: Bodyguard.permit(__MODULE__, action, user, params)
 
   defp _preload(input, nil), do: input
   defp _preload(input, args), do: Repo.preload(input, args)
@@ -132,8 +130,7 @@ defmodule Clickr.Classes do
   defp sort(query, _opts), do: query
 
   defp filter_by_name(query, %{name: <<_::binary-size(2), _::binary>> = name}) do
-    query
-    |> where([x], like(x.name, ^"%#{name}%"))
+    where(query, [x], like(x.name, ^"%#{name}%"))
   end
 
   defp filter_by_name(query, _), do: query

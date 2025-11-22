@@ -1,4 +1,5 @@
 defmodule Clickr.Grades.BonusGrade do
+  @moduledoc false
   use Clickr.Schema, bodyguard: false
 
   schema "bonus_grades" do

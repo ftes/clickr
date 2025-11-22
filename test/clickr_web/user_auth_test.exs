@@ -1,10 +1,11 @@
 defmodule ClickrWeb.UserAuthTest do
   use ClickrWebTest.ConnCase, async: true
 
-  alias Phoenix.LiveView
+  import Clickr.AccountsFixtures
+
   alias Clickr.Accounts
   alias ClickrWeb.UserAuth
-  import Clickr.AccountsFixtures
+  alias Phoenix.LiveView
 
   @remember_me_cookie "_clickr_web_user_remember_me"
 
@@ -139,7 +140,7 @@ defmodule ClickrWeb.UserAuthTest do
     end
 
     test "assigns nil to current_ user assign if there isn't a user_token", %{conn: conn} do
-      session = conn |> get_session()
+      session = get_session(conn)
 
       {:cont, updated_socket} =
         UserAuth.on_mount(:mount_current_user, %{}, session, %LiveView.Socket{})
@@ -173,7 +174,7 @@ defmodule ClickrWeb.UserAuthTest do
     end
 
     test "redirects to login page if there isn't a user_token ", %{conn: conn} do
-      session = conn |> get_session()
+      session = get_session(conn)
 
       socket = %LiveView.Socket{
         endpoint: ClickrWeb.Endpoint,
@@ -200,7 +201,7 @@ defmodule ClickrWeb.UserAuthTest do
     end
 
     test "Don't redirect is there is no authenticated user", %{conn: conn} do
-      session = conn |> get_session()
+      session = get_session(conn)
 
       assert {:cont, _updated_socket} =
                UserAuth.on_mount(

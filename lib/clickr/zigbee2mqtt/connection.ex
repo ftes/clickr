@@ -1,8 +1,10 @@
 defmodule Clickr.Zigbee2Mqtt.Connection do
-  require Logger
+  @moduledoc false
+  @behaviour Tortoise311.Handler
+
   alias Clickr.Zigbee2Mqtt.Gateway
 
-  @behaviour Tortoise311.Handler
+  require Logger
 
   @qos %{at_most_once: 0, at_least_once: 1, exactly_once: 2}
   @subscriptions [

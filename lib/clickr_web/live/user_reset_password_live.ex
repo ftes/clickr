@@ -1,4 +1,5 @@
 defmodule ClickrWeb.UserResetPasswordLive do
+  @moduledoc false
   use ClickrWeb, :live_view
 
   alias Clickr.Accounts

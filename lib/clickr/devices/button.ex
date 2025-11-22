@@ -1,14 +1,17 @@
 defmodule Clickr.Devices.Button do
+  @moduledoc false
   use Clickr.Schema
+
+  alias Clickr.Accounts.User
 
   schema "buttons" do
     field :name, :string
     belongs_to :device, Clickr.Devices.Device
   end
 
-  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+  def scope(query, %User{admin: true}, _), do: query
 
-  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+  def scope(query, %User{id: user_id}, _) do
     from x in query,
       join: d in assoc(x, :device),
       join: g in assoc(d, :gateway),

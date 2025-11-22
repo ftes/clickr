@@ -4,7 +4,8 @@ defmodule Clickr.DevicesFixtures do
   entities via the `Clickr.Devices` context.
   """
 
-  import Clickr.{AccountsFixtures, FixturesHelper}
+  import Clickr.AccountsFixtures
+  import Clickr.FixturesHelper
 
   @doc """
   Generate a gateway.

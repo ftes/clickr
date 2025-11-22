@@ -1,7 +1,9 @@
 defmodule ClickrWeb.LessonLive.RollCall do
+  @moduledoc false
   use ClickrWeb, :live_view
 
   alias Clickr.Lessons
+  alias ClickrWeb.LessonLive.Router
 
   @impl true
   def render(assigns) do
@@ -60,11 +62,11 @@ defmodule ClickrWeb.LessonLive.RollCall do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     if lesson = socket.assigns[:lesson] do
-      old_topic = Clickr.Lessons.lesson_topic(%{lesson_id: lesson.id})
+      old_topic = Lessons.lesson_topic(%{lesson_id: lesson.id})
       Clickr.PubSub.unsubscribe(old_topic)
     end
 
-    topic = Clickr.Lessons.lesson_topic(%{lesson_id: id})
+    topic = Lessons.lesson_topic(%{lesson_id: id})
     Clickr.PubSub.subscribe(topic)
 
     {:noreply,
@@ -72,7 +74,7 @@ defmodule ClickrWeb.LessonLive.RollCall do
      |> assign(:page_title, dgettext("lessons.lessons", "Lesson"))
      |> assign_lesson(id)
      |> load_answers()
-     |> ClickrWeb.LessonLive.Router.maybe_navigate()}
+     |> Router.maybe_navigate()}
   end
 
   @impl true
@@ -84,7 +86,7 @@ defmodule ClickrWeb.LessonLive.RollCall do
         String.to_existing_atom(state)
       )
 
-    {:noreply, ClickrWeb.LessonLive.Router.navigate(socket, lesson)}
+    {:noreply, Router.navigate(socket, lesson)}
   end
 
   def handle_event("create_all_lesson_students", _, socket) do
@@ -92,7 +94,7 @@ defmodule ClickrWeb.LessonLive.RollCall do
     {:ok, _} = Lessons.create_all_lesson_students(user, lesson)
     {:ok, lesson} = Lessons.transition_lesson(user, lesson, :roll_call)
     {:ok, lesson} = Lessons.transition_lesson(user, lesson, :active)
-    {:noreply, ClickrWeb.LessonLive.Router.navigate(socket, lesson)}
+    {:noreply, Router.navigate(socket, lesson)}
   end
 
   @impl true
@@ -102,9 +104,7 @@ defmodule ClickrWeb.LessonLive.RollCall do
 
   defp assign_lesson(socket, id) do
     lesson =
-      Lessons.get_lesson!(socket.assigns.current_user, id,
-        preload: [:lesson_students, seating_plan: [seats: :student]]
-      )
+      Lessons.get_lesson!(socket.assigns.current_user, id, preload: [:lesson_students, seating_plan: [seats: :student]])
 
     assign(socket, :lesson, lesson)
   end
@@ -113,7 +113,8 @@ defmodule ClickrWeb.LessonLive.RollCall do
     Lessons.active_roll_call_start(lesson)
 
     student_ids =
-      Lessons.list_lesson_students(socket.assigns.current_user, lesson_id: lesson.id)
+      socket.assigns.current_user
+      |> Lessons.list_lesson_students(lesson_id: lesson.id)
       |> Enum.map(& &1.student_id)
 
     assign(socket, :answers, MapSet.new(student_ids))

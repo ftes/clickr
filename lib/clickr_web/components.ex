@@ -11,6 +11,11 @@ defmodule ClickrWeb.Components do
   """
   use Phoenix.Component
   use Gettext, backend: ClickrWeb.Gettext
+
+  alias Clickr.Devices.Button
+  alias Clickr.Devices.Gateway
+  alias Clickr.Lessons.Lesson
+  alias Phoenix.HTML.Form
   alias Phoenix.LiveView.JS
 
   @doc """
@@ -261,9 +266,9 @@ defmodule ClickrWeb.Components do
   def input(%{field: {f, field}} = assigns) do
     assigns
     |> assign(field: nil)
-    |> assign_new(:name, fn -> Phoenix.HTML.Form.input_name(f, field) end)
-    |> assign_new(:id, fn -> Phoenix.HTML.Form.input_id(f, field) end)
-    |> assign_new(:value, fn -> Phoenix.HTML.Form.input_value(f, field) end)
+    |> assign_new(:name, fn -> Form.input_name(f, field) end)
+    |> assign_new(:id, fn -> Form.input_id(f, field) end)
+    |> assign_new(:value, fn -> Form.input_value(f, field) end)
     |> assign_new(:errors, fn -> translate_errors(f.errors || [], field) end)
     |> input()
   end
@@ -365,11 +370,9 @@ defmodule ClickrWeb.Components do
     """
   end
 
-  defp input_border([] = _errors),
-    do: "border-zinc-300 focus:border-zinc-400 focus:ring-zinc-800/5"
+  defp input_border([] = _errors), do: "border-zinc-300 focus:border-zinc-400 focus:ring-zinc-800/5"
 
-  defp input_border([_ | _] = _errors),
-    do: "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10"
+  defp input_border([_ | _] = _errors), do: "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10"
 
   @doc """
   Renders a label.
@@ -483,8 +486,7 @@ defmodule ClickrWeb.Components do
     JS.show(js,
       to: selector,
       transition:
-        {"transition-all transform ease-out duration-300",
-         "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
+        {"transition-all transform ease-out duration-300", "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
          "opacity-100 translate-y-0 sm:scale-100"}
     )
   end
@@ -494,8 +496,7 @@ defmodule ClickrWeb.Components do
       to: selector,
       time: 200,
       transition:
-        {"transition-all transform ease-in duration-200",
-         "opacity-100 translate-y-0 sm:scale-100",
+        {"transition-all transform ease-in duration-200", "opacity-100 translate-y-0 sm:scale-100",
          "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
     )
   end
@@ -557,40 +558,34 @@ defmodule ClickrWeb.Components do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
 
-  for state <- Clickr.Lessons.Lesson.states() do
-    def translate_lesson_state(unquote(state)),
-      do: dgettext("lessons.lessons.state", unquote(to_string(state)))
+  for state <- Lesson.states() do
+    def translate_lesson_state(unquote(state)), do: dgettext("lessons.lessons.state", unquote(to_string(state)))
   end
 
-  def translate_lesson_state(%Clickr.Lessons.Lesson{state: state}),
-    do: translate_lesson_state(state)
+  def translate_lesson_state(%Lesson{state: state}), do: translate_lesson_state(state)
 
   def translate_lesson_state(state), do: to_string(state)
 
-  def lesson_state_options(),
-    do: Enum.map(Clickr.Lessons.Lesson.states(), &{&1, translate_lesson_state(&1)})
+  def lesson_state_options, do: Enum.map(Lesson.states(), &{&1, translate_lesson_state(&1)})
 
-  for type <- Clickr.Devices.Gateway.types() do
-    def translate_gateway_type(unquote(type)),
-      do: dgettext("devices.gateways.type", unquote(to_string(type)))
+  for type <- Gateway.types() do
+    def translate_gateway_type(unquote(type)), do: dgettext("devices.gateways.type", unquote(to_string(type)))
   end
 
-  def translate_gateway_type(%Clickr.Devices.Gateway{type: type}),
-    do: translate_gateway_type(type)
+  def translate_gateway_type(%Gateway{type: type}), do: translate_gateway_type(type)
 
   def translate_gateway_type(type), do: to_string(type)
 
-  def gateway_type_options(),
-    do: Enum.map(Clickr.Devices.Gateway.types(), &{&1, translate_gateway_type(&1)})
+  def gateway_type_options, do: Enum.map(Gateway.types(), &{&1, translate_gateway_type(&1)})
 
   @button_names ~w(left right up down middle arrow_left_click arrow_right_click off on)
   for name <- @button_names do
-    def translate_button_name(%Clickr.Devices.Button{name: unquote(name)}) do
+    def translate_button_name(%Button{name: unquote(name)}) do
       dgettext("devices.buttons.name", unquote(name))
     end
   end
 
-  def translate_button_name(%Clickr.Devices.Button{name: name}), do: name
+  def translate_button_name(%Button{name: name}), do: name
 
   def format_date(date), do: Timex.format!(date, "{D}.{M}.")
 end

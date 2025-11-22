@@ -1,8 +1,8 @@
 defmodule ClickrWeb.UserLoginLiveTest do
   use ClickrWebTest.ConnCase
 
-  import Phoenix.LiveViewTest
   import Clickr.AccountsFixtures
+  import Phoenix.LiveViewTest
 
   describe "Sign in page" do
     test "renders log in page", %{conn: conn} do
@@ -45,9 +45,7 @@ defmodule ClickrWeb.UserLoginLiveTest do
       {:ok, lv, _html} = live(conn, ~p"/users/log_in")
 
       form =
-        form(lv, "#login_form",
-          user: %{email: "test@email.com", password: "123456", remember_me: true}
-        )
+        form(lv, "#login_form", user: %{email: "test@email.com", password: "123456", remember_me: true})
 
       conn = submit_form(form, conn)
 
@@ -73,7 +71,8 @@ defmodule ClickrWeb.UserLoginLiveTest do
     test "redirects to forgot password page when the Forgot Password button is clicked", %{
       conn: conn
     } do
-      visit(conn, ~p"/users/log_in")
+      conn
+      |> visit(~p"/users/log_in")
       |> click_link("Forgot your password?")
       |> assert_has("h1", text: "Forgot your password?")
     end

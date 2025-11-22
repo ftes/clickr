@@ -1,6 +1,4 @@
 defmodule ClickrTest.DataCase do
-  use Boundary, check: [out: false]
-
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -16,16 +14,19 @@ defmodule ClickrTest.DataCase do
   this option is not recommended for other databases.
   """
 
+  use Boundary, check: [out: false]
   use ExUnit.CaseTemplate
+
+  alias Ecto.Adapters.SQL.Sandbox
 
   using do
     quote do
-      alias Clickr.Repo
-
+      import ClickrTest.DataCase
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import ClickrTest.DataCase
+
+      alias Clickr.Repo
     end
   end
 
@@ -38,8 +39,8 @@ defmodule ClickrTest.DataCase do
   Sets up the sandbox based on the test tags.
   """
   def setup_sandbox(tags) do
-    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Clickr.Repo, shared: not tags[:async])
-    on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
+    pid = Sandbox.start_owner!(Clickr.Repo, shared: not tags[:async])
+    on_exit(fn -> Sandbox.stop_owner(pid) end)
   end
 
   @doc """

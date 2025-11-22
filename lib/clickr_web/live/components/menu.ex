@@ -1,4 +1,5 @@
 defmodule ClickrWeb.Menu do
+  @moduledoc false
   use ClickrWeb, :component
 
   @sidebar_menu_entries_anon [
@@ -10,8 +11,7 @@ defmodule ClickrWeb.Menu do
 
   @user_menu_entries [
     {dgettext("accounts", "Settings"), "/users/settings", [], &Heroicons.cog_6_tooth/1},
-    {dgettext("accounts.actions", "Sign out"), "/users/log_out", [method: :delete],
-     &Heroicons.x_mark/1}
+    {dgettext("accounts.actions", "Sign out"), "/users/log_out", [method: :delete], &Heroicons.x_mark/1}
   ]
 
   def sidebar(assigns) do
@@ -98,8 +98,7 @@ defmodule ClickrWeb.Menu do
      |> Phoenix.LiveView.attach_hook(:current_path, :handle_params, &handle_params/3)}
   end
 
-  defp handle_params(_, url, socket),
-    do: {:cont, assign(socket, current_path: URI.parse(url).path)}
+  defp handle_params(_, url, socket), do: {:cont, assign(socket, current_path: URI.parse(url).path)}
 
   defp sidebar_menu_entries(%{assigns: %{current_user: nil}}), do: @sidebar_menu_entries_anon
 
@@ -111,8 +110,7 @@ defmodule ClickrWeb.Menu do
       ],
       [
         {dgettext("classes.classes", "Classes"), "/classes", [], &Heroicons.users/1},
-        {dgettext("classes.seating_plans", "Seating plans"), "/seating_plans", [],
-         &Heroicons.map/1}
+        {dgettext("classes.seating_plans", "Seating plans"), "/seating_plans", [], &Heroicons.map/1}
       ],
       [
         {dgettext("rooms.rooms", "Rooms"), "/rooms", [], &Heroicons.building_office/1},

@@ -4,7 +4,9 @@ defmodule Clickr.StudentsFixtures do
   entities via the `Clickr.Students` context.
   """
 
-  import Clickr.{AccountsFixtures, ClassesFixtures, FixturesHelper}
+  import Clickr.AccountsFixtures
+  import Clickr.ClassesFixtures
+  import Clickr.FixturesHelper
 
   @doc """
   Generate a student.

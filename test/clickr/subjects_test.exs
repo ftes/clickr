@@ -1,9 +1,10 @@
 defmodule Clickr.SubjectsTest do
   use ClickrTest.DataCase, async: true
 
+  import Clickr.SubjectsFixtures
+
   alias Clickr.Subjects
   alias Clickr.Subjects.Subject
-  import Clickr.SubjectsFixtures
 
   setup :create_user
 

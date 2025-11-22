@@ -1,14 +1,19 @@
 defmodule Clickr.Devices do
+  @moduledoc false
   use Boundary,
     exports: [Button, Device, Gateway],
     deps: [Clickr.{Accounts, PubSub, Repo, Schema}]
 
-  defdelegate authorize(action, user, params), to: Clickr.Devices.Policy
-
   import Ecto.Query, warn: false
-  alias Clickr.Repo
+
   alias Clickr.Accounts.User
-  alias Clickr.Devices.{Button, Device, Gateway, Keyboard}
+  alias Clickr.Devices.Button
+  alias Clickr.Devices.Device
+  alias Clickr.Devices.Gateway
+  alias Clickr.Devices.Keyboard
+  alias Clickr.Repo
+
+  defdelegate authorize(action, user, params), to: Clickr.Devices.Policy
 
   def list_gateways(%User{} = user, opts \\ []) do
     Gateway
@@ -61,7 +66,7 @@ defmodule Clickr.Devices do
     )
   end
 
-  def gateways_topic(), do: "gateways"
+  def gateways_topic, do: "gateways"
 
   def list_devices(%User{} = user, opts \\ []) do
     Device
@@ -102,7 +107,7 @@ defmodule Clickr.Devices do
   def upsert_devices(%User{} = user, %Gateway{id: gid} = gateway, attrs) do
     with :ok <- permit(:upsert_devices, user, gateway) do
       delete_query = from(d in Device, where: d.gateway_id == ^gateway.id)
-      now = DateTime.utc_now() |> DateTime.truncate(:second)
+      now = DateTime.truncate(DateTime.utc_now(), :second)
 
       default_attrs = %{
         deleted: false,
@@ -201,8 +206,7 @@ defmodule Clickr.Devices do
   defp where_online(query, nil), do: query
   defp where_online(query, online), do: where(query, [x], x.online == ^online)
 
-  defp permit(action, user, params \\ []),
-    do: Bodyguard.permit(__MODULE__, action, user, params)
+  defp permit(action, user, params \\ []), do: Bodyguard.permit(__MODULE__, action, user, params)
 
   defp _preload(nil, _), do: nil
   defp _preload(input, nil), do: input

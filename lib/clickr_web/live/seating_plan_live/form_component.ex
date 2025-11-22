@@ -1,8 +1,10 @@
 defmodule ClickrWeb.SeatingPlanLive.FormComponent do
+  @moduledoc false
   use ClickrWeb, :live_component
 
-  alias Clickr.Classes
   import Ecto.Changeset, only: [get_field: 2]
+
+  alias Clickr.Classes
 
   @impl true
   def render(assigns) do

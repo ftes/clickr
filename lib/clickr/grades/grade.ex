@@ -1,5 +1,8 @@
 defmodule Clickr.Grades.Grade do
+  @moduledoc false
   use Clickr.Schema
+
+  alias Clickr.Accounts.User
 
   schema "grades" do
     field :percent, :float
@@ -11,9 +14,9 @@ defmodule Clickr.Grades.Grade do
     timestamps(type: :utc_datetime)
   end
 
-  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+  def scope(query, %User{admin: true}, _), do: query
 
-  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+  def scope(query, %User{id: user_id}, _) do
     from x in query, join: su in assoc(x, :subject), where: su.user_id == ^user_id
   end
 

@@ -1,19 +1,22 @@
 defmodule Clickr.Rooms.Room do
+  @moduledoc false
   use Clickr.Schema
+
+  alias Clickr.Accounts.User
 
   schema "rooms" do
     field :name, :string
     field :width, :integer
     field :height, :integer
-    belongs_to :user, Clickr.Accounts.User
+    belongs_to :user, User
     has_many :seats, Clickr.Rooms.RoomSeat
 
     timestamps(type: :utc_datetime)
   end
 
-  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+  def scope(query, %User{admin: true}, _), do: query
 
-  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+  def scope(query, %User{id: user_id}, _) do
     from x in query, where: x.user_id == ^user_id
   end
 

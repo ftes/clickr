@@ -1,8 +1,8 @@
 defmodule ClickrWeb.UserResetPasswordLiveTest do
   use ClickrWebTest.ConnCase
 
-  import Phoenix.LiveViewTest
   import Clickr.AccountsFixtures
+  import Phoenix.LiveViewTest
 
   alias Clickr.Accounts
 
@@ -39,9 +39,7 @@ defmodule ClickrWeb.UserResetPasswordLiveTest do
       result =
         lv
         |> element("#reset_password_form")
-        |> render_change(
-          user: %{"password" => "secret12", "confirmation_password" => "secret123456"}
-        )
+        |> render_change(user: %{"password" => "secret12", "confirmation_password" => "secret123456"})
 
       assert result =~ "should be at least 12 character"
       assert result =~ "does not match password"

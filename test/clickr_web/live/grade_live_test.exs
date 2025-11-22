@@ -1,14 +1,11 @@
 defmodule ClickrWeb.GradeLiveTest do
   use ClickrWebTest.ConnCase
 
+  import Clickr.ClassesFixtures
+  import Clickr.GradesFixtures
+  import Clickr.StudentsFixtures
+  import Clickr.SubjectsFixtures
   import Phoenix.LiveViewTest
-
-  import Clickr.{
-    ClassesFixtures,
-    GradesFixtures,
-    StudentsFixtures,
-    SubjectsFixtures
-  }
 
   defp create_grade(%{user: user}) do
     student = student_fixture(user_id: user.id)

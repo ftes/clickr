@@ -4,7 +4,8 @@ defmodule Clickr.ClassesFixtures do
   entities via the `Clickr.Classes` context.
   """
 
-  import Clickr.{AccountsFixtures, FixturesHelper}
+  import Clickr.AccountsFixtures
+  import Clickr.FixturesHelper
 
   @doc """
   Generate a class.

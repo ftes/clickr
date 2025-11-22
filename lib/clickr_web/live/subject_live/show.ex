@@ -1,4 +1,5 @@
 defmodule ClickrWeb.SubjectLive.Show do
+  @moduledoc false
   use ClickrWeb, :live_view
 
   alias Clickr.Subjects

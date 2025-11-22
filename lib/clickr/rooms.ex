@@ -1,12 +1,15 @@
 defmodule Clickr.Rooms do
+  @moduledoc false
   use Boundary, exports: [Room, RoomSeat], deps: [Clickr.{Accounts, Repo, Schema}]
 
-  defdelegate authorize(action, user, params), to: Clickr.Rooms.Policy
-
   import Ecto.Query, warn: false
-  alias Clickr.Repo
+
   alias Clickr.Accounts.User
-  alias Clickr.Rooms.{Room, RoomSeat}
+  alias Clickr.Repo
+  alias Clickr.Rooms.Room
+  alias Clickr.Rooms.RoomSeat
+
+  defdelegate authorize(action, user, params), to: Clickr.Rooms.Policy
 
   def list_rooms(%User{} = user, opts \\ []) do
     Room
@@ -54,12 +57,7 @@ defmodule Clickr.Rooms do
     end
   end
 
-  def assign_room_seat(
-        %User{} = user,
-        %Room{id: rid} = room,
-        %{x: x, y: y, button_id: bid},
-        opts \\ []
-      ) do
+  def assign_room_seat(%User{} = user, %Room{id: rid} = room, %{x: x, y: y, button_id: bid}, opts \\ []) do
     with :ok <- permit(:assign_room_seat, user, room) do
       multi = opts[:multi] || Ecto.Multi.new()
 
@@ -85,8 +83,7 @@ defmodule Clickr.Rooms do
     end
   end
 
-  defp permit(action, user, params \\ []),
-    do: Bodyguard.permit(__MODULE__, action, user, params)
+  defp permit(action, user, params \\ []), do: Bodyguard.permit(__MODULE__, action, user, params)
 
   defp _preload(input, nil), do: input
   defp _preload(input, args), do: Repo.preload(input, args)

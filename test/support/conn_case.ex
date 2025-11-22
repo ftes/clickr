@@ -1,6 +1,4 @@
 defmodule ClickrWebTest.ConnCase do
-  use Boundary, check: [out: false]
-
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -17,20 +15,20 @@ defmodule ClickrWebTest.ConnCase do
   this option is not recommended for other databases.
   """
 
+  use Boundary, check: [out: false]
   use ExUnit.CaseTemplate
 
   using do
     quote do
+      use ClickrWeb, :verified_routes
+      import ClickrWebTest.ConnCase
+      import Phoenix.ConnTest
+      import PhoenixTest
+      import Plug.Conn
       # The default endpoint for testing
       @endpoint ClickrWeb.Endpoint
 
-      use ClickrWeb, :verified_routes
-
       # Import conveniences for testing with connections
-      import Plug.Conn
-      import Phoenix.ConnTest
-      import ClickrWebTest.ConnCase
-      import PhoenixTest
     end
   end
 

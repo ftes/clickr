@@ -1,4 +1,5 @@
 defmodule ClickrWeb.GradesFilterForm do
+  @moduledoc false
   @behaviour ClickrWeb.FilterForm
 
   import Ecto.Changeset
@@ -24,10 +25,9 @@ defmodule ClickrWeb.GradesFilterForm do
 
   @impl true
   def change_values(values \\ @defaults) do
-    {values, @fields}
-    |> cast(%{}, Map.keys(@fields))
+    cast({values, @fields}, %{}, Map.keys(@fields))
   end
 
   @impl true
-  def defaults(), do: @defaults
+  def defaults, do: @defaults
 end

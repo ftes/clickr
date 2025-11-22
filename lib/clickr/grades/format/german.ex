@@ -1,4 +1,5 @@
 defmodule Clickr.Grades.Format.German do
+  @moduledoc false
   ranges = [
     {0.98, "1+"},
     {0.95, "1"},

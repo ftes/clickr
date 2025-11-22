@@ -1,4 +1,5 @@
 defmodule ClickrWeb.GatewayPresence do
+  @moduledoc false
   use ClickrWeb, :component
 
   def render(assigns) do

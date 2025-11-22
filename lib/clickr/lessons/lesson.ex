@@ -1,5 +1,8 @@
 defmodule Clickr.Lessons.Lesson do
+  @moduledoc false
   use Clickr.Schema
+
+  alias Clickr.Accounts.User
 
   @states [:started, :roll_call, :active, :question, :ended, :graded]
 
@@ -7,7 +10,7 @@ defmodule Clickr.Lessons.Lesson do
     field :name, :string
     field :state, Ecto.Enum, values: @states
     embeds_one :grade, Clickr.Lessons.Lesson.Grade, on_replace: :update
-    belongs_to :user, Clickr.Accounts.User
+    belongs_to :user, User
     belongs_to :subject, Clickr.Subjects.Subject
     belongs_to :room, Clickr.Rooms.Room
     belongs_to :seating_plan, Clickr.Classes.SeatingPlan
@@ -18,13 +21,14 @@ defmodule Clickr.Lessons.Lesson do
     timestamps(type: :utc_datetime)
   end
 
-  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+  def scope(query, %User{admin: true}, _), do: query
 
-  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+  def scope(query, %User{id: user_id}, _) do
     from x in query, where: x.user_id == ^user_id
   end
 
   defmodule Grade do
+    @moduledoc false
     use Ecto.Schema
 
     @primary_key false
@@ -40,7 +44,7 @@ defmodule Clickr.Lessons.Lesson do
     end
   end
 
-  def states(), do: @states
+  def states, do: @states
 
   @doc false
   def changeset(%{state: old_state} = lesson, attrs) when old_state in [:ended, :graded] do
@@ -64,8 +68,7 @@ defmodule Clickr.Lessons.Lesson do
   end
 
   def changeset(lesson, %{grades: _} = attrs) do
-    lesson
-    |> cast(attrs, [])
+    cast(lesson, attrs, [])
   end
 
   def changeset(lesson, attrs) do

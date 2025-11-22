@@ -1,4 +1,5 @@
 defmodule ClickrWeb.LessonLive.QuestionModal do
+  @moduledoc false
   use ClickrWeb, :live_component
 
   alias Clickr.Lessons
@@ -43,7 +44,8 @@ defmodule ClickrWeb.LessonLive.QuestionModal do
   @impl true
   def handle_event("validate", %{"question" => question_params}, socket) do
     changeset =
-      Lessons.change_question(%Lessons.Question{}, question_params)
+      %Lessons.Question{}
+      |> Lessons.change_question(question_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, :changeset, changeset)}

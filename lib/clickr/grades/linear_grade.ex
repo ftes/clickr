@@ -1,4 +1,5 @@
 defmodule Clickr.Grades.LinearGrade do
+  @moduledoc false
   def calculate(%{min: _, max: _, value: nil}), do: nil
 
   def calculate(%{min: x, max: x, value: _}), do: 0.0

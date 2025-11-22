@@ -1,4 +1,5 @@
 defmodule ClickrWeb.ClassLive.Show do
+  @moduledoc false
   use ClickrWeb, :live_view
 
   alias Clickr.Classes
@@ -20,7 +21,7 @@ defmodule ClickrWeb.ClassLive.Show do
 
   @impl true
   def handle_event("students_validate", %{"students" => params}, socket) do
-    count = student_params(params, socket) |> length()
+    count = params |> student_params(socket) |> length()
     {:noreply, assign(socket, :students_create_count, count)}
   end
 

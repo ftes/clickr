@@ -1,10 +1,13 @@
 defmodule Clickr.Zigbee2MqttTest do
   use ClickrTest.DataCase, async: false
 
-  import Mox
   import Clickr.DevicesFixtures
+  import Mox
+
   alias Clickr.Devices
-  alias Clickr.Zigbee2Mqtt.{Connection, Gateway, Publisher}
+  alias Clickr.Zigbee2Mqtt.Connection
+  alias Clickr.Zigbee2Mqtt.Gateway
+  alias Clickr.Zigbee2Mqtt.Publisher
 
   setup [:create_user, :create_gateway]
   @state %{client_id: "client-id"}
@@ -34,7 +37,7 @@ defmodule Clickr.Zigbee2MqttTest do
       user: u,
       gateway: %{id: gid}
     } do
-      Clickr.PubSub.subscribe(Clickr.Devices.gateways_topic())
+      Clickr.PubSub.subscribe(Devices.gateways_topic())
       Devices.set_gateway_online(gid, true)
       Connection.connection(:down, @state)
       assert_receive {:gateway_online_changed, %{gateway_id: ^gid, online: false}}
@@ -80,7 +83,7 @@ defmodule Clickr.Zigbee2MqttTest do
     end
 
     test "sets gateway online", %{user: u, gateway: %{id: gid} = g} do
-      Clickr.PubSub.subscribe(Clickr.Devices.gateways_topic())
+      Clickr.PubSub.subscribe(Devices.gateways_topic())
 
       publish_state(%{gateway: g}, "online")
       assert_receive {:gateway_online_changed, %{gateway_id: ^gid, online: true}}
@@ -94,7 +97,7 @@ defmodule Clickr.Zigbee2MqttTest do
     test "handles malformed gateway id gracefully" do
       gid = "unknown"
       mqtt_topic = ["clickr", "gateways", gid, "bridge", "state"]
-      Connection.handle_message(mqtt_topic, "{\"state\": \"online\"}", @state)
+      Connection.handle_message(mqtt_topic, ~s({"state": "online"}), @state)
     end
 
     test "handles unknown gateway id gracefully" do
@@ -144,7 +147,7 @@ defmodule Clickr.Zigbee2MqttTest do
                %{name: "1 other", deleted: false},
                %{name: "2 delete", deleted: true},
                %{name: "3b renamed", deleted: false}
-             ] = Clickr.Repo.all(Devices.Device) |> Enum.sort_by(& &1.name)
+             ] = Devices.Device |> Clickr.Repo.all() |> Enum.sort_by(& &1.name)
     end
 
     test "renames device with slash in name", %{gateway: g} do
@@ -152,7 +155,7 @@ defmodule Clickr.Zigbee2MqttTest do
       rename_topic = "clickr/gateways/#{g.id}/bridge/request/device/rename"
 
       devices_payload =
-        "[{\"type\": \"EndDevice\", \"ieee_address\": \"123\", \"friendly_name\": \"oh/dear\"}]"
+        ~s([{"type": "EndDevice", "ieee_address": "123", "friendly_name": "oh/dear"}])
 
       expected_rename_payload = %{from: "oh/dear", to: "oh_dear"}
       publish_state(%{gateway: g}, "online")

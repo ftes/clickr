@@ -4,7 +4,9 @@ defmodule Clickr.RoomsFixtures do
   entities via the `Clickr.Rooms` context.
   """
 
-  import Clickr.{AccountsFixtures, DevicesFixtures, FixturesHelper}
+  import Clickr.AccountsFixtures
+  import Clickr.DevicesFixtures
+  import Clickr.FixturesHelper
 
   @doc """
   Generate a room.

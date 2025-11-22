@@ -1,12 +1,14 @@
 defmodule Clickr.Subjects do
+  @moduledoc false
   use Boundary, exports: [Subject], deps: [Clickr.{Accounts, Repo, Schema}]
 
-  defdelegate authorize(action, user, params), to: Clickr.Subjects.Policy
-
   import Ecto.Query, warn: false
-  alias Clickr.Repo
+
   alias Clickr.Accounts.User
+  alias Clickr.Repo
   alias Clickr.Subjects.Subject
+
+  defdelegate authorize(action, user, params), to: Clickr.Subjects.Policy
 
   def list_subjects(%User{} = user) do
     Subject
@@ -46,6 +48,5 @@ defmodule Clickr.Subjects do
     Subject.changeset(subject, attrs)
   end
 
-  defp permit(action, user, params \\ []),
-    do: Bodyguard.permit(__MODULE__, action, user, params)
+  defp permit(action, user, params \\ []), do: Bodyguard.permit(__MODULE__, action, user, params)
 end

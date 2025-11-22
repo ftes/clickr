@@ -1,18 +1,21 @@
 defmodule Clickr.Students.Student do
+  @moduledoc false
   use Clickr.Schema
+
+  alias Clickr.Accounts.User
 
   schema "students" do
     field :name, :string
-    belongs_to :user, Clickr.Accounts.User
+    belongs_to :user, User
     belongs_to :class, Clickr.Classes.Class
     has_many :grades, Clickr.Grades.Grade
 
     timestamps(type: :utc_datetime)
   end
 
-  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+  def scope(query, %User{admin: true}, _), do: query
 
-  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+  def scope(query, %User{id: user_id}, _) do
     from x in query, where: x.user_id == ^user_id
   end
 

@@ -1,5 +1,8 @@
 defmodule Clickr.Lessons.Question do
+  @moduledoc false
   use Clickr.Schema
+
+  alias Clickr.Accounts.User
 
   @states [:started, :ended]
 
@@ -13,9 +16,9 @@ defmodule Clickr.Lessons.Question do
     timestamps(type: :utc_datetime)
   end
 
-  def scope(query, %Clickr.Accounts.User{admin: true}, _), do: query
+  def scope(query, %User{admin: true}, _), do: query
 
-  def scope(query, %Clickr.Accounts.User{id: user_id}, _) do
+  def scope(query, %User{id: user_id}, _) do
     from x in query,
       join: l in assoc(x, :lesson),
       where: l.user_id == ^user_id
@@ -23,8 +26,7 @@ defmodule Clickr.Lessons.Question do
 
   @doc false
   def changeset(%{state: :started} = question, %{state: :ended} = attrs) do
-    question
-    |> cast(attrs, [:state])
+    cast(question, attrs, [:state])
   end
 
   def changeset(question, attrs) do

@@ -1,5 +1,8 @@
 defmodule Clickr.Zigbee2Mqtt.Supervisor do
+  @moduledoc false
   use Supervisor
+
+  alias Clickr.Zigbee2Mqtt.Connection
 
   def start_link(opts) do
     Supervisor.start_link(__MODULE__, :ok, opts)
@@ -14,9 +17,9 @@ defmodule Clickr.Zigbee2Mqtt.Supervisor do
 
     children =
       children ++
-        if Clickr.Zigbee2Mqtt.Connection.config()[:disabled],
+        if Connection.config()[:disabled],
           do: [],
-          else: [Clickr.Zigbee2Mqtt.Connection]
+          else: [Connection]
 
     Supervisor.init(children, strategy: :one_for_one)
   end

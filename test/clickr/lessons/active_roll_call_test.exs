@@ -1,5 +1,6 @@
 defmodule Clickr.Lessons.ActiveRollCallTest do
   use ClickrTest.DataCase
+
   alias Clickr.Lessons.ActiveRollCall
 
   defp create_students_and_mapping(%{user: user}) do

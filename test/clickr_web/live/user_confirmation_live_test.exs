@@ -1,8 +1,8 @@
 defmodule ClickrWeb.UserConfirmationLiveTest do
   use ClickrWebTest.ConnCase
 
-  import Phoenix.LiveViewTest
   import Clickr.AccountsFixtures
+  import Phoenix.LiveViewTest
 
   alias Clickr.Accounts
   alias Clickr.Repo

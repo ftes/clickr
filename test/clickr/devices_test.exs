@@ -1,9 +1,12 @@
 defmodule Clickr.DevicesTest do
   use ClickrTest.DataCase, async: true
 
-  alias Clickr.Devices
-  alias Clickr.Devices.{Gateway, Device, Button}
   import Clickr.DevicesFixtures
+
+  alias Clickr.Devices
+  alias Clickr.Devices.Button
+  alias Clickr.Devices.Device
+  alias Clickr.Devices.Gateway
 
   setup :create_user
 
@@ -106,7 +109,7 @@ defmodule Clickr.DevicesTest do
 
     test "create_device/1 with invalid data returns error changeset", %{user: user} do
       g = gateway_fixture(user_id: user.id)
-      invalid_attrs = Map.merge(@invalid_attrs, %{gateway_id: g.id})
+      invalid_attrs = Map.put(@invalid_attrs, :gateway_id, g.id)
       assert {:error, %Ecto.Changeset{}} = Devices.create_device(user, invalid_attrs)
     end
 
@@ -149,7 +152,7 @@ defmodule Clickr.DevicesTest do
       Devices.upsert_devices(user, gateway, [])
 
       assert [%{name: "1 deleted", deleted: true}, %{name: "2 ignored", deleted: false}] =
-               Devices.list_devices(user) |> Enum.sort_by(& &1.name)
+               user |> Devices.list_devices() |> Enum.sort_by(& &1.name)
     end
 
     test "upsert_devices/3 updates device name", %{user: user} do
@@ -183,7 +186,7 @@ defmodule Clickr.DevicesTest do
 
     test "create_button/1 with invalid data returns error changeset", %{user: user} do
       d = device_fixture(user_id: user.id)
-      invalid_attrs = Map.merge(@invalid_attrs, %{device_id: d.id})
+      invalid_attrs = Map.put(@invalid_attrs, :device_id, d.id)
       assert {:error, %Ecto.Changeset{}} = Devices.create_button(user, invalid_attrs)
     end
 
@@ -225,11 +228,10 @@ defmodule Clickr.DevicesTest do
       %{id: gid} = gateway_fixture(user_id: user.id)
       did = "856b554e-c592-49b2-a328-08573883107a"
       bid = "de5a61a6-489b-11ed-a744-9b189177012f"
-      device = %Devices.Device{id: did, gateway_id: gid, name: "device"}
+      device = %Device{id: did, gateway_id: gid, name: "device"}
 
       upserts =
-        Ecto.Multi.new()
-        |> Ecto.Multi.insert(:upsert_device, device,
+        Ecto.Multi.insert(Ecto.Multi.new(), :upsert_device, device,
           conflict_target: [:id],
           on_conflict: {:replace, [:name]}
         )

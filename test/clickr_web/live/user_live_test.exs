@@ -1,8 +1,8 @@
 defmodule ClickrWeb.UserLiveTest do
   use ClickrWebTest.ConnCase
 
-  import Phoenix.LiveViewTest
   import Clickr.AccountsFixtures
+  import Phoenix.LiveViewTest
 
   defp create_other_user(_) do
     %{other_user: user_fixture(email: "other@ftes.de")}

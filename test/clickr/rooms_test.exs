@@ -1,9 +1,13 @@
 defmodule Clickr.RoomsTest do
   use ClickrTest.DataCase, async: true
 
+  import Clickr.AccountsFixtures
+  import Clickr.DevicesFixtures
+  import Clickr.RoomsFixtures
+
   alias Clickr.Rooms
-  alias Clickr.Rooms.{Room, RoomSeat}
-  import Clickr.{AccountsFixtures, DevicesFixtures, RoomsFixtures}
+  alias Clickr.Rooms.Room
+  alias Clickr.Rooms.RoomSeat
 
   setup :create_user
 

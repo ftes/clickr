@@ -1,4 +1,5 @@
 defmodule Clickr.Grades.LessonGrade do
+  @moduledoc false
   use Clickr.Schema, bodyguard: false
 
   schema "lesson_grades" do
