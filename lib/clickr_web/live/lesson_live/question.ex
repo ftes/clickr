@@ -269,7 +269,7 @@ defmodule ClickrWeb.LessonLive.Question do
       student_id: student_id
     })
 
-    {:noreply, socket}
+    {:noreply, assign_lesson_and_related(socket)}
   end
 
   @impl true
