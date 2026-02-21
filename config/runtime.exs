@@ -36,12 +36,14 @@ if password = System.get_env("MQTT_PASSWORD") do
 end
 
 if config_env() == :prod do
-  database_path =
-    System.get_env("DATABASE_PATH") ||
+  database_url =
+    System.get_env("DATABASE_URL") ||
       raise """
-      environment variable DATABASE_PATH is missing.
-      For example: /data/name/name.db
+      environment variable DATABASE_URL is missing.
+      For example: ecto://USER:PASS@HOST/DATABASE
       """
+
+  maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
@@ -61,8 +63,9 @@ if config_env() == :prod do
   config :appsignal, :config, push_api_key: System.fetch_env!("APPSIGNAL_PUSH_API_KEY")
 
   config :clickr, Clickr.Repo,
-    database: database_path,
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")
+    url: database_url,
+    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+    socket_options: maybe_ipv6
 
   config :clickr, ClickrWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],

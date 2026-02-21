@@ -12,9 +12,12 @@ config :clickr, Clickr.Mailer, adapter: Swoosh.Adapters.Test
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :clickr, Clickr.Repo,
-  database: Path.expand("../clickr_test.db", Path.dirname(__ENV__.file)),
-  pool_size: 1,
-  pool: Ecto.Adapters.SQL.Sandbox
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  database: "clickr_test#{System.get_env("MIX_TEST_PARTITION")}",
+  pool: Ecto.Adapters.SQL.Sandbox,
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
 
 config :clickr, Clickr.Zigbee2Mqtt.Connection, disabled: true
 config :clickr, Clickr.Zigbee2Mqtt.Gateway, timeout: 20, heartbeat: 10

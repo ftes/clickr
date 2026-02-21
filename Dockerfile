@@ -68,14 +68,8 @@ RUN mix release
 FROM ${RUNNER_IMAGE}
 
 RUN apt-get update -y && \
-    apt-get install -y libstdc++6 openssl libncurses6 locales inotify-tools \
-    # LiteFS
-    ca-certificates fuse3 sqlite3 \
+    apt-get install -y libstdc++6 openssl libncurses6 locales ca-certificates \
     && apt-get clean && rm -f /var/lib/apt/lists/*_*
-
-COPY --from=flyio/litefs:0.5 /usr/local/bin/litefs /usr/local/bin/litefs
-COPY litefs.yml /etc/litefs.yml
-ENV DATABASE_PATH=/litefs/clickr.sqlite3
 
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
@@ -93,8 +87,9 @@ ENV MIX_ENV="prod"
 # Only copy the final release from the build stage
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/clickr ./
 
-# TODO Run /app/bin/server as nobody
-ENTRYPOINT ["litefs", "mount"]
+USER nobody
+
+CMD ["/app/bin/server"]
 
 # If using an environment that doesn't automatically reap zombie processes, it is
 # advised to add an init process such as tini via `apt-get install`

@@ -116,7 +116,7 @@ defmodule Clickr.Grades do
   defp filter_by_student_name(query, %{student_name: <<_::binary-size(2), _::binary>> = name}) do
     query
     |> join(:inner, [x], s in assoc(x, :student), as: :student_filter)
-    |> where([student_filter: s], like(s.name, ^"%#{name}%"))
+    |> where([student_filter: s], ilike(s.name, ^"%#{name}%"))
   end
 
   defp filter_by_student_name(query, _), do: query

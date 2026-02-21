@@ -73,7 +73,7 @@ defmodule Clickr.LessonsTest do
       l3_dup = Map.take(l3, [:subject_id, :seating_plan_id, :room_id])
       lesson_fixture(Map.merge(%{user_id: user.id, name: "l3_dup", inserted_at: at.(4)}, l3_dup))
 
-      assert ["l3", "l2", "l1"] =
+      assert ["l3_dup", "l2", "l1"] =
                user |> Lessons.list_lesson_combinations() |> Enum.map(& &1.name)
     end
 

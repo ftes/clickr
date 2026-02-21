@@ -130,7 +130,7 @@ defmodule Clickr.Classes do
   defp sort(query, _opts), do: query
 
   defp filter_by_name(query, %{name: <<_::binary-size(2), _::binary>> = name}) do
-    where(query, [x], like(x.name, ^"%#{name}%"))
+    where(query, [x], ilike(x.name, ^"%#{name}%"))
   end
 
   defp filter_by_name(query, _), do: query

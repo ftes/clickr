@@ -33,12 +33,18 @@ defmodule Clickr.Lessons do
   end
 
   def list_lesson_combinations(%User{} = user, opts \\ []) do
-    from(l in Lesson,
-      limit: ^(opts[:limit] || 100),
-      order_by: [desc: l.inserted_at],
-      group_by: [l.subject_id, l.room_id, l.seating_plan_id]
-    )
-    |> Bodyguard.scope(user)
+    limit = opts[:limit] || 100
+
+    inner =
+      Bodyguard.scope(
+        from(l in Lesson,
+          distinct: [l.subject_id, l.room_id, l.seating_plan_id],
+          order_by: [asc: l.subject_id, asc: l.room_id, asc: l.seating_plan_id, desc: l.inserted_at]
+        ),
+        user
+      )
+
+    from(l in subquery(inner), order_by: [desc: l.inserted_at], limit: ^limit)
     |> Repo.all()
     |> _preload(opts[:preload])
   end
@@ -347,7 +353,7 @@ defmodule Clickr.Lessons do
   defp preload_map(input, _), do: input
 
   defp filter_by_name(query, %{name: <<_::binary-size(2), _::binary>> = name}) do
-    where(query, [x], like(x.name, ^"%#{name}%"))
+    where(query, [x], ilike(x.name, ^"%#{name}%"))
   end
 
   defp filter_by_name(query, _), do: query

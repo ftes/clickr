@@ -2,9 +2,13 @@ import Config
 
 # Configure your database
 config :clickr, Clickr.Repo,
-  database: Path.expand("../clickr_dev.db", Path.dirname(__ENV__.file)),
-  pool_size: 5,
-  show_sensitive_data_on_connection_error: true
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  database: "clickr_dev",
+  stacktrace: true,
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
 
 config :clickr, Clickr.Zigbee2Mqtt.Connection, disabled: true
 
